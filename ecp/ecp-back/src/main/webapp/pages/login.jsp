@@ -1,11 +1,6 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8"
 	pageEncoding="UTF-8"%>
-<%
-	String path = request.getContextPath();
-	String basePath = request.getScheme() + "://" + request.getServerName() + ":" + request.getServerPort()
-			+ path + "/";
-%>
-<base href="<%=basePath%>">
+
 <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
 <html>
 <head>
@@ -14,14 +9,11 @@
 <meta name="viewport"
 	content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
 
-<title>- 登录</title>
+<title>登录</title>
 <meta name="keywords" content="">
 <meta name="description" content="">
-<link href="pages/css/bootstrap.min.css" rel="stylesheet">
-<link href="pages/css/font-awesome.css?v=4.4.0" rel="stylesheet">
-<link href="pages/css/animate.css" rel="stylesheet">
-<link href="pages/css/style.css" rel="stylesheet">
-<link href="pages/css/login.css" rel="stylesheet">
+<%@ include file="common/headCss.jsp"%>
+<link href="static/css/login.css" rel="stylesheet">
 <!--[if lt IE 9]>
     <meta http-equiv="refresh" content="0;ie.html" />
     <![endif]-->
@@ -48,7 +40,7 @@
 					<!-- <a href="">忘记密码了？</a> -->
 					<div style="position:relative;">
 						<input id="kaptcha" value="" name="kaptcha_code" type="text" class="form-control x164 in" placeholder="请输入验证码" /> 
-						<img  id="kaptchaImage" class="" style="position:absolute;right:1;top:1.5;" onclick="javascript:changeKaptchaImageFun();" alt="点击更换" title="看不清，点击换一张" src="back/getValidateCode" class="m">
+						<img  id="kaptchaImage" class="" style="position:absolute;right:1px;top:5px;" onclick="javascript:changeKaptchaImageFun();" alt="点击更换" title="看不清，点击换一张" src="back/getValidateCode" class="m">
 					</div>
 					<button type="button" class="btn btn-success btn-block" id="submit_btn">登录</button>
 				</form>
@@ -58,7 +50,7 @@
 			<div class="pull-left">&copy; cheerue</div>
 		</div>
 	</div>
-	<%@ include file="../common/headJs.jsp"%>
+	<%@ include file="common/headJs.jsp"%>
 	<!-- jsencrypt JS前端加密 -->
 	<script type="text/javascript" src="static/js/jsencrypt/jsencrypt.min.js"></script>
 	<script type="text/javascript" src="static/js/login.js"></script>

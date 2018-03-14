@@ -17,26 +17,17 @@
 <meta name="keywords" content="">
 <meta name="description" content="">
 
-<link rel="shortcut icon" href="favicon.ico">
-<link href="pages/css/bootstrap.min.css?v=3.3.6" rel="stylesheet">
-<link href="pages/css/font-awesome.css?v=4.4.0" rel="stylesheet">
-
-<link href="pages/css/animate.css" rel="stylesheet">
-<link href="pages/css/style.css?v=4.1.0" rel="stylesheet">
+<link rel="shortcut icon" href="pages/favicon.ico">
 
 </head>
 
-<body class="gray-bg">
+<body>
 
 
-	<div class="middle-box text-center animated fadeInDown">
+	<div style="width:100%;height:90%;text-align:center;">
 		<h2>WELCOME</h2>
-		<h3 class="font-bold">WELCOME!</h3>
+		<h3><b>【&nbsp;${user.nickname}&nbsp;】</b>登录菱美电子商务平台！</h3>
 	</div>
-
-	<!-- 全局js -->
-	<script src="pages/js/jquery.min.js?v=2.1.4"></script>
-	<script src="pages/js/bootstrap.min.js?v=3.3.6"></script>
 
 </body>
 </html>

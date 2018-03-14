@@ -2,7 +2,7 @@ package com.ecp.back.commons;
 
 public class StaticConstants {
 
-	public static String LOGIN = "/login/login";//登录页面
+	public static String LOGIN = "/login";//登录页面
 	
 	public static String MAIN = "/main";//系统首页面
 	
