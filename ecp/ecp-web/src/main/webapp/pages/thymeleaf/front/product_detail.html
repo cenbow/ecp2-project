@@ -1,0 +1,315 @@
+<!DOCTYPE html>
+<html>
+<head> 
+<meta charset="UTF-8">
+
+<div th:include="/thymeleaf/common/_head2::headx('商品详情')"	th:remove="tag"></div>
+<link rel="stylesheet" type="text/css" th:href="@{/static/css/slideImg/base.css}">
+<link rel="stylesheet" type="text/css" th:href="@{/static/css/product_detail/product_detail.css}">
+<style>
+li {
+	list-style-type: none;
+}
+
+li.attrValue {
+	float: left;
+	margin-right: 5px;
+	margin-left:5px;
+	list-style-type: none;
+	cursor:pointer;
+	border: 1px solid white;
+}
+
+li.attrValue:hover {
+	border: 1px solid blue;
+}
+
+li.selected {		
+	border: 1px solid red;
+}
+
+li.brand{
+	float: left;
+	margin-right: 5px;
+	margin-left:5px;
+	list-style-type: none;		
+}
+
+a:hover { text-decoration:none; } 
+
+</style>
+
+</head>
+<body>
+	<!-- header -->
+	<div class="row clearfix">
+		<div id="header" class="col-md-12 column"></div>
+	</div>
+	<div class="container porductDetail">		
+		<div class="row clearfix">
+			<!-- start of 登录窗口 -->
+			<div class="col-md-12 column">
+				<!-- <a hidden="true" id="modal-273078" href="#modal-container-273078" role="button" class="btn" data-toggle="modal">触发遮罩窗体</a> -->
+				<input id="modal-273078" type="hidden" class="btn btn-primary"
+					value="用户登录" data-toggle="modal"
+					data-target="#modal-container-273078" />
+				<div class="modal " id="modal-container-273078" role="dialog"
+					aria-labelledby="myModalLabel" aria-hidden="true">
+					<div class="modal-dialog">
+						<div class="modal-content">
+							<div class="modal-header">
+								<button type="button" class="close" data-dismiss="modal"
+									aria-hidden="true">×</button>
+								<h4 class="modal-title" id="myModalLabel">登录</h4>
+							</div>
+							<div class="modal-body">
+								<div class="loginBox">
+									<label for="loginName">帐号</label> <input type="text"
+										id="loginName" name="loginName" placeholder="邮箱/会员帐号/手机号"
+										autofocus required>
+								</div>
+								<div class="password">
+									<label for="password">密码 </label> <input type="password"
+										id="password" name="password" placeholder="请输入密码" required>
+								</div>
+							</div>
+							<div class="modal-footer">
+								<button id="btnClose" type="button" class="btn btn-default"
+									data-dismiss="modal">关闭</button>
+								<button id="btnLogin" type="button" class="btn btn-primary">登录</button>
+							</div>
+						</div> 
+
+					</div>
+
+				</div>
+
+			</div>
+			<!-- end of 登录窗口 -->
+
+			<div class="">
+				<div class="col-md-12 column">
+					<div class="row clearfix">
+						<H4>产品详情</H4>
+						<!-- 产品图片 -->
+						<div class="col-md-5 column">
+							<div class="row clearfix">
+								<div th:if="${not #lists.isEmpty(skuPicts)}" class="spec-preview" id="preview">
+									<span class="jqzoom">
+										<img alt="450x450" style="width:450px;height:450px"  th:attr="jqimg=${skuPicts[0].pictureUrl}" th:src="${skuPicts[0].pictureUrl}"  />
+									</span>
+								</div>
+							</div>
+							<!-- 缩略图显示 --> 
+							<div class="row clearfix">
+								<div class="">
+									<!--缩图开始-->
+									<div class="spec-scroll"> <a class="prev">&lt;</a> <a class="next">&gt;</a>
+	 										<div class="items">
+											<ul style="left:0px;padding:0px;">
+												<li th:each="pict : ${skuPicts}" th:attr="data-bind=${pict.pictureId}+':'+${pict.skuId}">
+													<img  th:src="${pict.pictureUrl}" th:attr="bimg=${pict.pictureUrl}"	onmousemove="preview(this);" />
+												</li>
+		
+											</ul>
+										</div>
+									</div>
+									<!--缩图结束-->
+								</div>
+							</div>							
+						</div>
+						<div class="col-md-7 column product_info">								
+							<div class="pro_title" >
+                    			<h5 id="itemName" th:text="${item.itemName}">思杰桌面虚拟化 XenDesktop VDI版本(用户/设备数) </h5>
+                    			<p class="subtitle" >【基础参数】<span th:text="${skuIntroduce.sku_short_spec}">【i5 独立显卡】全高清窄边框 8G内存 256G固态硬盘 支持SSD硬盘扩容 薄至14.8mm 轻至1.28kg</span></p>
+                			</div>		
+							<!-- 价格及关注-->
+							<div class="pro_price">
+                    			<div class="price_detail">
+                        			<div class="market">预算价格：
+                            			<del th:text="'￥'+${sku.market_price}">￥3099</del>
+                        			</div>
+                        		<div class="platform">商城价格：<span th:text="'￥'+${sku.sell_price}">￥2099</span></div>
+                    			</div>
+                    			<div class="favorite" id="myFavourite" th:attr="data-id=${item.itemId}">
+                    				
+                    				<a class="follow J-follow" id="myFavourite"
+										th:attr="data-id=${item.itemId}" href="#none"><span class="iconfont">&#xe639;</span>收藏商品
+									</a>
+                    			</div>
+                			</div>
+                						
+							<!-- SKU属性选择 -->
+							<div class="pro_sku_attr">								
+									<table class="table"> 
+										<thead>
+											<tr>
+												<th style="width:150px"></th> <!--  商品销售属性 -->
+												<th></th>  <!-- 商品销售属性值 -->
+											</tr>
+										</thead>
+										<tbody>
+											<tr>
+												<td>品牌</td>
+												<td>
+													<ul>
+														<li class="brand"><img th:src="${brand.brandLogoUrl}"><span th:text="${brand.brandName}" class="brand"></span></li>
+																												
+													</ul>
+												</td>
+											</tr>
+											<tr>
+												<td>型号</td>
+												<td>
+													<ul>
+														<li th:text="${item.model}"></li>
+													</ul>
+												</td>
+											</tr>
+											
+											<div th:if="${not #lists.isEmpty(attrValueList)}" class="select-sku" th:remove:"tag">
+												<tr class="" th:each="attrValue : ${attrValueList}">
+													<td th:text="'选择'+${attrValue.attrName}">选择颜色</td>
+													<td><ul>
+															<li th:each="value : ${attrValue.valueList}"
+																class="attrValue"
+																th:attr="data-bind=${value.attr_id}+':'+${value.value_id}"><span
+																th:text="${value.value_name}">属性值</span></li>
+														</ul></td>
+												</tr>
+											</div>
+										</tbody>
+									</table>								
+							</div>
+							
+							<!-- 数量 -->							
+							<!-- <div class="row clearfix"> -->
+								<div class="col-md-12 column pro_num">
+									<label for="amount" >数量</label> 
+									<input type="number" name="amount" id="amount" value="1"   
+										onkeyup="onkeyup_check(this)" 
+										onchange="onkeyup_check(this)" 
+    									onafterpaste="paste_check(this)" style="margin-left:87px;" /> 
+									<a
+										href="javascript:void(0);" onclick="return false;"
+										class="submit-btn btn btn-primary" data-bind="1" id="cartAdd" >
+										加入购物车<b></b>  <!-- style="background-color:#e4393c;border-color: #e4393c;" -->
+									</a> 
+									<!-- <a href="javascript:void(0);" onclick="return false;"
+										class="submit-btn btn btn-primary" data-bind="1"> 一键购<b></b></a> -->
+								</div>
+							<!-- </div> -->
+							
+						</div>
+					</div>
+					
+					<!-- start of  商品介绍,技术规格,售后保障 -->
+					<div class="pro_desc">
+			            <!-- Nav tabs -->
+			            <ul class="nav nav-pills" role="tablist">
+			                <li role="presentation" class="active"><a href="#description" aria-controls="description" role="tab" data-toggle="tab">商品介绍</a></li>
+			                <li role="presentation"><a href="#specification" aria-controls="specification" role="tab" data-toggle="tab">规格包装</a></li>
+			                <li role="presentation"><a href="#ensure" aria-controls="ensure" role="tab" data-toggle="tab">售后服务</a></li>
+			                <li role=""><a href="#comment" aria-controls="comment" role="" data-toggle="">&nbsp</a></li>
+			            </ul>
+            			<!-- Tab panes -->
+			            <div class="tab-content">
+			                <div role="tabpanel" class="tab-pane active" id="description">
+			                	<div class="desc_common">
+			                    	<span th:utext="${skuIntroduce.describe_url}" th:remove="tag"></span>
+			                    </div>
+			                </div>
+			                <div role="tabpanel" class="tab-pane" id="specification">
+			                    <div class="desc_common">
+			                       <table class="table">
+											<!-- <thead>
+												<tr>
+													<th>组名</th>
+													<th>指标</th>
+												</tr>
+											</thead> -->
+											<tbody>
+												<tr th:each="skuSpec:${skuSpecList}">
+													<td th:text="${skuSpec.spec_group}" style="width:20%;">组名称</td>
+													<td>
+														<ul  class="p-parameter-list">
+															<li th:each="spec:${skuSpec.spec}" th:text="${spec.spec_key}+':'+${spec.spec_val}"></li>
+														</ul>
+													</td>
+												</tr>
+												<tr>
+													<td>包装清单</td>
+													<td>
+														<ul>
+															<li th:text="${skuIntroduce.packing_list}"></li>
+														</ul>
+													</td>
+												</tr>
+											</tbody>
+									</table>
+			                    </div>
+			                </div>
+			                <div role="tabpanel" class="tab-pane" id="ensure">
+			                    <div class="desc_common">
+			                       	<span th:utext="${skuIntroduce.after_service}"></span>
+			                    </div>
+			                </div>
+			                <!-- <div role="tabpanel" class="tab-pane" id="comment">
+			                    <div class="desc_common">
+			                        	商品评价
+			                    </div>
+			                </div> -->
+			            </div>
+        			</div>
+        			<!-- end of  商品介绍,技术规格,售后保障 -->
+
+				</div>
+			</div>
+		</div>
+	</div>
+	
+	<input type="hidden" id="SkuAttribute" th:value="${sku.attributes}" />
+
+	<form th:action="@{/front/product/sku/detail}" method="post"
+		id="testform">
+		<!-- SPU id -->
+		<input type="hidden" name="itemId" id="itemId"
+			th:value="${item.itemId}" /> <input type="hidden"
+			name="skuAttribute" id="skuAttribute" th:value="${sku.attributes}" />
+	</form>
+
+	<!-- 增加到购物车时使用的表单（隐藏表单）  -->
+	<form th:action="@{/front/cart/add}" method="post" id="addToCartForm">
+		<!-- SPU id -->
+		<input type="hidden" name="itemId" id="itemId"	th:value="${item.itemId}" /> 
+		<input type="hidden" name="skuId"  id="skuId" th:value="${sku.sku_id}" /> 
+		<input type="hidden" name="quantity" id="quantity" value="" /> 
+		<input type="hidden" name="skuName" id="skuName" value="" />
+	</form>
+	
+	<!-- footer -->
+	<div class="row clearfix">
+		<div id="footer" class="col-md-12 column"></div>
+	</div>
+	<!-- load header and footer  -->
+	<script type="text/javascript"
+		th:src="@{/static/js/loadHeaderFooter.js}"></script>
+
+	<!-- 获取用户已经选商品列表  -->
+	<script th:inline="javascript">  
+			/*<![CDATA[*/  
+      
+			var g_skuSpec = [[${skuIntroduce.sku_spec}]];  
+			console.log("SKU技术参数");  
+      
+			/*]]>*/  
+	</script>
+
+	
+	<script type="text/javascript" th:src="@{/static/js/product_detail/product_detail.js}"></script>
+	<script type="text/javascript" th:src="@{/static/js/quantityInputCheck.js}"></script>
+	<script type="text/javascript" th:src="@{/static/js/slideImg/jquery.jqzoom.js}"></script>
+	<script type="text/javascript" th:src="@{/static/js/slideImg/base.js}"></script>
+
+</body>
+</html>

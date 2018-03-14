@@ -1,0 +1,165 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <title>project</title>
+    <!-- <link rel="stylesheet" type="text/css" th:href="@{/static/css/header/bootstrap.min.css}">  -->
+    <!-- <link rel="stylesheet" type="text/css" th:href="@{/static/css/header/css.css}">
+    <link rel="stylesheet" type="text/css" th:href="@{/static/iconfont/iconfont.css}"> -->
+    <!-- <script src="https://cdn.bootcss.com/jquery/1.12.4/jquery.js"></script> -->
+    <!-- <script th:src="@{/static/jquery/1.11.3/jquery-1.11.3.js}"></script> -->
+    <script type="text/javascript" th:src="@{/static/js/header/js.js}"></script>
+    <script type="text/javascript" th:src="@{/static/iconfont/iconfont.js}"></script>
+</head>
+
+<body>
+    <div class="header">
+        <div class="top">
+            <nav class="header-wrap">
+                <ul class="leftul">
+                    <li class="topContent">
+                        <div><span class="iconfont">&#xe600;</span>收藏我们</div>
+                    </li>
+                    <li>
+                        <div>联系我们：<span class="iconfont">&#xe613;</span>0311-89292627</div>
+                    </li>
+                </ul>
+                <ul class="centerul">
+                    <li class="login">
+                        <div><span  th:text="${user} ? ${user.nickname}:'尚未登录'  "></span>您好，欢迎来到</div>
+                        <div id="reg">
+                        	<a th:href="${user} ?  @{/front/home/unRegister}:@{/login/agent/gologin}" 
+                        	   th:text="${user} ?  '[退出登录]': '[请登录]'" > [请登录]</a></div>
+                       	<div>
+                       		<a href="javascript:void(0);" style="margin-left:20px;" id="change-password">[修改口令]</a>
+                       	</div>                       
+                    </li>
+                </ul>
+                <ul class="rightul">
+                    <li>
+                        <div ><a th:href="@{/front/personalcenter/favourites}" target="_blank">我的收藏</a></div>
+                    </li>
+                    <i>|</i>
+                    <li>
+                        <div><a th:href="@{/front/personalcenter/cart}" target="_blank">我的购物车</a></div>
+                    </li>
+                    <i>|</i>
+                    <li>
+                        <div><a th:href="@{/front/personalcenter/orders}" target="_blank">我的订单</a></div>
+                    </li>
+                </ul>
+            </nav>
+        </div>
+        <!-- banner -->
+        <div id="top-banner">
+            <div class="banner-img">
+                <img th:src="@{/static/images/banner-top.png}" >
+                <div class="closeAd">X</div>
+            </div>
+        </div>
+        <div class="searchLine">
+            <div class="logo">
+                <a th:href="@{/front/home/home}"><img th:src="@{/static/images/lingmei.png}" style="width:210px;height:65px;margin-left:8px;"></a>
+            </div>
+            <div class="search">
+                <div>
+                	<form  target="_blank"  method="get" id="searchform" role="search" th:action="@{/front/search/keywords}">
+                    	<input id="searchbox" name="keywords" type="text" placeholder="请输入商品名称/品牌名称/类目名称">
+                    	<input id="searchbutton" type="button" value="搜索">
+                    </form>
+                </div>
+                <div class="hotSearch">热门搜索：<!-- <span class="red">抄底价格</span><span>抄底价格</span><span>抄底价格</span><span>抄底价格</span> --></div>
+            </div>
+            <div id="myCart" class="quick quickRight">
+               	<a th:href="@{/front/personalcenter/cart}" target="_blank">
+               		<div class="cart">
+               			<span class="iconfont">&#xe60b;</span>我的购物车
+               		</div>
+               	</a>
+                
+                <div class="popover bottom  dropdownCart" >
+                    <div class="popMask"></div>
+					<h3 class="popover-title">
+						最新加入的商品<span>共<span id="itemNum">X</span>件</span>
+					</h3>
+					<!-- 购物车-容器 -->
+					<div class="popover-content" id="popover-content" >
+						请先登录！
+					</div>
+					<div class="popover-footer">
+						<p>
+							共计：<span id="cartItemTotalPrice">X</span>元
+						</p>
+						<button class="btn btn-sm" id="btnCart">购物车</button>
+					</div> 
+                </div>
+            </div>
+            <div class="quick">
+                <a th:href="@{/front/personalcenter/favourites}" target="_blank"><div class="cart"><span class="iconfont">&#xe639;</span>我的收藏</div></a>
+            </div>
+            <div class="quick">
+                <!-- <a th:href="@{/login/agent/gologin}"><div class="cart"><span class="iconfont">&#xe606;</span>点击登录</div></a> -->
+            </div>
+        </div>
+        <div id="sort">
+            <div class="main-sort">
+                <div class="all-sort">
+                    <a href="#">全部商品分类</a>
+                    <div id="classification" class="classification">
+                    	<!-- 一级类目 -->
+                        <div th:each="level1 : ${categoryList}" class="firstClass">
+                            <h3>
+                            	<!-- <a th:href="@{/front/search/category/{categoryId}(categoryId=${level1.category.cid})}" target="_blank"><span th:text="${level1.category.cName}" th:remove="tag">3C外设</span></a><span>&gt;</span></h3> -->
+                            	<span th:text="${level1.category.cName}" th:remove="tag">3C外设</span><span>&gt;</span></h3>
+                        </div>
+                    </div>
+                    <!-- detail list start-->
+                    <div id="details" class="details">
+                        <div th:each="level1,iter1 : ${categoryList}" class="item-sub" th:attr="id='classList'+${iter1.index}">
+                            <div class="subitem">
+                                <dl th:each="level2,iter2 : ${level1.subCategoryList}" th:attr="class='force'+${iter2.count}">
+                                    <dt>
+                                        <a th:href="@{/front/search/category/{categoryId}(categoryId=${level2.category.cid})}" target="_blank">
+                                        	<span th:text="${level2.category.cName}" th:remove="tag">电视</span>
+                                        	<b>></b>
+                                    	</a>
+                                    	
+                                    </dt>
+                                    <dd>
+                                        <a th:each="level3 : ${level2.subCategoryList}" th:href="@{/front/search/category/{categoryId}(categoryId=${level3.category.cid})}" target="_blank"><span th:text="${level3.category.cName}" th:remove="tag">电视</span></a>
+                                    </dd>
+                                </dl>
+                                
+                            </div>
+                        </div>  <!-- item-sub end -->
+                    </div> <!-- detail list end-->
+                </div>
+                <div class="minor-sort">
+                    <ul>
+                    	<li class="active"><a href="#">首页推荐</a></li>                        
+                        <li><a th:href="@{/front/search/category/48}" target="_blank">电脑整机</a></li>
+                        <li><a th:href="@{/front/search/category/66}" target="_blank">电脑配件</a></li>
+                        <li><a th:href="@{/front/search/category/62}" target="_blank">教学大屏</a></li>                        
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div id="changePassword" th:replace="thymeleaf/common/change_password_dialog::dialog"></div>
+    <!-- 占位图片 不属于header  -->
+    <!-- <div>
+        <img src="http://via.placeholder.com/1200x330" style="display: block;width: auto;margin:0 auto">
+    </div> -->
+    <!-- 占位图片 不属于header end  -->
+    
+    <!--  -->
+    
+    <script type="text/javascript" th:src="@{/static/js/header/change_password.js}"></script>
+    
+    
+    
+    
+    
+</body>
+
+</html>

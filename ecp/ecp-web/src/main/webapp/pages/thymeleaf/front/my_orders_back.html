@@ -1,0 +1,363 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>用户订单</title>
+<link th:href="@{/static/bootstrap/3.3.5/css/bootstrap.min.css}"
+	rel="stylesheet" />
+<link th:href="@{/static/bootstrap/3.3.5/css/bootstrap-theme.min.css}"
+	rel="stylesheet" />
+
+<script type="text/javascript"
+	th:src="@{/static/jquery/1.11.3/jquery-1.11.3.min.js}"></script>
+<script type="text/javascript"
+	th:src="@{/static/bootstrap/3.3.5/js/bootstrap.min.js}"></script>
+<style>
+a {
+	color: black;
+}
+
+.goods-item {
+	float: left;
+	width: 550px;
+	inline: true;
+	padding-right: 20px;
+}
+
+.goods-number {
+	/* float:right;  */
+	overflow: auto;
+	width: 50px;
+	margin-right: 20px;
+	margin-top: 50px;
+}
+</style>
+
+</head>
+<body>
+	<div class="container">
+		<div class="row clearfix">
+			<div class="col-md-12 column">
+				<span style="font-size: 20px">我的订单</span>
+			</div>
+		</div>
+		<br>
+		<div class="row clearfix">
+			<div class="col-md-12 column">
+				<ul class="extra-l" style="list-style: none;">
+					<li style="float: left; margin: auto 10px;"><a href="#"
+						class="txt curr">全部订单</a></li>
+					<li style="float: left"; margin:auto 10px;><a href="#"
+						id="ordertoPay" clstag="click|keycount|orderinfo|waitPay"
+						class="txt">待付款</a></li>
+					<li style="float: left; margin: auto 10px;"><a href="#"
+						id="ordertoReceive" clstag="click|keycount|orderinfo|waitReceive"
+						class="txt">待收货</a></li>
+					<li style="float: left; margin: auto 10px;"><a href="#"
+						id="ordertoComment" target="_blank" class="txt"
+						clstag="click|keycount|orderinfo|daipingjia">待评价</a></li>
+				</ul>
+			</div>
+		</div>
+		<br>
+		<div class="row clearfix">
+			<div class="col-md-12 column">
+				<table class="table" border="1" cellspacing="10">
+					<thead>
+						<tr>
+							<th><div class="ordertime-cont">
+									<div class="time-txt" style="float: left">
+										近三个月订单<b></b><span class="blank"></span>
+									</div>
+									<div class="time-list">
+										<ul>
+											<!-- <li><a href="#none" _val="1&amp;s=4096"
+												clstag="click|keycount|orderlist|zuijinsangeyue"><b></b>近三个月订单</a></li>
+											 <li><a href="#none" _val="2&amp;s=4096"
+												clstag="click|keycount|orderlist|jinniannei"><b></b>今年内订单</a></li>
+											<li><a href="#none" _val="2016&amp;s=4096"
+												clstag="click|keycount|orderlist|2016"><b></b>2016年订单</a></li>
+											<li><a href="#none" _val="2015&amp;s=4096"
+												clstag="click|keycount|orderlist|2015"><b></b>2015年订单</a></li>
+											<li><a href="#none" _val="2014&amp;s=4096"
+												clstag="click|keycount|orderlist|2014"><b></b>2014年订单</a></li>
+											<li><a href="#none" _val="3&amp;s=4096"
+												clstag="click|keycount|orderlist|before_2014"><b></b>2014年以前订单</a></li> -->
+										</ul>
+									</div>
+								</div>
+								<div class="order-detail-txt ac" style="float: right; margin-right:150px">订单详情</div></th>
+							<th>收货人</th>
+							<th>金额</th>
+							<th>
+								<div class="deal-state-cont" id="orderState">
+									<div class="state-txt">
+										全部状态<b></b><span class="blank"></span>
+									</div>
+									<div class="state-list">
+										<ul>
+											<!-- <li value="4096"><a href="#none"
+												clstag="click|keycount|orderlist|quanbuzhuangtai"
+												class="curr"><b></b>全部状态</a></li>
+											 <li value="1"><a href="#none"
+												clstag="click|keycount|orderlist|dengdaifukuan"><b></b>等待付款</a>
+											</li>
+											<li value="128"
+												clstag="click|keycount|orderlist|dengdaishouhuo"><a
+												href="#none"><b></b>等待收货</a></li>
+											<li value="1024"><a href="#none"
+												clstag="click|keycount|orderlist|yiwancheng"><b></b>已完成</a>
+											</li>
+											<li value="-1"><a href="#none"
+												clstag="click|keycount|orderlist|yiquxiao"><b></b>已取消</a></li> -->
+										</ul>
+									</div>
+								</div>
+							</th>
+							<th>操作</th>
+						</tr>
+					</thead>
+					<tbody th:each="orderx:${orderList}">
+						<!-- <tr class="sep-row">
+							<td colspan="5"></td>
+						</tr> -->
+						<tr class="tr-th" style="background: lightgray;">
+							<td colspan="5"><span class="gap"></span> <span th:text="${orderx.order.createTime}"
+								class="dealtime" title="2017-05-08 12:12:27">订单时间</span> <input id="datasubmit-53848251722"
+								value="2017-05-08 12:12:27" type="hidden"> <span
+								class="number"> 订单号： <a name="orderIdLinks"
+									id="idUrl53848251722" target="_blank"
+									href="#" th:text="${orderx.order.orderId}"
+									clstag="click|keycount|orderinfo|order_num" >订单号</a>
+
+							</span>
+
+								<div class="tr-operate" style="float: right">
+									<span class="order-shop"> <a class="btn-im btn-im-jd"
+										href="#none" title="联系客服"
+										clstag="click|keycount|orderlist|ziyingchatim">联系客服</a>
+									</span> <a href="#none"
+										clstag="click|keycount|orderlist|dingdanshanchu"
+										class="order-del" _orderid="53848251722"
+										_passkey="5897A7FF86B3E2A8B5B7A8E16E8DFF7F" title="删除">删除</a>
+
+								</div></td>
+						</tr>
+
+						<tr  class="tr-bd" id="track53848251722" oty="0,5,70">
+							<td>
+								<div class="goods-item p-383756">
+									<div class="p-img">
+										<a href="//item.jd.com/383756.html"
+											clstag="click|keycount|orderinfo|order_product"
+											target="_blank"> <img class=""
+											th:src="@{/static/images/computer3.png}"
+											title="【京东超市】金龙鱼 食用油 非转基因 压榨 玉米油5L(捆绑小油)"
+											data-lazy-img="done" height="60" width="60">
+
+										</a>
+									</div>
+									<div class="p-msg">
+										<div class="p-name">
+											<a href="#" class="a-link"
+												clstag="click|keycount|orderinfo|order_product"
+												target="_blank" title="【京东超市】金龙鱼 食用油 非转基因 压榨 玉米油5L(捆绑小油)">【京东超市】金龙鱼
+												食用油 非转基因 压榨 玉米油5L(捆绑小油)</a>
+										</div>
+									</div>
+								</div>
+								<div class="goods-number">x1</div>
+							</td>
+
+							<td rowspan="1">
+								<div class="">
+									<div class="prompt-01 prompt-02">
+										<div class="pc">
+											<strong>张女士</strong>
+											<!-- <p>河北石家庄市长安区城区胜利北大街318号石纺小区22号楼2单元201</p>
+											<p>139****4365</p> -->
+										</div>
+										<div class="p-arrow p-arrow-left"></div>
+									</div>
+								</div>
+							</td>
+							<td rowspan="1">
+								<div class="amount">
+									<span>总额 ¥75.90</span>
+								</div>
+							</td>
+							<td rowspan="1">
+								<div class="status">
+									<span class="order-status ftx-03"> 已取消 </span> <br> <a
+										href="" clstag="click|keycount|orderlist|dingdanxiangqing"
+										target="_blank">订单详情</a>
+								</div>
+							</td>
+							<td rowspan="1" id="operate53848251722">
+								<div class="operate">
+									<div id="pay-button-53848251722" _baina="0"></div>
+									<a href="#" class="btn-again btn-again-show" target="_blank"
+										clstag="click|keycount|orderlist|buy"><b></b> 立即购买 </a><br>
+
+								</div>
+							</td>
+						</tr>
+					</tbody>
+
+					<!-------------- 每种订单一个tbody ---------->
+					<tbody  th:each="orderx:${orderList}" id="tb-53853319081">
+						<!-- <tr class="sep-row">
+							<td colspan="5"></td>
+						</tr> -->
+
+						<tr class="tr-th" style="background: lightgray;">
+							<td colspan="5"><span class="gap"></span> <span th:text="${orderx.order.createTime}"
+								class="dealtime" title="2017-05-08 12:12:27">订单时间</span> <input id="datasubmit-53848251722"
+								value="2017-05-08 12:12:27" type="hidden"> <span
+								class="number"> 订单号： <a name="orderIdLinks"
+									id="idUrl53848251722" target="_blank"
+									href="#" th:text="${orderx.order.orderId}"
+									clstag="click|keycount|orderinfo|order_num" >订单号</a>
+
+							</span>
+
+								<div class="tr-operate" style="float: right">
+									<span class="order-shop"> <a class="btn-im btn-im-jd"
+										href="#none" title="联系客服"
+										clstag="click|keycount|orderlist|ziyingchatim">联系客服</a>
+									</span> <a href="#none"
+										clstag="click|keycount|orderlist|dingdanshanchu"
+										class="order-del" _orderid="53848251722"
+										_passkey="5897A7FF86B3E2A8B5B7A8E16E8DFF7F" title="删除">删除</a>
+
+								</div></td>
+						</tr>
+
+						<tr  class="tr-bd" id="track53853319081" oty="0,4,70">
+							<td>
+								<div class="goods-item p-2538742">
+									<div class="p-img">
+										<a href="//item.jd.com/2538742.html"
+											clstag="click|keycount|orderinfo|order_product"
+											target="_blank"> <img class=""
+											th:src="@{/static/images/oil.png}"
+											title="Apple iPad Pro平板电脑 9.7 英寸（128G WLAN版/A9X芯片/Retina显示屏/Multi-Touch技术MM192CH）玫瑰金色"
+											data-lazy-img="done" height="60" width="60">
+
+										</a>
+									</div>
+									<div class="p-msg">
+										<div class="p-name">
+											<a href="//item.jd.com/2538742.html" class="a-link"
+												clstag="click|keycount|orderinfo|order_product"
+												target="_blank"
+												title="Apple iPad Pro平板电脑 9.7 英寸（128G WLAN版/A9X芯片/Retina显示屏/Multi-Touch技术MM192CH）玫瑰金色">Apple
+												iPad Pro平板电脑 9.7 英寸（128G
+												WLAN版/A9X芯片/Retina显示屏/Multi-Touch技术MM192CH）玫瑰金色</a>
+										</div>
+									</div>
+								</div>
+								<div class="goods-number">x1</div>
+							</td>
+
+							<td rowspan="3">
+								<div class="">
+									<div class="prompt-01 prompt-02">
+										<div class="pc">
+											<strong>张女士</strong>
+											<!-- <p>河北石家庄市长安区城区胜利北大街318号石纺小区22号楼2单元201</p>
+											<p>139****4365</p> -->
+										</div>
+										<div class="p-arrow p-arrow-left"></div>
+									</div>
+								</div>
+							</td>
+							<td rowspan="3">
+								<div class="amount">
+									<span>总额 ¥9698.00</span> <br> <span class="ftx-13">在线支付</span>
+								</div>
+							</td>
+							<td rowspan="3">
+								<div class="status">
+									<span class="order-status ftx-03"> 已取消 </span> <br> <a
+										href="//details.jd.com/normal/item.action?orderid=53853319081&amp;PassKey=782FEEEA93394ACDF41675FD840AA5DF"
+										clstag="click|keycount|orderlist|dingdanxiangqing"
+										target="_blank">订单详情</a>
+								</div>
+							</td>
+							<td rowspan="3" id="operate53853319081">
+								<div class="operate">
+									<div id="pay-button-53853319081" _baina="0"></div>
+									<a
+										href="//cart.jd.com/reBuyForOrderCenter.action?wids=2538742,3597549,3230620&amp;nums=1,1,1&amp;rid=1495354641816"
+										class="btn-again btn-again-show" target="_blank"
+										clstag="click|keycount|orderlist|buy"><b></b> 立即购买 </a><br>
+								</div>
+							</td>
+						</tr>
+
+
+						<tr class="tr-bd" id="track53853319081" oty="0,4,70">
+							<td>
+								<div class="goods-item p-3597549">
+									<div class="p-img">
+										<a href="//item.jd.com/3597549.html"
+											clstag="click|keycount|orderinfo|order_product"
+											target="_blank"> <img class=""
+											th:src="@{/static/images/computer1.png}"
+											title="联想（ThinkPad）轻薄系列E470c（20H3A004CD）14英寸笔记本电脑（i5-6200U 8G 500G 2G独显 Win10）黑色"
+											data-lazy-img="done" height="60" width="60">
+
+										</a>
+									</div>
+									<div class="p-msg">
+										<div class="p-name">
+											<a href="//item.jd.com/3597549.html" class="a-link"
+												clstag="click|keycount|orderinfo|order_product"
+												target="_blank"
+												title="联想（ThinkPad）轻薄系列E470c（20H3A004CD）14英寸笔记本电脑（i5-6200U 8G 500G 2G独显 Win10）黑色">联想（ThinkPad）轻薄系列E470c（20H3A004CD）14英寸笔记本电脑（i5-6200U
+												8G 500G 2G独显 Win10）黑色</a>
+										</div>
+									</div>
+								</div>
+								<div class="goods-number">x1</div>
+
+							</td>
+
+						</tr>
+
+
+						<tr class="tr-bd" id="track53853319081" oty="0,4,70">
+							<td>
+								<div class="goods-item p-3230620">
+									<div class="p-img">
+										<a href="//item.jd.com/3230620.html"
+											clstag="click|keycount|orderinfo|order_product"
+											target="_blank"> <img class=""
+											th:src="@{/static/images/computer2.png}"
+											title="ThinkPad（4X40L08937）皮质单肩背包T300" data-lazy-img="done"
+											height="60" width="60">
+
+										</a>
+									</div>
+									<div class="p-msg">
+										<div class="p-name">
+											<a href="//item.jd.com/3230620.html" class="a-link"
+												clstag="click|keycount|orderinfo|order_product"
+												target="_blank" title="ThinkPad（4X40L08937）皮质单肩背包T300">ThinkPad（4X40L08937）皮质单肩背包T300</a>
+										</div>
+									</div>
+								</div>
+								<div class="goods-number">x1</div>
+
+							</td>
+						</tr>
+
+					</tbody>
+
+				</table>
+			</div>
+		</div>
+	</div>
+</body>
+</html>

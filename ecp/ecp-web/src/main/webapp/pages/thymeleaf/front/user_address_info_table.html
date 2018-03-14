@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>Insert title here</title>
+</head>
+<body>
+	<table class="table">
+		<thead>
+			<tr>
+				<th>编号</th>
+				<th>选择</th>
+				<th>姓名</th>
+				<th>手机 </th>
+				<th>地址</th>
+				<th>默认</th>
+				<th>操作</th>
+			</tr>
+		</thead>
+		<tbody>
+			<tr th:each="addr,addrState:${addrs}">
+				<td th:text="${addrState.count}">1</td>
+				
+				<span th:switch="${addr.isDefault}" th:remove="tag">
+					<td th:case="1"><input type="checkbox" onclick="selectorFunc(this)" th:attr="data-address=${addr.fullAddress},data-person=${addr.contactPerson}+' '+${addr.contactPhone},data-id=${addr.id}" class="addrSelector " checked="true"  /></td>
+					<td th:case="*"><input type="checkbox" onclick="selectorFunc(this)" th:attr="data-address=${addr.fullAddress},data-person=${addr.contactPerson}+' '+${addr.contactPhone},data-id=${addr.id}" class="addrSelector "  /></td>
+				</span>
+				
+				
+				<td th:text="${addr.contactPerson}">联系人姓名</td>
+				<td th:text="${addr.contactPhone}">联系人手机</td>
+				<td style="width:500px" th:text="${addr.fullAddress}">X女士 河北 石家庄市 长安区
+					城区胜利北大街XXX号XX小区XX号楼XX单元201 139****1234</td>
+				<span th:switch="${addr.isDefault}" th:remove="tag">
+					<td th:case="1"><i class="icon-asterisk " style="color:darkblue;"/></td>
+					<td th:case="*"></td>
+				</span>
+				<td>
+					<i class="btnEdit icon-edit icon-large"  th:attr="data-bind=${addr.id}" onclick="editFunc(this)" style="color:darkblue;cursor:pointer" />
+					<i class="btnDelete icon-remove icon-large" th:attr="data-bind=${addr.id}" onclick="deleteFunc(this)" style="color:darkblue;cursor:pointer" />
+					<i class="btnDefault icon-tag icon-large" th:attr="data-bind=${addr.id},data-is-default=${addr.isDefault}" onclick="setDefaultFunc(this)" style="color:darkblue;cursor:pointer" />
+				</td>
+			</tr>
+		</tbody>
+	</table>
+</body>
+</html>

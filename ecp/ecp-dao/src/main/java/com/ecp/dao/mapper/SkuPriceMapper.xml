@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ecp.dao.SkuPriceMapper">
+  <resultMap id="BaseResultMap" type="com.ecp.entity.SkuPrice">
+    <!--
+      WARNING - @mbggenerated
+    -->
+    <id column="id" jdbcType="BIGINT" property="id" />
+    <result column="area_id" jdbcType="VARCHAR" property="areaId" />
+    <result column="area_name" jdbcType="VARCHAR" property="areaName" />
+    <result column="area_number" jdbcType="INTEGER" property="areaNumber" />
+    <result column="cost_price" jdbcType="DECIMAL" property="costPrice" />
+    <result column="create_time" jdbcType="TIMESTAMP" property="createTime" />
+    <result column="create_user" jdbcType="VARCHAR" property="createUser" />
+    <result column="item_id" jdbcType="BIGINT" property="itemId" />
+    <result column="market_price" jdbcType="DECIMAL" property="marketPrice" />
+    <result column="max_num" jdbcType="BIGINT" property="maxNum" />
+    <result column="min_num" jdbcType="BIGINT" property="minNum" />
+    <result column="sell_price" jdbcType="DECIMAL" property="sellPrice" />
+    <result column="sku_id" jdbcType="BIGINT" property="skuId" />
+    <result column="update_time" jdbcType="TIMESTAMP" property="updateTime" />
+    <result column="update_user" jdbcType="VARCHAR" property="updateUser" />
+    <result column="deleted" jdbcType="INTEGER" property="deleted" />
+  </resultMap>
+  <sql id="Base_Column_List">
+    <!--
+      WARNING - @mbggenerated
+    -->
+    id, area_id, area_name, area_number, cost_price, create_time, create_user, item_id, 
+    market_price, max_num, min_num, sell_price, sku_id, update_time, update_user, deleted
+  </sql>
+</mapper>

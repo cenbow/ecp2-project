@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ecp.dao.BrandMapper">
+  <resultMap id="BaseResultMap" type="com.ecp.entity.Brand">
+    <!--
+      WARNING - @mbggenerated
+    -->
+    <id column="brand_id" jdbcType="BIGINT" property="brandId" />
+    <result column="brand_key" jdbcType="VARCHAR" property="brandKey" />
+    <result column="brand_logo_url" jdbcType="VARCHAR" property="brandLogoUrl" />
+    <result column="brand_name" jdbcType="VARCHAR" property="brandName" />
+    <result column="brand_status" jdbcType="INTEGER" property="brandStatus" />
+    <result column="created" jdbcType="TIMESTAMP" property="created" />
+    <result column="modified" jdbcType="TIMESTAMP" property="modified" />
+    <result column="deleted" jdbcType="INTEGER" property="deleted" />
+  </resultMap>
+  <sql id="Base_Column_List">
+    <!--
+      WARNING - @mbggenerated
+    -->
+    brand_id, brand_key, brand_logo_url, brand_name, brand_status, created, modified, 
+    deleted
+  </sql>
+
+	<select id="getBrandByKeywords" resultMap="BaseResultMap">
+	
+		select * from item_brand
+		<where>
+			<foreach close=")" collection="keywords" index="index" item="keyword" open="(" separator=" or ">
+				brand_name like CONCAT('%',#{keyword},'%' )
+			</foreach>
+		</where>
+		and brand_status=1 and deleted=1
+		
+	</select>
+	<select id="getBrandByCategoryid" parameterType="map" resultType="map">
+	
+		SELECT 
+			b.brand_key,b.brand_name,b.brand_logo_url,cb.* 
+		FROM 
+			item_brand b 
+		INNER JOIN 
+			item_category_brand cb 
+		ON 
+			b.brand_id=cb.brand_id 
+		WHERE 
+			b.deleted=1 and cb.deleted=1 and
+			cb.third_lev_cid=#{categoryId}
+		
+	</select>
+
+
+</mapper>

@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ecp.dao.UserAddressInfoMapper">
+  <resultMap id="BaseResultMap" type="com.ecp.entity.UserAddressInfo">
+    <!--
+      WARNING - @mbggenerated
+    -->
+    <id column="id" jdbcType="BIGINT" property="id" />
+    <result column="attach_address" jdbcType="VARCHAR" property="attachAddress" />
+    <result column="buyer_id" jdbcType="BIGINT" property="buyerId" />
+    <result column="city_code" jdbcType="VARCHAR" property="cityCode" />
+    <result column="contact_email" jdbcType="VARCHAR" property="contactEmail" />
+    <result column="contact_person" jdbcType="VARCHAR" property="contactPerson" />
+    <result column="contact_phone" jdbcType="VARCHAR" property="contactPhone" />
+    <result column="contact_tel" jdbcType="VARCHAR" property="contactTel" />
+    <result column="county_code" jdbcType="VARCHAR" property="countyCode" />
+    <result column="create_time" jdbcType="TIMESTAMP" property="createTime" />
+    <result column="emergency_person" jdbcType="VARCHAR" property="emergencyPerson" />
+    <result column="emergency_phone" jdbcType="VARCHAR" property="emergencyPhone" />
+    <result column="full_address" jdbcType="VARCHAR" property="fullAddress" />
+    <result column="is_default" jdbcType="TINYINT" property="isDefault" />
+    <result column="postal_code" jdbcType="VARCHAR" property="postalCode" />
+    <result column="province_code" jdbcType="VARCHAR" property="provinceCode" />
+    <result column="town_code" jdbcType="VARCHAR" property="townCode" />
+    <result column="updte_time" jdbcType="TIMESTAMP" property="updteTime" />
+    <result column="village_code" jdbcType="VARCHAR" property="villageCode" />
+    <result column="yn" jdbcType="TINYINT" property="yn" />
+    <result column="province_name" jdbcType="VARCHAR" property="provinceName" />
+    <result column="city_name" jdbcType="VARCHAR" property="cityName" />
+    <result column="county_name" jdbcType="VARCHAR" property="countyName" />
+    <result column="deleted" jdbcType="INTEGER" property="deleted" />
+  </resultMap>
+  <sql id="Base_Column_List">
+    <!--
+      WARNING - @mbggenerated
+    -->
+    id, attach_address, buyer_id, city_code, contact_email, contact_person, contact_phone, 
+    contact_tel, county_code, create_time, emergency_person, emergency_phone, full_address, 
+    is_default, postal_code, province_code, town_code, updte_time, village_code, yn, 
+    province_name, city_name, county_name, deleted
+  </sql>
+</mapper>

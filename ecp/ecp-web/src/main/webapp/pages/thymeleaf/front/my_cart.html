@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<div th:include="/thymeleaf/common/_head2::headx('我的购物车')"
+	th:remove="tag"></div>
+
+<style>
+/* 购物车条目未选定时 */
+.cartItem {
+	background: auto;
+}
+
+/* 购物车条目选定时  */
+.cartItem.selected {
+	background: lightgray;
+}
+
+a:hover {
+	text-decoration: none;
+}
+</style>
+
+</head>
+<body>
+	<!-- header -->
+	<div class="row clearfix">
+		<div id="header" class="col-md-12 column"></div>
+	</div>
+	<!--content  -->
+	<div class="container" id="container"></div>
+	<br>
+	<br>
+	<!-- footer -->
+	<div class="row clearfix">
+		<div id="footer" class="col-md-12 column"></div>
+	</div>
+	<!-- load header and footer  -->
+	<script type="text/javascript"
+		th:src="@{/static/js/loadHeaderFooter.js}"></script>
+
+	<!-- 获取用户已经选商品列表  -->
+	<script th:inline="javascript">  
+			/*<![CDATA[*/
+				
+			var g_cartItemId = [[${cartItemId}]];  
+			//console.log("买家已选商品类型数量:"+cartItemList.length);
+			
+			/*]]>*/  
+	</script>
+
+	<script type="text/javascript">
+		function loadCart(){
+			var url = "/front/cart/show";
+			var parms = null;
+			var callbackFunc = null;
+			var containerId = "#container";
+			loadPage(containerId, url, parms, callbackFunc);
+		}
+		$(function(){
+			loadCart();	
+		})
+	</script>
+
+</body>
+</html>

@@ -1,0 +1,144 @@
+<!DOCTYPE html>
+<head>
+<meta charset="UTF-8">
+<div th:include="/thymeleaf/common/_head2::headx('购物车-结算')"
+	th:remove="tag"></div>
+	
+
+
+<style>
+a:hover {
+	text-decoration: none;
+	cursor: Pointer;
+}
+
+.user-address tr:hover{
+	background-color:#CCFFCC;
+}
+
+
+</style>
+
+</head>
+<body>
+	<!-- header -->
+	<div id="header" class="row clearfix">
+		<!-- <div id="header" class="col-md-12 column"></div> -->
+	</div>
+	<!-- content -->
+	<div class="container">
+		<!-- 增加/编辑用户地址对话框 -->
+		<div th:replace="thymeleaf/common/_user_address_dialog::dialog"	class="row clearfix"></div>
+		
+		<div class="row clearfix">
+			<div class="col-md-12 column">
+				<h4>结算</h4>
+				<div class="panel panel-info">
+					<div class="panel-heading">
+						<h3 class="panel-title">
+							收货地址 <a id="addUserAddress" style="float: right"><i
+								class="icon-plus-sign icon-large" style="color: darkblue"></i>地址</a>
+						</h3>
+
+					</div>
+					<!-- 动态load买家收货地址列表 -->
+					<div id="userAddressInofTable" class="panel-body user-address"></div>
+					<!-- <div class="panel-footer">Panel footer</div> -->
+				</div>
+				<div class="panel panel-warning">
+					<div class="panel-heading">
+						<h3 class="panel-title">支付</h3>
+					</div>
+					<div class="panel-body">线下议价未完成，提交订单后请等待客服电话联系。</div>
+					<!-- <div class="panel-footer">Panel footer</div> -->
+				</div>
+				<div class="panel panel-success">
+					<div class="panel-heading">
+						<h3 class="panel-title">送货清单</h3>
+					</div>
+					<div class="panel-body">
+						<table class="table">
+							<thead>
+								<tr>
+									<th>序号</th>
+									<th>图片</th>
+									<th>产品名称</th>
+									<th>单价</th>
+									<th>数量</th>
+									<th>状态</th>
+								</tr>
+							</thead>
+							<tbody>
+								<tr th:each="cartItem,cartItemState:${cartItemList}">
+									<th th:text="${cartItemState.count}">序号</th>
+									<td><img alt="60*60" height=60 weight=60
+										th:src="${cartItem.skuPicture}" /></td>
+									<td th:text="${cartItem.skuName}">商品名称</td>
+									<td th:text="'￥'+${cartItem.skuPrice}">价格</td>
+									<td th:text="${cartItem.skuNum}">数量</td>
+									<td>有货</td>
+								</tr>
+							</tbody>
+						</table>
+					</div>
+					<!-- <div class="panel-footer">Panel footer</div> -->
+				</div>
+				<div class="panel panel-default">
+					<div class="panel-heading">
+						<h3 class="panel-title">订单备注</h3>
+					</div>
+					<div class="panel-body">
+						<!-- 订单备注 -->												
+						<textarea id="memo"  rows="5" cols="158" placeholder="填写您的订单的要求和疑问，我们会详细审核，在线下交流时给您回复..."></textarea>
+					</div>   <!--  -->
+					<!-- <div class="panel-footer">Panel footer</div> -->
+				</div>
+				<div class="row clearfix">
+					<div class="col-md-12 column">
+						<span style="margin-left: 900px" th:text="${cartItemNumAmount}">2</span>件商品<br>
+						<span style="margin-left: 900px">应付总额：￥<strong
+							style="color: red; font-size: 20px" th:text="${totalPayable}">
+								42.80 </strong></span><br> <span style="float: right"> 寄送至： <span
+							id="selected-address">河北 石家庄市 长安区 城区</span> 收货人：<span
+							id="selected-person">张女士 139****4365 </span>
+						</span>
+					</div>
+				</div>
+				<div class="row clearfix">
+					<div class="col-md-12 column">
+						<hr />
+						<button id="commitOrder" style="float: right;margin-right:50px" type="button"
+							class="btn btn-primary">提交订单</button>
+					</div>
+				</div>
+				</br>
+			</div>
+		</div>
+	</div>
+	<!-- 获取用户已经选商品列表  -->
+	<script th:inline="javascript">  
+			/*<![CDATA[*/  
+      
+			var cartItemList = [[${cartItemList}]];  
+			console.log("买家已选商品类型数量:"+cartItemList.length);  
+      
+			/*]]>*/  
+	</script>
+	
+	
+	<!-- footer -->
+	<div class="row clearfix">
+		<div id="footer" class="col-md-12 column"></div>
+	</div>
+	<!-- load header and footer  -->
+	<script type="text/javascript"	th:src="@{/static/js/loadHeaderFooter.js}"></script>
+	
+	<!-- 地区选择 -->
+	<script type="text/javascript" th:src="@{/static/js/distpicker/distpicker.data.js}"></script>
+	<script type="text/javascript" th:src="@{/static/js/distpicker/distpicker.js}"></script>
+	<script type="text/javascript" th:srcsrc="@{/static/js/distpicker/main.js}"></script>
+	<!-- 结算业务逻辑 -->
+	<script type="text/javascript"	th:src="@{/static/js/settle_account/settle_account.js}"></script>
+
+</body>
+</html>

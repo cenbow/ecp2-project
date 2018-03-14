@@ -1,0 +1,145 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>Insert title here</title>
+</head>
+<body>	
+	<div class="row clearfix">
+		<div class="col-md-12 column">
+			<h4 style="font-size:20px"><strong>我的购物车</strong></h4>
+		</div>
+	</div>
+	<!-- 商品类型数量  -->
+	<div class="row clearfix">
+		<div class="col-md-12 column" style="height: 50px">
+			<h4>
+				全部商品(<span th:text="${itemNum}"></span>)
+			</h4>
+		</div>
+	</div>
+	<div class="row clearfix">
+		<div class="col-md-12 column">
+			<table class="table">
+				<thead>
+					<tr>
+						<th>
+							<input id="select_all_top" type="checkbox"	class="select_all" style="margin-bottom:0px;"/> 
+							<label for="select_all_top" class="control-label" style="margin-bottom:0px;">全选</label>
+						</th>
+						<th>商品</th>
+						<th>规格</th>
+						<th>单价</th>
+						<th>数量</th>
+						<th>小计</th>
+						<th>操作</th>
+					</tr>
+				</thead>
+				<tbody>
+					<tr th:each="cartItem:${cartItemList}"
+						th:attr="id='cartitem_'+${cartItem.itemId}+'-'+${cartItem.skuId}"
+						class="cartItem">
+						<td><input type="checkbox"
+							th:attr="data-bind=${cartItem.itemId}+'-'+${cartItem.skuId},
+							data-order=${cartItem.cid}+'|'+${cartItem.itemId}+'|'+${cartItem.skuId}+'|'+${cartItem.skuName} +'|'+${cartItem.skuPrice},data-image=${cartItem.skuPicture},data-id=${cartItem.id}"
+							class="cart_item_selector" /></td>
+						<td><div class="col-md-4 column">
+								<a
+									th:href="@{/front/product/detail/{itemId}/{skuId}(itemId=${cartItem.itemId},skuId=${cartItem.skuId})}"
+									target="_blank"> <img alt="60*60" height=60 weight=60
+									th:src="${cartItem.skuPicture}" />
+
+								</a>
+
+							</div>
+							<div class="col-md-8 column">
+								<dl>
+									<!-- <dt>产品名称</dt> -->
+									<a
+										th:href="@{/front/product/detail/{itemId}/{skuId}(itemId=${cartItem.itemId},skuId=${cartItem.skuId})}"
+										target="_blank">
+										<dd th:text="${cartItem.itemName}">此处放置产品名称</dd>
+									</a>
+								</dl>
+							</div></td>
+						<td>
+							<!-- 规格说明 --> <span
+							th:each="skuAttrValueName:${cartItem.skuAttrValueNames}">
+								<span th:text="${skuAttrValueName}">销售属性值</span><br>
+						</span>
+						</td>
+						<td th:text="'￥'+${cartItem.skuPrice}"></td>
+						<td>
+							<input
+							th:attr="id='num_'+${cartItem.itemId}+'-'+${cartItem.skuId},data-cart-id=${cartItem.id},data-skuprice=${cartItem.skuPrice}, data-skuweight=${cartItem.skuWeight},data-weightunit=${cartItem.weightUnit}"
+							type="number" name="数量" th:value="${cartItem.quantity}"
+							onkeyup="onkeyup_check(this);" 
+							onchange="onkeyup_check(this);updateNum(this)"
+							onafterpaste="paste_check(this);" /> </br> <!-- <span>有货</span> -->
+						</td>
+						<td><label th:attr="id='totalprice-'+${cartItem.id}"
+							th:text="'￥'+${cartItem.skuPrice}* ${cartItem.quantity}">小计：5188</label></br>
+							<span th:attr="id='totalweight-'+${cartItem.id}"
+							th:text="${cartItem.skuWeight}*${cartItem.quantity}+${cartItem.weightUnit}">小计：重量：5.6kg</span>
+						</td>
+						<td><a href="javascript:void(0)" class="operate_delete" th:attr="data-id=${cartItem.id}">删除</a></br> 
+						    <a href="javascript:void(0)" class="operate_remove_favourite" th:attr="data-id=${cartItem.id},data-item-id=${cartItem.itemId}">移到我的关注</a></br> 
+						    <a href="javascript:void(0)" class="operate_add_favourite" th:attr="data-id=${cartItem.id},data-item-id=${cartItem.itemId}">加到我的关注</a></td>
+					</tr>
+				</tbody>
+			</table>
+		</div>
+	</div>
+
+	<hr>
+	<!--  -->
+	<div class="row clearfix">
+		<div class="col-md-12 column">
+			<div class="row clearfix">
+				<div class="col-md-6 column">
+					<div class="row clearfix">
+						<div class="col-md-4 column">
+							<input type="checkbox" id="select_all_bottom" class="select_all" style="margin-left:8px;"/>
+							<label for="select_all_bottom">全选</label>
+						</div>
+						<div class="col-md-8 column">
+
+							<a href="javascript:void(0)"
+								clstag="clickcart|keycount|xincart|cart_somesku_del"
+								class="remove-batch">删除选中的商品</a> 
+							<a href="javascript:void(0)"
+								class="follow-batch"
+								clstag="clickcart|keycount|xincart|cart_somesku_guanzhu">移到我的关注</a>
+							<!-- <a class="J_clr_nosale" href="#none"
+								clstag="pageclick|keycount|201508251|23">清除下柜商品</a> -->
+
+						</div>
+					</div>
+				</div>
+
+				<div class="col-md-6 column">
+					<div class="row clearfix">
+						<div class="col-md-4 column">
+							已选择<strong id="selected_count" style="font-size: 20px">0</strong>件商品<b
+								class="up"
+								clstag="clickcart|keycount|xincart|cart_thumbnailOpen"></b>
+
+						</div>
+						<div class="col-md-4 column">
+							<span class="txt txt-new">总价：</span> <span class="price sumPrice">￥<strong
+								id="amount" style="font-size: 20px">0</strong></span>
+						</div>
+						<div class="col-md-4 column">
+							<a clstag="clickcart|keycount|xincart|cart_gotoOrder"
+								id="BtnSettle" class="submit-btn btn btn-primary" data-bind="1"
+								target="_blank">去结算<b></b></a>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+	<script type="text/javascript" th:src="@{/static/js/quantityInputCheck.js}"></script>
+	<script type="text/javascript" th:src="@{/static/js/my_cart/my_cart.js}"></script>
+</body>
+</html>

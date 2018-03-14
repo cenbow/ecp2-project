@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ecp.dao.ThemeMapper">
+  <resultMap id="BaseResultMap" type="com.ecp.entity.Theme">
+    <!--
+      WARNING - @mbggenerated
+    -->
+    <id column="id" jdbcType="BIGINT" property="id" />
+    <result column="addressid" jdbcType="BIGINT" property="addressid" />
+    <result column="cid" jdbcType="BIGINT" property="cid" />
+    <result column="clev" jdbcType="BIGINT" property="clev" />
+    <result column="color" jdbcType="VARCHAR" property="color" />
+    <result column="color_b" jdbcType="VARCHAR" property="colorB" />
+    <result column="created" jdbcType="TIMESTAMP" property="created" />
+    <result column="modified" jdbcType="TIMESTAMP" property="modified" />
+    <result column="primary_cid" jdbcType="BIGINT" property="primaryCid" />
+    <result column="sort_num" jdbcType="SMALLINT" property="sortNum" />
+    <result column="status" jdbcType="SMALLINT" property="status" />
+    <result column="theme_name" jdbcType="VARCHAR" property="themeName" />
+    <result column="type" jdbcType="BIGINT" property="type" />
+    <result column="userid" jdbcType="VARCHAR" property="userid" />
+    <result column="deleted" jdbcType="INTEGER" property="deleted" />
+  </resultMap>
+  <sql id="Base_Column_List">
+    <!--
+      WARNING - @mbggenerated
+    -->
+    id, addressid, cid, clev, color, color_b, created, modified, primary_cid, sort_num, 
+    status, theme_name, type, userid, deleted
+  </sql>
+</mapper>

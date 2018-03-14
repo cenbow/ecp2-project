@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ecp.dao.AttributeMapper">
+  <resultMap id="BaseResultMap" type="com.ecp.entity.Attribute">
+    <!--
+      WARNING - @mbggenerated
+    -->
+    <id column="attr_id" jdbcType="BIGINT" property="attrId" />
+    <result column="attr_name" jdbcType="VARCHAR" property="attrName" />
+    <result column="created" jdbcType="TIMESTAMP" property="created" />
+    <result column="is_senior" jdbcType="INTEGER" property="isSenior" />
+    <result column="modified" jdbcType="TIMESTAMP" property="modified" />
+    <result column="status" jdbcType="INTEGER" property="status" />
+    <result column="deleted" jdbcType="INTEGER" property="deleted" />
+  </resultMap>
+  <sql id="Base_Column_List">
+    <!--
+      WARNING - @mbggenerated
+    -->
+    attr_id, attr_name, created, is_senior, modified, status, deleted
+  </sql>
+  
+  <!-- 根据map中的条件查询属性 -->
+  <select id="selectByCondition" parameterType="map" resultType="map">
+  	SELECT 
+  		a.*, ca.attr_type
+  	FROM 
+  		item_category_attr ca 
+  	INNER JOIN 
+  		item_attribute a 
+  	ON 
+  		ca.attr_id=a.attr_id 
+  	WHERE 
+  		ca.deleted=1 and ca.cid=#{cid}
+  </select>
+  
+  
+  
+  
+</mapper>

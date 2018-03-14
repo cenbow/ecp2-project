@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>Insert title here</title>
+</head>
+<body>
+	<div class="row clearfix">
+		<div class="col-md-12 column">
+			<div class="tabbable tablist" id="tabs-822513">
+				<h5><span class="glyphicon glyphicon-list-alt" aria-hidden="true"></span>整机</h5>
+				<span class="more"><a th:href="@{/front/search/category/49}" target="_blank">more</a></span>
+				<ul class="nav nav-pills titletab">
+					<li class="active">
+						 <a href="#panel-416853" data-toggle="tab">台式机</a>
+					</li>
+					<!-- <li >
+						 <a href="#panel-403513" data-toggle="tab">游戏</a>
+					</li> -->
+				</ul>
+				
+				<div class="tab-content">
+					<div class="tab-pane active  prolist" id="panel-416853">
+						<ul>
+							<li th:each="item : ${itemList}">
+								<a	th:href="@{/front/product/detail/{itemId}(itemId=${item.item.itemId})}"	target="_blank"> 
+									<img th:src="${item.pict[0].pictureUrl}" />
+								</a>
+								<p class="prodname" th:text="${item.item.itemName}">产品名称</p>
+								<p class="price" th:text="${item.item.marketPrice}">999.00</p>
+							</li>
+							
+						</ul>
+						<div style="clear: both;"></div>
+					</div>
+					<!-- <div class="tab-pane  prolist" id="panel-403513">
+						<ul>
+							<li>
+								<img th:src="@{/static/images/iphone_index.png}" alt />
+								<p class="proname">产品名称</p>
+								<p class="prointr">商品介绍：好用的产品！</p>
+								<p class="price">999.00</p>
+							</li>
+							<li>
+								<img th:src="@{/static/images/iphone_index.png}" alt />
+								<p class="proname">产品名称</p>
+								<p class="prointr">商品介绍：好用的产品！</p>
+								<p class="price">999.00</p>
+							</li>
+							<li>
+								<img th:src="@{/static/images/iphone_index.png}" alt />
+								<p class="proname">产品名称</p>
+								<p class="prointr">商品介绍：好用的产品！</p>
+								<p class="price">999.00</p>
+							</li>
+							<li>
+								<img th:src="@{/static/images/iphone_index.png}" alt />
+								<p class="proname">产品名称</p>
+								<p class="prointr">商品介绍：好用的产品！</p>
+								<p class="price">999.00<span>1099</span></p>
+							</li>
+							<li>
+								<img th:src="@{/static/images/iphone_index.png}" alt />
+								<p class="proname">产品名称</p>
+								<p class="prointr">商品介绍：好用的产品！</p>
+								<p class="price">999.00</p>
+							</li>
+							<li>
+								<img th:src="@{/static/images/iphone_index.png}" alt />
+								<p class="proname">产品名称</p>
+								<p class="prointr">商品介绍：好用的产品！</p>
+								<p class="price">999.00</p>
+							</li>
+							<li>
+								<img th:src="@{/static/images/iphone_index.png}" alt />
+								<p class="proname">产品名称</p>
+								<p class="prointr">商品介绍：好用的产品！</p>
+								<p class="price">999.00</p>
+							</li>
+							<li>
+								<img th:src="@{/static/images/iphone_index.png}" alt />
+								<p class="proname">产品名称</p>
+								<p class="prointr">商品介绍：好用的产品！</p>
+								<p class="price">999.00</p>
+							</li>
+							<li>
+								<img th:src="@{/static/images/iphone_index.png}" alt />
+								<p class="proname">产品名称</p>
+								<p class="prointr">商品介绍：好用的产品！</p>
+								<p class="price">999.00</p>
+							</li>
+							<li>
+								<img th:src="@{/static/images/iphone_index.png}" alt />
+								<p class="proname">产品名称</p>
+								<p class="prointr">商品介绍：好用的产品！</p>
+								<p class="price">999.00</p>
+							</li>
+						</ul>
+						<div style="clear: both;"></div>
+					</div> -->
+				</div>
+			</div>
+		</div>
+	</div>
+</body>
+</html>

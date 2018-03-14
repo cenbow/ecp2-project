@@ -1,0 +1,455 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>Insert title here</title>
+</head>
+<body>
+<th:block th:fragment="header">
+	<div class="header">
+        <div class="top">
+            <nav class="header-wrap">
+                <ul class="leftul">
+                    <li class="topContent">
+                        <div>收藏我们</div>
+                    </li>
+                    <li>
+                        <div>联系我们：<span></span>0311-89292627</div>
+                    </li>
+                </ul>
+                <ul class="centerul">
+                    <li class="login">
+                        <div>您好，欢迎来到</div>
+                        <div id="reg"><a href="#">[请登录]</a></div>
+                    </li>
+                </ul>
+                <ul class="rightul">
+                    <li>
+                        <div><a href="#">我的收藏</a></div>
+                    </li>
+                    <i>|</i>
+                    <li>
+                        <div><a href="#">我的购物车</a></div>
+                    </li>
+                    <i>|</i>
+                    <li>
+                        <div><a href="#">我的订单</a></div>
+                    </li>
+                </ul>
+            </nav>
+        </div>
+        <div id="top-banner">
+            <div class="banner-img">
+                <img th:src="@{/static/images/hengfu.jpg}">
+                <div class="closeAd">X</div>
+            </div>
+        </div>
+        <div class="searchLine">
+            <div class="logo">
+                <img th:src="@{/static/images/JD.png}">
+            </div>
+            <div class="search">
+                <div>
+                    <input id="searchbox" type="text">
+                    <input id="searchbutton" type="button" value="搜索">
+                </div>
+                <div class="hotSearch">热门搜索：<span class="red">抄底价格</span><span>抄底价格</span><span>抄底价格</span><span>抄底价格</span></div>
+            </div>
+            <div id="myCart" class="quick quickRight">
+                <div class="cart">我的购物车</div>
+                <div class="popover bottom dropdownCart">
+                    <div class="arrow"></div>
+                    <h3 class="popover-title">最新加入的商品<span>共7件</span></h3>
+                    <div class="popover-content">
+                        <div class="cartProduct">
+                            <div class="productName">
+                                <img src="http://placekitten.com/g/50/50">
+                                <h6>商品名称商品名称商品名称商品名称</h6>
+                            </div>
+                            <div class="productPrice">
+                                <p>￥14532</p>
+                                <p>*88</p>
+                                <a>删除</a>
+                            </div>
+                        </div>
+                        <div class="cartProduct">
+                            <div class="productName">
+                                <img src="http://placekitten.com/g/50/50">
+                                <h6>商品名称商品名称商品名称商品名称</h6>
+                            </div>
+                            <div class="productPrice">
+                                <p>￥14532</p>
+                                <p>*88</p>
+                                <a>删除</a>
+                            </div>
+                        </div>
+                        <div class="cartProduct">
+                            <div class="productName">
+                                <img src="http://placekitten.com/g/50/50">
+                                <h6>商品名称商品名称商品名称商品名称</h6>
+                            </div>
+                            <div class="productPrice">
+                                <p>￥14532</p>
+                                <p>*88</p>
+                                <a>删除</a>
+                            </div>
+                        </div>
+                        <div class="cartProduct">
+                            <div class="productName">
+                                <img src="http://placekitten.com/g/50/50">
+                                <h6>商品名称商品名称商品名称商品名称</h6>
+                            </div>
+                            <div class="productPrice">
+                                <p>￥14532</p>
+                                <p>*88</p>
+                                <a>删除</a>
+                            </div>
+                        </div>
+                        <div class="cartProduct">
+                            <div class="productName">
+                                <img src="http://placekitten.com/g/50/50">
+                                <h6>商品名称商品名称商品名称商品名称</h6>
+                            </div>
+                            <div class="productPrice">
+                                <p>￥14532</p>
+                                <p>*88</p>
+                                <a>删除</a>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="popover-footer">
+                        <p>共计：<span>88.88 元</span></p>
+                        <button class="btn btn-sm">购物车</button>
+                    </div>
+                </div>
+            </div>
+            <div class="quick">
+                <div class="cart">我的收藏</div>
+            </div>
+            <div class="quick">
+                <div class="cart">点击登录</div>
+            </div>
+        </div>
+        <div id="sort">
+            <div class="main-sort">
+                <div class="all-sort">
+                    <a href="#">全部商品分类</a>
+                    <div id="classification" class="classification">
+                        <div class="firstClass">
+                            <h3>3C外设<span>&gt;</span></h3>
+                        </div>
+                        <div class="firstClass">
+                            <h3>鼠标外设<span>&gt;</span></h3>
+                        </div>
+                        <div class="firstClass">
+                            <h3>电脑办公<span>&gt;</span></h3>
+                        </div>
+                        <div class="firstClass">
+                            <h3>玩具<span>&gt;</span></h3>
+                        </div>
+                        <div class="firstClass">
+                            <h3>其它<span>&gt;</span></h3>
+                        </div>
+                    </div>
+                    <!-- detail list start-->
+                    <div id="details" class="details">
+                        <div class="item-sub" id="classList0">
+                            <div class="subitem">
+                                <dl class="force1">
+                                    <dt>
+                                        <a href="#">电视
+                                        <i>></i>
+                                    </a>
+                                    </dt>
+                                    <dd>
+                                        <a href="">电视</a>
+                                        <a href="">电视</a>
+                                        <a href="">电视</a>
+                                    </dd>
+                                </dl>
+                                <dl class="force2">
+                                    <dt>
+                                        <a href="#">运营商
+                                        <i>></i>
+                                    </a>
+                                    </dt>
+                                    <dd>
+                                        <a href="">运营商</a>
+                                        <a href="">运营商</a>
+                                        <a href="">运营商</a>
+                                        <a href="">运营商</a>
+                                    </dd>
+                                </dl>
+                                <dl class="force3">
+                                    <dt>
+                                        <a href="#">手机配件
+                                        <i>></i>
+                                    </a>
+                                    </dt>
+                                    <dd>
+                                        <a href="">手机配件</a>
+                                        <a href="">手机配件</a>
+                                        <a href="">手机配件</a>
+                                        <a href="">手机配件</a>
+                                        <a href="">手机配件</a>
+                                    </dd>
+                                </dl>
+                                <dl class="force4">
+                                    <dt>
+                                        <a href="#">摄影摄像
+                                        <i>></i>
+                                    </a>
+                                    </dt>
+                                    <dd>
+                                        <a href="">摄影摄像</a>
+                                        <a href="">摄影摄像</a>
+                                        <a href="">摄影摄像</a>
+                                        <a href="">摄影摄像</a>
+                                        <a href="">摄影摄像</a>
+                                        <a href="">摄影摄像</a>
+                                        <a href="">摄影摄像</a>
+                                    </dd>
+                                </dl>
+                                <dl class="force5">
+                                    <dt>
+                                        <a href="#">数码配件
+                                        <i>></i>
+                                    </a>
+                                    </dt>
+                                    <dd>
+                                        <a href="">数码配件</a>
+                                        <a href="">数码配件</a>
+                                        <a href="">数码配件</a>
+                                        <a href="">数码配件</a>
+                                        <a href="">数码配件</a>
+                                        <a href="">数码配件</a>
+                                        <a href="">数码配件</a>
+                                        <a href="">数码配件</a>
+                                    </dd>
+                                </dl>
+                                <dl class="force6">
+                                    <dt>
+                                        <a href="#">影音娱乐
+                                        <i>></i>
+                                    </a>
+                                    </dt>
+                                    <dd>
+                                        <a href="">影音娱乐</a>
+                                        <a href="">影音娱乐</a>
+                                        <a href="">影音娱乐</a>
+                                        <a href="">影音娱乐</a>
+                                        <a href="">影音娱乐</a>
+                                        <a href="">影音娱乐</a>
+                                        <a href="">影音娱乐</a>
+                                        <a href="">影音娱乐</a>
+                                        <a href="">影音娱乐</a>
+                                        <a href="">影音娱乐</a>
+                                        <a href="">影音娱乐</a>
+                                        <a href="">影音娱乐</a>
+                                        <a href="">影音娱乐</a>
+                                        <a href="">影音娱乐</a>
+                                        <a href="">影音娱乐</a>
+                                        <a href="">影音娱乐</a>
+                                        <a href="">影音娱乐</a>
+                                        <a href="">影音娱乐</a>
+                                        <a href="">影音娱乐</a>
+                                        <a href="">影音娱乐</a>
+                                    </dd>
+                                </dl>
+                                <dl class="force7">
+                                    <dt>
+                                        <a href="#">智能设备
+                                        <i>></i>
+                                    </a>
+                                    </dt>
+                                    <dd>
+                                        <a href="">智能设备</a>
+                                        <a href="">智能设备</a>
+                                        <a href="">智能设备</a>
+                                        <a href="">智能设备</a>
+                                        <a href="">智能设备</a>
+                                        <a href="">智能设备</a>
+                                        <a href="">智能设备</a>
+                                        <a href="">智能设备</a>
+                                        <a href="">智能设备</a>
+                                        <a href="">智能设备</a>
+                                        <a href="">智能设备</a>
+                                        <a href="">智能设备</a>
+                                        <a href="">智能设备</a>
+                                        <a href="">智能设备</a>
+                                        <a href="">智能设备</a>
+                                        <a href="">智能设备</a>
+                                        <a href="">智能设备</a>
+                                        <a href="">智能设备</a>
+                                    </dd>
+                                </dl>
+                                <dl class="force8">
+                                    <dt>
+                                        <a href="#">电子教育
+                                        <i>></i>
+                                    </a>
+                                    </dt>
+                                    <dd>
+                                        <a href="">电子教育</a>
+                                        <a href="">电子教育</a>
+                                        <a href="">电子教育</a>
+                                        <a href="">电子教育</a>
+                                        <a href="">电子教育</a>
+                                        <a href="">电子教育</a>
+                                        <a href="">电子教育</a>
+                                        <a href="">电子教育</a>
+                                        <a href="">电子教育</a>
+                                        <a href="">电子教育</a>
+                                        <a href="">电子教育</a>
+                                        <a href="">电子教育</a>
+                                        <a href="">电子教育</a>
+                                    </dd>
+                                </dl>
+                                <dl class="force9">
+                                    <dt>
+                                        <a href="#">家庭影音
+                                        <i>></i>
+                                    </a>
+                                    </dt>
+                                    <dd>
+                                        <a href="">家庭影音</a>
+                                        <a href="">家庭影音</a>
+                                        <a href="">家庭影音</a>
+                                        <a href="">家庭影音</a>
+                                    </dd>
+                                </dl>
+                                <dl class="force10">
+                                    <dt>
+                                        <a href="#">进口电器
+                                        <i>></i>
+                                    </a>
+                                    </dt>
+                                    <dd>
+                                        <a href="">进口电器</a>
+                                    </dd>
+                                </dl>
+                            </div>
+                        </div>
+                        <div class="item-sub" id="classList1">
+                            <div class="subitem">
+                                <dl class="force1">
+                                    <dt>
+                                        <a href="#">电视
+                                        <i>></i>
+                                    </a>
+                                    </dt>
+                                    <dd>
+                                        <a href="">电视</a>
+                                        <a href="">电视</a>
+                                        <a href="">电视</a>
+                                    </dd>
+                                </dl>
+                                <dl class="force2">
+                                    <dt>
+                                        <a href="#">运营商
+                                        <i>></i>
+                                    </a>
+                                    </dt>
+                                    <dd>
+                                        <a href="">运营商</a>
+                                        <a href="">运营商</a>
+                                        <a href="">运营商</a>
+                                        <a href="">运营商</a>
+                                    </dd>
+                                </dl>
+                                <dl class="force3">
+                                    <dt>
+                                        <a href="#">手机配件
+                                        <i>></i>
+                                    </a>
+                                    </dt>
+                                    <dd>
+                                        <a href="">手机配件</a>
+                                        <a href="">手机配件</a>
+                                        <a href="">手机配件</a>
+                                        <a href="">手机配件</a>
+                                        <a href="">手机配件</a>
+                                    </dd>
+                                </dl>
+                                <dl class="force4">
+                                    <dt>
+                                        <a href="#">摄影摄像
+                                        <i>></i>
+                                    </a>
+                                    </dt>
+                                    <dd>
+                                        <a href="">摄影摄像</a>
+                                        <a href="">摄影摄像</a>
+                                        <a href="">摄影摄像</a>
+                                        <a href="">摄影摄像</a>
+                                        <a href="">摄影摄像</a>
+                                        <a href="">摄影摄像</a>
+                                        <a href="">摄影摄像</a>
+                                    </dd>
+                                </dl>
+                                <dl class="force5">
+                                    <dt>
+                                        <a href="#">数码配件
+                                        <i>></i>
+                                    </a>
+                                    </dt>
+                                    <dd>
+                                        <a href="">数码配件</a>
+                                        <a href="">数码配件</a>
+                                        <a href="">数码配件</a>
+                                        <a href="">数码配件</a>
+                                        <a href="">数码配件</a>
+                                        <a href="">数码配件</a>
+                                        <a href="">数码配件</a>
+                                        <a href="">数码配件</a>
+                                    </dd>
+                                </dl>
+                                <dl class="force6">
+                                    <dt>
+                                        <a href="#">影音娱乐
+                                        <i>></i>
+                                    </a>
+                                    </dt>
+                                    <dd>
+                                        <a href="">影音娱乐</a>
+                                        <a href="">影音娱乐</a>
+                                        <a href="">影音娱乐</a>
+                                        <a href="">影音娱乐</a>
+                                        <a href="">影音娱乐</a>
+                                        <a href="">影音娱乐</a>
+                                        <a href="">影音娱乐</a>
+                                        <a href="">影音娱乐</a>
+                                        <a href="">影音娱乐</a>
+                                        <a href="">影音娱乐</a>
+                                        <a href="">影音娱乐</a>
+                                        <a href="">影音娱乐</a>
+                                        <a href="">影音娱乐</a>
+                                        <a href="">影音娱乐</a>
+                                        <a href="">影音娱乐</a>
+                                        <a href="">影音娱乐</a>
+                                        <a href="">影音娱乐</a>
+                                        <a href="">影音娱乐</a>
+                                        <a href="">影音娱乐</a>
+                                        <a href="">影音娱乐</a>
+                                    </dd>
+                                </dl>
+                            </div>
+                        </div>
+                    </div>
+                    <!-- detail list end-->
+                </div>
+                <div class="minor-sort">
+                    <ul>
+                        <li class="active"><a href="#">首页推荐</a></li>
+                        <li><a href="#">电脑整机</a></li>
+                        <li><a href="#">外设</a></li>
+                        <li><a href="#">玩具</a></li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+</th:block>
+
+</body>
+</html>

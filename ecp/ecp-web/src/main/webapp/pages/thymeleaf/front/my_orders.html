@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<div th:include="/thymeleaf/common/_head2::headx('我的订单')"	th:remove="tag"></div>
+<style>
+.container a{
+	color:black;
+}
+a:hover {
+	text-decoration: none;
+}
+
+.container a:hover {
+	color:blue;
+}
+
+.goods-item {
+	float: left;
+	width: 550px;
+	inline: true;
+	padding-right: 20px;
+}
+
+.goods-number {
+	/* float:right;  */
+	overflow: auto;
+	width: 50px;
+	margin-right: 20px;
+	margin-top: 50px;
+}
+
+.tr-th {
+	background: #EEEEEE;
+}
+</style>
+
+</head>
+<body>
+	<!-- header -->
+	<div class="row clearfix">
+		<div id="header" class="col-md-12 column"></div>
+	</div>
+	<!-- content -->
+	<div class="container" id="container"></div>
+	<!-- footer -->
+	<div class="row clearfix">
+		<div id="footer" class="col-md-12 column"></div>
+	</div>
+	<script type="text/javascript" th:src="@{/static/js/loadHeaderFooter.js}"></script>
+
+	<script>
+		/**
+			function:加载页面
+			parameters:
+				orderTimeCond:订单时间条件值
+				dealStateCond:处理状态条件值
+		*/
+		function loadOrder(orderTimeCond,dealStateCond) {
+			var url = "/front/order/show";
+			/* var parms = null; */
+			
+			/*
+			//订单选择条件默认值
+			int orderTimeCond=1; //近三个月订单
+			int dealStateCond=0; //全部状态 
+			*/
+		
+						
+			var parms=new Object();
+			parms.orderTimeCond=orderTimeCond;  //近三个月订单
+			parms.dealStateCond=dealStateCond;  //全部状态		
+			
+			var callbackFunc = null;
+			var containerId = "#container";
+			loadPage(containerId, url, parms, callbackFunc);
+		}
+		$(function() {
+			loadOrder(1,0);
+		})
+	</script>
+
+</body>
+</html>

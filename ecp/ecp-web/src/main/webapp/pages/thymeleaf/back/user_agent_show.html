@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<div th:include="/thymeleaf/common/_head2::headx('签约客户维护')"
+	th:remove="tag"></div>
+<!-- local style -->
+<style>
+	a:hover {
+		text-decoration: none;
+	}
+	
+	i {
+		color: darkblue;
+	}
+	
+	.container a:hover {
+		color:blue;
+	}
+</style>
+
+</head>
+<body>
+	<!-- header -->
+	<!-- <div th:replace="thymeleaf/common/_header::header" class="header"></div> -->
+	<!-- content -->
+	<div class="container" id="container">
+	</div>
+	<!-- footer -->
+	<!-- <div th:replace="/thymeleaf/common/_footer::footer" class="footer"></div> -->	
+
+	<script type="text/javascript">
+	
+		/*加载签约代理商列表*/
+		function loadUserAgent(parms,callback) {
+			//console.log("test");
+			var url = "/back/agent/agenttable";
+			
+			var callbackFunc = callback;
+			var containerId = "#container";
+			
+			loadPage(containerId, url, parms, callbackFunc);
+		}
+		
+		/**/
+		function defaultLoadUserAgent(){
+			var parms = new Object();
+			//分页数据
+			parms.pageNum=$("#pageNum").val();
+			parms.pageSize=$("#pageSize").val();
+			//查询类型，查询条件值
+			parms.searchTypeValue=0;
+			parms.condValue="";
+			
+			loadUserAgent(parms,null);
+		}
+		
+		$(function() {
+			defaultLoadUserAgent();
+		})
+	</script>
+
+
+</body>
+</html>

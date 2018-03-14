@@ -1,0 +1,17 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>Insert title here</title>
+</head>
+<body>
+	<div th:fragment="search">
+		<form th:action="@{/front/product/search/keyword}" method="post">
+			<input type="text" id="searchText" name="searchText"
+				class="searchInput" autofocus="autofocus" required="required"
+				autocomplete="off" placeholder="请输入要查询的商品" value="" /> <input
+				type="submit" value="查询" />
+		</form>
+	</div>
+</body>
+</html>

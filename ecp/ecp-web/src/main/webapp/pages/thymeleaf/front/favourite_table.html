@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>Insert title here</title>
+<style>
+
+div.caption div label{
+	float:right;
+}
+
+.favouriteSelector{
+	float:right;
+}
+
+i {
+	color:lightblue;
+}
+
+
+</style>
+</head>
+<body>
+	<div class="row clearfix">
+		<div class="col-md-12 column">
+			<h4 style="font-size: 20px"><strong>我的关注</strong></h4>  
+		</div>
+	</div>
+	<br>
+	<div class="row clearfix">
+		<div class="col-md-12 column">
+			<span th:each="statisticInfo:${statisticInfos}"> <span
+				th:text="${statisticInfo.c_name}+'('+${statisticInfo.count}+') '"></span>
+			</span>
+
+		</div>
+	</div>
+	<br>
+	<div class="row clearfix">
+		<div class="col-md-12 column">
+			<input type="checkbox"  id="selectAll" />
+			<label for="selectAll">全选</label>
+			<a  class="btn btn-primary " id="addIntoCartBatch">加入<i class="icon-shopping-cart icon-large"></i></a>
+			<a  class="btn btn-primary " id="cancelFavouriteBatch" >取消<i class="icon-heart-empty icon-large"></i></a>
+		</div>
+	</div>
+	<br>
+	<div class="row clearfix">
+		<div class="col-md-12 column">
+			<div class="row">
+
+				<div th:each="favouriteItem:${favouriteItems}" class="col-md-3">
+					<div class="thumbnail">
+						<a
+							th:href="@{/front/product/detail/{itemId}(itemId=${favouriteItem.itemId})}"	target="_blank"> 
+							<img alt="220x220" th:src="${favouriteItem.pictureUrl}" style="width:220px;height:220px"/>
+						</a>
+						
+						<div class="caption">
+							<div>
+								<span th:text="${favouriteItem.ItemName}">产品名称</span><br>
+								<strong th:text="'￥'+${favouriteItem.sellPrice}">价格：5800</strong>
+							</div>
+							<div>
+								<a class="btn btn-primary addIntoCart" href="javascript:void(0)"
+									th:attr="data-item-id=${favouriteItem.itemId}">加入<i class="icon-shopping-cart icon-large"></i></a>
+								<label th:attr="for='favourite_'+${favouriteItem.id}"><!-- <i class="icon-check icon-2x"  style="color:darkblue"></i> -->选择</label>
+								<input type="checkbox" th:attr="id='favourite_'+${favouriteItem.id},data-id=${favouriteItem.id},data-item-id=${favouriteItem.itemId}"  class="favouriteSelector" />
+							</div>
+						</div>
+					</div>
+				</div>
+
+			</div>
+		</div>
+	</div>
+	<script type="text/javascript" th:src="@{/static/js/my_favourite/my_favourite.js}"></script>
+</body>
+</html>

@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>管理帐户-注册</title>
+</head>
+
+<body>
+	管理帐户---注册
+	<div class="wrapper">
+		<form action="http://localhost:8080/ecp-web/user/register" method="post">
+			<div class="loginBox">
+				<div class="loginBoxCenter">
+					<p>
+						<label for="username">用户名</label>
+					</p>
+					<p>
+						<input type="text" id="loginName" name="loginName" class="loginInput"
+							autofocus="autofocus" required="required" autocomplete="off"
+							placeholder="请输入登录名称" value="" />
+					</p>
+					<p>
+						<label for="password">密码：</label><a class="forgetLink" href="#">忘记密码?</a>
+					</p>
+					<p>
+						<input type="password" id="password" name="password"
+							class="loginInput" required="required" placeholder="请输入密码"
+							value="" />
+					</p>
+				</div>
+				<div class="loginBoxButtons">					
+					<input type="submit" value="Submit" />
+				</div>
+			</div>
+		</form>
+	</div>
+</body>
+</html>

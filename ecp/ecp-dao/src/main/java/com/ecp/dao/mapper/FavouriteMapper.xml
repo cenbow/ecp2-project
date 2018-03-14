@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ecp.dao.FavouriteMapper">
+  <resultMap id="BaseResultMap" type="com.ecp.entity.Favourite">
+    <!--
+      WARNING - @mbggenerated
+    -->
+    <id column="id" jdbcType="INTEGER" property="id" />
+    <result column="created_date" jdbcType="TIMESTAMP" property="createdDate" />
+    <result column="item_id" jdbcType="INTEGER" property="itemId" />
+    <result column="sku_id" jdbcType="INTEGER" property="skuId" />
+    <result column="user_id" jdbcType="INTEGER" property="userId" />
+    <result column="quantity" jdbcType="INTEGER" property="quantity" />
+    <result column="status" jdbcType="TINYINT" property="status" />
+    <result column="deleted" jdbcType="INTEGER" property="deleted" />
+  </resultMap>
+  <sql id="Base_Column_List">
+    <!--
+      WARNING - @mbggenerated
+    -->
+    id, created_date, item_id, sku_id, user_id, quantity, status, deleted
+  </sql>
+  
+  <update id="addQuqntityById">
+    
+  	UPDATE item_favourite 
+  	SET quantity=quantity+#{quantity} 
+  	WHERE id=#{id}; 
+  
+  </update>
+  
+  <select id="getItemNumByUserId" resultType="int">
+  	select count(DISTINCT item_id,sku_id) as itemCount from item_favourite where user_id=#{userId}  
+  </select>
+  
+  
+  
+  
+  
+</mapper>

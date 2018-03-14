@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>关键字查询-结果页</title>
+<link rel="stylesheet" type="text/css"
+	th:href="@{/static/css/home.css}" />	
+</head>
+<body>
+	<div id="header">
+		<!-- 菜单 -->
+		<p th:include="thymeleaf/front/public/menu :: menu"></p>
+
+		<span th:text="#{hello.appname}">this text will not be showed</span> <span
+			th:include="thymeleaf/front/public/header :: header"></span> <span
+			th:include="thymeleaf/front/public/search :: search"></span>
+	</div>
+	<div id="content">
+		<div class="aside"
+			th:include="thymeleaf/front/public/category ::category"></div>
+		<div class="main"  th:include="thymeleaf/front/public/productlist ::productlist">main main main main main main</div>
+	</div>
+	<div id="footer"
+		th:include="thymeleaf/front/public/footer :: copyright"></div>
+</body>
+</html>

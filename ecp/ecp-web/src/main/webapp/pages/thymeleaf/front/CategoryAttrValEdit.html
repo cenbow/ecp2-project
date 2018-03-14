@@ -1,0 +1,157 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>编辑类目属性值</title>
+
+
+<link th:href="@{/static/bootstrap/3.3.5/css/bootstrap.min.css}"
+	rel="stylesheet" />
+<link th:href="@{/static/bootstrap/3.3.5/css/bootstrap-theme.min.css}"
+	rel="stylesheet" />
+<script type="text/javascript"
+	th:src="@{/static/jquery/1.11.3/jquery-1.11.3.min.js}"></script>
+<script type="text/javascript"
+	th:src="@{/static/bootstrap/3.3.5/js/bootstrap.min.js}"></script>
+
+</head>
+<body>
+	<div id="header"></div>
+	<div id="content">
+		<div class="container">
+			<div class="row clearfix">
+				<div class="col-md-12 column">
+					<h3>类目属性值维护</h3>
+					<table class="table">
+						<thead>
+							<tr>
+								<th>值名称</th>
+								<th>ID</th>
+								<th>操作</th>
+							</tr>
+						</thead>
+						<tbody>
+							<tr th:each="attrValue : ${categoryAttrValList}" class="success">
+								<td th:text="${attrValue.value_name}">值名称</td>
+								<td th:text="${attrValue.value_id}">ID</td>
+								<td><a>编辑</a> <a>删除</a></td>
+							</tr>
+						</tbody>
+					</table>
+					<a id="modal-129203" href="#modal-container-129203" role="button"
+						class="btn" data-toggle="modal">增加属性值</a>					
+					<div class="modal fade" id="modal-container-129203" role="dialog"
+						aria-labelledby="myModalLabel" aria-hidden="true">
+						<div class="modal-dialog">
+							<div class="modal-content">
+								<div class="modal-header">
+									<button type="button" class="close" data-dismiss="modal"
+										aria-hidden="true">×</button>
+									<h4 class="modal-title" id="myModalLabel">请输入值名称</h4>
+								</div>
+								<div class="modal-body">
+									<label for="InputAttrValue">值名称：</label> <input type="text"
+										name="attrValue" id="InputAttrValue" value="" />
+								</div>
+								<div class="modal-footer">
+									<button type="button" class="btn btn-default"
+										data-dismiss="modal">关闭</button>
+									<button id="btnSave" type="button" class="btn btn-primary">保存</button>
+								</div>
+							</div>
+
+						</div>
+
+					</div>
+					<button type="button" class="btn btn-primary" id="btnrefresh">刷新列表</button>
+					<ul class="pagination">
+						<li><a href="#">Prev</a></li>
+						<li><a href="#">1</a></li>
+						<li><a href="#">2</a></li>
+						<li><a href="#">3</a></li>
+						<li><a href="#">4</a></li>
+						<li><a href="#">5</a></li>
+						<li><a href="#">Next</a></li>
+					</ul>
+				</div>
+			</div>
+		</div>
+	</div>
+	
+	<input type="hidden" id="cid" th:value="${cid}">
+	<input type="hidden" id="attr_id" th:value="${attr_id}">
+	
+	<script>
+		//在此处执行加载数据的函数
+		$(function() {
+
+			//当点击编辑按钮时，在一个新页中打开叶子结点的编辑页面
+			/* $("#btnSave").click(function() {
+				{
+					 window.open(
+							"http://localhost:8080/ecp-web/front/home/addcategoryattr/"
+									+ $("#cid").val(), "_blank"); 
+					//ajax请求保存数据
+					
+
+				}
+
+			}); */
+			
+			$('#btnSave').click(function() {				
+				var valueName = $('#InputAttrValue').val();  //读取所输入的属性值
+				var cid=$("#cid").val();
+				var attrId=$("#attr_id").val();				
+				
+				//ajax请求
+				$.ajax({
+					type : "post", // 提交方式 get/post
+					url : "saveCategoryAttrValue", // 需要提交的 url
+					// dataType: "json",
+					data : {
+						'valueName' : valueName,
+						'cid':cid,
+						'attrId':attrId
+					},
+					success : function(res) { // data 保存提交后返回的数据，一般为 json 数据
+						console.log(res);
+						if (res != null) {
+							var obj = $.parseJSON(res);
+							if (obj.status == "success") {
+								alert(obj.message);  
+							} else {
+								show_err_msg(obj.result_err_msg);
+							} 
+							//alert("request ok!");
+						}
+					},
+					error: function (jqXHR, textStatus, errorThrown) {
+						/*弹出jqXHR对象的信息*/
+			            alert(jqXHR.responseText);
+			            alert(jqXHR.status);
+			            alert(jqXHR.readyState);
+			            alert(jqXHR.statusText);
+			            /*弹出其他两个参数的信息*/
+			            alert(textStatus);
+			            alert(errorThrown);
+					}
+				});
+
+			});		
+			
+			
+			
+			//当点击编辑按钮时，在一个新页中打开叶子结点的编辑页面
+			$("#btnrefresh").click(function() {
+				{
+					location.reload();
+
+				}
+
+			});
+
+		});
+	</script>
+
+</body>
+</html>

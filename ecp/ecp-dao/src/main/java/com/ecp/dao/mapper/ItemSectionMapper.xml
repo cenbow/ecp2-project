@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ecp.dao.ItemSectionMapper">
+  <resultMap id="BaseResultMap" type="com.ecp.entity.ItemSection">
+    <!--
+      WARNING - @mbggenerated
+    -->
+    <id column="id" jdbcType="BIGINT" property="id" />
+    <result column="base_price_end" jdbcType="DECIMAL" property="basePriceEnd" />
+    <result column="base_price_start" jdbcType="DECIMAL" property="basePriceStart" />
+    <result column="create_by" jdbcType="VARCHAR" property="createBy" />
+    <result column="create_date" jdbcType="TIMESTAMP" property="createDate" />
+    <result column="iterval_type" jdbcType="VARCHAR" property="itervalType" />
+    <result column="itemid" jdbcType="BIGINT" property="itemid" />
+    <result column="market_price_end" jdbcType="DECIMAL" property="marketPriceEnd" />
+    <result column="market_price_start" jdbcType="DECIMAL" property="marketPriceStart" />
+    <result column="quoted_price_end" jdbcType="DECIMAL" property="quotedPriceEnd" />
+    <result column="auoted_price_start" jdbcType="DECIMAL" property="auotedPriceStart" />
+    <result column="update_by" jdbcType="VARCHAR" property="updateBy" />
+    <result column="update_date" jdbcType="TIMESTAMP" property="updateDate" />
+    <result column="volume_end" jdbcType="DECIMAL" property="volumeEnd" />
+    <result column="volume_start" jdbcType="DECIMAL" property="volumeStart" />
+    <result column="weight_end" jdbcType="DECIMAL" property="weightEnd" />
+    <result column="weight_start" jdbcType="DECIMAL" property="weightStart" />
+    <result column="deleted" jdbcType="INTEGER" property="deleted" />
+  </resultMap>
+  <sql id="Base_Column_List">
+    <!--
+      WARNING - @mbggenerated
+    -->
+    id, base_price_end, base_price_start, create_by, create_date, iterval_type, itemid, 
+    market_price_end, market_price_start, quoted_price_end, auoted_price_start, update_by, 
+    update_date, volume_end, volume_start, weight_end, weight_start, deleted
+  </sql>
+</mapper>

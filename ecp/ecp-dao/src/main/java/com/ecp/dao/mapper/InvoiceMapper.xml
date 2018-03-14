@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ecp.dao.InvoiceMapper">
+  <resultMap id="BaseResultMap" type="com.ecp.entity.Invoice">
+    <!--
+      WARNING - @mbggenerated
+    -->
+    <id column="id" jdbcType="BIGINT" property="id" />
+    <result column="bank_account" jdbcType="VARCHAR" property="bankAccount" />
+    <result column="bank_name" jdbcType="VARCHAR" property="bankName" />
+    <result column="buyer_id" jdbcType="BIGINT" property="buyerId" />
+    <result column="city_id" jdbcType="BIGINT" property="cityId" />
+    <result column="company_name" jdbcType="VARCHAR" property="companyName" />
+    <result column="consignee_mobile" jdbcType="VARCHAR" property="consigneeMobile" />
+    <result column="consignee_name" jdbcType="VARCHAR" property="consigneeName" />
+    <result column="county_id" jdbcType="BIGINT" property="countyId" />
+    <result column="create_time" jdbcType="TIMESTAMP" property="createTime" />
+    <result column="detail_address" jdbcType="VARCHAR" property="detailAddress" />
+    <result column="full_address" jdbcType="VARCHAR" property="fullAddress" />
+    <result column="invoice" jdbcType="INTEGER" property="invoice" />
+    <result column="invoice_title" jdbcType="VARCHAR" property="invoiceTitle" />
+    <result column="normal_content" jdbcType="VARCHAR" property="normalContent" />
+    <result column="province_id" jdbcType="BIGINT" property="provinceId" />
+    <result column="registered_address" jdbcType="VARCHAR" property="registeredAddress" />
+    <result column="registered_phone" jdbcType="VARCHAR" property="registeredPhone" />
+    <result column="taxpayer_code" jdbcType="VARCHAR" property="taxpayerCode" />
+    <result column="deleted" jdbcType="INTEGER" property="deleted" />
+  </resultMap>
+  <sql id="Base_Column_List">
+    <!--
+      WARNING - @mbggenerated
+    -->
+    id, bank_account, bank_name, buyer_id, city_id, company_name, consignee_mobile, consignee_name, 
+    county_id, create_time, detail_address, full_address, invoice, invoice_title, normal_content, 
+    province_id, registered_address, registered_phone, taxpayer_code, deleted
+  </sql>
+</mapper>

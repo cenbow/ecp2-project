@@ -1,0 +1,105 @@
+*{
+	font-family:微软雅黑;
+}
+.qc{
+	overflow:hidden
+}
+.fl{
+	float:left;
+}
+.fr{
+	float:right;
+}
+.h4{
+	border: 1px solid #e7e7eb;
+	width:100%;
+}
+<tbody>
+	<tr class="gradeC odd">
+	<td class="">刘和芬</td>
+		<td class="">15392877558</td>
+		<td class="center ">
+			<div style=";text-align:center;;height:auto;" class="datagrid-cell datagrid-cell-c1-action">
+				<a class="glyphicon glyphicon-pencil" title="修改" href="javascript:void(0);" onclick="" data-toggle="modal" data-target="#myModal4"></a>
+				<button class="btn btn-default">删除</button>
+			</div>
+		</td>
+	</tr>
+</tbody>
+.h4 h4{
+	font-weight: 400;
+    font-size: 14px;
+    line-height: 38px;
+    padding: 0 20px;
+    background-color: #f4f5f9;
+    margin-top:0px;
+    border-bottom: 1px solid #e7e7eb;
+    margin-bottom: 0;
+    margin: 0;
+}
+.gjzb{
+	width:100%;
+	height:140px;
+}
+#menu{width:100%; overflow:hidden; margin:20px 0;}
+#menu #nav {display:block;width:100%;height:30px;padding:0;margin:0;list-style:none;}
+#menu #nav li {border-radius:4px 4px 3px 3px;float:left;width:120px;border: 1px solid #c9cace;margin-right:-1px;line-height: 30px;}
+#menu #nav li a {display:block;line-height:27px;text-decoration:none;padding:0 0 0 5px; text-align:center; color:#333;}
+#menu_con{ width:100%;border-top:none;margin-top:20px;}
+#menu_con img{width:100%; height:436px;}
+.tag{ padding:10px; overflow:hidden;}
+.selected {border-radius:4px 4px 3px 3px;background-color: #576477;border-color: #576477;text-decoration: none;position: relative;margin-right: -1px;color:#fff;}
+#menu #nav .selected {color: #fff;}
+
+#menu1{width:100%; overflow:hidden; margin:20px 0;border:1px solid #e7e7eb;}
+#menu1 #nav1 h4{    clear: both;position: relative;z-index: 7;margin: 14px 20px 20px 20px;font-size: 14px;height: 14px;line-height: 14px;font-weight: normal;}
+#menu1 #nav1 {display:block;width:100%;height:40px;padding:0;margin:0;list-style:none;background:#F4F5F9;border-bottom: 1px solid #e7e7eb;}
+#menu1 #nav1 li {float:left;width:120px;margin-right:-1px;line-height: 40px;}
+#menu1 #nav1 li a {display:block;line-height:40px;text-decoration:none;padding:0 0 0 5px; text-align:center; color:#333;}
+#menu_con1{ width:100%; height:436px; border-top:none;margin-top:20px;margin-bottom:30px;}
+#menu_con1 img{width:100%; height:436px;}
+.tag{ padding:10px; overflow:hidden;}
+.selected1 {background-color: #44B549;border-color: #576477;text-decoration: none;position: relative;margin-right: -1px;color:#fff;}
+#menu1 #nav1 .selected1{color: #fff;}
+
+.nr{
+	border: 1px solid #e7e7eb;
+}
+.nr h4{
+	font-weight: 400;
+    font-size: 14px;
+    line-height: 38px;
+    padding: 0 20px;
+    background-color: #f4f5f9;
+    margin-top:0px;
+    border-bottom: 1px solid #e7e7eb;
+    margin-bottom: 0;
+}
+.xbfb1{
+    width: 96%;
+    height: 200px;
+    margin: 0 auto;
+    display: block;
+}
+.xbfb{
+	clear: both;
+    position: relative;
+    z-index: 7;
+    margin: 20px 20px 20px 20px;
+    padding-left: 3px;
+    border-left: 4px solid #6b6b6b;
+    font-size: 14px;
+    height: 14px;
+    line-height: 14px;
+    font-weight: normal;
+    }
+.sf{
+	width: 96%;
+    margin: 0 auto;
+    color: #222;
+    font-size:14px;
+    padding: 0 20px;
+    background:#e0eaf6;
+    line-height:42px;
+    margin-bottom:20px;
+}

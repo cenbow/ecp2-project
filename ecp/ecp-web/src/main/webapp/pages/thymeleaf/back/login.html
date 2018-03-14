@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>管理帐户-登录</title>
+</head>
+<body>
+	<div class="wrapper">
+		<form action="http://localhost:8080/ecp-web/user/login" method="post">
+			<div class="loginBox">
+				<div class="loginBoxCenter">
+					<p>
+						<label for="loginName">用户名称</label>
+					</p>
+					<p>
+						<input type="text" id="loginName" name="loginName"
+							class="loginInput" autofocus="autofocus" required="required"
+							autocomplete="off" placeholder="请输入用户名" value="" />
+					</p>
+					<p>
+						<input type="password" id="password" name="password"
+							class="loginInput" required="required" placeholder="请输入密码"
+							value="" />
+					</p>
+				</div>
+				<div class="loginBoxButtons">
+					<input type="submit" value="登录" />
+				</div>
+			</div>
+		</form>
+	</div>
+</body>
+</html>

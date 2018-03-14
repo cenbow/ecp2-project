@@ -1,0 +1,224 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>类目属性</title>
+
+<!-- <link rel="stylesheet" th:href="@{/static/ztree/css/demo.css}"
+	type="text/css"> -->
+<!-- <link rel="stylesheet"
+	th:href="@{/static/ztree/css/zTreeStyle/zTreeStyle.css}"
+	type="text/css"> -->
+<link rel="stylesheet"
+	th:href="@{/static/ztree/css/metroStyle/metroStyle.css}"
+	type="text/css">
+<link rel="stylesheet"
+	th:href="@{/static/bootstrap/3.3.5/css/bootstrap.min.css}"
+	type="text/css">
+<script type="text/javascript"
+	th:src="@{/static/jquery/1.11.3/jquery-1.11.3.min.js}"></script>
+<script type="text/javascript"
+	th:src="@{/static/bootstrap/3.3.5/js/bootstrap.min.js}"></script>
+<script type="text/javascript"
+	th:src="@{/static/ztree/js/jquery.ztree.core.min.js}"></script>
+<script type="text/javascript" th:src="@{/static/js/common/util.js}"></script>
+
+</head>
+
+<body>
+
+	<div class="container-fluid" style="margin-top: 20px;">
+		<div class="row clearfix">
+			<div class="col-md-12 column">
+				<div class="tabbable" id="tabs-819446">
+					<ul class="nav nav-tabs">
+						<li class="active"><a href="#panel-508461" data-toggle="tab">类目列表</a>
+						</li>
+						<li><a href="#panel-355189" data-toggle="tab">添加/编辑</a></li>
+					</ul>
+					<div class="tab-content">
+						<div class="tab-pane active" id="panel-508461">
+							<div class="container-fluid" style="margin-top: 20px;">
+								<div class="row clearfix">
+									<div class="col-md-12 column">
+										<div class="panel panel-default">
+											<div class="panel-heading">
+												<button type="button" id="edit-btn"
+													class="btn btn-default btn-primary"
+													onclick="javascript:add(0, '默认为根节点', 0);">编辑类目属性</button>
+											</div>
+											<div class="panel-body">
+												<ul id="treeDemo" class="ztree"></ul>
+												<!-- 类目树 -->
+											</div>
+										</div>
+									</div>
+								</div>
+							</div>
+						</div>
+						<div class="tab-pane" id="panel-355189">
+							<div class="container-fluid" style="margin-top: 20px;">
+								<div class="row clearfix">
+									<div class="col-md-12 column">
+										<div class="tabbable" id="tabs-8194461">
+											<ul class="nav nav-tabs">
+												<li class="active"><a href="#panel-5084611"
+													data-toggle="tab">类目属性列表</a></li>
+												<li><a href="#panel-3551891" data-toggle="tab">类目属性值列表</a></li>
+											</ul>
+											<div class="tab-content">
+												<div class="tab-pane active" id="panel-5084611">
+													<div id="category-attr-item">
+														<!-- 类目属性列表 -->
+													</div>
+												</div>
+												<div class="tab-pane" id="panel-3551891">
+													<div id="category-attrval-item">
+														<!-- 类目属性值列表 -->
+													</div>
+												</div>
+											</div>
+										</div>
+									</div>
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+	<!-- <ul id="treeDemo" class="ztree"></ul>
+
+
+	<input type="button" value="编辑" id="edit" />
+	<input type="hidden" id="editurl"
+		th:value="@{/back/attr/categoryattreditor}"> -->
+
+
+
+	<script type="text/javascript">
+		var zTreeObj;
+
+		var setting = {
+			data : {
+				simpleData : {
+					enable : true,
+					idKey : "cid",
+					pIdKey : "parent_cid",
+					rootPId : 0
+				},
+				key : {
+					name : "c_name"
+				}
+			},
+			callback : {
+				onClick : show
+			//节点点击事件  
+			}
+		};
+
+		var zNodes = null;
+		/* var zNodes=[   
+		   {"id":1, "pId":0, "name":"test1"},   
+		   {"id":11, "pId":1, "name":"test11"},   
+		   {"id":12, "pId":1, "name":"test12"},   
+		   {"id":111, "pId":11, "name":"test111"},];  */
+
+		function show(event, treeId, treeNode) {
+			console.log("treeNode:" + JSON.stringify(treeNode));
+			console.log(treeNode.cid + ", " + treeNode.c_name + " ,"
+					+ treeNode.level);
+			//alert("在此处发送ajax请求并打开一个新窗口对节点的属性进行编辑。");
+			//在此处发送ajax请求并打开一个新窗口对节点的属性进行编辑。
+			g_cid = treeNode.cid;
+			g_level = treeNode.level;
+
+		};
+
+		function loadCategoryAttr() {
+
+			$.ajax({
+				type : "post", // 提交方式 get/post
+				url : "loadcategorytree", // 需要提交的 url
+				// dataType: "json",
+				data : {},
+				success : function(res, status) { // data 保存提交后返回的数据，一般为 json 数据
+					console.log("status:" + status);
+					if (res != null) {
+						var obj = $.parseJSON(res);
+						zNodes = obj;
+						displayTree();
+
+						if (status == "success") {
+
+						} else {
+							alert(obj.result_err_msg);
+						}
+						//alert("request ok!");
+					}
+				},
+				error : function(jqXHR, textStatus, errorThrown) {
+					/*弹出jqXHR对象的信息*/
+					alert(jqXHR.responseText);
+					alert(jqXHR.status);
+					alert(jqXHR.readyState);
+					alert(jqXHR.statusText);
+					/*弹出其他两个参数的信息*/
+					alert(textStatus);
+					alert(errorThrown);
+				}
+			});
+
+		} //end of loadCategoryAttr
+
+		function displayTree() {
+			zTreeObj = $.fn.zTree.init($("#treeDemo"), setting, zNodes);
+		}
+
+		var g_cid = 0;
+		var g_level = 0;//级别，因为ZTree有该属性，根节点默认值为0；自定义级别时，level级别以ZTree属性为准
+
+		//在此处执行加载数据的函数
+		$(function() {
+
+			loadCategoryAttr();
+
+			//当点击编辑按钮时，在一个新页中打开叶子结点的编辑页面
+			//此处的地址可以采js读取隐藏字段的值，而后组成动态的URL地址
+			$("#edit-btn").click(
+					function() {
+						if (g_level == 2) {
+							
+							$("#category-attr-item").load("http://localhost/ecp-back/back/attr/categoryattreditor/"
+									+ g_cid, "_blank");
+							window.open(
+									");
+						} else {
+							console.log("级别：" + g_level + " （从0开始，0为级别1）");
+							util.message("您所选择的级别是 " + g_level + " ，请选择叶子节点。");
+						}
+
+					});
+
+		});
+	</script>
+
+</body>
+
+</html>

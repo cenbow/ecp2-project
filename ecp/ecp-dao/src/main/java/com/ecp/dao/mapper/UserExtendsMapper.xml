@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ecp.dao.UserExtendsMapper">
+  <resultMap id="BaseResultMap" type="com.ecp.entity.UserExtends">
+    <!--
+      WARNING - @mbggenerated
+    -->
+    <id column="extend_id" jdbcType="BIGINT" property="extendId" />
+    <result column="user_id" jdbcType="BIGINT" property="userId" />
+    <result column="business_licence_pic_src" jdbcType="VARCHAR" property="businessLicencePicSrc" />
+    <result column="tax_registration_certificate_pic_src" jdbcType="VARCHAR" property="taxRegistrationCertificatePicSrc" />
+    <result column="organization_pic_src" jdbcType="VARCHAR" property="organizationPicSrc" />
+    <result column="company_name" jdbcType="VARCHAR" property="companyName" />
+    <result column="contact_email" jdbcType="VARCHAR" property="contactEmail" />
+    <result column="artificial_person_name" jdbcType="VARCHAR" property="artificialPersonName" />
+    <result column="contact_phone" jdbcType="VARCHAR" property="contactPhone" />
+    <result column="contact_address" jdbcType="VARCHAR" property="contactAddress" />
+    <result column="account_state" jdbcType="INTEGER" property="accountState" />
+    <result column="create_dt" jdbcType="TIMESTAMP" property="createDt" />
+    <result column="deleted" jdbcType="INTEGER" property="deleted" />
+  </resultMap>
+  <sql id="Base_Column_List">
+    <!--
+      WARNING - @mbggenerated
+    -->
+    extend_id, user_id, business_licence_pic_src, tax_registration_certificate_pic_src, 
+    organization_pic_src, company_name, contact_email, artificial_person_name, contact_phone, 
+    contact_address, account_state, create_dt, deleted
+  </sql>
+</mapper>

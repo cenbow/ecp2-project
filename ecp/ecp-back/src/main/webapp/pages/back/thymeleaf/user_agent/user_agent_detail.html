@@ -1,0 +1,195 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<div th:include="/back/thymeleaf/common/_head2::headx('客户资料详情')" th:remove="tag"></div>
+</head>
+<body>
+
+<div class="container-fluid" style="margin-top: 20px;">
+	<div class="row clearfix">
+		<div class="col-md-12 column">
+			<div class="panel panel-default">
+				<div class="panel-heading">
+					<h3 class="panel-title">
+						签约客户信息-详情
+					</h3>
+				</div>
+				<div class="panel-body">
+					<form class="form-horizontal" role="form" id="user-agent-form">
+						<!-- 需要编辑的签约代理商 -->
+						<input type="hidden" id="extendId" name="extendId" th:value="${agent.extendId}" />
+						
+						<div class="form-group">
+							<label for="companyName" class="col-sm-2 control-label">企业名称</label>
+							<div class="col-sm-10">
+								<input class="form-control"	id="companyName" name="companyName" th:value="${agent.companyName}" type="text" />
+							</div>
+						</div>
+						
+						<div class="form-group">
+							<label for="artificialPersonName" class="col-sm-2 control-label">企业负责人姓名</label>
+							<div class="col-sm-10">
+								<input	class="form-control" id="artificialPersonName" name="artificialPersonName" th:value="${agent.artificialPersonName}"  type="text" />
+							</div>
+						</div>
+						
+						<div class="form-group">
+							<label for="contactPhone" class="col-sm-2 control-label">手机号码</label>
+							<div class="col-sm-10">
+								<input class="form-control"	id="contactPhone" name="contactPhone" th:value="${agent.contactPhone}" type="text" />
+							</div>
+						</div>
+						
+						<div class="form-group">
+							<label for="contactEmail" class="col-sm-2 control-label">企业邮箱</label>
+							<div class="col-sm-10">
+								<input class="form-control"	id="contactEmail" name="contactEmail" th:value="${agent.contactEmail}"  type="text" />
+							</div>
+						</div>
+						
+						<div class="form-group">
+							<label for="contactAddress" class="col-sm-2 control-label">联系地址</label>
+							<div class="col-sm-10">
+								<input	class="form-control" id="contactAddress" name="contactAddress" th:value="${agent.contactAddress}"  type="text" />
+							</div>
+						</div>
+						
+						<!-- 审核用图片 -->
+						<div class="form-group">												
+							<div>
+								<label for="businessLicencePicSrc" class="col-sm-2 control-label">营业执照</label>
+							</div>
+							<div class="col-sm-10">
+								<div  id="businessLicencePicSrc_prev" style="display:inline-block;">
+									<img  style="height:100px;"  th:src="${agent.businessLicencePicSrc}">							
+								</div>
+								<div style="display:inline-block;">
+									<input id="businessLicencePicSrc" name="businessLicencePic_Src" type="file"
+											onchange="javascript:preview(this);"	accept="image/*" />
+								</div>
+							</div>
+						</div>
+	
+						<div class="form-group">
+							<div>
+								<label for="taxRegistrationCertificatePicSrc" class="col-sm-2 control-label">税务登记证</label>
+							</div>
+							
+							<div class="col-sm-10">
+								<div  id="taxRegistrationCertificatePicSrc_prev" style="display:inline-block;">
+									<img  style="height:100px;" th:src="${agent.taxRegistrationCertificatePicSrc}">
+								</div>
+								<div style="display:inline-block;">
+									<input id="taxRegistrationCertificatePicSrc" name="taxRegistrationCertificatePic_Src" type="file"
+									onchange="javascript:preview(this);" accept="image/*" />
+								</div>
+							</div>
+							
+						</div>
+	
+						<div class="form-group">
+							<div>
+								<label for="organizationPicSrc" class="col-sm-2 control-label">组织机构代码证</label>
+							</div>
+							
+							<div class="col-sm-10">
+								<div id="organizationPicSrc_prev" style="display:inline-block">
+									<img style="height:100px;" th:src="${agent.organizationPicSrc}">
+								</div>
+								<div style="display:inline-block">
+									<input id="organizationPicSrc" name="organizationPic_Src" type="file"
+										onchange="javascript:preview(this);" accept="image/*" />
+								</div>
+							</div>
+						</div>
+						
+						<hr>
+						<div class="form-group">
+							<div>
+								<label for="organizationPicSrc" class="col-sm-2 control-label">&nbsp;</label>
+							</div>
+							
+							<div class="col-sm-10">
+								<button type="button" id="btnSave"  class="btn btn-primary"  style="float:right;margin-right:100px;" >保存</button>
+							</div>
+						</div>
+						
+					</form>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>
+
+	<script type="text/javascript">
+		
+		//上下文信息  
+		var BASE_CONTEXT_PATH = $('meta[name=context-path]').attr("content");
+		BASE_CONTEXT_PATH = BASE_CONTEXT_PATH.substr(0,
+				BASE_CONTEXT_PATH.length - 1);
+	
+	
+	
+		/* 上传前预览图片 */
+		function preview(file) {
+			//alert(file.id);
+			if (isAllowUploadFile(file, 5120, '上传logo图不能大于5M！')) {
+				showPreview(file, file.id+'_prev');
+				//$("#save-content-submit-btn").attr("disabled", false);
+			} else {
+				//$("#save-content-submit-btn").attr("disabled", true);
+			}
+		}
+		
+		/* 保存内容 */
+		function saveFun(){
+			var url = null;
+			
+			url = BASE_CONTEXT_PATH+"/back/agent/update";
+			
+			
+			//util.loading();
+			$("#user-agent-form").ajaxSubmit({
+				type:"post",
+				url:url,
+				success : function(res) {
+					console.log(res);
+					if(res!=null){
+						var obj = $.parseJSON(res);
+						if(obj.result_code=="success"){
+							//$("#update-menu-modal-div").modal("hide");//隐藏修改菜单对话框
+							//util.message(obj.result_msg);
+							//window.location.href="loginSubmit";
+							//操作成功后重新加载当前菜单内容
+							//reloadInfoFun();
+							//window.opener.reloadPage();  //刷新父窗口中的网页  操作成功后重新加载当前菜单内容
+							//window.close();//关闭当前窗窗口
+							
+							resetTab();//重置选项卡
+							reloadPage();//重新加载列表
+							
+							
+						}else{
+							util.message(obj.result_err_msg);
+						}
+					}
+				},
+			});
+		}
+		
+		
+		$(function() {		
+			
+			/*	保存签约用户 */
+			$("#btnSave").on('click', function(e){
+				saveFun();	
+			});
+			
+			
+		});
+	</script>
+
+
+</body>
+</html>

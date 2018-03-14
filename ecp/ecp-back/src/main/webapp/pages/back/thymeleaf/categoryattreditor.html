@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>CATEGORY_ATTR_EDIT</title>
+
+
+<link th:href="@{/static/bootstrap/3.3.5/css/bootstrap.min.css}"
+	rel="stylesheet" />
+<link th:href="@{/static/bootstrap/3.3.5/css/bootstrap-theme.min.css}"
+	rel="stylesheet" />
+
+<link th:href="@{/static/css/main1.css}" rel="stylesheet" />
+
+<script type="text/javascript"
+	th:src="@{/static/jquery/1.11.3/jquery-1.11.3.min.js}"></script>
+<script type="text/javascript"
+	th:src="@{/static/bootstrap/3.3.5/js/bootstrap.min.js}"></script>
+
+</head>
+<body>
+	<div id="header"></div>
+	<div id="content">
+		<div class="container">
+			<div class="row clearfix">
+				<div class="col-md-12 column">
+					<h3>类目属性维护</h3>
+					<table class="table">
+						<thead>
+							<tr>
+								<th>属性名称</th>
+								<th>类型</th>
+								<th>是否必填</th>
+								<th>是否多选</th>
+								<th>排序号</th>
+								<th>操作</th>
+							</tr>
+						</thead>
+						<tbody>
+							<tr th:each="categoryAttr : ${categoryAttrList}" class="success">
+								<td th:text="${categoryAttr.attr_name}">属性名称</td>
+								<td th:text="${categoryAttr.attr_type}">属性类型</td>
+								<td th:text="${categoryAttr.option_type}">是否必填</td>
+								<td th:text="${categoryAttr.input_type}">是否多选</td>
+								<td th:text="${categoryAttr.sort_number}">排序号</td>
+								<td>
+									<a>编辑</a>
+									<a>删除</a>
+									<a th:href="@{/back/attr/cate_attr_val_edit((cid=${categoryAttr.cid}),(attr_id=${categoryAttr.attr_id}))}" target="_blank">编辑属性值</a>
+								</td>
+							</tr>
+						</tbody>
+					</table>
+					<button type="button" class="btn  btn-primary" id="btnadd">增加属性</button>
+					<button type="button" class="btn btn-primary" id="btnrefresh">刷新列表</button>
+					<ul class="pagination">
+						<li><a href="#">Prev</a></li>
+						<li><a href="#">1</a></li>
+						<li><a href="#">2</a></li>
+						<li><a href="#">3</a></li>
+						<li><a href="#">4</a></li>
+						<li><a href="#">5</a></li>
+						<li><a href="#">Next</a></li>
+					</ul>
+				</div>
+			</div>
+		</div>
+	</div>
+	<input type="hidden" id="cid" th:value="${cid}">
+	<script>
+		//在此处执行加载数据的函数
+		$(function() {
+
+			//当点击编辑按钮时，在一个新页中打开叶子结点的编辑页面
+			$("#btnadd").click(
+					function() {
+						{
+							window.open(
+									"http://localhost/ecp-back/back/attr/addcategoryattr/"
+											+ $("#cid").val(), "_blank");
+
+						}
+
+					});
+			//当点击编辑按钮时，在一个新页中打开叶子结点的编辑页面
+			$("#btnrefresh").click(
+					function() {
+						{
+							location.reload();
+
+						}
+
+					});
+			
+
+		});
+	</script>
+
+</body>
+</html>

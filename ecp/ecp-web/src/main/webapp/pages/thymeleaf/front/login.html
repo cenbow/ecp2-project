@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="utf-8">
+    <meta name="context-path" th:content="@{/}" />
+    <meta  HTTP-EQUIV="nocache"   CONTENT="no-cache">
+    <title>菱美商城  - 登录</title>
+    <link rel="stylesheet" type="text/css" th:href="@{/static/bootstrap/3.3.5/css/bootstrap.min.css}">
+    <link rel="stylesheet" type="text/css" th:href="@{/static/css/login/login.css}">
+    <link rel="stylesheet" type="text/css" th:href="@{/static/iconfont/iconfont.css}">
+    
+</head>
+
+<body class="login_body">
+    <div class="container-fluid login_page">
+        <div class="login_left">
+            <div class="clearfix">
+                <div class="lingLOGO pull-left"><img th:src="@{/static/images/LM.png}"></div>                
+            </div>
+        </div>
+        <div class="login_right">
+        	<div class="login_contactUs" style="display:none;">
+                    <p><em>联系我们：400 —— 800 —— 2030</em></p>
+                    <span>contact us</span>
+            </div>
+            <div class="login_content">
+                <h4>账户登录</h4>
+                <div>
+                    <form id="login-form" th:action="@{/front/agent/login}" method="post">
+                        <div class="form-group">
+                            <span class="iconfont">&#xe75c;</span>
+                            <input type="text" class="form-control" id="loginName" name="loginName" placeholder="请输入您的账号" autofocus required>
+                        </div>
+                        <div class="form-group">
+                            <span class="iconfont">&#xe63c;</span>
+                            <input type="password" class="form-control" id="password" name="password"  placeholder="请输入您的密码" required>
+                        </div>
+                        <div class="checkbox">
+                            <label>
+                                <!-- <input type="checkbox"> 记住我 -->
+                            </label>
+                            <!-- <a class="forgetPW pull-right" href="#">忘记密码</a> -->
+                        </div>
+                        <input id="publicKey" th:value="${publicKey}" type="hidden" />
+                        <button type="button" id="btn-login" class="btn btn-block btn-danger">登 &nbsp; &nbsp; &nbsp; &nbsp; 录</button>
+                    </form>
+                    <!-- <a class="register" href=""><span class="iconfont">&#xe6ab;</span>去注册 &gt;&gt;&gt;</a> -->
+                    <br/>
+                    <p class="register" ><span class="iconfont">&#xe6ab;</span>请登录后修改默认口令 &gt;&gt;&gt;</p>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <script th:src="@{/static/jquery/1.11.3/jquery-1.11.3.js}"></script>
+	<script th:src="@{/static/bootstrap/3.3.5/js/bootstrap.min.js}"></script>  
+	<script th:src="@{/static/iconfont/iconfont.js}"></script>
+	<script th:src="@{/static/jquery/jquery.form.js}"></script>
+	<!-- jsencrypt JS前端加密 -->
+	<script th:src="@{/static/js/jsencrypt/jsencrypt.min.js}"></script>
+	<!-- <script th:src="@{/static/js/common/ajaxSetup.js}"></script> -->
+	<script th:src="@{/static/js/common/util.js}"></script>	
+	
+	<!-- 业务JS -->
+	<script th:src="@{/static/js/login/login.js}"></script>
+</body>
+
+</html>

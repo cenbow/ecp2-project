@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>购物车-商品列表</title>
+</head>
+<body>
+	<div th:fragment="cartitems">
+		<table>
+			<tr>
+				<th>ID</th>
+				<th>产品ID</th>
+				<th>产品数量</th>
+			</tr>
+			<tr th:each="item : ${cart}">
+				<td th:text="${item.id}">条目ID</td>
+				<td >产品ID</td>
+				<td >产品数量</td>
+			</tr>
+			<tr class="odd" th:remove="all">
+				<td>1</td>
+				<td>1</td>
+				<td>3</td>
+			</tr>
+			<tr th:remove="all">
+				<td>1</td>
+				<td>1</td>
+				<td>3</td>
+			</tr>
+		</table>
+	</div>
+</body>
+</html>

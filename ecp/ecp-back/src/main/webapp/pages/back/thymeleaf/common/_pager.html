@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>显示分页</title>
+</head>
+<body>
+	<th:block th:fragment="pager">
+		<nav th:if="${not #lists.isEmpty(pageInfo.list)}" style="float: right;">
+			<ul class="pagination">
+				<li><a href="#">&laquo;</a></li>
+				
+				<!-- 上一页 -->
+				<li>
+					<a th:if="${not pageInfo.isFirstPage}" href="javascript:void(0);"
+					th:attr="data-bind=${pageInfo.pageNum-1}+'-'+${pageInfo.pageSize}">上一页</a> 
+					<a	th:if="${pageInfo.isFirstPage}" href="javascript:void(0);" data-bind="">上一页</a>
+				</li>
+
+				<!-- 中间页码: 窗口大小为8-->				
+				
+				<li th:each="pageNo : ${pageInfo.navigatepageNums}">
+					<a	th:if="${pageInfo.pageNum eq pageNo}" class="curr" href="javascript:void(0);"  data-bind="" 
+							style=" background-color:gray;color:white;"> 
+						<span th:text="${pageNo}"></span>
+					</a> 
+					<a 	th:if="${not (pageInfo.pageNum eq pageNo)}" 
+						href="javascript:void(0);" 
+						th:attr="data-bind=${pageNo}+'-'+${pageInfo.pageSize}"> 
+						<span th:text="${pageNo}"></span>
+					</a>
+				</li>
+				
+				
+				<!-- 下一页 -->
+				<li>
+					<a th:if="${not pageInfo.isLastPage}" href="javascript:void(0);"	th:attr="data-bind=${pageInfo.pageNum+1}+'-'+${pageInfo.pageSize}">下一页</a> 
+					<a	th:if="${pageInfo.isLastPage}" href="javascript:void(0);" data-bind="">下一页</a>
+				</li>
+
+				<li><a href="#">&raquo;</a></li>
+			</ul>
+		</nav>
+		<!-- 保存页号与页大小 -->
+		<!-- <input type="hidden" name="pageNum" id="pageNum" value=""> 
+		<input type="hidden" name="pageSize" id="pageSize" value=""> -->
+	</th:block>
+</body>
+</html>

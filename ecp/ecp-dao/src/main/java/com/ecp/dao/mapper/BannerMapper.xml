@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ecp.dao.BannerMapper">
+  <resultMap id="BaseResultMap" type="com.ecp.entity.Banner">
+    <!--
+      WARNING - @mbggenerated
+    -->
+    <id column="id" jdbcType="BIGINT" property="id" />
+    <result column="banner_link" jdbcType="VARCHAR" property="bannerLink" />
+    <result column="banner_type" jdbcType="TINYINT" property="bannerType" />
+    <result column="banner_url" jdbcType="VARCHAR" property="bannerUrl" />
+    <result column="created" jdbcType="TIMESTAMP" property="created" />
+    <result column="integral" jdbcType="INTEGER" property="integral" />
+    <result column="modified" jdbcType="TIMESTAMP" property="modified" />
+    <result column="sku_id" jdbcType="BIGINT" property="skuId" />
+    <result column="sort_number" jdbcType="SMALLINT" property="sortNumber" />
+    <result column="start_time" jdbcType="TIMESTAMP" property="startTime" />
+    <result column="status" jdbcType="TINYINT" property="status" />
+    <result column="theme_id" jdbcType="BIGINT" property="themeId" />
+    <result column="title" jdbcType="VARCHAR" property="title" />
+    <result column="deleted" jdbcType="INTEGER" property="deleted" />
+  </resultMap>
+  <sql id="Base_Column_List">
+    <!--
+      WARNING - @mbggenerated
+    -->
+    id, banner_link, banner_type, banner_url, created, integral, modified, sku_id, sort_number, 
+    start_time, status, theme_id, title, deleted
+  </sql>
+</mapper>

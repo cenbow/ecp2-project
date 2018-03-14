@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>CATEGORY_TREE</title>
+
+<link rel="stylesheet" th:href="@{/static/zTree_v3-master/css/demo.css}"
+	type="text/css">
+<link rel="stylesheet"
+	th:href="@{/static/zTree_v3-master/css/zTreeStyle/zTreeStyle.css}"
+	type="text/css">
+<script type="text/javascript"
+	th:src="@{/static/jquery/1.11.3/jquery-1.11.3.min.js}"></script>
+<script type="text/javascript"
+	th:src="@{/static/zTree_v3-master/js/jquery.ztree.core.min.js}"></script>
+
+<script type="text/javascript">
+
+	var zTreeObj;
+
+    var setting = {
+    		data: {
+    			simpleData: {
+    				enable: true,
+    				idKey: "cid",
+    				pIdKey: "parentCid",
+    				rootPId: 0
+    			},
+    			key: {
+    				name: "cName"
+    			}
+    		},
+    		callback:{                 
+                onClick:show    //节点点击事件  
+    		}
+    	};
+    
+
+    var zNodes=null;
+ 	/* var zNodes=[   
+	    {"id":1, "pId":0, "name":"test1"},   
+	    {"id":11, "pId":1, "name":"test11"},   
+	    {"id":12, "pId":1, "name":"test12"},   
+	    {"id":111, "pId":11, "name":"test111"},];  */  
+
+ function show(event, treeId, treeNode) {
+	 //alert(treeNode.cid + ", " + treeNode.cName+" ,"+treeNode.level);
+	 //alert("在此处发送ajax请求并打开一个新窗口对节点的属性进行编辑。");
+	 //在此处发送ajax请求并打开一个新窗口对节点的属性进行编辑。
+	 g_cid=treeNode.cid;
+	 g_level=treeNode.level;
+	 
+	   
+ };
+
+function loadCategoryAttr() {
+	
+	$.ajax({
+		type : "post", // 提交方式 get/post
+		url : "loadcategorytree", // 需要提交的 url
+		// dataType: "json",
+		data : {					
+		},
+		success : function(res) { // data 保存提交后返回的数据，一般为 json 数据
+			
+			if (res != null) {
+				var obj = $.parseJSON(res);	
+				zNodes=obj;
+				displayTree();
+				
+				if (obj.status == "success") {
+					
+				} else {
+					show_err_msg(obj.result_err_msg);
+				}
+				//alert("request ok!");
+			}
+		},
+		error : function(jqXHR, textStatus, errorThrown) {
+			/*弹出jqXHR对象的信息*/
+			alert(jqXHR.responseText);
+			alert(jqXHR.status);
+			alert(jqXHR.readyState);
+			alert(jqXHR.statusText);
+			/*弹出其他两个参数的信息*/
+			alert(textStatus);
+			alert(errorThrown);
+		}
+	});
+
+}  //end of loadCategoryAttr
+
+
+
+
+function displayTree(){
+	zTreeObj = $.fn.zTree.init($("#treeDemo"), setting, zNodes);
+}
+
+var g_cid=0;
+
+//在此处执行加载数据的函数
+$(function() {
+	
+	loadCategoryAttr();
+	
+	
+	//当点击编辑按钮时，在一个新页中打开叶子结点的编辑页面
+	//此处的地址可以采js读取隐藏字段的值，而后组成动态的URL地址
+	$("#edit").click(function(){
+		if(g_level==2){
+			window.open("http://localhost:8080/ecp-web/front/home/categoryattreditor/"+g_cid,"_blank");	
+		}
+		
+	});	
+	
+	
+	
+});
+</script>
+</head>
+
+<body>
+	<ul id="treeDemo" class="ztree"></ul>   <!-- 类目树 -->
+	
+	
+	<input type="button" value="编辑" id="edit"/>
+	<input type="hidden" id="editurl" th:value="@{/front/home/categoryattreditor}">
+</body>
+
+</html>

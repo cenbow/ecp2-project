@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html>
+<!-- 公共JS AND CSS -->
+<head th:fragment="head(title)">
+<meta charset="UTF-8">
+<meta name="context-path" th:content="@{/}" />
+<title th:text="${title}"></title>
+<link th:href="@{/static/bootstrap/3.3.5/css/bootstrap.min.css}"	rel="stylesheet" />
+
+<!-- <link th:href="@{/static/css/header/bootstrap.min.css}"	rel="stylesheet" /> -->
+
+<!-- <link th:href="@{/static/bootstrap/3.3.5/css/bootstrap-theme.min.css}"	rel="stylesheet" /> -->
+<!-- <link rel="stylesheet"	th:href="@{/static/bootstrap/3.3.5/css/font-awesome.css}"> -->
+<link rel="stylesheet"	th:href="@{/static/css/header/css.css}">
+<!-- <link rel="stylesheet" th:href="@{/static/css/crumb/reset.css}">
+<link rel="stylesheet" th:href="@{/static/css/crumb/style.css}"> -->
+
+<!-- JS Scripts-->
+<!-- jQuery Js -->
+<script th:src="@{/static/jquery/1.11.3/jquery-1.11.3.js}"></script>
+<script type="text/javascript" th:src="@{/static/jquery/jquery.form.js}"></script>
+
+<!-- Bootstrap Js -->
+<script th:src="@{/static/bootstrap/3.3.5/js/bootstrap.min.js}"></script>
+<!-- 表单验证 -->
+<script
+	th:src="@{/static/bootstrap/bootstrapvalidator/js/bootstrapValidator.min.js}"></script>
+
+<!-- 日期工具 -->
+<!-- <script type="text/javascript" src="static/calendar/WdatePicker.js"></script> -->
+
+<!-- 设置ajax公共请求头 -->
+<script th:src="@{/static/js/common/ajaxSetup.js}"></script>
+<script th:src="@{/static/js/common/util.js}"></script>
+<!-- 公共js，包含上传图片显示预览图、判断图片大小等 -->
+<script th:src="@{/static/js/common/common.js}"></script>
+<script th:src="@{/static/js/header/js.js}"></script>
+<script type="text/javascript">
+	var BASE_CONTEXT_PATH = $('meta[name=context-path]').attr("content");
+	BASE_CONTEXT_PATH = BASE_CONTEXT_PATH.substr(0,	BASE_CONTEXT_PATH.length - 1);
+</script>
+
+</head>
+<body>
+
+</body>
+</html>

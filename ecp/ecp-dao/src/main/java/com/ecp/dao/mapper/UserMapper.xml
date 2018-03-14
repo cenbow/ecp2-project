@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ecp.dao.UserMapper">
+  <resultMap id="BaseResultMap" type="com.ecp.entity.User">
+    <!--
+      WARNING - @mbggenerated
+    -->
+    <id column="id" jdbcType="BIGINT" property="id" />
+    <result column="audit_remark" jdbcType="VARCHAR" property="auditRemark" />
+    <result column="auditor" jdbcType="VARCHAR" property="auditor" />
+    <result column="created_time" jdbcType="TIMESTAMP" property="createdTime" />
+    <result column="deleted" jdbcType="INTEGER" property="deleted" />
+    <result column="department" jdbcType="VARCHAR" property="department" />
+    <result column="email" jdbcType="VARCHAR" property="email" />
+    <result column="growth_value" jdbcType="DECIMAL" property="growthValue" />
+    <result column="link_man" jdbcType="VARCHAR" property="linkMan" />
+    <result column="link_phone_num" jdbcType="VARCHAR" property="linkPhoneNum" />
+    <result column="mobile" jdbcType="VARCHAR" property="mobile" />
+    <result column="nickname" jdbcType="VARCHAR" property="nickname" />
+    <result column="oldpassword" jdbcType="VARCHAR" property="oldpassword" />
+    <result column="parent_id" jdbcType="BIGINT" property="parentId" />
+    <result column="password" jdbcType="VARCHAR" property="password" />
+    <result column="quick_type" jdbcType="INTEGER" property="quickType" />
+    <result column="security_level" jdbcType="INTEGER" property="securityLevel" />
+    <result column="status" jdbcType="INTEGER" property="status" />
+    <result column="type" jdbcType="INTEGER" property="type" />
+    <result column="update_time" jdbcType="TIMESTAMP" property="updateTime" />
+    <result column="username" jdbcType="VARCHAR" property="username" />
+  </resultMap>
+  <sql id="Base_Column_List">
+    <!--
+      WARNING - @mbggenerated
+    -->
+    id, audit_remark, auditor, created_time, deleted, department, email, growth_value, 
+    link_man, link_phone_num, mobile, nickname, oldpassword, parent_id, password, quick_type, 
+    security_level, status, type, update_time, username
+  </sql>
+</mapper>

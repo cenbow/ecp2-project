@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<div th:include="/thymeleaf/common/_head2::headx('合同管理')"	th:remove="tag"></div>
+<!-- <head th:include="/thymeleaf/common/_head::head('合同管理')"> -->
+</head>
+<body>
+	<!-- header -->
+	<!-- <div th:include="thymeleaf/common/_header::header" class="header"></div> -->
+	
+	<!-- content -->
+	<div class="container" id="container"></div>
+	
+	<!-- footer -->
+	<!-- <div th:include="/thymeleaf/common/_footer::footer" class="footer"></div> -->
+</body>
+<script type="text/javascript">
+	/*function:加载页面 */
+	function loadContract(parms, callback) {
+		var url = "/back/contract/contracttable";
+		var callbackFunc = callback;
+		var containerId = "#container";
+		loadPage(containerId, url, parms, callbackFunc);
+	}
+
+	/**
+	 function:加载页面
+	 parameters:
+	 orderTimeCond:合同时间条件值 
+	 dealStateCond:处理状态条件值
+	 */
+	function defaultLoadContract(timeCond, dealStateCond) {
+		//var url = "/back/contract/contracttable";
+		var parms = new Object(); //参数
+		parms.timeCond = timeCond; //时间段条件：近三个月合同
+		parms.dealStateCond = dealStateCond; //合同处理状态条件：全部状态
+		//分页
+		parms.pageNum = null;
+		parms.pageSize = null;
+
+		//查询类型，查询条件值
+		parms.searchTypeValue = 0;
+		parms.condValue = "";
+
+		loadContract(parms, null);
+	}
+	
+	$(function() {
+		defaultLoadContract(1, 0);  //一个月内
+	});
+</script>
+
+
+</html>

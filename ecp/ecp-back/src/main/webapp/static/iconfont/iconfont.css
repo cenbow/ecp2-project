@@ -1,0 +1,41 @@
+
+@font-face {font-family: "iconfont";
+  src: url('iconfont.eot?t=1498315267087'); /* IE9*/
+  src: url('iconfont.eot?t=1498315267087#iefix') format('embedded-opentype'), /* IE6-IE8 */
+  url('iconfont.woff?t=1498315267087') format('woff'), /* chrome, firefox */
+  url('iconfont.ttf?t=1498315267087') format('truetype'), /* chrome, firefox, opera, Safari, Android, iOS 4.2+*/
+  url('iconfont.svg?t=1498315267087#iconfont') format('svg'); /* iOS 4.1- */
+}
+
+.iconfont {
+  font-family:"iconfont" !important;
+  font-size:16px;
+  font-style:normal;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+.icon-twitter:before { content: "\e634"; }
+
+.icon-gerenzhongxin:before { content: "\e606"; }
+
+.icon-weixin:before { content: "\e63e"; }
+
+.icon-email:before { content: "\e658"; }
+
+.icon-tel:before { content: "\e613"; }
+
+.icon-weixin1:before { content: "\e627"; }
+
+.icon-tuding:before { content: "\e637"; }
+
+.icon-call:before { content: "\e65a"; }
+
+.icon-shoucang:before { content: "\e639"; }
+
+.icon-fax:before { content: "\e678"; }
+
+.icon-cart:before { content: "\e60b"; }
+
+.icon-shoucang-shoucang:before { content: "\e600"; }
+

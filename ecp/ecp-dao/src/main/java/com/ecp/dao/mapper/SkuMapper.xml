@@ -1,0 +1,116 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ecp.dao.SkuMapper">
+  <resultMap id="BaseResultMap" type="com.ecp.entity.Sku">
+    <!--
+      WARNING - @mbggenerated
+    -->
+    <id column="sku_id" jdbcType="BIGINT" property="skuId" />
+    <result column="ad" jdbcType="VARCHAR" property="ad" />
+    <result column="attributes" jdbcType="VARCHAR" property="attributes" />
+    <result column="created" jdbcType="TIMESTAMP" property="created" />
+    <result column="item_id" jdbcType="BIGINT" property="itemId" />
+    <result column="modified" jdbcType="TIMESTAMP" property="modified" />
+    <result column="product_id" jdbcType="VARCHAR" property="productId" />
+    <result column="sku_status" jdbcType="INTEGER" property="skuStatus" />
+    <result column="sku_type" jdbcType="INTEGER" property="skuType" />
+    <result column="volume" jdbcType="DECIMAL" property="volume" />
+    <result column="weight" jdbcType="DECIMAL" property="weight" />
+    <result column="sku_short_spec" jdbcType="VARCHAR" property="skuShortSpec" />
+    <result column="deleted" jdbcType="INTEGER" property="deleted" />
+  </resultMap>
+  <resultMap extends="BaseResultMap" id="ResultMapWithBLOBs" type="com.ecp.entity.Sku">
+    <!--
+      WARNING - @mbggenerated
+    -->
+    <result column="sku_spec" jdbcType="LONGVARCHAR" property="skuSpec" />
+  </resultMap>
+  <sql id="Base_Column_List">
+    <!--
+      WARNING - @mbggenerated
+    -->
+    sku_id, ad, attributes, created, item_id, modified, product_id, sku_status, sku_type, 
+    volume, weight, sku_short_spec, deleted
+  </sql>
+  <sql id="Blob_Column_List">
+    <!--
+      WARNING - @mbggenerated
+    -->
+    sku_spec
+  </sql>
+  
+  <!-- getSkuByIdAndType -->
+  
+  <select id="getSkuByIdAndType" resultMap="skuPriceMap">
+  	select  	 	
+  	 	s.attributes,
+		s.item_id,
+		s.sku_id,
+		s.volume,
+		s.weight,
+		s.sku_short_spec,
+		p.sell_price,
+		p.market_price
+  	 from item_sku s left join trade_sku_price p on(s.item_id=p.item_id and s.sku_id=p.sku_id) 
+  	 where s.item_id=#{itemId} and s.sku_type=#{skuType} and s.deleted=1 and p.deleted=1
+  
+  </select>
+  
+  <select id="getSkuByIdAndAttr" resultMap="skuPriceMap">
+  	select  	 	
+  	 	s.attributes,
+		s.item_id,
+		s.sku_id,
+		s.volume,
+		s.weight,		
+		p.sell_price,
+		p.market_price
+  	 from item_sku s left join trade_sku_price p on(s.item_id=p.item_id and s.sku_id=p.sku_id) 
+  	 where s.item_id=#{itemId} and s.attributes=#{skuAttribute} and s.deleted=1 and p.deleted=1 
+  
+  </select>
+  
+  <select id="getSkuBySkuId" resultMap="skuPriceMap">
+  	SELECT  	 	
+  	 	s.attributes,
+		s.item_id,
+		s.sku_id,
+		s.volume,
+		s.weight,		
+		p.sell_price,
+		p.market_price
+  	 FROM item_sku s left JOIN trade_sku_price p on(s.item_id=p.item_id and s.sku_id=p.sku_id) 
+  	 WHERE s.sku_id=#{skuId} and s.deleted=1 and p.deleted=1
+  
+  </select>
+  
+  
+  
+  
+  <resultMap id="skuPriceMap" type="com.ecp.bean.SkuPriceBean">
+  	<result column="attributes" jdbcType="VARCHAR" property="attributes" />
+  	<result column="item_id" jdbcType="BIGINT" property="item_id" />
+  	<result column="sku_id" jdbcType="BIGINT" property="sku_id" />
+  	<result column="volume" jdbcType="DECIMAL" property="volume" />
+    <result column="weight" jdbcType="DECIMAL" property="weight" />
+    <result column="sell_price" jdbcType="DECIMAL" property="sell_price" />
+    <result column="market_price" jdbcType="DECIMAL" property="market_price" />
+  </resultMap>
+  
+  <!-- getSkuIntroduce -->
+  <select id="getSkuIntroduce" resultType="map">
+  	SELECT 	 	
+  	 	s.item_id,
+		s.sku_id,
+		s.sku_short_spec,
+		s.sku_spec,
+		i.after_service,
+		i.packing_list,
+		i.describe_url
+  	 FROM item_sku s LEFT JOIN item i ON (s.item_id=i.item_id) 
+  	 WHERE s.sku_id=#{skuId} and s.deleted=1 and i.deleted=1
+  
+  </select>
+  
+  
+</mapper>

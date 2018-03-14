@@ -1,0 +1,348 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>合同列表</title>
+<style type="text/css">
+	a{text-decoration:none;color:black;}
+	a:visited{text-decoration:none;}
+	a:hover { text-decoration:none; }
+	.container a:hover { 
+		text-decoration:none;
+		color:blue; 
+		}
+	.extra-l  a{color:black;}
+	
+	tr:hover{
+		background-color:#CCFFCC;
+	}
+	
+	i{
+		color:darkblue;
+	}
+	a i{
+		cursor:pointer;
+	}
+	
+
+	/* 横向“处理状态”菜单   */
+	.extra-l li{
+		float:left;
+		margin:auto 10px;
+		cursor:pointer;		
+	}
+	
+	.extra-l li a:hover{
+		padding-bottom:5px;		
+		border-bottom: 1px solid gray;
+		
+	}
+	
+	.extra-l li a.curr{
+		padding-bottom:5px;		
+		border-bottom: 2px solid blue;
+		font-weight:bold;
+	}
+	
+	.extra-l li a.curr:hover{
+		padding-bottom:5px;		
+		border-bottom: 2px solid blue;
+		font-weight:bold;
+	}
+	
+	/* 纵向菜单：时间条件 */
+	
+	.ordertime-cont{		
+		margin-bottom: 0;
+		display:inline-block;			
+	}	
+	
+	.time-list{
+		display:none;
+		background-color: rgba(65,65,65,.8);		
+		border:2px solid #1296db;
+		position:absolute;		
+	}
+	
+	.time-list ul{		
+		padding:10px 10px 0px 20px;		
+	}
+	
+	.time-list li{
+		list-style-type:none;		
+	}
+	
+	.time-list li.curr{
+		margin-left:-10px;
+		/* background:   一般用图片进行模拟 ，比较好控制 */		
+	}
+		
+	.time-list a{
+		color:#dcdcdc;
+	}
+	
+	.time-list i{
+		color:white;
+	}
+	
+	
+	/* 纵向菜单：搜索条件 */
+	
+	.search-cont{		
+		margin-bottom: 0;
+		display:inline-block;			
+	}	
+	
+	.search-list{
+		display:none;
+		background-color: rgba(65,65,65,.8);		
+		border:2px solid #1296db;
+		position:absolute;		
+	}
+	
+	.search-list ul{		
+		padding:10px 10px 0px 20px;		
+	}
+	
+	.search-list li{
+		list-style-type:none;		
+	}
+	
+	.search-list li.curr{
+		margin-left:-10px;
+		/* background:   一般用图片进行模拟 ，比较好控制 */		
+	}
+		
+	.search-list a{
+		color:#dcdcdc;
+	}
+	
+	.search-list i{
+		color:white;
+	}
+	
+	/* 纵向菜单：处理状态列表 */
+	
+	.deal-state-cont{
+		margin-bottom: 0;
+		display:inline-block;			
+	}	
+	
+	.state-list{
+		display:none;
+		background-color: rgba(65,65,65,.8);		
+		border:2px solid #1296db;
+		position:absolute;
+	}
+	
+	.state-list ul{
+		padding:10px 10px 0px 20px;		
+	}
+	
+	.state-list i{
+		color:white;
+	}
+	
+	.state-list li{
+		list-style-type:none
+	}
+	
+	
+	.state-list li.curr{
+		margin-left:-10px;
+		/* list-style-type:square; */
+		/* background:   一般用图片进行模拟 ，比较好控制 */
+	}
+		
+	.state-list a{
+		color:#dcdcdc;
+	}
+	
+	
+	
+	/* 时间条件 MOUSE形状 */
+	.time-txt{
+		cursor:pointer;
+	}
+	
+	/* 合同处理状态条件 MOUSE形状 */
+	.state-txt{
+		cursor:pointer;
+	}
+
+</style>
+
+</head>
+<body>
+	<div class="row clearfix">
+		<div class="col-md-12 column">
+			<h4>合同管理</h4>
+			<br>
+			<!-- 横向菜单 -->
+			<div class="row clearfix" style="display:inline-block">
+				<div class="col-md-12 column">
+					<ul class="extra-l" style="list-style: none;">
+						<li value="0"><a href="javascript:void(0);"	class="txt curr">全部合同</a></li>						
+						<li value="2"><a href="javascript:void(0);"	class="txt">己建合同</a></li>
+						<li value="3"><a href="javascript:void(0);"	class="txt"	>乙方己确认</a></li>
+						<li value="4"><a href="javascript:void(0);"	class="txt"	>甲方己确认</a></li>
+						<li value="5"><a href="javascript:void(0);"	class="txt"	>执行中..</a></li>
+						<li value="6"><a href="javascript:void(0);"	class="txt"	>执行完毕</a></li>
+					</ul>
+				</div>
+			</div>
+			<div class="search-box" style="display:inline-block;margin-left:100px;">
+				<div class="search-cont">
+					<div class="search-txt" >
+						<span class="text" id="search-cond" value="0">选择查询条件</span>
+						<i class="icon-angle-down icon-large" style="color:black"></i>							
+					</div>
+					<div class="search-list" style="z-index:100;">
+						<ul>
+							<li class="curr" value="0"><i class="icon-ok"></i><a href="javascript:void(0);" >选择查询条件</a></li>
+							<li class="" 	 value="1"><i class="icon-ok"></i><a href="javascript:void(0);" >订单号</a></li>
+							<li class="" 	 value="2"><i class="icon-ok"></i><a href="javascript:void(0);" >合同号</a></li>							
+							<li class="" 	 value="3"><i class="icon-ok"></i><a href="javascript:void(0);" >公司名称</a></li>
+							<li class="" 	 value="4"><i class="icon-ok"></i><a href="javascript:void(0);" >负责人姓名</a></li>
+							<li class="" 	 value="5"><i class="icon-ok"></i><a href="javascript:void(0);" >公司电话</a></li>
+							
+						</ul>
+					</div>						
+				</div>
+				<div class="cond-box" style="display:inline">
+					<input type="text" value="" id="searchCond" name="searchCond" />
+					<a class="start-search" href="javascript:void(0);"><i class="icon-search icon-large "></i></a>
+				</div>
+			</div>
+			<a
+						th:href="@{/back/contract/show}" title="刷新合同列表"	style="float: right; margin-right: 50px">
+						<i class="icon-refresh icon-large"></i>
+			</a>
+			<hr>
+			<div class="row clearfix">
+				<div class="col-md-12 column">
+					<table class="table">
+						<thead>
+							<tr>
+								<th>订单号</th>
+								<th>合同号</th>
+								<th>
+									<!-- 订单时间：查询条件 -->
+									<div class="ordertime-cont">
+										<div class="time-txt" >
+											<span class="text" id="ordertime-cond" value="1">近一个月合同 </span>
+											<i class="icon-angle-down icon-large" style="color:black"></i>
+										</div>
+										<div class="time-list">
+											<ul>
+												<li class="curr" value="1"><i class="icon-ok"></i><a href="javascript:void(0);" >近一个月合同</a></li>
+												<li class="" 	 value="2"><i class="icon-ok"></i><a href="javascript:void(0);" >近两个月合同</a></li>
+												<li class="" 	 value="3"><i class="icon-ok"></i><a href="javascript:void(0);" >近三个月合同</a></li>
+												<li class="" 	 value="6"><i class="icon-ok"></i><a href="javascript:void(0);" >近六个月合同</a></li>			
+												<li class="" 	 value="12"><i class="icon-ok"></i><a href="javascript:void(0);" >今年内合同</a></li>
+											</ul>
+										</div>
+									</div>
+								</th>
+								<th>代理商名称</th>
+								<th>
+									<!-- 状态：查询条件 -->
+									<div class="deal-state-cont" id="orderState">
+										<div class="state-txt">
+											<span class="text" id="dealstate-cond" value="100">全部状态</span>
+											<i class="icon-angle-down icon-large " style="color:black"></i>
+										</div>
+										<div class="state-list" style="z-index:100;">
+											<ul>											
+												<li value="0" class="curr"><i class="icon-ok"></i><a href="javascript:void(0)">全部状态</a></li>
+												<li value="2"   class=""><i class="icon-ok"></i><a href="javascript:void(0)">己建合同</a></li>
+												<li value="3"   class=""><i class="icon-ok"></i><a href="javascript:void(0)">乙方己确认</a></li>
+												<li value="4"	class=""><i class="icon-ok"></i><a href="javascript:void(0)">甲方己确认</a></li>
+												<li value="5"	class=""><i class="icon-ok"></i><a href="javascript:void(0)">执行中..</a></li>
+												<li value="6"	class=""><i class="icon-ok"></i><a href="javascript:void(0)">执行完毕</a></li>
+											</ul>
+										</div>
+									</div>
+								
+								</th>
+								<th>操作</th>
+							</tr>
+						</thead>
+						<tbody>
+							<tr th:each="contract:${contractList}">
+								<td>
+									<a th:href="@{/back/order/detail(id=${contract.order_id})}" target="_blank" title="订单详情">
+										<span th:text="${contract.order_no}" th:remove="tag">订单号</span>
+									</a>
+								</td>
+								<td>
+									 <a th:href="@{/back/order/contractdetail(id=${contract.id})}" target="_blank" title="合同详情">
+										<span th:text="${contract.contract_no}" th:remove="tag">合同号</span>				
+									</a>
+									<a th:href="@{/back/contract/open(id=${contract.id})}" target="_blank" title="打开合同">
+										<i class="icon-folder-close-alt icon-large" style="color:darkblue;" ></i> 
+									</a>    
+								</td>
+								
+								<td class="contract-time"
+									th:text="${#calendars.format(contract.create_date,'yyyy-MM-dd HH:mm:ss')}">合同日期：2017/06/22
+									12:12:12</td>
+								<td  th:text="${contract.company_name}">代理商名称：北京XXX科技有限公司</td>
+								<td style="width:100px;">
+									<!-- 其它状态 -->
+									<span th:switch="${contract.contract_status}"  th:remove="tag">
+										<span th:case='1' th:remove="tag"><span class="order-status"> 未建合同 </span> <br></span>
+										<span th:case='2' th:remove="tag"><span class="order-status"> 己建合同 </span> <br></span>
+										<span th:case='3' th:remove="tag"><span class="order-status"> 乙方已确认 </span> <br></span>
+										<span th:case='4' th:remove="tag"><span class="order-status"> 甲方已确认 </span> <br></span>
+										<span th:case='5' th:remove="tag"><span class="order-status"> 执行中 </span> <br></span>
+										<span th:case='6' th:remove="tag"><span class="order-status"> 执行完毕 </span> <br></span>										
+									</span>
+								</td>
+								<td>
+									<a class="btn btn-primary btn-sm contract-confirm"  th:attr="data-order-id=${contract.order_id},data-contract-id=${contract.id},data-contract-status=${contract.contract_status}">确认</a>
+									<a class="btn btn-primary btn-sm contract-execute"  th:attr="data-order-id=${contract.order_id},data-contract-id=${contract.id},data-contract-status=${contract.contract_status}">执行</a>
+									<a class="btn btn-primary btn-sm contract-finish"   th:attr="data-order-id=${contract.order_id},data-contract-id=${contract.id},data-contract-status=${contract.contract_status}">完毕</a>
+								</td>
+							</tr>
+						</tbody>
+					</table>
+					<!-- 加入 分页 -->
+					<div th:include="/thymeleaf/common/_pager::pager" class="pagerx"></div>
+				</div>
+			</div>
+			<div class="row clearfix">
+				<div class="col-md-12 column">
+					<!-- <button type="button" class="btn btn-default">按钮</button> -->
+				</div>
+			</div>
+		</div>
+	</div>
+	
+	<!-- 订单选择条件  -->
+	<script th:inline="javascript">  
+		/*<![CDATA[*/
+			
+		var g_ordertime_cond = [[${orderTimeCond}]];  //回传的时间条件 
+		var g_dealstate_cond=[[${dealStateCond}]];    //回传的合同处理状态条件
+		var g_searchTypeValue = [[${searchTypeValue}]];  //查询类型值
+		var g_condValue=[[${condValue}]]; //查询条件值
+		
+		
+		/*]]>*/  
+	</script>
+	
+
+	<!-- 当用户点击查询条件时，采用些隐藏表单提交 -->
+	<form th:action="@{/back/contract/show}" method="post" id="searchform">
+		<!-- 保存页号与页大小 -->
+		<input type="hidden" name="pageNum" id="pageNum" th:value="${pageInfo.pageNum}"> 
+		<input type="hidden" name="pageSize" id="pageSize" th:value="${pageInfo.pageSize}">
+	</form>
+	
+	<script th:src="@{/static/js/common/dateutil.js}"></script>
+	<script type="text/javascript" th:src="@{/static/js/contract_management/contract_management.js}"></script>
+	
+	
+</body>
+</html>

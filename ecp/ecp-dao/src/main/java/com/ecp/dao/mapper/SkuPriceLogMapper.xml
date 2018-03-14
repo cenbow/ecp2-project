@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ecp.dao.SkuPriceLogMapper">
+  <resultMap id="BaseResultMap" type="com.ecp.entity.SkuPriceLog">
+    <!--
+      WARNING - @mbggenerated
+    -->
+    <id column="id" jdbcType="BIGINT" property="id" />
+    <result column="area_id" jdbcType="VARCHAR" property="areaId" />
+    <result column="area_name" jdbcType="VARCHAR" property="areaName" />
+    <result column="cost_price" jdbcType="DECIMAL" property="costPrice" />
+    <result column="create_time" jdbcType="TIMESTAMP" property="createTime" />
+    <result column="create_user" jdbcType="VARCHAR" property="createUser" />
+    <result column="description" jdbcType="VARCHAR" property="description" />
+    <result column="market_price" jdbcType="DECIMAL" property="marketPrice" />
+    <result column="sell_price" jdbcType="DECIMAL" property="sellPrice" />
+    <result column="sell_stepped" jdbcType="VARCHAR" property="sellStepped" />
+    <result column="sku_id" jdbcType="BIGINT" property="skuId" />
+    <result column="deleted" jdbcType="INTEGER" property="deleted" />
+  </resultMap>
+  <sql id="Base_Column_List">
+    <!--
+      WARNING - @mbggenerated
+    -->
+    id, area_id, area_name, cost_price, create_time, create_user, description, market_price, 
+    sell_price, sell_stepped, sku_id, deleted
+  </sql>
+</mapper>

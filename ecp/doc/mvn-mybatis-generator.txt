@@ -1,0 +1,12 @@
+# 通用Mapper配置
+mapper.plugin = tk.mybatis.mapper.generator.MapperPlugin
+mapper.Mapper = tk.mybatis.mapper.common.Mapper
+使用配置文件的目的是因为系统多处地方使用了这种配置，因而使用一个属性文件可以方便的保持一致。
+
+除了引用配置文件中的属性外，部分还使用了pom.xml中的属性。这种方式使用起来更灵活。
+
+运行
+
+配置好之后如何运行呢？
+
+在pom.xml这一级目录的命令行窗口执行mvn mybatis-generator:generate即可（前提是配置了mvn）。

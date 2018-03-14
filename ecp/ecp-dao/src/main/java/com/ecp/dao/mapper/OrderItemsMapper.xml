@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ecp.dao.OrderItemsMapper">
+  <resultMap id="BaseResultMap" type="com.ecp.entity.OrderItems">
+    <!--
+      WARNING - @mbggenerated
+    -->
+    <id column="id" jdbcType="BIGINT" property="id" />
+    <result column="activites_detail_id" jdbcType="BIGINT" property="activitesDetailId" />
+    <result column="area_id" jdbcType="BIGINT" property="areaId" />
+    <result column="cid" jdbcType="BIGINT" property="cid" />
+    <result column="contract_no" jdbcType="VARCHAR" property="contractNo" />
+    <result column="coupon_discount" jdbcType="DECIMAL" property="couponDiscount" />
+    <result column="create_time" jdbcType="TIMESTAMP" property="createTime" />
+    <result column="delivery_type" jdbcType="TINYINT" property="deliveryType" />
+    <result column="integral" jdbcType="BIGINT" property="integral" />
+    <result column="integral_discount" jdbcType="DECIMAL" property="integralDiscount" />
+    <result column="item_id" jdbcType="BIGINT" property="itemId" />
+    <result column="num" jdbcType="INTEGER" property="num" />
+    <result column="order_id" jdbcType="VARCHAR" property="orderId" />
+    <result column="pay_price" jdbcType="DECIMAL" property="payPrice" />
+    <result column="pay_price_total" jdbcType="DECIMAL" property="payPriceTotal" />
+    <result column="primitive_price" jdbcType="DECIMAL" property="primitivePrice" />
+    <result column="promotion_discount" jdbcType="DECIMAL" property="promotionDiscount" />
+    <result column="promotion_id" jdbcType="VARCHAR" property="promotionId" />
+    <result column="promotion_type" jdbcType="VARCHAR" property="promotionType" />
+    <result column="shop_freight_template_id" jdbcType="BIGINT" property="shopFreightTemplateId" />
+    <result column="sku_id" jdbcType="BIGINT" property="skuId" />
+    <result column="sku_name" jdbcType="VARCHAR" property="skuName" />
+    <result column="update_time" jdbcType="TIMESTAMP" property="updateTime" />
+    <result column="deleted" jdbcType="INTEGER" property="deleted" />
+  </resultMap>
+  <sql id="Base_Column_List">
+    <!--
+      WARNING - @mbggenerated
+    -->
+    id, activites_detail_id, area_id, cid, contract_no, coupon_discount, create_time, 
+    delivery_type, integral, integral_discount, item_id, num, order_id, pay_price, pay_price_total, 
+    primitive_price, promotion_discount, promotion_id, promotion_type, shop_freight_template_id, 
+    sku_id, sku_name, update_time, deleted
+  </sql>
+  
+  <select id="selectItemsByOrderId" resultType="map">
+  	select * from trade_order_items as o left join item_sku_picture as p
+  	 on(o.sku_id=p.sku_id) 
+	where p.deleted=1 and o.order_id=#{orderId} GROUP BY o.sku_id
+  </select>
+    
+  
+  
+</mapper>

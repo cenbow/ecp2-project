@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>系统主页</title>
+<link rel="stylesheet" type="text/css" th:href="@{/static/css/home.css}" />
+</head>
+<body>
+	<div id="header">
+		<!-- 菜单 -->
+		<p th:include="thymeleaf/front/public/menu :: menu"></p>
+
+		<span th:text="#{hello.appname}">this text will not be showed</span> <span
+			th:include="thymeleaf/front/public/header :: header"></span> <span
+			th:include="thymeleaf/front/public/search :: search"></span>
+	</div>
+	<div id="content">
+		<div class="aside"
+			th:include="thymeleaf/front/public/category ::category"></div>
+		<div class="main"
+			th:include="thymeleaf/front/public/defaultproduct :: productlist">首页默认商品列表显示于此，其它频道内容可以在以下添加</div>
+	</div>
+	<div id="footer"
+		th:include="thymeleaf/front/public/footer :: copyright"></div>
+</body>
+</html>

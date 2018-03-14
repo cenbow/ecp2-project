@@ -1,0 +1,71 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ecp.dao.ContractMapper">
+  <resultMap id="BaseResultMap" type="com.ecp.entity.Contract">
+    <!--
+      WARNING - @mbggenerated
+    -->
+    <id column="id" jdbcType="BIGINT" property="id" />
+    <result column="contract_template_id" jdbcType="BIGINT" property="contractTemplateId" />
+    <result column="contract_no" jdbcType="VARCHAR" property="contractNo" />
+    <result column="order_no" jdbcType="VARCHAR" property="orderNo" />
+    <result column="order_id" jdbcType="BIGINT" property="orderId" />
+    <result column="create_date" jdbcType="TIMESTAMP" property="createDate" />
+    <result column="create_user" jdbcType="BIGINT" property="createUser" />
+    <result column="confirm_date_second_party" jdbcType="TIMESTAMP" property="confirmDateSecondParty" />
+    <result column="confirm_user_second_party" jdbcType="BIGINT" property="confirmUserSecondParty" />
+    <result column="confirm_date_first_party" jdbcType="TIMESTAMP" property="confirmDateFirstParty" />
+    <result column="confirm_user_first_party" jdbcType="BIGINT" property="confirmUserFirstParty" />
+    <result column="confirm_status" jdbcType="TINYINT" property="confirmStatus" />
+    <result column="contract_status" jdbcType="TINYINT" property="contractStatus" />
+    <result column="agent_id" jdbcType="BIGINT" property="agentId" />
+    <result column="deleted" jdbcType="INTEGER" property="deleted" />
+  </resultMap>
+  <sql id="Base_Column_List">
+    <!--
+      WARNING - @mbggenerated
+    -->
+    id, contract_template_id, contract_no, order_no, order_id, create_date, create_user, 
+    confirm_date_second_party, confirm_user_second_party, confirm_date_first_party, confirm_user_first_party, 
+    confirm_status, contract_status, agent_id, deleted
+  </sql>
+
+	<select id="getMaxContractNo" resultType="string">
+		select max(contract_no) contractNo from contract where contract_no like
+		CONCAT('%',#{monthCond},'%' )
+	</select>
+
+	<select id="selectContractByCond" resultType="map">
+		select c.*,a.company_name,a.artificial_person_name,a.contact_phone from contract c LEFT JOIN user_extends a on (c.agent_id=a.extend_id)
+		<where>
+			create_date&gt;=DATE_ADD(create_date,INTERVAL #{timeCond} MONTH)
+			<if test="dealStateCond!=null and dealStateCond!='' and dealStateCond!='0'.toString()">
+				AND
+				contract_status=#{dealStateCond}
+			</if>
+			<choose>
+				<when test="searchTypeValue==1">
+					AND order_no LIKE concat(concat('%',#{condValue}),'%')
+				</when>
+				<when test="searchTypeValue==2">
+					AND contract_no LIKE concat(concat('%',#{condValue}),'%')
+				</when>
+				<when test="searchTypeValue==3">
+					AND company_name LIKE concat(concat('%',#{condValue}),'%')
+				</when>
+				<when test="searchTypeValue==4">
+					AND artificial_person_name LIKE concat(concat('%',#{condValue}),'%')
+				</when>
+				<when test="searchTypeValue==5">
+					AND contact_phone LIKE concat(concat('%',#{condValue}),'%')
+				</when>
+			</choose>			
+		</where>
+		ORDER BY c.create_date DESC
+
+	</select>
+
+
+
+
+</mapper>

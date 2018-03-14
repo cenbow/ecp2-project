@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>产品目录</title>
+</head>
+<body>
+	<div th:fragment="category">
+		<table>
+			<tr>
+				<th>NAME</th>
+				<th>ID</th>
+			</tr>
+			<tr th:each="category : ${categoryList}">
+				<td>
+					<a th:href="@{/front/product/search/category/{categoryId}(categoryId=${category.cid})}">
+						<span th:text="${category.cName}">分类名称</span>  
+					</a>
+					
+					<!-- <a th:href="@{/order/{orderId}/details(orderId=${category.id})}">
+						<span th:text="${category.name}">分类名称</span>
+					</a> -->
+					
+					
+									
+				</td>
+				<td th:text="${category.cid}">分类ID</td>
+			</tr>
+			<tr class="odd" th:remove="all">
+				<td>Blue Lettuce</td>
+				<td>9.55</td>
+			</tr>
+			<tr th:remove="all">
+				<td>Mild Cinnamon</td>
+				<td>1.99</td>
+			</tr>
+		</table>
+	</div>
+</body>
+</html>

@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ecp.dao.InventoryMapper">
+  <resultMap id="BaseResultMap" type="com.ecp.entity.Inventory">
+    <!--
+      WARNING - @mbggenerated
+    -->
+    <id column="id" jdbcType="BIGINT" property="id" />
+    <result column="create_user" jdbcType="VARCHAR" property="createUser" />
+    <result column="created" jdbcType="TIMESTAMP" property="created" />
+    <result column="modified" jdbcType="TIMESTAMP" property="modified" />
+    <result column="occupied_inventory" jdbcType="INTEGER" property="occupiedInventory" />
+    <result column="sku_id" jdbcType="BIGINT" property="skuId" />
+    <result column="state" jdbcType="TINYINT" property="state" />
+    <result column="total_inventory" jdbcType="INTEGER" property="totalInventory" />
+    <result column="update_user" jdbcType="VARCHAR" property="updateUser" />
+    <result column="yn" jdbcType="TINYINT" property="yn" />
+    <result column="deleted" jdbcType="INTEGER" property="deleted" />
+  </resultMap>
+  <sql id="Base_Column_List">
+    <!--
+      WARNING - @mbggenerated
+    -->
+    id, create_user, created, modified, occupied_inventory, sku_id, state, total_inventory, 
+    update_user, yn, deleted
+  </sql>
+</mapper>

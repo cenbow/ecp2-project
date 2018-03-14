@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ecp.dao.InvoicePicMapper">
+  <resultMap id="BaseResultMap" type="com.ecp.entity.InvoicePic">
+    <!--
+      WARNING - @mbggenerated
+    -->
+    <id column="id" jdbcType="BIGINT" property="id" />
+    <result column="create_time" jdbcType="TIMESTAMP" property="createTime" />
+    <result column="invoice_id" jdbcType="BIGINT" property="invoiceId" />
+    <result column="pic_type" jdbcType="INTEGER" property="picType" />
+    <result column="pic_url" jdbcType="VARCHAR" property="picUrl" />
+    <result column="deleted" jdbcType="INTEGER" property="deleted" />
+  </resultMap>
+  <sql id="Base_Column_List">
+    <!--
+      WARNING - @mbggenerated
+    -->
+    id, create_time, invoice_id, pic_type, pic_url, deleted
+  </sql>
+</mapper>

@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="context-path" th:content="@{/}" />
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<!-- The above 2 meta tags *must* come first in the head; any other head content must come *after* these tags -->
+<meta name="description" content="">
+<meta name="author" content="">
+<meta  HTTP-EQUIV="nocache"   CONTENT="no-cache">
+
+<!-- Note there is no responsive meta tag here -->
+<title>用户登录</title>
+
+<!-- Bootstrap core CSS -->
+<link th:href="@{/static/bootstrap/3.3.5/css/bootstrap.min.css}" rel="stylesheet">
+
+<!-- Custom styles for this template -->
+<link th:href="@{/static/css/login/default.css}" rel="stylesheet">
+
+<!-- HTML5 shim and Respond.js for IE8 support of HTML5 elements and media queries -->
+<!--[if lt IE 9]>
+      <script src="https://cdn.bootcss.com/html5shiv/3.7.3/html5shiv.min.js"></script>
+      <script src="https://cdn.bootcss.com/respond.js/1.4.2/respond.min.js"></script>
+    <![endif]-->
+   
+</head>
+<body class="login">
+
+	<header class="navbar navbar-static-top bs-docs-nav" id="top">
+		<div class="container welcomeheader">
+			<h3>
+				<img th:src=@{/static/images/lingmei.png} style="width:210;height:65px;"> <span>欢迎登录</span>
+			</h3>
+		</div>
+	</header>
+	<div class="login-header">
+		<div class="container">
+			<div class="login-wrap">
+				<div class="login-form">
+
+					<div class="row clearfix">
+						<div class="col-md-12 column">
+							<div class="tabbable" id="tabs-login">
+								<ul class="nav nav-tabs">
+									<!-- <li><a href="#panel-850312" data-toggle="tab"> </a></li> --> <!-- 扫码登录 -->
+									<li class="active" style="margin-left:50px"><a href="#panel-569183"
+										data-toggle="tab">账户登录</a></li>
+								</ul>
+								<div class="tab-content ">
+									<!-- <div class="tab-pane " id="panel-850312">
+										<p>二维码</p>
+									</div> -->
+									<div class="tab-pane active" id="panel-569183">
+									<!------------ start of form  ---------->
+										<form class="form-horizontal" id="login-form" th:action="@{/front/agent/login}" method="post"  role="form">
+											<div class="col-sm-offset-1 col-sm-10">
+												<div class="form-group ipt_login">
+
+													<div class="input-group">
+														<div class="input-group-addon">
+															<span class="glyphicon glyphicon glyphicon-user"
+																aria-hidden="true"></span>
+														</div>
+														<input type="text" class="form-control"
+															id="loginName" name="loginName"  placeholder="请输入用户名" autofocus required>
+
+													</div>
+												</div>
+											</div>
+											<div class="col-sm-offset-1 col-sm-10">
+												<div class="form-group ipt_login">
+
+													<div class="input-group">
+														<div class="input-group-addon">
+															<span class="glyphicon glyphicon glyphicon-lock"
+																aria-hidden="true"></span>
+														</div>
+														<input type="password" class="form-control" 
+															id="password" name="password" placeholder="请输入密码" required>
+
+													</div>
+												</div>
+											</div>
+											<div class="form-group ">
+												<div class="col-sm-offset-1 col-sm-10 linktxt">
+													<div class="tip">
+														<!-- <label><a href="#">忘记密码</a></label> -->
+														<label>注:请在登录后修改默认口令!</label>
+													</div>
+												</div>
+											</div>
+											<div class="form-group btn-login">
+												<div class="col-sm-offset-1 col-sm-10 ">
+													<button type="button" id="btn-login" class="btn btn-default btn-block">登录</button>
+												</div>
+											</div>
+											<hr>
+											<div class="form-group">
+												<div class="col-sm-offset-1 col-sm-10 linktxt">
+													<div class="checkbox">
+														<!-- <label><a href="#">免费注册</a></label> -->
+													</div>
+												</div>
+											</div>
+										</form>  <!-- end of form  -->
+									</div>
+								</div>
+							</div>
+						</div>
+					</div>
+
+				</div>
+			</div>
+
+		</div>
+	</div>
+	<!-- Placed at the end of the document so the pages load faster -->
+	<script th:src="@{/static/jquery/1.11.3/jquery-1.11.3.min.js}"></script>
+	<script th:src="@{/static/jquery/jquery.form.js}"></script>
+	<!-- <script th:src="@{/static/js/common/ajaxSetup.js}"></script> -->
+	<script th:src="@{/static/js/common/util.js}"></script>
+	<script th:src="@{/static/bootstrap/3.3.5/js/bootstrap.min.js}"></script>
+	
+	<!-- 业务JS -->
+	<script th:src="@{/static/js/login/login.js}"></script>
+
+
+</body>
+</html>

@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>Insert title here</title>
+
+
+<link th:href="@{/static/bootstrap/3.3.5/css/bootstrap.min.css}"
+	rel="stylesheet" />
+<link th:href="@{/static/bootstrap/3.3.5/css/bootstrap-theme.min.css}"
+	rel="stylesheet" />
+
+<link th:href="@{/static/css/main1.css}" rel="stylesheet" />
+
+<script type="text/javascript"
+	th:src="@{/static/jquery/1.11.3/jquery-1.11.3.min.js}"></script>
+<script type="text/javascript"
+	th:src="@{/static/bootstrap/3.3.5/js/bootstrap.min.js}"></script>
+
+</head>
+<body>
+	<div id="header">
+		
+	</div>
+	<div id="content">
+		<div class="main"
+			th:include="thymeleaf/front/public/layout_bootstrap :: layout_bootstrap">首页默认商品列表显示于此，其它频道内容可以在以下添加</div>
+	</div>
+
+</body>
+</html>

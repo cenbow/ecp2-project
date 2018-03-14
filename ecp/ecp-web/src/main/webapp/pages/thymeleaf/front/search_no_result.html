@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<div th:include="/thymeleaf/common/_head2::headx('查询结果')"
+	th:remove="tag"></div>
+</head>
+<body>
+	<!-- header -->
+	<div class="row clearfix">
+		<div id="header" class="col-md-12 column"></div>
+	</div>
+
+	<!-- content -->
+	<div class="container">
+		<div class="row clearfix">
+			<div class="col-md-12 column">
+				</br>
+				<h4 style="color:green"><i class="icon-ok-circle icon-large" style="color:green"></i>查询结果为空!</h4>
+				</br>
+			</div>
+		</div>
+	</div>
+
+
+	<!-- footer -->
+	<div class="row clearfix">
+		<div id="footer" class="col-md-12 column"></div>
+	</div>
+
+	<!-- load header and footer  -->
+	<script type="text/javascript"
+		th:src="@{/static/js/loadHeaderFooter.js}"></script>
+</body>
+</html>

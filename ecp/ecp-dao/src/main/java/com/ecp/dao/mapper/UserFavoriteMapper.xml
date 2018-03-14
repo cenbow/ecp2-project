@@ -1,0 +1,81 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ecp.dao.UserFavoriteMapper">
+  <resultMap id="BaseResultMap" type="com.ecp.entity.UserFavorite">
+    <!--
+      WARNING - @mbggenerated
+    -->
+    <id column="id" jdbcType="BIGINT" property="id" />
+    <result column="add_time" jdbcType="TIMESTAMP" property="addTime" />
+    <result column="favorite_id" jdbcType="BIGINT" property="favoriteId" />
+    <result column="id_type" jdbcType="VARCHAR" property="idType" />
+    <result column="status" jdbcType="TINYINT" property="status" />
+    <result column="user_id" jdbcType="BIGINT" property="userId" />
+    <result column="deleted" jdbcType="INTEGER" property="deleted" />
+  </resultMap>
+  <sql id="Base_Column_List">
+    <!--
+      WARNING - @mbggenerated
+    -->
+    id, add_time, favorite_id, id_type, status, user_id, deleted
+  </sql>
+  
+  <select id="getFavouritesByUserId" resultMap="FavoriteMap">
+	SELECT
+		f.favorite_id as itemId,
+		i.item_name as itemName,
+		i.market_price2 as sellPrice,						
+		p.picture_url as pictureUrl,
+		f.id as id
+		
+	FROM
+		base_user_favorite AS f left join 
+		item	AS i  on(f.favorite_id=i.item_id)  left join
+		item_picture as p on(p.item_id=i.item_id)
+	WHERE		 
+		p.sort_number=1 AND
+		f.`status`='1' AND
+		p.sort_number=1 AND
+		i.item_status=4 AND 
+		i.deleted=1 AND
+		f.user_id=#{userId} 
+	group by itemId
+  </select>
+  
+  <resultMap id="FavoriteMap" type="com.ecp.bean.FavouriteBean">    
+    <result column="itemId" jdbcType="BIGINT" property="itemId" />    
+    <result column="itemName" jdbcType="VARCHAR" property="itemName" />
+    <result column="sellPrice" jdbcType="DECIMAL" property="sellPrice" />
+    <result column="pictureUrl" jdbcType="VARCHAR" property="pictureUrl" />
+    <result column="id" jdbcType="BIGINT" property="id" />
+  </resultMap>
+  
+  
+  <select id="getFavouriteStatistic" resultMap="StatisticMap">
+  	SELECT
+			count(DISTINCT i.item_id)  AS count ,
+			c.c_name  AS c_name,
+			i.cid AS cid
+	FROM
+			base_user_favorite AS f left join 
+			item AS i on(f.favorite_id=i.item_id) left join
+			item_category  AS c on(i.cid=c.cid)
+	WHERE			
+			f.`status`='1' AND			
+			f.user_id=#{userId} AND
+			i.item_status=4 AND 
+			i.deleted=1
+	GROUP BY
+			cid,
+			c_name
+  </select>  
+  
+  <resultMap id="StatisticMap" type="com.ecp.bean.FavouriteStatisticBean">   
+   <result column="count" jdbcType="INTEGER" property="count" />    
+   <result column="c_name" jdbcType="VARCHAR" property="c_name" />   
+ </resultMap>
+	  
+  
+  
+  
+</mapper>

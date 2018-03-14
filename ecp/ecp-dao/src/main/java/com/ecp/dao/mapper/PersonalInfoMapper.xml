@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ecp.dao.PersonalInfoMapper">
+  <resultMap id="BaseResultMap" type="com.ecp.entity.PersonalInfo">
+    <!--
+      WARNING - @mbggenerated
+    -->
+    <id column="id" jdbcType="BIGINT" property="id" />
+    <result column="add1" jdbcType="VARCHAR" property="add1" />
+    <result column="add2" jdbcType="VARCHAR" property="add2" />
+    <result column="add3" jdbcType="VARCHAR" property="add3" />
+    <result column="address" jdbcType="VARCHAR" property="address" />
+    <result column="birthday" jdbcType="VARCHAR" property="birthday" />
+    <result column="blood" jdbcType="VARCHAR" property="blood" />
+    <result column="create_dt" jdbcType="TIMESTAMP" property="createDt" />
+    <result column="deleted_flag" jdbcType="VARCHAR" property="deletedFlag" />
+    <result column="evaluate" jdbcType="VARCHAR" property="evaluate" />
+    <result column="hobby" jdbcType="VARCHAR" property="hobby" />
+    <result column="home_page" jdbcType="VARCHAR" property="homePage" />
+    <result column="income" jdbcType="VARCHAR" property="income" />
+    <result column="last_upd_dt" jdbcType="TIMESTAMP" property="lastUpdDt" />
+    <result column="nike_name" jdbcType="VARCHAR" property="nikeName" />
+    <result column="origin" jdbcType="VARCHAR" property="origin" />
+    <result column="sex" jdbcType="VARCHAR" property="sex" />
+    <result column="user_id" jdbcType="BIGINT" property="userId" />
+    <result column="deleted" jdbcType="INTEGER" property="deleted" />
+  </resultMap>
+  <sql id="Base_Column_List">
+    <!--
+      WARNING - @mbggenerated
+    -->
+    id, add1, add2, add3, address, birthday, blood, create_dt, deleted_flag, evaluate, 
+    hobby, home_page, income, last_upd_dt, nike_name, origin, sex, user_id, deleted
+  </sql>
+</mapper>

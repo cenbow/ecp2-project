@@ -1,0 +1,177 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<div th:include="/thymeleaf/common/_head2::headx('分类-查询结果')"
+	th:remove="tag"></div>
+<!--字符图标  -->
+<link rel="stylesheet" th:href="@{/static/css/crumb/reset.css}">
+<link rel="stylesheet" th:href="@{/static/css/crumb/style.css}">
+<link rel="stylesheet" th:href="@{/static/css/wu/default.css}">
+
+<style type="text/css">
+li {
+	list-style-type: none;
+}
+
+.brandcond{
+	float: left;		
+}
+
+.cond li{
+	border: 1px solid white;
+}
+
+.cond li:hover {
+	border: 1px solid blue;	
+}
+
+.shaixuan-tj i{
+	color:black;
+}
+
+div li span{
+	cursor:pointer;
+}
+
+</style>
+</head>
+<body>
+	<!-- header -->
+	<div class="row clearfix">
+		<div id="header" class="col-md-12 column">
+		</div>
+	</div>
+	<div class="container">
+		<!-- <h3 style="font-size: 18px;">筛选条件列表-用于多条件选择</h3>
+		<br> -->
+		<div class="row clearfix">
+			<div class="row clearfix">
+				<div class="col-md-12 column">
+					
+					<p class="shaixuan-tj floatLeft clearfix ">
+						<span class="">
+							<a href="#">全部结果</a>
+						</span> 
+						<i	class="icon-angle-right"></i> 
+						<span>
+							<em th:text="'“'+${cName}+'”'">查询关键字</em>
+						</span> 
+						<i	class="icon-angle-right"></i>
+					</p>
+				</div>
+			</div>
+			<!-- 类目信息 查询结果个数 -->
+			<!-- <div class="row clearfix"> -->
+				<div class="col-md-12 column" style="background: lightgray;height:30px;line-height:30px; ">
+					商品筛选 共<b><span th:text="${pageInfo.total}">xxxx</span></b>个
+				</div>
+			<!-- </div> -->
+			<div class="col-md-12 column cond">
+				<br>
+				<table class="table">
+					<thead>
+						<tr>
+							<th style="width:100px;">条件名称</th>
+							<th>条件值列表</th>
+						</tr>
+					</thead>
+					<tbody>
+						<tr th:if="${not #lists.isEmpty(brandList)}">
+							<td>品牌</td>
+							<td>
+								<ul>
+									<li th:each="brand : ${brandList}" class="brandcond" >
+										<a class='brand' th:attr="id='brand_'+${brand.brand_id},data-bind=${brand.brand_id},data-search-cond='brand:'+${brand.brand_name}+':'+${brand.brand_id}" >
+											<img alt="" th:src="${brand.brand_logo_url}">
+										</a>
+									</li>
+								</ul>
+							</td>
+						</tr>
+						<tr th:each="attrValue : ${attrValueList}">
+							<td th:text="${attrValue.attrName}">条件名称</td>
+							<td>
+								<ul>
+									<li th:each="value : ${attrValue.valueList}"
+										style="float: left; margin-right: 10px" class="attrValue"
+										th:attr="data-bind=${value.attr_id}+':'+${value.value_id},data-search-cond='attr:'+${attrValue.attrName}+':'+${value.value_name}+':'+${value.attr_id}+':'+${value.value_id}">
+										
+										<span th:text="${value.value_name}">属性值</span>
+									</li>
+								</ul>
+							</td>
+						</tr>
+
+					</tbody>
+				</table>
+			</div>
+		</div>
+		<!-- 查询结果列表 -->
+		<div class="row clearfix">
+			<div class="col-md-12 column">
+				<div class="tabbable tablist" id="tabs-822513">
+					<h5><span class="glyphicon glyphicon glyphicon-search" aria-hidden="true"></span>查询结果</h5>
+					<!-- <span class="more"><a href="#">more</a></span> -->
+					<ul class="nav nav-pills titletab">
+						<li class="active">
+							 <!-- <a href="#panel-416853" data-toggle="tab">办公</a> -->
+						</li>					
+					</ul>
+					
+					<div class="tab-content">
+						<div class="tab-pane active  prolist" id="panel-416853">
+							<ul>
+								<li th:each="item : ${itemList}">
+									<a
+										th:href="@{/front/product/detail/{itemId}(itemId=${item.item.itemId})}"
+										target="_blank"> <img th:src="${item.pict[0].pictureUrl}" />
+									</a>
+									<p class="proname" th:text="${item.item.itemName}">产品名称</p>
+									<!-- <p class="prointr" th:text="${item.item.itemId}">商品简介</p> -->
+									<p class="price" th:text="'￥'+${item.item.marketPrice}">999.00</p>
+								</li>
+								
+							</ul>
+							<div style="clear: both;"></div>
+						</div>
+						
+					</div>
+				</div>
+			</div>
+				
+		</div>
+		
+		<!-- 加入 分页 -->
+		<div class="row clearfix">
+			<div th:include="/thymeleaf/common/_pager::pager" class="pagerx" style="float: right; margin-right: 100px;"></div>
+		</div>
+
+	</div>
+	
+	<!-- 当用户点击查询条件时，采用隐藏表单提交 -->
+	<form th:action="@{/front/search/categorycond}" method="post" id="testform">
+		<!-- 保存cid -->
+		<input type="hidden" name="cid" id="cid" th:value="${cid}" />
+		<!-- 用于保存上次查询的条件  初始值为空字符串 -->
+		<input type="hidden" name="brands" id="brandCond" th:value="${brandCond}" /> 
+		<input type="hidden" name="attrs"  id="attrCond" th:value="${attrCond}" />
+		<!-- 用户选择的条件列表 -->
+		<input type="hidden" name="searchCond" id="searchCond"	th:value="${searchCond}">
+		
+		<!-- 保存页号与页大小 -->
+		<input type="hidden" name="pageNum" id="pageNum" value=""> 
+		<input type="hidden" name="pageSize" id="pageSize" value="">
+	</form>
+	
+	<!-- footer -->
+	<div class="row clearfix">
+		<div id="footer" class="col-md-12 column">
+		</div>
+	</div>
+	<!-- load header and footer  -->
+	<script type="text/javascript" th:src="@{/static/js/loadHeaderFooter.js}"></script>
+	<script type="text/javascript" th:src="@{/static/js/search_category/search_category.js}"></script>
+
+</body>
+</html>

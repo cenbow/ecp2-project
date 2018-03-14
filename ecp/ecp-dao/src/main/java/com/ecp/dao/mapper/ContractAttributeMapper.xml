@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ecp.dao.ContractAttributeMapper">
+  <resultMap id="BaseResultMap" type="com.ecp.entity.ContractAttribute">
+    <!--
+      WARNING - @mbggenerated
+    -->
+    <id column="id" jdbcType="BIGINT" property="id" />
+    <result column="attr_name" jdbcType="VARCHAR" property="attrName" />
+    <result column="template_id" jdbcType="BIGINT" property="templateId" />
+    <result column="comment" jdbcType="VARCHAR" property="comment" />
+    <result column="deleted" jdbcType="INTEGER" property="deleted" />
+  </resultMap>
+  <sql id="Base_Column_List">
+    <!--
+      WARNING - @mbggenerated
+    -->
+    id, attr_name, template_id, comment, deleted
+  </sql>
+  <select id="selectAttrValByContractId" resultType="map">
+  	SELECT a.attr_name,a.template_id,a.comment,v.attr_id,v.id,v.attr_value FROM contract_attribute a LEFT JOIN contract_attribute_value v 
+  		ON(a.id=v.attr_id) 
+  		WHERE v.contract_id=#{contractId};
+  </select>
+  
+  
+</mapper>

@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ecp.dao.CategoryAttrValueMapper">
+  <resultMap id="BaseResultMap" type="com.ecp.entity.CategoryAttrValue">
+    <!--
+      WARNING - @mbggenerated
+    -->
+    <id column="id" jdbcType="BIGINT" property="id" />
+    <result column="attr_id" jdbcType="BIGINT" property="attrId" />
+    <result column="cid" jdbcType="BIGINT" property="cid" />
+    <result column="created" jdbcType="TIMESTAMP" property="created" />
+    <result column="modified" jdbcType="TIMESTAMP" property="modified" />
+    <result column="sort_number" jdbcType="BIGINT" property="sortNumber" />
+    <result column="status" jdbcType="TINYINT" property="status" />
+    <result column="value_id" jdbcType="BIGINT" property="valueId" />
+    <result column="deleted" jdbcType="INTEGER" property="deleted" />
+  </resultMap>
+  <sql id="Base_Column_List">
+    <!--
+      WARNING - @mbggenerated
+    -->
+    id, attr_id, cid, created, modified, sort_number, status, value_id, deleted
+  </sql>
+</mapper>

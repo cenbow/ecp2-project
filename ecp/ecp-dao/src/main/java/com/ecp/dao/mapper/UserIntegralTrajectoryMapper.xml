@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ecp.dao.UserIntegralTrajectoryMapper">
+  <resultMap id="BaseResultMap" type="com.ecp.entity.UserIntegralTrajectory">
+    <!--
+      WARNING - @mbggenerated
+    -->
+    <id column="id" jdbcType="BIGINT" property="id" />
+    <result column="insert_by" jdbcType="BIGINT" property="insertBy" />
+    <result column="insert_time" jdbcType="TIMESTAMP" property="insertTime" />
+    <result column="integral_type" jdbcType="TINYINT" property="integralType" />
+    <result column="integral_value" jdbcType="BIGINT" property="integralValue" />
+    <result column="order_id" jdbcType="VARCHAR" property="orderId" />
+    <result column="shop_id" jdbcType="BIGINT" property="shopId" />
+    <result column="update_by" jdbcType="BIGINT" property="updateBy" />
+    <result column="update_time" jdbcType="TIMESTAMP" property="updateTime" />
+    <result column="user_id" jdbcType="BIGINT" property="userId" />
+    <result column="using_time" jdbcType="TIMESTAMP" property="usingTime" />
+    <result column="deleted" jdbcType="INTEGER" property="deleted" />
+  </resultMap>
+  <sql id="Base_Column_List">
+    <!--
+      WARNING - @mbggenerated
+    -->
+    id, insert_by, insert_time, integral_type, integral_value, order_id, shop_id, update_by, 
+    update_time, user_id, using_time, deleted
+  </sql>
+</mapper>

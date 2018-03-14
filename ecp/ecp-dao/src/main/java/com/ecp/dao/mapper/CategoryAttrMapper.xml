@@ -1,0 +1,108 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ecp.dao.CategoryAttrMapper">
+  <resultMap id="BaseResultMap" type="com.ecp.entity.CategoryAttr">
+    <!--
+      WARNING - @mbggenerated
+    -->
+    <id column="id" jdbcType="BIGINT" property="id" />
+    <result column="attr_id" jdbcType="BIGINT" property="attrId" />
+    <result column="attr_type" jdbcType="TINYINT" property="attrType" />
+    <result column="cid" jdbcType="BIGINT" property="cid" />
+    <result column="created" jdbcType="TIMESTAMP" property="created" />
+    <result column="features" jdbcType="VARCHAR" property="features" />
+    <result column="modified" jdbcType="TIMESTAMP" property="modified" />
+    <result column="option_type" jdbcType="TINYINT" property="optionType" />
+    <result column="input_type" jdbcType="TINYINT" property="inputType" />
+    <result column="sort_number" jdbcType="BIGINT" property="sortNumber" />
+    <result column="status" jdbcType="TINYINT" property="status" />
+    <result column="deleted" jdbcType="INTEGER" property="deleted" />
+  </resultMap>
+  <sql id="Base_Column_List">
+    <!--
+      WARNING - @mbggenerated
+    -->
+    id, attr_id, attr_type, cid, created, features, modified, option_type, input_type, 
+    sort_number, status, deleted
+  </sql>
+  
+  <!-- <select id="findByCid" parameterType="java.lang.Long"  resultMap="BaseResultMap" >
+  	select * from item_category_attr 
+  </select> -->
+  
+  <select id="findByCid" parameterType="java.lang.Long" resultType="com.ecp.entity.CategoryAttr">
+		select * from item_category_attr a where cid=#{cid} and a.deleted=1 
+  </select>
+  
+  
+  <select id="getCategoryAttrListByCid1" parameterType="java.lang.Long" resultType="map">
+  	select c.id,c.cid,a.attr_id,a.attr_name, from item_category_attr c left join item_attribute a on(c.attr_id=a.attr_id)
+      where c.cid=#{cid}  and c.deleted=1 and a.deleted=1	
+  </select>
+  
+  <!-- 按cid读取类目属性 -->
+  <select id="getCategoryAttrListByCid" parameterType="java.lang.Long" resultMap="CategoryAttrResult">
+  	select
+  	 	c.id,
+  	 	c.cid,
+  	 	c.attr_type,
+  	 	c.option_type,
+  	 	c.input_type,
+  	 	c.sort_number,
+  	 	c.attr_id,
+  	 	a.attr_name
+  	 from item_category_attr c left join item_attribute a on(c.attr_id=a.attr_id) 
+
+  	 where c.deleted=1 and a.deleted=1 and c.cid=#{cid} ORDER BY c.attr_type,c.sort_number ASC	
+
+  </select>
+ 
+  
+  <!-- 按cid,attr_type读取类目属性 --> 
+  <select id="getCategoryAttrByCidAndType" resultMap="CategoryAttrResult">
+  	select
+  	 	c.id,
+  	 	c.cid,
+  	 	c.attr_type,
+  	 	c.option_type,
+  	 	c.input_type,
+  	 	c.sort_number,
+  	 	c.attr_id,
+  	 	a.attr_name
+  	 from item_category_attr c left join item_attribute a on(c.attr_id=a.attr_id) 
+  	 where c.cid=#{cid} and c.attr_type=#{attr_type} and c.deleted=1 and a.deleted=1	
+  </select>
+  
+  
+  <resultMap id="CategoryAttrResult" type="com.ecp.bean.CategoryAttrBean">    
+    <id column="id" jdbcType="BIGINT" property="id" />
+    <result column="cid" jdbcType="BIGINT" property="cid" />
+    <result column="attr_id" jdbcType="BIGINT" property="attr_id" />
+    <result column="attr_type" jdbcType="TINYINT" property="attr_type" />    
+    <result column="option_type" jdbcType="TINYINT" property="option_type" />
+    <result column="input_type" jdbcType="TINYINT" property="input_type" />
+    <result column="sort_number" jdbcType="BIGINT" property="sort_number" />
+    <result column="attr_name" jdbcType="VARCHAR" property="attr_name" />    
+  </resultMap>
+  
+  <!-- getCategoryAttrValList 读取属性值列表 -->
+  <select id="getCategoryAttrValList" resultType="hashmap">
+  	<!-- SELECT  	 	
+  	 	c.cid,  	 	
+  	 	c.attr_id,
+  	 	v.value_id,
+  	 	v.value_name
+  	 FROM item_attribute_value v  LEFT JOIN item_category_attr c  ON(c.attr_id=v.attr_id) 
+  	 WHERE c.cid=#{cid} and c.attr_id=#{attrId} and c.deleted=1 and v.deleted=1 -->
+  	 SELECT  	 	
+  	 	av.cid,  	 	
+  	 	av.attr_id,
+  	 	v.value_id,
+  	 	v.value_name,
+		av.sort_number
+  	 FROM item_attribute_value v LEFT JOIN item_category_attr_value av ON v.value_id=av.value_id
+  	 WHERE v.deleted=1 and av.cid=#{cid} and av.attr_id=#{attrId} ORDER BY av.sort_number ASC
+  </select>
+  
+  
+</mapper>

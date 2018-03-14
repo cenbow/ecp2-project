@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ecp.dao.AdvertiseMapper">
+  <resultMap id="BaseResultMap" type="com.ecp.entity.Advertise">
+    <!--
+      WARNING - @mbggenerated
+    -->
+    <id column="id" jdbcType="INTEGER" property="id" />
+    <result column="ad_src" jdbcType="VARCHAR" property="adSrc" />
+    <result column="ad_title" jdbcType="VARCHAR" property="adTitle" />
+    <result column="ad_type" jdbcType="INTEGER" property="adType" />
+    <result column="ad_url" jdbcType="VARCHAR" property="adUrl" />
+    <result column="adv_type" jdbcType="TINYINT" property="advType" />
+    <result column="cid" jdbcType="INTEGER" property="cid" />
+    <result column="close" jdbcType="INTEGER" property="close" />
+    <result column="created" jdbcType="TIMESTAMP" property="created" />
+    <result column="end_time" jdbcType="TIMESTAMP" property="endTime" />
+    <result column="integral" jdbcType="INTEGER" property="integral" />
+    <result column="is_delete" jdbcType="INTEGER" property="isDelete" />
+    <result column="modified" jdbcType="TIMESTAMP" property="modified" />
+    <result column="sku_id" jdbcType="BIGINT" property="skuId" />
+    <result column="sort_num" jdbcType="INTEGER" property="sortNum" />
+    <result column="start_time" jdbcType="TIMESTAMP" property="startTime" />
+    <result column="status" jdbcType="INTEGER" property="status" />
+    <result column="theme_id" jdbcType="INTEGER" property="themeId" />
+    <result column="deleted" jdbcType="INTEGER" property="deleted" />
+  </resultMap>
+  <sql id="Base_Column_List">
+    <!--
+      WARNING - @mbggenerated
+    -->
+    id, ad_src, ad_title, ad_type, ad_url, adv_type, cid, close, created, end_time, integral, 
+    is_delete, modified, sku_id, sort_num, start_time, status, theme_id, deleted
+  </sql>
+</mapper>

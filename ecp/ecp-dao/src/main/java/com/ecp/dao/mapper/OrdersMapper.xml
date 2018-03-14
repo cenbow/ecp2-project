@@ -1,0 +1,169 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ecp.dao.OrdersMapper">
+  <resultMap id="BaseResultMap" type="com.ecp.entity.Orders">
+    <!--
+      WARNING - @mbggenerated
+    -->
+    <id column="id" jdbcType="BIGINT" property="id" />
+    <result column="after_service" jdbcType="TINYINT" property="afterService" />
+    <result column="buyer_id" jdbcType="BIGINT" property="buyerId" />
+    <result column="cancel_time" jdbcType="TIMESTAMP" property="cancelTime" />
+    <result column="change_payment_price_time" jdbcType="TIMESTAMP" property="changePaymentPriceTime" />
+    <result column="city_id" jdbcType="BIGINT" property="cityId" />
+    <result column="confirm_receipt_time" jdbcType="TIMESTAMP" property="confirmReceiptTime" />
+    <result column="county_id" jdbcType="BIGINT" property="countyId" />
+    <result column="create_time" jdbcType="TIMESTAMP" property="createTime" />
+    <result column="delay" jdbcType="TINYINT" property="delay" />
+    <result column="delay_over_time" jdbcType="TIMESTAMP" property="delayOverTime" />
+    <result column="delete_time" jdbcType="TIMESTAMP" property="deleteTime" />
+    <result column="deleted" jdbcType="INTEGER" property="deleted" />
+    <result column="deliver_time" jdbcType="TIMESTAMP" property="deliverTime" />
+    <result column="detail_address" jdbcType="VARCHAR" property="detailAddress" />
+    <result column="discount_amount" jdbcType="DECIMAL" property="discountAmount" />
+    <result column="email" jdbcType="VARCHAR" property="email" />
+    <result column="evaluate" jdbcType="TINYINT" property="evaluate" />
+    <result column="exchange_rate" jdbcType="DECIMAL" property="exchangeRate" />
+    <result column="freight" jdbcType="DECIMAL" property="freight" />
+    <result column="full_address" jdbcType="VARCHAR" property="fullAddress" />
+    <result column="integral" jdbcType="BIGINT" property="integral" />
+    <result column="integral_discount" jdbcType="DECIMAL" property="integralDiscount" />
+    <result column="invoice" jdbcType="TINYINT" property="invoice" />
+    <result column="invoice_title" jdbcType="VARCHAR" property="invoiceTitle" />
+    <result column="lock_time" jdbcType="TIMESTAMP" property="lockTime" />
+    <result column="locked" jdbcType="TINYINT" property="locked" />
+    <result column="logistics_company" jdbcType="VARCHAR" property="logisticsCompany" />
+    <result column="logistics_no" jdbcType="VARCHAR" property="logisticsNo" />
+    <result column="logistics_remark" jdbcType="VARCHAR" property="logisticsRemark" />
+    <result column="memo" jdbcType="VARCHAR" property="memo" />
+    <result column="mobile" jdbcType="VARCHAR" property="mobile" />
+    <result column="name" jdbcType="VARCHAR" property="name" />
+    <result column="order_finish_time" jdbcType="TIMESTAMP" property="orderFinishTime" />
+    <result column="order_id" jdbcType="VARCHAR" property="orderId" />
+    <result column="order_jfs_key" jdbcType="VARCHAR" property="orderJfsKey" />
+    <result column="order_time" jdbcType="TIMESTAMP" property="orderTime" />
+    <result column="order_type" jdbcType="TINYINT" property="orderType" />
+    <result column="paid" jdbcType="INTEGER" property="paid" />
+    <result column="parent_order_id" jdbcType="VARCHAR" property="parentOrderId" />
+    <result column="pay_period" jdbcType="INTEGER" property="payPeriod" />
+    <result column="payment_method" jdbcType="TINYINT" property="paymentMethod" />
+    <result column="payment_price" jdbcType="DECIMAL" property="paymentPrice" />
+    <result column="payment_time" jdbcType="TIMESTAMP" property="paymentTime" />
+    <result column="payment_type" jdbcType="TINYINT" property="paymentType" />
+    <result column="phone" jdbcType="VARCHAR" property="phone" />
+    <result column="promo_code" jdbcType="VARCHAR" property="promoCode" />
+    <result column="province_id" jdbcType="BIGINT" property="provinceId" />
+    <result column="refund" jdbcType="TINYINT" property="refund" />
+    <result column="refund_time" jdbcType="TIMESTAMP" property="refundTime" />
+    <result column="seller_evaluate" jdbcType="TINYINT" property="sellerEvaluate" />
+    <result column="shipment_type" jdbcType="TINYINT" property="shipmentType" />
+    <result column="state" jdbcType="INTEGER" property="state" />
+    <result column="total_discount" jdbcType="DECIMAL" property="totalDiscount" />
+    <result column="total_price" jdbcType="DECIMAL" property="totalPrice" />
+    <result column="update_time" jdbcType="TIMESTAMP" property="updateTime" />
+    <result column="yn" jdbcType="INTEGER" property="yn" />
+    <result column="contract_no" jdbcType="VARCHAR" property="contractNo" />
+    <result column="contract_id" jdbcType="BIGINT" property="contractId" />
+    <result column="contract_state" jdbcType="TINYINT" property="contractState" />
+  </resultMap>
+  <sql id="Base_Column_List">
+    <!--
+      WARNING - @mbggenerated
+    -->
+    id, after_service, buyer_id, cancel_time, change_payment_price_time, city_id, confirm_receipt_time, 
+    county_id, create_time, delay, delay_over_time, delete_time, deleted, deliver_time, 
+    detail_address, discount_amount, email, evaluate, exchange_rate, freight, full_address, 
+    integral, integral_discount, invoice, invoice_title, lock_time, locked, logistics_company, 
+    logistics_no, logistics_remark, memo, mobile, name, order_finish_time, order_id, 
+    order_jfs_key, order_time, order_type, paid, parent_order_id, pay_period, payment_method, 
+    payment_price, payment_time, payment_type, phone, promo_code, province_id, refund, 
+    refund_time, seller_evaluate, shipment_type, state, total_discount, total_price, 
+    update_time, yn, contract_no, contract_id, contract_state
+  </sql>
+  
+  <select id="selectOrderByOrderTimeAndDealState" resultMap="BaseResultMap">
+  	SELECT * FROM trade_orders <where>
+  		buyer_id=#{buyerId} 
+  		AND 
+  		create_time&gt;=DATE_ADD(create_time,INTERVAL #{orderTimeCond} MONTH) 
+  		AND
+  		deleted=1
+  		<!-- AND 
+  			contract_state=#{dealStateCond} -->
+  		<if test="dealStateCond!=null and dealStateCond!='' and dealStateCond!='0'.toString()">
+  			AND 
+  			contract_state=#{dealStateCond}	
+  		</if>
+  	</where>
+  	ORDER BY create_time DESC
+  </select>
+  
+  <select id="selectAllOrderByOrderTimeAndDealState" resultMap="BaseResultMap">
+  	SELECT * FROM trade_orders <where>
+  		deleted=1 
+  		AND 
+  		create_time&gt;=DATE_ADD(create_time,INTERVAL #{orderTimeCond} MONTH)  		
+  		<!-- AND 
+  			contract_state=#{dealStateCond} -->
+  		<if test="dealStateCond!=null and dealStateCond!='' and dealStateCond!='0'.toString()">
+  			AND 
+  			contract_state=#{dealStateCond}	
+  		</if>
+  	</where>
+  </select>
+  
+  <select id="selectOrderBySelfField" resultType="map">
+  	 SELECT * FROM trade_orders <where>
+  	 	deleted=1 AND yn=1 
+  	 	AND
+  	 	create_time&gt;=DATE_ADD(create_time,INTERVAL #{orderTimeCond} MONTH)
+  	 	<if test="dealStateCond!=null and dealStateCond!='' and dealStateCond!='0'.toString()">
+  			AND 
+  			contract_state=#{dealStateCond}	
+  		</if>
+  		<choose>
+  			<when test="searchTypeValue==1">
+  				AND order_id LIKE concat(concat('%',#{condValue}),'%') 
+  			</when>
+  			<when test="searchTypeValue==2">
+  				AND contract_no LIKE concat(concat('%',#{condValue}),'%') 
+  			</when>
+  			<when test="searchTypeValue==3">
+  				AND name LIKE concat(concat('%',#{condValue}),'%') 
+  			</when>
+  			<when test="searchTypeValue==4">
+  				AND mobile LIKE concat(concat('%',#{condValue}),'%') 
+  			</when>
+  		</choose>		
+  		  	 
+  	 </where> 
+  	  order by create_time  DESC
+  </select>
+  
+  <select id="selectOrderByAgent" resultType="map">
+  	 select o.*,a.company_name,a.artificial_person_name,a.contact_phone from trade_orders o LEFT JOIN   user_extends a on(o.buyer_id=a.user_id) <where>
+  	 	o.deleted=1 AND o.yn=1
+  	 	AND
+  	 	o.create_time&gt;=DATE_ADD(o.create_time,INTERVAL #{orderTimeCond} MONTH)
+  	 	<if test="dealStateCond!=null and dealStateCond!='' and dealStateCond!='0'.toString()">
+  			AND 
+  			o.contract_state=#{dealStateCond}	
+  		</if>
+  		<choose>
+  			<when test="searchTypeValue==5">
+  				AND a.company_name LIKE concat(concat('%',#{condValue}),'%') 
+  			</when>
+  			<when test="searchTypeValue==6">
+  				AND a.artificial_person_name LIKE concat(concat('%',#{condValue}),'%') 
+  			</when>
+  			<when test="searchTypeValue==7">
+  				AND a.contact_phone LIKE concat(concat('%',#{condValue}),'%') 
+  			</when>  			
+  		</choose>
+  	 </where>  	 
+  	 	order by o.create_time DESC
+  	 
+  </select>
+  
+  
+</mapper>

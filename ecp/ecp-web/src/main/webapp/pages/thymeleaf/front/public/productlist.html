@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>显示商品列表</title>
+</head>
+<body>
+	<div th:fragment="productlist">		
+		<table>
+			<tr>
+				<th>NAME</th>
+				<th>ID</th>
+			</tr>
+			<tr th:each="product : ${productList}">
+				<td><a
+					th:href="@{/front/product/detail/{productId}(productId=${product.id})}">
+						<span th:text="">产品名称</span>
+				</a></td>
+				<td th:text="${product.id}">产品ID</td>
+			</tr>
+			<tr class="odd" th:remove="all">
+				<td>Blue Lettuce</td>
+				<td>9.55</td>
+			</tr>
+			<tr th:remove="all">
+				<td>Mild Cinnamon</td>
+				<td>1.99</td>
+			</tr>
+		</table>
+	</div>
+</body>
+</html>

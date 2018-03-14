@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ecp.dao.OrderItemsDiscountMapper">
+  <resultMap id="BaseResultMap" type="com.ecp.entity.OrderItemsDiscount">
+    <!--
+      WARNING - @mbggenerated
+    -->
+    <id column="id" jdbcType="BIGINT" property="id" />
+    <result column="coupon_discount" jdbcType="DECIMAL" property="couponDiscount" />
+    <result column="coupon_id" jdbcType="VARCHAR" property="couponId" />
+    <result column="coupon_type" jdbcType="TINYINT" property="couponType" />
+    <result column="full_reduction_discount" jdbcType="DECIMAL" property="fullReductionDiscount" />
+    <result column="full_reduction_id" jdbcType="BIGINT" property="fullReductionId" />
+    <result column="full_reduction_type" jdbcType="TINYINT" property="fullReductionType" />
+    <result column="integral" jdbcType="BIGINT" property="integral" />
+    <result column="integral_discount" jdbcType="DECIMAL" property="integralDiscount" />
+    <result column="integral_type" jdbcType="TINYINT" property="integralType" />
+    <result column="markdown_discount" jdbcType="DECIMAL" property="markdownDiscount" />
+    <result column="markdown_id" jdbcType="BIGINT" property="markdownId" />
+    <result column="markdown_type" jdbcType="TINYINT" property="markdownType" />
+    <result column="order_id" jdbcType="VARCHAR" property="orderId" />
+    <result column="order_item_id" jdbcType="BIGINT" property="orderItemId" />
+    <result column="sku_id" jdbcType="BIGINT" property="skuId" />
+    <result column="deleted" jdbcType="INTEGER" property="deleted" />
+  </resultMap>
+  <sql id="Base_Column_List">
+    <!--
+      WARNING - @mbggenerated
+    -->
+    id, coupon_discount, coupon_id, coupon_type, full_reduction_discount, full_reduction_id, 
+    full_reduction_type, integral, integral_discount, integral_type, markdown_discount, 
+    markdown_id, markdown_type, order_id, order_item_id, sku_id, deleted
+  </sql>
+</mapper>

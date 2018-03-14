@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ecp.dao.AttributeValueMapper">
+  <resultMap id="BaseResultMap" type="com.ecp.entity.AttributeValue">
+    <!--
+      WARNING - @mbggenerated
+    -->
+    <id column="value_id" jdbcType="BIGINT" property="valueId" />
+    <result column="attr_id" jdbcType="BIGINT" property="attrId" />
+    <result column="created" jdbcType="TIMESTAMP" property="created" />
+    <result column="index_key" jdbcType="VARCHAR" property="indexKey" />
+    <result column="modified" jdbcType="TIMESTAMP" property="modified" />
+    <result column="status" jdbcType="INTEGER" property="status" />
+    <result column="value_name" jdbcType="VARCHAR" property="valueName" />
+    <result column="deleted" jdbcType="INTEGER" property="deleted" />
+  </resultMap>
+  <sql id="Base_Column_List">
+    <!--
+      WARNING - @mbggenerated
+    -->
+    value_id, attr_id, created, index_key, modified, status, value_name, deleted
+  </sql>
+  
+  <!-- 根据map中的条件查询属性值 -->
+  <select id="selectByCondition" parameterType="map" resultType="map">
+  	SELECT 
+  		* 
+  	FROM 
+  		item_attribute_value 
+  	WHERE 
+  		deleted=1 and attr_id=#{attrId}
+  </select>
+  
+  
+  
+  
+</mapper>

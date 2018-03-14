@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<div th:include="/thymeleaf/common/_head2::headx('加购物车成功')"	th:remove="tag"></div>
+
+<style type="text/css">
+	a:hover { text-decoration:none; } 
+</style>
+
+
+</head>
+<body>
+	<!-- header -->
+	<div class="row clearfix">
+		<div id="header" class="col-md-12 column"></div>
+	</div>
+	<div class="container">
+		<div class="row clearfix">
+			<div class="col-md-12 column">
+				<h4 style="color:green"><i class="icon-ok-circle icon-large" style="color:green"></i>商品己成功加入购物车!</h4>
+				<div class="row clearfix">
+					<div class="col-md-1 column">
+						<a th:href="@{/front/product/detail/{itemId}/{skuId}(itemId=${itemId},skuId=${skuId})}">
+							<img alt="60*60" th:src="${skuPict} ? ${skuPict}:''"  style="width:60px;height:60px"/>
+						</a>
+					</div>
+					<div class="col-md-7 column">
+						<h5><span th:text="${skuName}" th:remove="tag">商品名称</span></h5>
+						<h5 style="color:lightgray"><span th:text="'数量:'+${quantity}" th:remove="tag">商品数量</span></h5>
+					</div>
+					<div class="col-md-4 column" style="float:right">
+						<a  class="btn btn-default" th:href="@{/front/product/detail/{itemId}/{skuId}(itemId=${itemId},skuId=${skuId})}">查看商品详情</a>
+						<a  class="btn btn-default" th:href="@{/front/personalcenter/cart(cartItemId=${cartItemId})}" />去购物车结算</a>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+	</br>
+	<!-- footer -->
+	<div class="row clearfix">
+		<div id="footer" class="col-md-12 column"></div>
+	</div>
+	
+	
+	<!-- load header and footer  -->
+	<script type="text/javascript"
+		th:src="@{/static/js/loadHeaderFooter.js}"></script>
+
+
+</body>
+</html>

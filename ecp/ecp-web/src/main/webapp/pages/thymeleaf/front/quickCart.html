@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>购物车</title>
+</head>
+<body>
+
+	<div th:each="cartItem:${cartItemList}" class="cartProduct" th:attr="id='cartProduct'+${cartItem.id}">
+		<div class="productName">
+			<a
+				th:href="@{/front/product/detail/{itemId}/{skuId}(itemId=${cartItem.itemId},skuId=${cartItem.skuId})}"
+				target="_blank"> <img alt="50X50" height=50 weight=50
+				th:src="${cartItem.skuPicture}" />
+			</a>
+			<h6 th:text="${cartItem.skuName}">商品名称商品名称商品名称商品名称</h6>
+		</div>
+		<div class="productPrice">
+			<p th:text="'￥'+${cartItem.skuPrice}" th:attr="id='skuPrice'+${cartItem.id},data-price=${cartItem.skuPrice}">￥14532</p>
+			<p th:text="'*'+${cartItem.quantity}" th:attr="id='quantity'+${cartItem.id},data-quantity=${cartItem.quantity}">*88</p>
+			<a class="delete-cart-item" th:attr="data-bind=${cartItem.id}" onclick="deleteCartItemFunc(this)" >删除</a>
+		</div>
+	</div>
+
+	<!-- 获取用户已经选商品列表  -->
+	<script th:inline="javascript"> 
+		/*<![CDATA[*/  
+     
+		var g_cartItemList = [[${cartItemList}]];  //购物车中商品行项目
+		var g_cartItemNum=[[${itemNum}]];  //购物车中商品行项目
+		var g_cartItemTotalPrice=[[${cartItemTotalPrice}]];  //购物车中总金额 
+		//console.log("商品数量1:"+g_cartItemList.length);
+		//console.log("商品数量2:"+g_cartItemNum);
+		//console.log("总金额:"+g_cartItemTotalPrice);
+		/*]]>*/  
+	</script>
+	
+	<script type="text/javascript" th:src="@{/static/js/quickCart/quickCart.js}">	</script>
+
+
+</body>
+</html>

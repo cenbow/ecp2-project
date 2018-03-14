@@ -1,0 +1,19 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>头信息</title>
+</head>
+<body>
+	<div th:fragment="header">
+		<a th:href="@{/}">首页</a>
+		<a th:href="@{/front/home/login}">登录</a>
+		<a th:href="@{/front/home/register}">注册</a>
+		<a th:href="@{/front/home/unRegister}">退出登录</a>
+		<a th:href="@{/front/home/chart}" target="cart">购物车</a>
+		<a th:href="@{/front/personalcenter/collections }" target="personelcenter">我的收藏</a>
+		<a th:href="@{/front/personalcenter/orders}" target="personalcenter">我的订单</a>
+		<a th:href="@{/front/home/ajax}" target="ajaxwindow">AJAX测试 </a>
+	</div>
+</body>
+</html>

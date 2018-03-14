@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+	xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout">
+
+<head>
+<meta charset="UTF-8" />
+<meta name="context-path" th:content="@{/}" />
+<title layout:title-pattern="$CONTENT_TITLE - $DECORATOR_TITLE">acgtofe</title>
+<meta name="context-path" th:content="@{/}" />
+<link th:href="@{/static/bootstrap/3.3.5/css/bootstrap.min.css}"
+	rel="stylesheet" />
+<link th:href="@{/static/bootstrap/3.3.5/css/bootstrap-theme.min.css}"
+	rel="stylesheet" />
+
+</head>
+<body>
+
+	<header>public header</header>
+
+	<section layout:fragment="content">page main content</section>
+
+	<footer>public footer</footer>
+
+	<!-- JS Scripts-->
+	<!-- jQuery Js -->
+	<script th:src="@{/static/jquery/1.11.3/jquery-1.11.3.js}"></script>
+	<script type="text/javascript"
+		th:src="@{/static/jquery/jquery.form.js}"></script>
+
+	<!-- Bootstrap Js -->
+	<script th:src="@{static/bootstrap/3.3.5/js/bootstrap.min.js}"></script>
+	<!-- 表单验证 -->
+	<script
+		th:src="@{static/bootstrap/bootstrapvalidator/js/bootstrapValidator.min.js}"></script>
+
+	<!-- 日期工具 -->
+	<!-- <script type="text/javascript" src="static/calendar/WdatePicker.js"></script> -->
+
+	<!-- 设置ajax公共请求头 -->
+	<script th:src="@{static/js/common/ajaxSetup.js}"></script>
+	<script th:src="@{static/js/common/util.js}"></script>
+	<!-- 公共js，包含上传图片显示预览图、判断图片大小等 -->
+	<script th:src="@{static/js/common/common.js}"></script>
+
+</body>
+</html>

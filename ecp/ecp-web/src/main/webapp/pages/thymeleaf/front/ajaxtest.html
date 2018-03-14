@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>系统主页</title>
+<link rel="stylesheet" type="text/css" th:href="@{/static/css/home.css}" />
+<script type="text/javascript"
+	th:src="@{/static/jquery/1.11.3/jquery-1.11.3.min.js}"></script>
+</head>
+<body>
+	<div id="header">
+		<!-- 菜单 -->
+		<p th:include="thymeleaf/front/public/menu :: menu"></p>
+
+		<span th:text="#{hello.appname}">this text will not be showed</span> <span
+			th:include="thymeleaf/front/public/header :: header"></span> <span
+			th:include="thymeleaf/front/public/search :: search"></span>
+	</div>
+	<div id="content">
+		<form id="login_form">
+			<div class="loginBox">
+				<div class="loginBoxCenter">
+					<p>
+						<label for="loginName">用户名称</label>
+					</p>
+					<p>
+						<input type="text" id="loginName" name="loginName"
+							class="loginInput" autofocus="autofocus" required="required"
+							autocomplete="off" placeholder="请输入用户名" value="" />
+					</p>
+					<p>
+						<input type="password" id="password" name="password"
+							class="loginInput" required="required" placeholder="请输入密码"
+							value="" />
+					</p>
+				</div>
+				<div class="loginBoxButtons">
+					<input type="button" id="login" value="登录" />
+				</div>
+			</div>
+		</form>
+	</div>
+	<div id="footer" th:include="thymeleaf/front/public/footer :: footer"></div>
+
+	<script type="text/javascript">
+		$(function() {
+			// 提交表单
+			$('#login').click(function() {
+
+				// window.location.href="index.html";
+				var loginName = $('#loginName').val();
+				var loginPass = $('#password').val();
+				
+				// ajax提交表单，#login_form为表单的ID。
+				// 如：$('#login_form').ajaxSubmit(function(data) { ... });
+				$.ajax({
+					type : "post", // 提交方式 get/post
+					url : "ajaxpost", // 需要提交的 url
+					// dataType: "json",
+					data : {
+						'loginName' : loginName,
+						'password' : loginPass						
+					},
+					success : function(res) { // data 保存提交后返回的数据，一般为 json 数据
+						console.log(res);
+						if (res != null) {
+							var obj = $.parseJSON(res);
+							if (obj.status == "success") {
+								alert(obj.message);  //
+							} else {
+								show_err_msg(obj.result_err_msg);
+							} 
+							//alert("request ok!");
+						}
+					},
+					error: function (jqXHR, textStatus, errorThrown) {
+						/*弹出jqXHR对象的信息*/
+			            alert(jqXHR.responseText);
+			            alert(jqXHR.status);
+			            alert(jqXHR.readyState);
+			            alert(jqXHR.statusText);
+			            /*弹出其他两个参数的信息*/
+			            alert(textStatus);
+			            alert(errorThrown);
+					}
+				});
+
+			});
+
+		});
+	</script>
+</body>
+</html>

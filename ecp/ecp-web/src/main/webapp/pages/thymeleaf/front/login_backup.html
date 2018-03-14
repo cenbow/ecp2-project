@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+<meta charset="UTF-8">
+
+<title>帐户登录</title>
+<link th:href="@{/static/bootstrap/3.3.5/css/bootstrap.min.css}"
+	rel="stylesheet" />
+<link th:href="@{/static/bootstrap/3.3.5/css/bootstrap-theme.min.css}"
+	rel="stylesheet" />
+
+<script type="text/javascript"
+	th:src="@{/static/jquery/1.11.3/jquery-1.11.3.min.js}"></script>
+<script type="text/javascript"
+	th:src="@{/static/bootstrap/3.3.5/js/bootstrap.min.js}"></script>
+
+<link rel="stylesheet" type="text/css"
+	th:href="@{/static/css/login.css}" />
+
+</head>
+
+<body>
+	<div class="container">
+		<div class="header row clearfix"></div>
+		<div class="row clearfix">
+			<div class="col-md-6 column">
+				<div class="input_img"></div>
+			</div>
+
+			<div class="col-md-6 column">
+				<form th:action="@{/front/agent/login}" method="post" >										
+					<span>登录</span></br>			
+					<div class="loginBox" >
+						<label for="loginName">帐号</label> <input type="text"
+							id="loginName" name="loginName" placeholder="邮箱/会员帐号/手机号"
+							autofocus required>
+					</div>
+					<div class="password">
+						<label for="password">密码 </label> <input type="password"
+							id="password" name="password" placeholder="请输入密码" required>
+					</div>
+
+					<div class="loginBoxButtons">						
+						<input type="submit" value="登录" a href="#" />
+					</div>
+				</form>
+			</div>
+		</div>
+	</div>
+
+</body>
+
+</html>
