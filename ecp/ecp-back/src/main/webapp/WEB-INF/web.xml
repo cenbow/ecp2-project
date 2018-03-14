@@ -240,10 +240,10 @@
 	<!-- 错误页面 -->
 	<error-page>
 		<error-code>404</error-code>
-		<location>/pages/shopdmp/404.jsp</location>
+		<location>/pages/404.jsp</location>
 	</error-page>
 	<error-page>
 		<error-code>500</error-code>
-		<location>/pages/shopdmp/500.jsp</location>
+		<location>/pages/500.jsp</location>
 	</error-page>
 </web-app>
