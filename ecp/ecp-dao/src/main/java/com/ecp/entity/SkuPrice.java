@@ -53,6 +53,29 @@ public class SkuPrice {
     private String updateUser;
 
     /**
+     * 是否删除（1-未删除，2-删除，默认1）
+     */
+    private Integer deleted;
+
+    /**
+     * 最高限价
+     */
+    @Column(name = "highest_price")
+    private BigDecimal highestPrice;
+
+    /**
+     * 最低限价
+     */
+    @Column(name = "lowest_price")
+    private BigDecimal lowestPrice;
+
+    /**
+     * 硬成本价格
+     */
+    @Column(name = "hard_cost_price")
+    private BigDecimal hardCostPrice;
+
+    /**
      * @return id
      */
     public Long getId() {
@@ -262,29 +285,104 @@ public class SkuPrice {
         this.updateUser = updateUser == null ? null : updateUser.trim();
     }
 
-    @Column(name = "deleted")
-    private Integer deleted;//是否删除（1-未删除，2-删除，默认1）
-
     /**
-     * @return	是否删除（1-未删除，2-删除，默认1）
+     * 获取是否删除（1-未删除，2-删除，默认1）
+     *
+     * @return deleted - 是否删除（1-未删除，2-删除，默认1）
      */
     public Integer getDeleted() {
-		return deleted;
-	}
+        return deleted;
+    }
 
-	/**
-	 * @param deleted 是否删除（1-未删除，2-删除，默认1）
-	 */
-	public void setDeleted(Integer deleted) {
-		this.deleted = deleted;
-	}
+    /**
+     * 设置是否删除（1-未删除，2-删除，默认1）
+     *
+     * @param deleted 是否删除（1-未删除，2-删除，默认1）
+     */
+    public void setDeleted(Integer deleted) {
+        this.deleted = deleted;
+    }
 
-	@Override
-	public String toString() {
-		return "SkuPrice [id=" + id + ", areaId=" + areaId + ", areaName=" + areaName + ", areaNumber=" + areaNumber
-				+ ", costPrice=" + costPrice + ", createTime=" + createTime + ", createUser=" + createUser + ", itemId="
-				+ itemId + ", marketPrice=" + marketPrice + ", maxNum=" + maxNum + ", minNum=" + minNum + ", sellPrice="
-				+ sellPrice + ", skuId=" + skuId + ", updateTime=" + updateTime + ", updateUser=" + updateUser
-				+ ", deleted=" + deleted + "]";
-	}
+    /**
+     * 获取最高限价
+     *
+     * @return highest_price - 最高限价
+     */
+    public BigDecimal getHighestPrice() {
+        return highestPrice;
+    }
+
+    /**
+     * 设置最高限价
+     *
+     * @param highestPrice 最高限价
+     */
+    public void setHighestPrice(BigDecimal highestPrice) {
+        this.highestPrice = highestPrice;
+    }
+
+    /**
+     * 获取最低限价
+     *
+     * @return lowest_price - 最低限价
+     */
+    public BigDecimal getLowestPrice() {
+        return lowestPrice;
+    }
+
+    /**
+     * 设置最低限价
+     *
+     * @param lowestPrice 最低限价
+     */
+    public void setLowestPrice(BigDecimal lowestPrice) {
+        this.lowestPrice = lowestPrice;
+    }
+
+    /**
+     * 获取硬成本价格
+     *
+     * @return hard_cost_price - 硬成本价格
+     */
+    public BigDecimal getHardCostPrice() {
+        return hardCostPrice;
+    }
+
+    /**
+     * 设置硬成本价格
+     *
+     * @param hardCostPrice 硬成本价格
+     */
+    public void setHardCostPrice(BigDecimal hardCostPrice) {
+        this.hardCostPrice = hardCostPrice;
+    }
+
+    @Override
+    public String toString() {
+        StringBuilder sb = new StringBuilder();
+        sb.append(getClass().getSimpleName());
+        sb.append(" [");
+        sb.append("Hash = ").append(hashCode());
+        sb.append(", id=").append(id);
+        sb.append(", areaId=").append(areaId);
+        sb.append(", areaName=").append(areaName);
+        sb.append(", areaNumber=").append(areaNumber);
+        sb.append(", costPrice=").append(costPrice);
+        sb.append(", createTime=").append(createTime);
+        sb.append(", createUser=").append(createUser);
+        sb.append(", itemId=").append(itemId);
+        sb.append(", marketPrice=").append(marketPrice);
+        sb.append(", maxNum=").append(maxNum);
+        sb.append(", minNum=").append(minNum);
+        sb.append(", sellPrice=").append(sellPrice);
+        sb.append(", skuId=").append(skuId);
+        sb.append(", updateTime=").append(updateTime);
+        sb.append(", updateUser=").append(updateUser);
+        sb.append(", deleted=").append(deleted);
+        sb.append(", highestPrice=").append(highestPrice);
+        sb.append(", lowestPrice=").append(lowestPrice);
+        sb.append(", hardCostPrice=").append(hardCostPrice);
+        sb.append("]");
+        return sb.toString();
+    }
 }

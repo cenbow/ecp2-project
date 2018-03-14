@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.ecp.dao.SuppliersMapper" >
+  <resultMap id="BaseResultMap" type="com.ecp.entity.Suppliers" >
+    <!--
+      WARNING - @mbggenerated
+    -->
+    <id column="id" property="id" jdbcType="BIGINT" />
+    <result column="chinese_name" property="chineseName" jdbcType="VARCHAR" />
+    <result column="chinese_short_name" property="chineseShortName" jdbcType="VARCHAR" />
+    <result column="english_name" property="englishName" jdbcType="VARCHAR" />
+    <result column="englise_short_name" property="engliseShortName" jdbcType="VARCHAR" />
+    <result column="customer_type" property="customerType" jdbcType="TINYINT" />
+    <result column="country" property="country" jdbcType="VARCHAR" />
+    <result column="province" property="province" jdbcType="VARCHAR" />
+    <result column="city" property="city" jdbcType="VARCHAR" />
+    <result column="area" property="area" jdbcType="VARCHAR" />
+    <result column="added_area" property="addedArea" jdbcType="VARCHAR" />
+    <result column="main_trade" property="mainTrade" jdbcType="VARCHAR" />
+    <result column="first_trade" property="firstTrade" jdbcType="VARCHAR" />
+    <result column="second_trade" property="secondTrade" jdbcType="VARCHAR" />
+    <result column="office_address" property="officeAddress" jdbcType="VARCHAR" />
+    <result column="office_postcode" property="officePostcode" jdbcType="VARCHAR" />
+    <result column="office_tel" property="officeTel" jdbcType="VARCHAR" />
+    <result column="office_email" property="officeEmail" jdbcType="VARCHAR" />
+    <result column="register_name" property="registerName" jdbcType="VARCHAR" />
+    <result column="register_fund" property="registerFund" jdbcType="VARCHAR" />
+    <result column="register_address" property="registerAddress" jdbcType="VARCHAR" />
+    <result column="register_postcode" property="registerPostcode" jdbcType="VARCHAR" />
+    <result column="register_date" property="registerDate" jdbcType="TIMESTAMP" />
+    <result column="customer_size" property="customerSize" jdbcType="VARCHAR" />
+    <result column="customer_number" property="customerNumber" jdbcType="INTEGER" />
+    <result column="economic_type" property="economicType" jdbcType="TINYINT" />
+    <result column="investment_ways" property="investmentWays" jdbcType="VARCHAR" />
+    <result column="company_number" property="companyNumber" jdbcType="VARCHAR" />
+    <result column="is_listing" property="isListing" jdbcType="TINYINT" />
+    <result column="is_transnational" property="isTransnational" jdbcType="TINYINT" />
+    <result column="is_bloc" property="isBloc" jdbcType="TINYINT" />
+    <result column="is_headquarters" property="isHeadquarters" jdbcType="TINYINT" />
+    <result column="company_website" property="companyWebsite" jdbcType="VARCHAR" />
+    <result column="customer_intro" property="customerIntro" jdbcType="VARCHAR" />
+  </resultMap>
+  <sql id="Base_Column_List" >
+    <!--
+      WARNING - @mbggenerated
+    -->
+    id, chinese_name, chinese_short_name, english_name, englise_short_name, customer_type, 
+    country, province, city, area, added_area, main_trade, first_trade, second_trade, 
+    office_address, office_postcode, office_tel, office_email, register_name, register_fund, 
+    register_address, register_postcode, register_date, customer_size, customer_number, 
+    economic_type, investment_ways, company_number, is_listing, is_transnational, is_bloc, 
+    is_headquarters, company_website, customer_intro
+  </sql>
+</mapper>

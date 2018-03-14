@@ -1,53 +1,15 @@
 package com.ecp.entity;
 
-import java.math.BigDecimal;
 import java.util.Date;
 import javax.persistence.*;
 
-@Table(name = "user_extends")
-public class UserExtends {
-    @Id
-    @Column(name = "extend_id")
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long extendId;
-
-    @Column(name = "user_id")
-    private Long userId;
-
-    @Column(name = "business_licence_pic_src")
-    private String businessLicencePicSrc;
-
-    @Column(name = "tax_registration_certificate_pic_src")
-    private String taxRegistrationCertificatePicSrc;
-
-    @Column(name = "organization_pic_src")
-    private String organizationPicSrc;
-
-    @Column(name = "company_name")
-    private String companyName;
-
-    @Column(name = "contact_email")
-    private String contactEmail;
-
-    @Column(name = "artificial_person_name")
-    private String artificialPersonName;
-
-    @Column(name = "contact_phone")
-    private String contactPhone;
-
-    @Column(name = "contact_address")
-    private String contactAddress;
-
-    @Column(name = "account_state")
-    private Integer accountState;
-
-    @Column(name = "create_dt")
-    private Date createDt;
-
+public class Suppliers {
     /**
-     * 是否删除（1-未删除，2-删除，默认1）
+     * 客户表自增ID
      */
-    private Integer deleted;
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
 
     /**
      * 客户全称
@@ -62,7 +24,7 @@ public class UserExtends {
     private String chineseShortName;
 
     /**
-     * 英文全称
+     * 英文名称
      */
     @Column(name = "english_name")
     private String englishName;
@@ -70,14 +32,14 @@ public class UserExtends {
     /**
      * 英文简称
      */
-    @Column(name = "english_short_name")
-    private String englishShortName;
+    @Column(name = "englise_short_name")
+    private String engliseShortName;
 
     /**
-     * 客户类别
+     * 客户类别（1：签约客户；2：推广客户）
      */
     @Column(name = "customer_type")
-    private String customerType;
+    private Byte customerType;
 
     /**
      * 所在国家
@@ -157,7 +119,7 @@ public class UserExtends {
      * 注册资金（万元）
      */
     @Column(name = "register_fund")
-    private BigDecimal registerFund;
+    private String registerFund;
 
     /**
      * 注册地址
@@ -187,13 +149,13 @@ public class UserExtends {
      * 客户人员
      */
     @Column(name = "customer_number")
-    private String customerNumber;
+    private Integer customerNumber;
 
     /**
      * 经济类型
      */
     @Column(name = "economic_type")
-    private String economicType;
+    private Byte economicType;
 
     /**
      * 出资方式
@@ -208,25 +170,25 @@ public class UserExtends {
     private String companyNumber;
 
     /**
-     * 是否上市（1：是；2：否）
+     * 是否上市
      */
     @Column(name = "is_listing")
     private Byte isListing;
 
     /**
-     * 是否跨国（1：是；2：否）
+     * 是否跨国
      */
     @Column(name = "is_transnational")
     private Byte isTransnational;
 
     /**
-     * 是否集团客户（1：是；2：否）
+     * 是否集团客户
      */
     @Column(name = "is_bloc")
     private Byte isBloc;
 
     /**
-     * 是否总部（1：是；2：否）
+     * 是否总部
      */
     @Column(name = "is_headquarters")
     private Byte isHeadquarters;
@@ -244,189 +206,21 @@ public class UserExtends {
     private String customerIntro;
 
     /**
-     * @return extend_id
-     */
-    public Long getExtendId() {
-        return extendId;
-    }
-
-    /**
-     * @param extendId
-     */
-    public void setExtendId(Long extendId) {
-        this.extendId = extendId;
-    }
-
-    /**
-     * @return user_id
-     */
-    public Long getUserId() {
-        return userId;
-    }
-
-    /**
-     * @param userId
-     */
-    public void setUserId(Long userId) {
-        this.userId = userId;
-    }
-
-    /**
-     * @return business_licence_pic_src
-     */
-    public String getBusinessLicencePicSrc() {
-        return businessLicencePicSrc;
-    }
-
-    /**
-     * @param businessLicencePicSrc
-     */
-    public void setBusinessLicencePicSrc(String businessLicencePicSrc) {
-        this.businessLicencePicSrc = businessLicencePicSrc == null ? null : businessLicencePicSrc.trim();
-    }
-
-    /**
-     * @return tax_registration_certificate_pic_src
-     */
-    public String getTaxRegistrationCertificatePicSrc() {
-        return taxRegistrationCertificatePicSrc;
-    }
-
-    /**
-     * @param taxRegistrationCertificatePicSrc
-     */
-    public void setTaxRegistrationCertificatePicSrc(String taxRegistrationCertificatePicSrc) {
-        this.taxRegistrationCertificatePicSrc = taxRegistrationCertificatePicSrc == null ? null : taxRegistrationCertificatePicSrc.trim();
-    }
-
-    /**
-     * @return organization_pic_src
-     */
-    public String getOrganizationPicSrc() {
-        return organizationPicSrc;
-    }
-
-    /**
-     * @param organizationPicSrc
-     */
-    public void setOrganizationPicSrc(String organizationPicSrc) {
-        this.organizationPicSrc = organizationPicSrc == null ? null : organizationPicSrc.trim();
-    }
-
-    /**
-     * @return company_name
-     */
-    public String getCompanyName() {
-        return companyName;
-    }
-
-    /**
-     * @param companyName
-     */
-    public void setCompanyName(String companyName) {
-        this.companyName = companyName == null ? null : companyName.trim();
-    }
-
-    /**
-     * @return contact_email
-     */
-    public String getContactEmail() {
-        return contactEmail;
-    }
-
-    /**
-     * @param contactEmail
-     */
-    public void setContactEmail(String contactEmail) {
-        this.contactEmail = contactEmail == null ? null : contactEmail.trim();
-    }
-
-    /**
-     * @return artificial_person_name
-     */
-    public String getArtificialPersonName() {
-        return artificialPersonName;
-    }
-
-    /**
-     * @param artificialPersonName
-     */
-    public void setArtificialPersonName(String artificialPersonName) {
-        this.artificialPersonName = artificialPersonName == null ? null : artificialPersonName.trim();
-    }
-
-    /**
-     * @return contact_phone
-     */
-    public String getContactPhone() {
-        return contactPhone;
-    }
-
-    /**
-     * @param contactPhone
-     */
-    public void setContactPhone(String contactPhone) {
-        this.contactPhone = contactPhone == null ? null : contactPhone.trim();
-    }
-
-    /**
-     * @return contact_address
-     */
-    public String getContactAddress() {
-        return contactAddress;
-    }
-
-    /**
-     * @param contactAddress
-     */
-    public void setContactAddress(String contactAddress) {
-        this.contactAddress = contactAddress == null ? null : contactAddress.trim();
-    }
-
-    /**
-     * @return account_state
-     */
-    public Integer getAccountState() {
-        return accountState;
-    }
-
-    /**
-     * @param accountState
-     */
-    public void setAccountState(Integer accountState) {
-        this.accountState = accountState;
-    }
-
-    /**
-     * @return create_dt
-     */
-    public Date getCreateDt() {
-        return createDt;
-    }
-
-    /**
-     * @param createDt
-     */
-    public void setCreateDt(Date createDt) {
-        this.createDt = createDt;
-    }
-
-    /**
-     * 获取是否删除（1-未删除，2-删除，默认1）
+     * 获取客户表自增ID
      *
-     * @return deleted - 是否删除（1-未删除，2-删除，默认1）
+     * @return id - 客户表自增ID
      */
-    public Integer getDeleted() {
-        return deleted;
+    public Long getId() {
+        return id;
     }
 
     /**
-     * 设置是否删除（1-未删除，2-删除，默认1）
+     * 设置客户表自增ID
      *
-     * @param deleted 是否删除（1-未删除，2-删除，默认1）
+     * @param id 客户表自增ID
      */
-    public void setDeleted(Integer deleted) {
-        this.deleted = deleted;
+    public void setId(Long id) {
+        this.id = id;
     }
 
     /**
@@ -466,18 +260,18 @@ public class UserExtends {
     }
 
     /**
-     * 获取英文全称
+     * 获取英文名称
      *
-     * @return english_name - 英文全称
+     * @return english_name - 英文名称
      */
     public String getEnglishName() {
         return englishName;
     }
 
     /**
-     * 设置英文全称
+     * 设置英文名称
      *
-     * @param englishName 英文全称
+     * @param englishName 英文名称
      */
     public void setEnglishName(String englishName) {
         this.englishName = englishName == null ? null : englishName.trim();
@@ -486,37 +280,37 @@ public class UserExtends {
     /**
      * 获取英文简称
      *
-     * @return english_short_name - 英文简称
+     * @return englise_short_name - 英文简称
      */
-    public String getEnglishShortName() {
-        return englishShortName;
+    public String getEngliseShortName() {
+        return engliseShortName;
     }
 
     /**
      * 设置英文简称
      *
-     * @param englishShortName 英文简称
+     * @param engliseShortName 英文简称
      */
-    public void setEnglishShortName(String englishShortName) {
-        this.englishShortName = englishShortName == null ? null : englishShortName.trim();
+    public void setEngliseShortName(String engliseShortName) {
+        this.engliseShortName = engliseShortName == null ? null : engliseShortName.trim();
     }
 
     /**
-     * 获取客户类别
+     * 获取客户类别（1：签约客户；2：推广客户）
      *
-     * @return customer_type - 客户类别
+     * @return customer_type - 客户类别（1：签约客户；2：推广客户）
      */
-    public String getCustomerType() {
+    public Byte getCustomerType() {
         return customerType;
     }
 
     /**
-     * 设置客户类别
+     * 设置客户类别（1：签约客户；2：推广客户）
      *
-     * @param customerType 客户类别
+     * @param customerType 客户类别（1：签约客户；2：推广客户）
      */
-    public void setCustomerType(String customerType) {
-        this.customerType = customerType == null ? null : customerType.trim();
+    public void setCustomerType(Byte customerType) {
+        this.customerType = customerType;
     }
 
     /**
@@ -758,7 +552,7 @@ public class UserExtends {
      *
      * @return register_fund - 注册资金（万元）
      */
-    public BigDecimal getRegisterFund() {
+    public String getRegisterFund() {
         return registerFund;
     }
 
@@ -767,8 +561,8 @@ public class UserExtends {
      *
      * @param registerFund 注册资金（万元）
      */
-    public void setRegisterFund(BigDecimal registerFund) {
-        this.registerFund = registerFund;
+    public void setRegisterFund(String registerFund) {
+        this.registerFund = registerFund == null ? null : registerFund.trim();
     }
 
     /**
@@ -848,7 +642,7 @@ public class UserExtends {
      *
      * @return customer_number - 客户人员
      */
-    public String getCustomerNumber() {
+    public Integer getCustomerNumber() {
         return customerNumber;
     }
 
@@ -857,8 +651,8 @@ public class UserExtends {
      *
      * @param customerNumber 客户人员
      */
-    public void setCustomerNumber(String customerNumber) {
-        this.customerNumber = customerNumber == null ? null : customerNumber.trim();
+    public void setCustomerNumber(Integer customerNumber) {
+        this.customerNumber = customerNumber;
     }
 
     /**
@@ -866,7 +660,7 @@ public class UserExtends {
      *
      * @return economic_type - 经济类型
      */
-    public String getEconomicType() {
+    public Byte getEconomicType() {
         return economicType;
     }
 
@@ -875,8 +669,8 @@ public class UserExtends {
      *
      * @param economicType 经济类型
      */
-    public void setEconomicType(String economicType) {
-        this.economicType = economicType == null ? null : economicType.trim();
+    public void setEconomicType(Byte economicType) {
+        this.economicType = economicType;
     }
 
     /**
@@ -916,72 +710,72 @@ public class UserExtends {
     }
 
     /**
-     * 获取是否上市（1：是；2：否）
+     * 获取是否上市
      *
-     * @return is_listing - 是否上市（1：是；2：否）
+     * @return is_listing - 是否上市
      */
     public Byte getIsListing() {
         return isListing;
     }
 
     /**
-     * 设置是否上市（1：是；2：否）
+     * 设置是否上市
      *
-     * @param isListing 是否上市（1：是；2：否）
+     * @param isListing 是否上市
      */
     public void setIsListing(Byte isListing) {
         this.isListing = isListing;
     }
 
     /**
-     * 获取是否跨国（1：是；2：否）
+     * 获取是否跨国
      *
-     * @return is_transnational - 是否跨国（1：是；2：否）
+     * @return is_transnational - 是否跨国
      */
     public Byte getIsTransnational() {
         return isTransnational;
     }
 
     /**
-     * 设置是否跨国（1：是；2：否）
+     * 设置是否跨国
      *
-     * @param isTransnational 是否跨国（1：是；2：否）
+     * @param isTransnational 是否跨国
      */
     public void setIsTransnational(Byte isTransnational) {
         this.isTransnational = isTransnational;
     }
 
     /**
-     * 获取是否集团客户（1：是；2：否）
+     * 获取是否集团客户
      *
-     * @return is_bloc - 是否集团客户（1：是；2：否）
+     * @return is_bloc - 是否集团客户
      */
     public Byte getIsBloc() {
         return isBloc;
     }
 
     /**
-     * 设置是否集团客户（1：是；2：否）
+     * 设置是否集团客户
      *
-     * @param isBloc 是否集团客户（1：是；2：否）
+     * @param isBloc 是否集团客户
      */
     public void setIsBloc(Byte isBloc) {
         this.isBloc = isBloc;
     }
 
     /**
-     * 获取是否总部（1：是；2：否）
+     * 获取是否总部
      *
-     * @return is_headquarters - 是否总部（1：是；2：否）
+     * @return is_headquarters - 是否总部
      */
     public Byte getIsHeadquarters() {
         return isHeadquarters;
     }
 
     /**
-     * 设置是否总部（1：是；2：否）
+     * 设置是否总部
      *
-     * @param isHeadquarters 是否总部（1：是；2：否）
+     * @param isHeadquarters 是否总部
      */
     public void setIsHeadquarters(Byte isHeadquarters) {
         this.isHeadquarters = isHeadquarters;
@@ -1029,23 +823,11 @@ public class UserExtends {
         sb.append(getClass().getSimpleName());
         sb.append(" [");
         sb.append("Hash = ").append(hashCode());
-        sb.append(", extendId=").append(extendId);
-        sb.append(", userId=").append(userId);
-        sb.append(", businessLicencePicSrc=").append(businessLicencePicSrc);
-        sb.append(", taxRegistrationCertificatePicSrc=").append(taxRegistrationCertificatePicSrc);
-        sb.append(", organizationPicSrc=").append(organizationPicSrc);
-        sb.append(", companyName=").append(companyName);
-        sb.append(", contactEmail=").append(contactEmail);
-        sb.append(", artificialPersonName=").append(artificialPersonName);
-        sb.append(", contactPhone=").append(contactPhone);
-        sb.append(", contactAddress=").append(contactAddress);
-        sb.append(", accountState=").append(accountState);
-        sb.append(", createDt=").append(createDt);
-        sb.append(", deleted=").append(deleted);
+        sb.append(", id=").append(id);
         sb.append(", chineseName=").append(chineseName);
         sb.append(", chineseShortName=").append(chineseShortName);
         sb.append(", englishName=").append(englishName);
-        sb.append(", englishShortName=").append(englishShortName);
+        sb.append(", engliseShortName=").append(engliseShortName);
         sb.append(", customerType=").append(customerType);
         sb.append(", country=").append(country);
         sb.append(", province=").append(province);

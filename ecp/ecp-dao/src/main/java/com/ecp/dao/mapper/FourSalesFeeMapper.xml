@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.ecp.dao.FourSalesFeeMapper" >
+  <resultMap id="BaseResultMap" type="com.ecp.entity.FourSalesFee" >
+    <!--
+      WARNING - @mbggenerated
+    -->
+    <id column="id" property="id" jdbcType="BIGINT" />
+    <result column="order_id" property="orderId" jdbcType="BIGINT" />
+    <result column="transportation_fee" property="transportationFee" jdbcType="DECIMAL" />
+    <result column="communication_fee" property="communicationFee" jdbcType="DECIMAL" />
+    <result column="entertainment_fee" property="entertainmentFee" jdbcType="DECIMAL" />
+    <result column="travel_expense_fee" property="travelExpenseFee" jdbcType="DECIMAL" />
+    <result column="market_fee" property="marketFee" jdbcType="DECIMAL" />
+  </resultMap>
+  <sql id="Base_Column_List" >
+    <!--
+      WARNING - @mbggenerated
+    -->
+    id, order_id, transportation_fee, communication_fee, entertainment_fee, travel_expense_fee, 
+    market_fee
+  </sql>
+</mapper>

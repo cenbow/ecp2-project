@@ -21,12 +21,16 @@
     <result column="update_time" jdbcType="TIMESTAMP" property="updateTime" />
     <result column="update_user" jdbcType="VARCHAR" property="updateUser" />
     <result column="deleted" jdbcType="INTEGER" property="deleted" />
+    <result column="highest_price" jdbcType="DECIMAL" property="highestPrice" />
+    <result column="lowest_price" jdbcType="DECIMAL" property="lowestPrice" />
+    <result column="hard_cost_price" jdbcType="DECIMAL" property="hardCostPrice" />
   </resultMap>
   <sql id="Base_Column_List">
     <!--
       WARNING - @mbggenerated
     -->
     id, area_id, area_name, area_number, cost_price, create_time, create_user, item_id, 
-    market_price, max_num, min_num, sell_price, sku_id, update_time, update_user, deleted
+    market_price, max_num, min_num, sell_price, sku_id, update_time, update_user, deleted, 
+    highest_price, lowest_price, hard_cost_price
   </sql>
 </mapper>

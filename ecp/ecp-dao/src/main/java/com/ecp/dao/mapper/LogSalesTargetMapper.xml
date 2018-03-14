@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.ecp.dao.LogSalesTargetMapper" >
+  <resultMap id="BaseResultMap" type="com.ecp.entity.LogSalesTarget" >
+    <!--
+      WARNING - @mbggenerated
+    -->
+    <id column="log_id" property="logId" jdbcType="BIGINT" />
+    <result column="user_id" property="userId" jdbcType="BIGINT" />
+    <result column="create_time" property="createTime" jdbcType="TIMESTAMP" />
+    <result column="target_rate" property="targetRate" jdbcType="VARCHAR" />
+    <result column="target_amount" property="targetAmount" jdbcType="VARCHAR" />
+    <result column="cycle_name" property="cycleName" jdbcType="VARCHAR" />
+    <result column="year_name" property="yearName" jdbcType="VARCHAR" />
+    <result column="cal_type" property="calType" jdbcType="TINYINT" />
+    <result column="start_date" property="startDate" jdbcType="TIMESTAMP" />
+    <result column="end_date" property="endDate" jdbcType="TIMESTAMP" />
+    <result column="action_status" property="actionStatus" jdbcType="TINYINT" />
+    <result column="operation_user_id" property="operationUserId" jdbcType="BIGINT" />
+    <result column="user_name" property="userName" jdbcType="VARCHAR" />
+  </resultMap>
+  <sql id="Base_Column_List" >
+    <!--
+      WARNING - @mbggenerated
+    -->
+    log_id, user_id, create_time, target_rate, target_amount, cycle_name, year_name, 
+    cal_type, start_date, end_date, action_status, operation_user_id, user_name
+  </sql>
+</mapper>

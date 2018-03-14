@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.ecp.dao.LogSalesPriceMapper" >
+  <resultMap id="BaseResultMap" type="com.ecp.entity.LogSalesPrice" >
+    <!--
+      WARNING - @mbggenerated
+    -->
+    <id column="log_id" property="logId" jdbcType="BIGINT" />
+    <result column="create_time" property="createTime" jdbcType="TIMESTAMP" />
+    <result column="contract_id" property="contractId" jdbcType="BIGINT" />
+    <result column="item_id" property="itemId" jdbcType="BIGINT" />
+    <result column="item_name" property="itemName" jdbcType="VARCHAR" />
+    <result column="sku_id" property="skuId" jdbcType="BIGINT" />
+    <result column="sku_name" property="skuName" jdbcType="VARCHAR" />
+    <result column="sale_price" property="salePrice" jdbcType="DECIMAL" />
+    <result column="before_price" property="beforePrice" jdbcType="DECIMAL" />
+    <result column="lowcest_price" property="lowcestPrice" jdbcType="DECIMAL" />
+    <result column="highest_price" property="highestPrice" jdbcType="DECIMAL" />
+    <result column="user_id" property="userId" jdbcType="BIGINT" />
+    <result column="user_name" property="userName" jdbcType="VARCHAR" />
+  </resultMap>
+  <sql id="Base_Column_List" >
+    <!--
+      WARNING - @mbggenerated
+    -->
+    log_id, create_time, contract_id, item_id, item_name, sku_id, sku_name, sale_price, 
+    before_price, lowcest_price, highest_price, user_id, user_name
+  </sql>
+</mapper>

@@ -4,7 +4,6 @@ import java.math.BigDecimal;
 import java.util.Date;
 import javax.persistence.*;
 
-@Table(name = "item")
 public class Item {
     @Id
     @Column(name = "item_id")
@@ -12,9 +11,6 @@ public class Item {
     private Long itemId;
 
     private String ad;
-
-    @Column(name = "after_service")
-    private String afterService;
 
     @Column(name = "attr_sale")
     private String attrSale;
@@ -90,8 +86,23 @@ public class Item {
 
     private String model;
 
-    @Column(name = "describe_url")
-    private String describeUrl;
+    /**
+     * 最高限价
+     */
+    @Column(name = "highest_price")
+    private BigDecimal highestPrice;
+
+    /**
+     * 最低限价
+     */
+    @Column(name = "lowest_price")
+    private BigDecimal lowestPrice;
+
+    /**
+     * 硬成本价格
+     */
+    @Column(name = "hard_cost_price")
+    private BigDecimal hardCostPrice;
 
     /**
      * @return item_id
@@ -119,20 +130,6 @@ public class Item {
      */
     public void setAd(String ad) {
         this.ad = ad == null ? null : ad.trim();
-    }
-
-    /**
-     * @return after_service
-     */
-    public String getAfterService() {
-        return afterService;
-    }
-
-    /**
-     * @param afterService
-     */
-    public void setAfterService(String afterService) {
-        this.afterService = afterService == null ? null : afterService.trim();
     }
 
     /**
@@ -532,17 +529,57 @@ public class Item {
     }
 
     /**
-     * @return describe_url
+     * 获取最高限价
+     *
+     * @return highest_price - 最高限价
      */
-    public String getDescribeUrl() {
-        return describeUrl;
+    public BigDecimal getHighestPrice() {
+        return highestPrice;
     }
 
     /**
-     * @param describeUrl
+     * 设置最高限价
+     *
+     * @param highestPrice 最高限价
      */
-    public void setDescribeUrl(String describeUrl) {
-        this.describeUrl = describeUrl == null ? null : describeUrl.trim();
+    public void setHighestPrice(BigDecimal highestPrice) {
+        this.highestPrice = highestPrice;
+    }
+
+    /**
+     * 获取最低限价
+     *
+     * @return lowest_price - 最低限价
+     */
+    public BigDecimal getLowestPrice() {
+        return lowestPrice;
+    }
+
+    /**
+     * 设置最低限价
+     *
+     * @param lowestPrice 最低限价
+     */
+    public void setLowestPrice(BigDecimal lowestPrice) {
+        this.lowestPrice = lowestPrice;
+    }
+
+    /**
+     * 获取硬成本价格
+     *
+     * @return hard_cost_price - 硬成本价格
+     */
+    public BigDecimal getHardCostPrice() {
+        return hardCostPrice;
+    }
+
+    /**
+     * 设置硬成本价格
+     *
+     * @param hardCostPrice 硬成本价格
+     */
+    public void setHardCostPrice(BigDecimal hardCostPrice) {
+        this.hardCostPrice = hardCostPrice;
     }
 
     @Override
@@ -553,7 +590,6 @@ public class Item {
         sb.append("Hash = ").append(hashCode());
         sb.append(", itemId=").append(itemId);
         sb.append(", ad=").append(ad);
-        sb.append(", afterService=").append(afterService);
         sb.append(", attrSale=").append(attrSale);
         sb.append(", attributes=").append(attributes);
         sb.append(", brand=").append(brand);
@@ -582,7 +618,9 @@ public class Item {
         sb.append(", weightUnit=").append(weightUnit);
         sb.append(", deleted=").append(deleted);
         sb.append(", model=").append(model);
-        sb.append(", describeUrl=").append(describeUrl);
+        sb.append(", highestPrice=").append(highestPrice);
+        sb.append(", lowestPrice=").append(lowestPrice);
+        sb.append(", hardCostPrice=").append(hardCostPrice);
         sb.append("]");
         return sb.toString();
     }

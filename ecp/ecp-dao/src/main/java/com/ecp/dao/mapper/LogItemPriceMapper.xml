@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.ecp.dao.LogItemPriceMapper" >
+  <resultMap id="BaseResultMap" type="com.ecp.entity.LogItemPrice" >
+    <!--
+      WARNING - @mbggenerated
+    -->
+    <id column="log_id" property="logId" jdbcType="BIGINT" />
+    <result column="item_id" property="itemId" jdbcType="BIGINT" />
+    <result column="item_name" property="itemName" jdbcType="VARCHAR" />
+    <result column="create_time" property="createTime" jdbcType="TIMESTAMP" />
+    <result column="before_price" property="beforePrice" jdbcType="DECIMAL" />
+    <result column="after_price" property="afterPrice" jdbcType="DECIMAL" />
+    <result column="user_id" property="userId" jdbcType="BIGINT" />
+    <result column="user_name" property="userName" jdbcType="VARCHAR" />
+  </resultMap>
+  <sql id="Base_Column_List" >
+    <!--
+      WARNING - @mbggenerated
+    -->
+    log_id, item_id, item_name, create_time, before_price, after_price, user_id, user_name
+  </sql>
+</mapper>

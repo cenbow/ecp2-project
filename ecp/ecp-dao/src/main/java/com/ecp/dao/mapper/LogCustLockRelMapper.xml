@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.ecp.dao.LogCustLockRelMapper" >
+  <resultMap id="BaseResultMap" type="com.ecp.entity.LogCustLockRel" >
+    <!--
+      WARNING - @mbggenerated
+    -->
+    <id column="log_id" property="logId" jdbcType="BIGINT" />
+    <result column="cust_id" property="custId" jdbcType="BIGINT" />
+    <result column="cust_name" property="custName" jdbcType="VARCHAR" />
+    <result column="area" property="area" jdbcType="VARCHAR" />
+    <result column="channel" property="channel" jdbcType="VARCHAR" />
+    <result column="master_slave_flag" property="masterSlaveFlag" jdbcType="TINYINT" />
+    <result column="item_cat_id" property="itemCatId" jdbcType="BIGINT" />
+    <result column="bind_user_id" property="bindUserId" jdbcType="BIGINT" />
+    <result column="create_time" property="createTime" jdbcType="TIMESTAMP" />
+    <result column="user_id" property="userId" jdbcType="BIGINT" />
+    <result column="user_name" property="userName" jdbcType="VARCHAR" />
+  </resultMap>
+  <sql id="Base_Column_List" >
+    <!--
+      WARNING - @mbggenerated
+    -->
+    log_id, cust_id, cust_name, area, channel, master_slave_flag, item_cat_id, bind_user_id, 
+    create_time, user_id, user_name
+  </sql>
+</mapper>

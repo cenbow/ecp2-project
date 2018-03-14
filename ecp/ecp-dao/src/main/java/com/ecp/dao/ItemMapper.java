@@ -72,5 +72,5 @@ public interface ItemMapper extends Mapper<Item> {
 	 * @return
 	 */
 	List<Map<String, Object>> selectItemsByCondition(Map<String, Object> map);
-
+	
 }
