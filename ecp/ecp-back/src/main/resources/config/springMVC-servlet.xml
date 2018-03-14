@@ -52,13 +52,6 @@
 	<!-- 可访问的静态资源 -->
 	<mvc:resources location="/static/" mapping="/static/**" />
 	<mvc:resources location="/upload/" mapping="/upload/**" />
-	<mvc:resources location="/pages/front/assets/" mapping="/pages/front/assets/**" />
-	
-	<mvc:resources location="/pages/css/" mapping="/pages/css/**" />
-	<mvc:resources location="/pages/fonts/" mapping="/pages/fonts/**" />
-	<mvc:resources location="/pages/img/" mapping="/pages/img/**" />
-	<mvc:resources location="/pages/js/" mapping="/pages/js/**" />
-	<mvc:resources location="/pages/lib/" mapping="/pages/lib/**" />
 	
 	<mvc:resources location="/echarts/" mapping="/echarts/**" />
 	
