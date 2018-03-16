@@ -22,8 +22,19 @@
 				<td th:text="${addrState.count}">1</td>
 				
 				<span th:switch="${addr.isDefault}" th:remove="tag">
-					<td th:case="1"><input type="checkbox" onclick="selectorFunc(this)" th:attr="data-address=${addr.fullAddress},data-person=${addr.contactPerson}+' '+${addr.contactPhone},data-id=${addr.id}" class="addrSelector " checked="true"  /></td>
-					<td th:case="*"><input type="checkbox" onclick="selectorFunc(this)" th:attr="data-address=${addr.fullAddress},data-person=${addr.contactPerson}+' '+${addr.contactPhone},data-id=${addr.id}" class="addrSelector "  /></td>
+					<td th:case="1">
+						<input 	type="checkbox" 
+								onclick="selectorFunc(this)" 
+								th:attr="data-address=${addr.fullAddress},data-person=${addr.contactPerson}+' '+${addr.contactPhone},data-id=${addr.id}" 
+								class="addrSelector " 
+								checked="true"  />
+					</td>
+					<td th:case="*">
+						<input type="checkbox" 
+								onclick="selectorFunc(this)" 
+								th:attr="data-address=${addr.fullAddress},data-person=${addr.contactPerson}+' '+${addr.contactPhone},data-id=${addr.id}" 
+								class="addrSelector "  />
+					</td>
 				</span>
 				
 				
