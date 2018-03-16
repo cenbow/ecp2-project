@@ -25,8 +25,11 @@
     <result column="customer_type" jdbcType="VARCHAR" property="customerType" />
     <result column="country" jdbcType="VARCHAR" property="country" />
     <result column="province" jdbcType="VARCHAR" property="province" />
+    <result column="province_code" jdbcType="VARCHAR" property="provinceCode" />
     <result column="city" jdbcType="VARCHAR" property="city" />
-    <result column="area" jdbcType="VARCHAR" property="area" />
+    <result column="city_code" jdbcType="VARCHAR" property="cityCode" />
+    <result column="county" jdbcType="VARCHAR" property="county" />
+    <result column="county_code" jdbcType="VARCHAR" property="countyCode" />
     <result column="added_area" jdbcType="VARCHAR" property="addedArea" />
     <result column="main_trade" jdbcType="VARCHAR" property="mainTrade" />
     <result column="first_trade" jdbcType="VARCHAR" property="firstTrade" />
@@ -59,10 +62,11 @@
     extend_id, user_id, business_licence_pic_src, tax_registration_certificate_pic_src, 
     organization_pic_src, company_name, contact_email, artificial_person_name, contact_phone, 
     contact_address, account_state, create_dt, deleted, chinese_name, chinese_short_name, 
-    english_name, english_short_name, customer_type, country, province, city, area, added_area, 
-    main_trade, first_trade, second_trade, office_address, office_postcode, office_tel, 
-    office_email, register_name, register_fund, register_address, register_postcode, 
-    register_date, customer_size, customer_number, economic_type, investment_ways, company_number, 
-    is_listing, is_transnational, is_bloc, is_headquarters, company_website, customer_intro
+    english_name, english_short_name, customer_type, country, province, province_code, 
+    city, city_code, county, county_code, added_area, main_trade, first_trade, second_trade, 
+    office_address, office_postcode, office_tel, office_email, register_name, register_fund, 
+    register_address, register_postcode, register_date, customer_size, customer_number, 
+    economic_type, investment_ways, company_number, is_listing, is_transnational, is_bloc, 
+    is_headquarters, company_website, customer_intro
   </sql>
 </mapper>

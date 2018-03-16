@@ -38,12 +38,9 @@
     <result column="highest_price" jdbcType="DECIMAL" property="highestPrice" />
     <result column="lowest_price" jdbcType="DECIMAL" property="lowestPrice" />
     <result column="hard_cost_price" jdbcType="DECIMAL" property="hardCostPrice" />
-    
     <result column="after_service" jdbcType="LONGVARCHAR" property="afterService" />
     <result column="describe_url" jdbcType="LONGVARCHAR" property="describeUrl" />
-    
   </resultMap>
-    
   <sql id="Base_Column_List">
     <!--
       WARNING - @mbggenerated

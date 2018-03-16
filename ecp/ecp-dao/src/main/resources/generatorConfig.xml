@@ -9,7 +9,11 @@
 		当加载根类中的 JavaModelGenerator 检查重写的方法时
 		因此，如果你需要加载其他用途的jar包，classPathEntry起不到作用，不能这么写，解决的办法就是将你用的jar包添加到类路径中，在Eclipse等IDE中运行的时候，添加jar包比较容易。当从命令行执行的时候，需要用java -cp xx.jar,xx2.jar xxxMainClass这种方式在-cp后面指定来使用(注意-jar会导致-cp无效)。
 	 -->
-	<classPathEntry	location="D:\Program Files\Repositories\Maven\mysql\mysql-connector-java\5.1.38\mysql-connector-java-5.1.38.jar"/>
+	 
+	<!-- HZ 本地 D:\maven-repository\mysql\mysql-connector-java\5.1.38 -->
+	
+	<classPathEntry	location="D:\maven-repository\mysql\mysql-connector-java\5.1.38\mysql-connector-java-5.1.38.jar"/>
+	<!-- <classPathEntry	location="D:\Program Files\Repositories\Maven\mysql\mysql-connector-java\5.1.38\mysql-connector-java-5.1.38.jar"/> -->
 		
 	<!-- 此处指定生成针对MyBatis3的DAO -->
 	<context id="DB2Tables"	targetRuntime="MyBatis3">
@@ -86,9 +90,9 @@
 			<generatedKey column="category_brand_id" sqlStatement="MySql" identity="true"/>
 		</table> -->
 		<!-- item -->
-		<table tableName="item" domainObjectName="Item" enableCountByExample="false" enableUpdateByExample="false" enableDeleteByExample="false" enableSelectByExample="false" selectByExampleQueryId="false">
+		<!-- <table tableName="item" domainObjectName="Item" enableCountByExample="false" enableUpdateByExample="false" enableDeleteByExample="false" enableSelectByExample="false" selectByExampleQueryId="false">
 			<generatedKey column="item_id" sqlStatement="MySql" identity="true"/>
-		</table>
+		</table> -->
 		
 		<!-- item_attr_value_item
 		<table tableName="item_attr_value_item" domainObjectName="ItemAttrValue" enableCountByExample="false" enableUpdateByExample="false" enableDeleteByExample="false" enableSelectByExample="false" selectByExampleQueryId="false">
@@ -141,9 +145,9 @@
 		</table> -->
 		
 		<!-- trade_sku_price --> 
-		<table tableName="trade_sku_price" domainObjectName="SkuPrice" enableCountByExample="false" enableUpdateByExample="false" enableDeleteByExample="false" enableSelectByExample="false" selectByExampleQueryId="false">
+		<!-- <table tableName="trade_sku_price" domainObjectName="SkuPrice" enableCountByExample="false" enableUpdateByExample="false" enableDeleteByExample="false" enableSelectByExample="false" selectByExampleQueryId="false">
 			<generatedKey column="id" sqlStatement="MySql" identity="true"/>
-		</table>
+		</table> -->
 		
 		<!-- trade_sku_price_log 
 		<table tableName="trade_sku_price_log" domainObjectName="SkuPriceLog" enableCountByExample="false" enableUpdateByExample="false" enableDeleteByExample="false" enableSelectByExample="false" selectByExampleQueryId="false">
@@ -333,7 +337,6 @@
 			<generatedKey column="menu_id" sqlStatement="MySql" identity="true"/>
 		</table>
 		
-		company_info 
 		<table tableName="company_info" domainObjectName="CompanyInfo" enableCountByExample="false" enableUpdateByExample="false" enableDeleteByExample="false" enableSelectByExample="false" selectByExampleQueryId="false">
 			<generatedKey column="id" sqlStatement="MySql" identity="true"/>
 		</table> -->
@@ -348,22 +351,18 @@
 			<generatedKey column="id" sqlStatement="MySql" identity="true"/>
 		</table> 
 		
-		contract_attribute 
 		<table tableName="contract_attribute" domainObjectName="ContractAttribute" enableCountByExample="false" enableUpdateByExample="false" enableDeleteByExample="false" enableSelectByExample="false" selectByExampleQueryId="false">
 			<generatedKey column="id" sqlStatement="MySql" identity="true"/>
 		</table>
 		
-		contract_attribute_value 
 		<table tableName="contract_attribute_value" domainObjectName="ContractAttrValue" enableCountByExample="false" enableUpdateByExample="false" enableDeleteByExample="false" enableSelectByExample="false" selectByExampleQueryId="false">
 			<generatedKey column="id" sqlStatement="MySql" identity="true"/>
 		</table>
 		
-		contract_items 
 		<table tableName="contract_items" domainObjectName="ContractItems" enableCountByExample="false" enableUpdateByExample="false" enableDeleteByExample="false" enableSelectByExample="false" selectByExampleQueryId="false">
 			<generatedKey column="id" sqlStatement="MySql" identity="true"/>
 		</table>
 		
-		contract_template 
 		<table tableName="contract_template" domainObjectName="ContractTemplate" enableCountByExample="false" enableUpdateByExample="false" enableDeleteByExample="false" enableSelectByExample="false" selectByExampleQueryId="false">
 			<generatedKey column="id" sqlStatement="MySql" identity="true"/>
 		</table> -->
@@ -375,7 +374,7 @@
 			<generatedKey column="id" sqlStatement="MySql" identity="true"/>
 		</table> -->
 		
-		<table tableName="check_cycle" domainObjectName="CheckCycle" enableCountByExample="false" enableUpdateByExample="false" enableDeleteByExample="false" enableSelectByExample="false" selectByExampleQueryId="false">
+		<!-- <table tableName="check_cycle" domainObjectName="CheckCycle" enableCountByExample="false" enableUpdateByExample="false" enableDeleteByExample="false" enableSelectByExample="false" selectByExampleQueryId="false">
 			<generatedKey column="id" sqlStatement="MySql" identity="true"/>
 		</table>
 		<table tableName="commission_percentage_config" domainObjectName="CommissionPercentageConfig" enableCountByExample="false" enableUpdateByExample="false" enableDeleteByExample="false" enableSelectByExample="false" selectByExampleQueryId="false">
@@ -431,7 +430,7 @@
 		</table>
 		<table tableName="sales_target" domainObjectName="SalesTarget" enableCountByExample="false" enableUpdateByExample="false" enableDeleteByExample="false" enableSelectByExample="false" selectByExampleQueryId="false">
 			<generatedKey column="id" sqlStatement="MySql" identity="true"/>
-		</table>
+		</table> -->
 		
 	</context>
 </generatorConfiguration>
