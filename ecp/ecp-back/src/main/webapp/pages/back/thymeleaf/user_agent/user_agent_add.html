@@ -49,6 +49,332 @@
 								</div>
 							</div>
 							
+							
+							<!-- 以下为新增加的字段   中文,英文名称-->
+							
+							<div class="form-group" >
+								<label for="chineseName" class="col-sm-2 control-label">中文全称</label>
+								<div class="col-sm-10">
+									<input class="form-control" id="chineseName" name="chineseName" type="text" />
+								</div>
+							</div>
+							
+							<div class="form-group" >
+								<label for="chineseShortName" class="col-sm-2 control-label">中文简称</label>
+								<div class="col-sm-10">
+									<input class="form-control" id="chineseShortName" name="chineseShortName" type="text" />
+								</div>
+							</div>
+							
+							
+							<div class="form-group" >
+								<label for="englishName" class="col-sm-2 control-label">英文全称</label>
+								<div class="col-sm-10">
+									<input class="form-control" id="englishName" name="englishName" type="text" />
+								</div>
+							</div>
+							
+							
+							<div class="form-group" >
+								<label for="englishShortName" class="col-sm-2 control-label">英文简称</label>
+								<div class="col-sm-10">
+									<input class="form-control" id="englishShortName" name="englishShortName" type="text" />
+								</div>
+							</div>	
+							
+											
+							
+							
+							<div class="form-group" >
+								<label for="customerType" class="col-sm-2 control-label">客户类别</label>
+								<div class="col-sm-10">
+									<input class="form-control" id="customerType" name="customerType" type="text" />
+								</div>
+							</div>
+							
+							
+							
+							<div class="form-group" >
+								<label for="country" class="col-sm-2 control-label">国家</label>
+								<div class="col-sm-10">
+									<input class="form-control" id="country" name="country"	value="中国" type="text" />
+								</div>
+							</div>
+							
+							
+							
+							<!-- <div class="form-group" >
+								<label for="province" class="col-sm-2 control-label">省份</label>
+								<div class="col-sm-10">
+									<select class="form-control" id="province" ><option value="" data-code="">—— 省 ——</option></select>
+		          					<input type="hidden" value="" id="provinceCode" name="provinceCode">
+		          					<input type="hidden" value="" id="provinceName" name="provinceName">
+	          					</div>		          				
+							</div>
+							
+							<div class="form-group" >
+								<label for="city" class="col-sm-2 control-label">市</label>
+								<div class="col-sm-10">
+									<select class="form-control" id="city" ><option value="" data-code="">—— 市 ——</option></select>
+		          					<input type="hidden" value="" id="cityCode" name="cityCode">
+		          					<input type="hidden" value="" id="cityName" name="cityName">
+	          					</div>         				
+							</div>
+							
+							<div class="form-group" >
+								<label for="district" class="col-sm-2 control-label">区(县)</label>
+								<div class="col-sm-10">
+									<select class="form-control" id="district" ><option value="" data-code="">—— 区 ——</option></select>
+							        <input type="hidden" value="" id="countyCode" name="countyCode">
+							        <input type="hidden" value="" id="countyName" name="countyName">
+						        </div>         				
+							</div> -->
+							
+							
+							<!-- 地区选择 -->
+							<div class="form-group">
+								<label for="distpicker" class="col-sm-2 control-label">所在地区（*）</label>
+								<div class="col-sm-10">									
+									<!-- 地区选择 -->
+									<div data-toggle="distpicker" id="distpicker">
+										<div class="row clearfix">
+											<div class="col-md-12 column">
+												<div class="row clearfix">
+													<div class="col-md-4 column" style="padding-right:5px;">
+								          					<select class="form-control" id="province" ><option value="" data-code="">—— 省 ——</option></select>
+								          					<!-- 省份编码、名称-隐藏字段 -->
+								          					<input type="hidden" value="" id="provinceCode" name="provinceCode">
+								          					<input type="hidden" value="" id="provinceName" name="province">
+													</div>
+													<div class="col-md-4 column" style="padding:0px 0px 0px 0px;">
+								          					<select class="form-control" id="city" ><option value="" data-code="">—— 市 ——</option></select>
+								          					<!-- 市级编码、名称-隐藏字段 -->
+								          					<input type="hidden" value="" id="cityCode" name="cityCode">
+								          					<input type="hidden" value="" id="cityName" name="city">
+													</div>
+													<div class="col-md-4 column" style="padding-left:5px">
+												          <select class="form-control" id="district" ><option value="" data-code="">—— 区 ——</option></select>
+												          <!-- 县级编码、名称-隐藏字段 -->
+												          <input type="hidden" value="" id="countyCode" name="countyCode">
+												          <input type="hidden" value="" id="countyName" name="county">
+													</div>
+												</div>
+											</div>
+										</div>
+										
+									</div>
+								</div>
+							</div>
+							
+							
+							
+							
+							
+							
+							<div class="form-group" >
+								<label for="addedArea" class="col-sm-2 control-label">补充区县</label>
+								<div class="col-sm-10">
+									<input class="form-control" id="addedArea" name="addedArea" type="text" />
+								</div>
+							</div>
+							
+							
+							<div class="form-group" >
+								<label for="mainTrade" class="col-sm-2 control-label">主行业</label>
+								<div class="col-sm-10">
+									<input class="form-control" id="mainTrade" name="mainTrade" type="text" />
+								</div>
+							</div>
+							
+							<div class="form-group" >
+								<label for="firstTrade" class="col-sm-2 control-label">一级行业</label>
+								<div class="col-sm-10">
+									<input class="form-control" id="firstTrade" name="firstTrade" type="text" />
+								</div>
+							</div>
+							
+							<div class="form-group" >
+								<label for="secondTrade" class="col-sm-2 control-label">二级行业</label>
+								<div class="col-sm-10">
+									<input class="form-control" id="secondTrade" name="secondTrade" type="text" />
+								</div>
+							</div>
+							
+							<div class="form-group" >
+								<label for="officeAddress" class="col-sm-2 control-label">办公地址</label>
+								<div class="col-sm-10">
+									<input class="form-control" id="officeAddress" name="officeAddress" type="text" />
+								</div>
+							</div>							
+							
+							
+							<div class="form-group" >
+								<label for="officePostcode" class="col-sm-2 control-label">注册邮编</label>
+								<div class="col-sm-10">
+									<input class="form-control" id="officePostcode" name="officePostcode" type="text" />
+								</div>
+							</div>
+    						
+    						<div class="form-group" >
+								<label for="officeTel" class="col-sm-2 control-label">办公电话</label>
+								<div class="col-sm-10">
+									<input class="form-control" id="officeTel" name=officeTel type="text" />
+								</div>
+							</div>
+							
+    						<div class="form-group" >
+								<label for="officeEmail" class="col-sm-2 control-label">办公邮箱</label>
+								<div class="col-sm-10">
+									<input class="form-control" id="officeEmail" name=officeEmail type="text" />
+								</div>
+							</div>
+							
+							
+							
+							
+							<div class="form-group" >
+								<label for="registerName" class="col-sm-2 control-label">注册名称</label>
+								<div class="col-sm-10">
+									<input class="form-control" id="registerName" name=registerName type="text" />
+								</div>
+							</div>
+							
+							
+							<div class="form-group" >
+								<label for="registerFund" class="col-sm-2 control-label">注册资金（万元）</label>
+								<div class="col-sm-10">
+									<input class="form-control" id="registerFund" name=registerFund type="number"  min='0'  max='999999' />
+								</div>
+							</div>
+							
+							<div class="form-group" >
+								<label for="registerAddress" class="col-sm-2 control-label">注册地址</label>
+								<div class="col-sm-10">
+									<input class="form-control" id="registerAddress" name=registerAddress type="text" />
+								</div>
+							</div>
+							
+							<div class="form-group" >
+								<label for="registerPostcode" class="col-sm-2 control-label">注册邮编</label>
+								<div class="col-sm-10">
+									<input class="form-control" id="registerPostcode" name=registerPostcode type="text" />
+								</div>
+							</div>
+							
+							
+							<div class="form-group" >
+								<label for="registerDate" class="col-sm-2 control-label">成立时间</label>
+								<div class="col-sm-10">
+									<input class="datetimepicker datetime  form-control" 
+											readonly="readonly" 
+											id="registerDate" 
+											name="registerDate" 
+											type="text"											
+											onClick="WdatePicker({dateFmt:'yyyy-MM-dd'});" />
+								</div>
+							</div>
+							
+							
+							
+							<div class="form-group" >
+								<label for="customerSize" class="col-sm-2 control-label">客户规模</label>
+								<div class="col-sm-10">
+									<input class="form-control" id="customerSize" name=customerSize type="text" />
+								</div>
+							</div>
+							
+								
+							
+							<div class="form-group" >
+								<label for="customerNumber" class="col-sm-2 control-label">客户人员</label>
+								<div class="col-sm-10">
+									<input class="form-control" id="customerNumber" name=customerNumber type="text" />
+								</div>
+							</div>
+							
+							<div class="form-group" >
+								<label for="economicType" class="col-sm-2 control-label">经济类型</label>
+								<div class="col-sm-10">
+									<input class="form-control" id="economicType" name=economicType type="text" />
+								</div>
+							</div>
+							
+							<div class="form-group" >
+								<label for="investmentWays" class="col-sm-2 control-label">出资方式</label>
+								<div class="col-sm-10">
+									<input class="form-control" id="investmentWays" name=investmentWays type="text" />
+								</div>
+							</div>
+							
+							<div class="form-group" >
+								<label for="companyNumber" class="col-sm-2 control-label">公司税号</label>
+								<div class="col-sm-10">
+									<input class="form-control" id="companyNumber" name=companyNumber type="text" />
+								</div>
+							</div>
+							
+							<div class="form-group" >							
+								<label for="isListing" class="col-sm-2 control-label">是否上市</label>
+								<div class="col-sm-10">								
+									<select name = "isListing">  
+									    <option value = "1">是</option>  
+									    <option value = "2" selected="selected">否</option>								      
+									</select>								
+								</div>
+							</div>
+							
+							<div class="form-group" >
+								<label for="isTransnational" class="col-sm-2 control-label">是否跨国</label>
+								<div class="col-sm-10">
+									<select name = "isTransnational">  
+									    <option value = "1">是</option>  
+									    <option value = "2" selected="selected">否</option>								      
+									</select>
+								</div>
+							</div>
+							
+							
+							<div class="form-group" >
+								<label for="isBloc" class="col-sm-2 control-label">是否集团客户</label>
+								<div class="col-sm-10">
+									<select name = "isBloc">  
+									    <option value = "1">是</option>  
+									    <option value = "2" selected="selected">否</option>								      
+									</select>
+								</div>
+							</div>
+							
+							
+							<div class="form-group" >
+								<label for="isHeadquarters" class="col-sm-2 control-label">是否总部</label>
+								<div class="col-sm-10">
+									<select name = "isHeadquarters">  
+									    <option value = "1" selected="selected">是</option>  
+									    <option value = "2">否</option>								      
+									</select>
+								</div>
+							</div>
+							
+							<div class="form-group" >
+								<label for="companyWebsite" class="col-sm-2 control-label">公司网址</label>
+								<div class="col-sm-10">
+									<input class="form-control" id="companyWebsite" name=companyWebsite type="text" />
+								</div>
+							</div>
+							
+							
+							<div class="form-group" >
+								<label for="customerIntro" class="col-sm-2 control-label">客户简介</label>
+								<div class="col-sm-10">
+									<input class="form-control" id="customerIntro" name=customerIntro type="text" />
+								</div>
+							</div> 
+							
+							
+							
+							
+							<!-- 以下字段为三证  -->
+							
 							<div class="form-group" >
 								<div>
 									<label for="businessLicencePicSrc" class="col-sm-2 column control-label" >营业执照</label>
@@ -87,6 +413,7 @@
 									</div>
 								</div>
 							</div>
+							
 												
 							<hr>
 							<div class="form-group">
@@ -105,6 +432,13 @@
 		</div>
 	</div>
 
+	<!-- 地区选择 -->
+	<script type="text/javascript" th:src="@{/static/js/distpicker/distpicker.data.js}"></script>
+	<script type="text/javascript" th:src="@{/static/js/distpicker/distpicker.js}"></script>
+	<script type="text/javascript" th:src="@{/static/js/distpicker/main.js}"></script>
+	<!-- 日期组件 -->
+	<script type="text/javascript" th:src="@{/static/calendar/WdatePicker.js}"></script>
+	<!-- 业务处理  -->
 	<script type="text/javascript" th:src="@{/static/js/user_agent/user_agent_add.js}"></script>
 
 </body>

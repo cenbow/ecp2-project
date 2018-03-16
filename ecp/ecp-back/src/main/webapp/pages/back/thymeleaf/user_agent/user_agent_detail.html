@@ -17,6 +17,7 @@
 				</div>
 				<div class="panel-body">
 					<form class="form-horizontal" role="form" id="user-agent-form">
+					
 						<!-- 需要编辑的签约代理商 -->
 						<input type="hidden" id="extendId" name="extendId" th:value="${agent.extendId}" />
 						
@@ -54,6 +55,364 @@
 								<input	class="form-control" id="contactAddress" name="contactAddress" th:value="${agent.contactAddress}"  type="text" />
 							</div>
 						</div>
+						
+						
+						<!-- 以下为新增加的字段   中文,英文名称-->
+							
+						<div class="form-group" >
+							<label for="chineseName" class="col-sm-2 control-label">中文全称</label>
+							<div class="col-sm-10">
+								<input class="form-control" id="chineseName" name="chineseName" th:value="${agent.chineseName}" type="text" />
+							</div>
+						</div>
+						
+						<div class="form-group" >
+							<label for="chineseShortName" class="col-sm-2 control-label">中文简称</label>
+							<div class="col-sm-10">
+								<input class="form-control" id="chineseShortName" name="chineseShortName"  th:value="${agent.chineseName}"  type="text" />
+							</div>
+						</div>
+						
+						
+						<div class="form-group" >
+							<label for="englishName" class="col-sm-2 control-label">英文全称</label>
+							<div class="col-sm-10">
+								<input class="form-control" id="englishName" name="englishName"  th:value="${agent.englishName}"  type="text" />
+							</div>
+						</div>
+						
+						
+						<div class="form-group" >
+							<label for="englishShortName" class="col-sm-2 control-label">英文简称</label>
+							<div class="col-sm-10">
+								<input class="form-control" id="englishShortName" name="englishShortName" th:value="${agent.englishShortName}" type="text" />
+							</div>
+						</div>	
+						
+										
+						
+						
+						<div class="form-group" >
+							<label for="customerType" class="col-sm-2 control-label">客户类别</label>
+							<div class="col-sm-10">
+								<input class="form-control" id="customerType" name="customerType"	th:value="${agent.customerType}" type="text" />
+							</div>
+						</div>
+						
+						
+						
+						<div class="form-group" >
+							<label for="country" class="col-sm-2 control-label">国家</label>
+							<div class="col-sm-10">
+								<input class="form-control" id="country" name="country"  th:value="${agent.country}" type="text" />
+							</div>
+						</div>
+						
+						
+						
+						<!-- <div class="form-group" >
+							<label for="province" class="col-sm-2 control-label">省份</label>
+							<div class="col-sm-10">
+								<select class="form-control" id="province" ><option value="" data-code="">—— 省 ——</option></select>
+	          					<input type="hidden" value="" id="provinceCode" name="provinceCode">
+	          					<input type="hidden" value="" id="provinceName" name="provinceName">
+          					</div>		          				
+						</div>
+						
+						<div class="form-group" >
+							<label for="city" class="col-sm-2 control-label">市</label>
+							<div class="col-sm-10">
+								<select class="form-control" id="city" ><option value="" data-code="">—— 市 ——</option></select>
+	          					<input type="hidden" value="" id="cityCode" name="cityCode">
+	          					<input type="hidden" value="" id="cityName" name="cityName">
+          					</div>         				
+						</div>
+						
+						<div class="form-group" >
+							<label for="district" class="col-sm-2 control-label">区(县)</label>
+							<div class="col-sm-10">
+								<select class="form-control" id="district" ><option value="" data-code="">—— 区 ——</option></select>
+						        <input type="hidden" value="" id="countyCode" name="countyCode">
+						        <input type="hidden" value="" id="countyName" name="countyName">
+					        </div>         				
+						</div> -->
+						
+						
+						<!-- 地区选择 -->
+						<div class="form-group">
+							<label for="distpicker" class="col-sm-2 control-label">所在地区（*）</label>
+							<div class="col-sm-10">									
+								<!-- 地区选择 -->
+								<div data-toggle="distpicker" id="distpicker">
+									<div class="row clearfix">
+										<div class="col-md-12 column">
+											<div class="row clearfix">
+												<div class="col-md-4 column" style="padding-right:5px;">
+							          					<select class="form-control" id="province" th:value="${agent.province}" ><option  value="" data-code="">—— 省 ——</option></select>
+							          					<!-- 省份编码、名称-隐藏字段 -->
+							          					<input type="hidden" th:value="${agent.provinceCode}" id="provinceCode" name="provinceCode">
+							          					<input type="hidden" th:value="${agent.province}" id="provinceName" name="province">
+												</div>
+												<div class="col-md-4 column" style="padding:0px 0px 0px 0px;">
+							          					<select class="form-control" id="city" th:value="${agent.city}"><option value="" data-code="">—— 市 ——</option></select>
+							          					<!-- 市级编码、名称-隐藏字段 -->
+							          					<input type="hidden" th:value="${agent.cityCode}" id="cityCode" name="cityCode">
+							          					<input type="hidden" th:value="${agent.city}" id="cityName" name="city">
+												</div>
+												<div class="col-md-4 column" style="padding-left:5px">
+											          <select class="form-control" id="district" th:value="${agent.county}"><option value="" data-code="">—— 区 ——</option></select>
+											          <!-- 县级编码、名称-隐藏字段 -->
+											          <input type="hidden" th:value="${agent.countyCode}" id="countyCode" name="countyCode">
+											          <input type="hidden" th:value="${agent.county}" id="countyName" name="county">
+												</div>
+											</div>
+										</div>
+									</div>
+									
+								</div>
+							</div>
+						</div>
+						
+						
+						
+						
+						
+						
+						<div class="form-group" >
+							<label for="addedArea" class="col-sm-2 control-label">补充区县</label>
+							<div class="col-sm-10">
+								<input class="form-control" id="addedArea" name="addedArea" th:value="${agent.addedArea}" type="text" />
+							</div>
+						</div>
+						
+						
+						<div class="form-group" >
+							<label for="mainTrade" class="col-sm-2 control-label">主行业</label>
+							<div class="col-sm-10">
+								<input class="form-control" id="mainTrade" name="mainTrade" th:value="${agent.mainTrade}" type="text" />
+							</div>
+						</div>
+						
+						<div class="form-group" >
+							<label for="firstTrade" class="col-sm-2 control-label">一级行业</label>
+							<div class="col-sm-10">
+								<input class="form-control" id="firstTrade" name="firstTrade" th:value="${agent.firstTrade}" type="text" />
+							</div>
+						</div>
+						
+						<div class="form-group" >
+							<label for="secondTrade" class="col-sm-2 control-label">二级行业</label>
+							<div class="col-sm-10">
+								<input class="form-control" id="secondTrade" name="secondTrade" th:value="${agent.secondTrade}" type="text" />
+							</div>
+						</div>
+						
+						<div class="form-group" >
+							<label for="officeAddress" class="col-sm-2 control-label">办公地址</label>
+							<div class="col-sm-10">
+								<input class="form-control" id="officeAddress" name="officeAddress"  th:value="${agent.officeAddress}" type="text" />
+							</div>
+						</div>							
+						
+						
+						<div class="form-group" >
+							<label for="officePostcode" class="col-sm-2 control-label">注册邮编</label>
+							<div class="col-sm-10">
+								<input class="form-control" id="officePostcode" name="officePostcode" th:value="${agent.officePostcode}" type="text" />
+							</div>
+						</div>
+   						
+   						<div class="form-group" >
+							<label for="officeTel" class="col-sm-2 control-label">办公电话</label>
+							<div class="col-sm-10">
+								<input class="form-control" id="officeTel" name=officeTel	th:value="${agent.officeTel}" type="text" />
+							</div>
+						</div>
+						
+   						<div class="form-group" >
+							<label for="officeEmail" class="col-sm-2 control-label">办公邮箱</label>
+							<div class="col-sm-10">
+								<input class="form-control" id="officeEmail" name=officeEmail 	th:value="${agent.officeEmail}"	type="text" />
+							</div>
+						</div>
+						
+						<div class="form-group" >
+							<label for="registerName" class="col-sm-2 control-label">注册名称</label>
+							<div class="col-sm-10">
+								<input class="form-control" id="registerName" name=registerName th:value="${agent.registerName}"	type="text" />
+							</div>
+						</div>
+						
+						
+						<div class="form-group" >
+							<label for="registerFund" class="col-sm-2 control-label">注册资金（万元）</label>
+							<div class="col-sm-10">
+								<input class="form-control" id="registerFund" name=registerFund	th:value="${agent.registerFund}" type="number"  min='0'  max='999999' />
+							</div>
+						</div>
+						
+						<div class="form-group" >
+							<label for="registerAddress" class="col-sm-2 control-label">注册地址</label>
+							<div class="col-sm-10">
+								<input class="form-control" id="registerAddress" name=registerAddress	th:value="${agent.registerAddress}" type="text" />
+							</div>
+						</div>
+						
+						<div class="form-group" >
+							<label for="registerPostcode" class="col-sm-2 control-label">注册邮编</label>
+							<div class="col-sm-10">
+								<input class="form-control" id="registerPostcode" name=registerPostcode	th:value="${agent.registerPostcode}" type="text" />
+							</div>
+						</div>
+						
+						
+						<div class="form-group" >
+							<label for="registerDate" class="col-sm-2 control-label">成立时间</label>
+							<div class="col-sm-10">
+								<input class="datetimepicker datetime  form-control" 
+										readonly="readonly" 
+										id="registerDate" 
+										name="registerDate" 
+										type="text"
+										th:value="${#dates.format(agent.registerDate,'yyyy-MM-dd')}"
+																		
+										onClick="WdatePicker({dateFmt:'yyyy-MM-dd'});" />
+							</div>
+						</div>
+						
+						
+						
+						<div class="form-group" >
+							<label for="customerSize" class="col-sm-2 control-label">客户规模</label>
+							<div class="col-sm-10">
+								<input class="form-control" id="customerSize" name=customerSize	th:value="${agent.customerSize}" type="text" />
+							</div>
+						</div>
+						
+							
+						
+						<div class="form-group" >
+							<label for="customerNumber" class="col-sm-2 control-label">客户人员</label>
+							<div class="col-sm-10">
+								<input class="form-control" id="customerNumber" name=customerNumber	th:value="${agent.customerNumber}" type="text" />
+							</div>
+						</div>
+						
+						<div class="form-group" >
+							<label for="economicType" class="col-sm-2 control-label">经济类型</label>
+							<div class="col-sm-10">
+								<input class="form-control" id="economicType" name=economicType th:value="${agent.economicType}" type="text" />
+							</div>
+						</div>
+						
+						<div class="form-group" >
+							<label for="investmentWays" class="col-sm-2 control-label">出资方式</label>
+							<div class="col-sm-10">
+								<input class="form-control" id="investmentWays" name=investmentWays	th:value="${agent.investmentWays}" type="text" />
+							</div>
+						</div>
+						
+						<div class="form-group" >
+							<label for="companyNumber" class="col-sm-2 control-label">公司税号</label>
+							<div class="col-sm-10">
+								<input class="form-control" id="companyNumber" name=companyNumber th:value="${agent.companyNumber}" type="text" />
+							</div>
+						</div>
+						
+						<div class="form-group" >							
+							<label for="isListing" class="col-sm-2 control-label">是否上市</label>
+							<div class="col-sm-10">								
+								<select name = "isListing">
+									
+									<!-- <option value = "1"	th:attr="selected=${agent.isListing== 1}? 'selected':''">是</option>  
+								    <option value = "2" th:attr="selected=${agent.isListing==2}?  'selected':''">否</option> -->
+									<span th:switch="${agent.isListing}" th:remove="tag">
+									  	<span th:case=1 th:remove="tag">
+									  		<option value = "1"	selected="selected">是</option>  
+								    		<option value = "2" >否</option>
+									  	</span>
+									  	<span th:case=2 th:remove="tag">
+									  		<option value = "1"	>是</option>  
+								    		<option value = "2" selected="selected">否</option>
+									  	</span>
+									</span>  
+								</select>								
+							</div>
+						</div>
+						
+						<div class="form-group" >
+							<label for="isTransnational" class="col-sm-2 control-label">是否跨国</label>
+							<div class="col-sm-10">
+								<select name = "isTransnational">  
+								    <span th:switch="${agent.isTransnational}" th:remove="tag">
+									  	<span th:case=1 th:remove="tag">
+									  		<option value = "1"	selected="selected">是</option>  
+								    		<option value = "2" >否</option>
+									  	</span>
+									  	<span th:case=2 th:remove="tag">
+									  		<option value = "1"	>是</option>  
+								    		<option value = "2" selected="selected">否</option>
+									  	</span>
+									</span>  						      
+								</select>
+							</div>
+						</div>
+						
+						
+						<div class="form-group" >
+							<label for="isBloc" class="col-sm-2 control-label">是否集团客户</label>
+							<div class="col-sm-10">
+								<select name = "isBloc">  
+								    <span th:switch="${agent.isBloc}" th:remove="tag">
+									  	<span th:case=1 th:remove="tag">
+									  		<option value = "1"	selected="selected">是</option>  
+								    		<option value = "2" >否</option>
+									  	</span>
+									  	<span th:case=2 th:remove="tag">
+									  		<option value = "1"	>是</option>  
+								    		<option value = "2" selected="selected">否</option>
+									  	</span>
+									</span>								      
+								</select>
+							</div>
+						</div>
+						
+						
+						<div class="form-group" >
+							<label for="isHeadquarters" class="col-sm-2 control-label">是否总部</label>
+							<div class="col-sm-10">
+								<select name = "isHeadquarters">  
+								    <span th:switch="${agent.isHeadquarters}" th:remove="tag">
+									  	<span th:case=1 th:remove="tag">
+									  		<option value = "1"	selected="selected">是</option>  
+								    		<option value = "2" >否</option>
+									  	</span>
+									  	<span th:case=2 th:remove="tag">
+									  		<option value = "1"	>是</option>  
+								    		<option value = "2" selected="selected">否</option>
+									  	</span>
+									</span>									      
+								</select>
+							</div>
+						</div>
+						
+						<div class="form-group" >
+							<label for="companyWebsite" class="col-sm-2 control-label">公司网址</label>
+							<div class="col-sm-10">
+								<input class="form-control" id="companyWebsite" name=companyWebsite th:value="${agent.companyWebsite}"  type="text" />
+							</div>
+						</div>
+						
+						
+						<div class="form-group" >
+							<label for="customerIntro" class="col-sm-2 control-label">客户简介</label>
+							<div class="col-sm-10">
+								<input class="form-control" id="customerIntro" name=customerIntro th:value="${agent.customerIntro}" type="text" />
+							</div>
+						</div> 
+						
+						
+						
 						
 						<!-- 审核用图片 -->
 						<div class="form-group">												
@@ -106,9 +465,9 @@
 						
 						<hr>
 						<div class="form-group">
-							<div>
+							<!-- <div>
 								<label for="organizationPicSrc" class="col-sm-2 control-label">&nbsp;</label>
-							</div>
+							</div> -->
 							
 							<div class="col-sm-10">
 								<button type="button" id="btnSave"  class="btn btn-primary"  style="float:right;margin-right:100px;" >保存</button>
@@ -121,6 +480,22 @@
 		</div>
 	</div>
 </div>
+
+	<!-- 地区选择 -->
+	<script type="text/javascript" th:src="@{/static/js/distpicker/distpicker.data.js}"></script>
+	<script type="text/javascript" th:src="@{/static/js/distpicker/distpicker.js}"></script>
+	<script type="text/javascript" th:src="@{/static/js/distpicker/main.js}"></script>
+	<!-- 日期组件 -->
+	<script type="text/javascript" th:src="@{/static/calendar/WdatePicker.js}"></script>
+	
+	<script th:inline="javascript">  
+	/*<![CDATA[*/  
+	  
+	    var agent = [[${agent}]];  
+	    console.log(agent);  
+	  
+	/*]]>*/  
+	</script>  
 
 	<script type="text/javascript">
 		
@@ -178,6 +553,58 @@
 			});
 		}
 		
+		//---------------------------区域操作-----------------------------
+		/**
+		 * 复位地区列表
+		 * @returns
+		 */
+		function resetDistPickerDeep(){
+			 var $distpicker = $('#distpicker');
+			 $distpicker.distpicker('reset', true);
+		}
+
+		/**
+		 * 同步更新地区编码、名称
+		 * @returns
+		 */
+		function syncUpdateHiddenAreaCode(){
+			console.log("debug");
+			var code= $("#province").find("option:selected").attr("data-code");  //省级编码、名称
+			var name= $("#province").find("option:selected").val();
+			console.log("name:"+name);
+			$("#provinceCode").val(code);
+			$("#provinceName").val(name);
+			
+			console.log("debug end");
+			
+			
+			code= $("#city").find("option:selected").attr("data-code");  //市级编码、名称
+			name= $("#city").find("option:selected").val();
+			$("#cityCode").val(code);
+			$("#cityName").val(name);
+			
+			
+			
+			code= $("#district").find("option:selected").attr("data-code");  //县区级编码、名称
+			name= $("#district").find("option:selected").val();
+			$("#countyCode").val(code);
+			$("#countyName").val(name);
+			
+			
+		}
+		
+		/*
+			采用用户选择的地区值 初始化地区选择组件
+		*/
+		function initArea(agent) {
+			//set distpicker
+			$("#province").val(agent.province);
+			$("#province").trigger("change");
+			$("#city").val(agent.city);
+			$("#city").trigger("change");
+			$("#district").val(agent.county);
+		}
+		
 		
 		$(function() {		
 			
@@ -186,6 +613,31 @@
 				saveFun();	
 			});
 			
+			
+			//==================地区选择====================
+			/*
+			 *当“省份”变化时，将code赋值给value; 
+			 */
+			$("#province").on("change",function(){
+				syncUpdateHiddenAreaCode();
+			});
+			
+			/*
+			 *当“市级”变化时，将ode赋值给value; 
+			 */
+			$("#city").on("change",function(){
+				syncUpdateHiddenAreaCode();
+			});
+			
+			/*
+			 *当“县级”变化时，将code赋值给value; 
+			 */
+			$("#district").on("change",function(){
+				syncUpdateHiddenAreaCode();
+			});
+			
+			resetDistPickerDeep();   //初始化区域选择组件
+			initArea(agent);    //采用用户所选区域进行初始化.
 			
 		});
 	</script>
