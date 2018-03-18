@@ -19,4 +19,36 @@
     -->
     id, cust_id, area, channel, master_slave_flag, item_cat_id, bind_user_id
   </sql>
+  
+  <select id="getSales" resultType="map">
+	SELECT user.id,user.username,user.nickname from user  
+	LEFT JOIN user_role ON (user.id=user_role.user_id)  
+	LEFT JOIN role ON(user_role.role_id=role.role_id) 
+	<where>
+		user.type=1  
+		AND   
+		user.deleted=1 
+		AND   
+		role.role_name=#{roleName}		
+	</where>   
+  </select>
+  
+  <select id="getSalesByAgentId" resultType="map">
+  	 SELECT user.id,user.username,user.nickname from user 
+  	 LEFT JOIN cust_lock_rel ON (user.id=cust_lock_rel.bind_user_id) 
+  	 LEFT JOIN user_role on(user.id=user_role.user_id) 
+  	 LEFT JOIN role ON(user_role.role_id=role.role_id)
+  	 <where>
+  	 	user.type=1 AND  
+  	 	user.deleted=1  AND  	 	
+  	 	cust_lock_rel.cust_id=#{agentId} AND
+  	 	role.role_name=#{roleName} 
+  	 </where> 
+  
+  </select>
+  
+  
+  
+  
+  
 </mapper>
