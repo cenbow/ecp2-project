@@ -1,0 +1,247 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>Insert title here</title>
+</head>
+<body>
+	<div class="container-fluid">
+		<div class="row clearfix">
+			<div class="col-md-12 column">
+				<h4>选择要绑定的OS/IS</h4>
+				<hr style="height:1px;border:none;border-top:1px solid blue;" />
+			</div>
+		</div>
+		<div class="row clearfix">
+			<div class="col-md-4 column">
+				<div class="row clearfix">
+					<div class="col-md-12 column">
+						<h5>外部销售人员列表</h5>
+					</div>
+				</div>
+				<table class="table">
+					<thead>
+						<tr>
+							<th><input type="checkbox" id="check-select-all-os"><label for="check-select-all-os">选择</label></th>
+							<th>ID</th>
+							<th>姓名</th>
+							<th>昵称</th>
+						</tr>
+					</thead>
+					<tbody>
+						<tr th:each="os:${outsideSales}">
+							<td > <input type="checkbox" > </td>
+							<td th:text="${os.id}">ID</td>
+							<td th:text="${os.username}">用户名</td>
+							<td th:text="${os.nickname}">昵称</td>
+						</tr>
+						
+					</tbody>
+				</table>
+			</div>
+			<div class="col-md-4 column">
+				<div class="row clearfix">
+					<div class="col-md-12 column">
+						<h5>内部销售人员列表</h5>
+					</div>
+				</div>
+				<table class="table">
+					<thead>
+						<tr>
+							<th><input type="checkbox" id="check-select-all-is"><label for="check-select-all-is">选择</label></th>
+							<th>ID</th>
+							<th>姓名</th>
+							<th>昵称</th>
+						</tr>
+					</thead>
+					<tbody>
+						<tr th:each="is:${insideSales}">
+							<td > <input type="checkbox"> </td>
+							<td th:text="${is.id}">ID</td>
+							<td th:text="${is.username}">用户名</td>
+							<td th:text="${is.nickname}">昵称</td>
+						</tr>
+					</tbody>
+				</table>
+			</div>
+			<div class="col-md-4 column">
+				<div class="row clearfix">
+					<div class="col-md-12 column">
+						<h5>绑定的OS/IS</h5>
+					</div>
+				</div>
+				<table class="table">
+					<thead>
+						<tr>
+							<th><input type="checkbox" id="check-select-all-is"><label for="check-select-all-is">选择</label></th>
+							<th>ID</th>
+							<th>姓名</th>
+							<th>昵称</th>
+							<th>类型</th>
+							<th>操作</th>
+						</tr>
+					</thead>
+					<tbody>
+						<tr th:each="bind:${agentBindList}">
+							<td > <input type="checkbox" > </td>
+							<td th:text="${bind.sale.id}">ID</td>
+							<td th:text="${bind.sale.username}">用户名</td>
+							<td th:text="${bind.sale.nickname}">昵称</td>
+							<td th:text="${bind.type}">类型</td>
+							<td ><a type="button" title="解绑"> </a></td>
+						</tr>
+					</tbody>
+				</table>
+			</div>
+		</div>
+		<div class="row clearfix">			
+			<div class="col-md-12 column">
+				<hr style="height:1px;border:none;border-top:1px solid blue;" />
+				<button type="button" class="btn btn-primary" id="btn-bind" style="float:right; margin-right:100px;">绑定</button>
+				<!-- <button type="button" class="btn btn-primary" id="btn-bind1" style="float:right; margin-right:100px;">绑定2</button> -->
+			</div>
+		</div>
+		
+		<div class="row clearfix">			
+			<div class="col-md-12 column">
+				<!-- 当前签约客户id  -->
+				<input type="hidden" id="curr-agent" th:value="#{agentId}">
+			</div>
+		</div>
+		
+	</div>
+	
+	<script type="text/javascript">
+	/*
+	 * 绑定签约代理商与OS/IS  (传递方式1)
+	 * @RequestMapping(value = "/bindsales")
+		@ResponseBody
+		public Object BindSalesToAgent(@RequestBody string parms, Model model)
+	 */
+	function bindAgentAndSales(agentId,saleIdList) {
+		var urlStr = BASE_CONTEXT_PATH + "/back/agent_bind/binduser"; // 需要提交的 url
+		var params=new Object();
+		
+		params.agentId=agentId;
+		params.saleIdList=saleIdList;
+		
+
+		$.ajax({
+			type : "POST", // 提交方式 get/post
+			url : urlStr,
+			contentType : "application/json", // 必须有,如果采用json格式传送参数时
+			// dataType : "html", //表示返回值类型，不必须,如果返回的是面页，则必须
+			data : JSON.stringify(params),
+			success : function(res) { // data 保存提交后返回的数据，一般为 json 数据
+				console.log(res);
+				if (res != null && res != "") {
+					var obj = $.parseJSON(res);
+					if (obj.result_code == "success") {
+						util.message(obj.result_msg);
+						var urlTemp = obj.result_msg;						
+					} else {
+						util.message(obj.result_msg);
+					}
+				}
+			},
+			error : function(jqXHR, textStatus, errorThrown) {
+				/* 弹出jqXHR对象的信息 */
+				alert(jqXHR.responseText);
+				alert(jqXHR.status);
+				alert(jqXHR.readyState);
+				alert(jqXHR.statusText);
+				/* 弹出其他两个参数的信息 */
+				alert(textStatus);
+				alert(errorThrown);
+
+			}
+		});
+	}
+	
+	/*
+	 * 绑定签约代理商与OS/IS  提交参数方式二(经典模式) 备用 
+	 * @RequestMapping(value = "/bindsales")
+		@ResponseBody
+		public Object BindSalesToAgent(long agentId,String saleIdList, Model model)
+	 */
+	function bindAgentAndSales1(agentId,saleIdList) {
+		var urlStr = BASE_CONTEXT_PATH + "/back/agent_bind/bindsales1"; // 需要提交的 url
+		var params=new Object();
+		
+		params.agentId=agentId;
+		params.saleIdList=saleIdList;
+		
+
+		$.ajax({
+			type : "POST", // 提交方式 get/post
+			url : urlStr,
+			//contentType : "application/json",  // saleIdList参数以JSON字符串方式传递.此时此处需要屏蔽.
+			// dataType : "html", //表示返回值类型，不必须,如果返回的是面页，则必须
+			data : {
+				"agentId":agentId,
+				"saleIdList":JSON.stringify(saleIdList)
+			},
+			success : function(res) { // data 保存提交后返回的数据，一般为 json 数据
+				console.log(res);
+				if (res != null && res != "") {
+					var obj = $.parseJSON(res);
+					if (obj.result_code == "success") {
+						// util.message(obj.result_msg);
+						var urlTemp = obj.result_msg;						
+					} else {
+						util.message(obj.result_msg);
+					}
+				}
+			},
+			error : function(jqXHR, textStatus, errorThrown) {
+				/* 弹出jqXHR对象的信息 */
+				alert(jqXHR.responseText);
+				alert(jqXHR.status);
+				alert(jqXHR.readyState);
+				alert(jqXHR.statusText);
+				/* 弹出其他两个参数的信息 */
+				alert(textStatus);
+				alert(errorThrown);
+
+			}
+		});
+	}
+	
+	
+	
+	
+	// page loaded ready
+	
+	$(function(){
+		
+		$("#btn-bind").on('click',function(e){
+			var arr=new Array();
+			arr.push(1);
+			arr.push(2);
+		
+			bindAgentAndSales(1,arr);
+			
+		});
+		
+		
+		/* $("#btn-bind1").on('click',function(e){
+			var arr=new Array();
+			arr.push(1);
+			arr.push(2);
+		
+			bindAgentAndSales1(1,arr);
+			
+		}); */
+		
+		
+		
+		
+	}); 
+	
+	
+	
+	</script>
+	
+	
+</body>
+</html>
