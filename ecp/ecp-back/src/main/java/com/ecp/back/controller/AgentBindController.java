@@ -240,11 +240,13 @@ public class AgentBindController {
 			Map<String,Object> map=new HashMap<String,Object>();
 			map.put("sale", agentBindedOS.get(i));
 			map.put("type", OUTSIDE_ROLE);
+			agentBindList.add(map);
 		}
 		for(int i=0;i<agentBindedIS.size();i++){
 			Map<String,Object> map=new HashMap<String,Object>();
 			map.put("sale", agentBindedIS.get(i));
-			map.put("type", OUTSIDE_ROLE);
+			map.put("type", INSIDE_ROLE);
+			agentBindList.add(map);
 		}		
 		
 		model.addAttribute("agentBindList", agentBindList);

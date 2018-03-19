@@ -21,7 +21,7 @@
   </sql>
   
   <select id="getSales" resultType="map">
-	SELECT user.id,user.username,user.nickname from user  
+	SELECT user.id,user.username,user.nickname,role.role_id,role.role_name from user  
 	LEFT JOIN user_role ON (user.id=user_role.user_id)  
 	LEFT JOIN role ON(user_role.role_id=role.role_id) 
 	<where>
@@ -34,10 +34,10 @@
   </select>
   
   <select id="getSalesByAgentId" resultType="map">
-  	 SELECT user.id,user.username,user.nickname from user 
+  	 SELECT user.id,user.username,user.nickname,cust_lock_rel.role_id,role.role_name from user 
   	 LEFT JOIN cust_lock_rel ON (user.id=cust_lock_rel.bind_user_id) 
   	 LEFT JOIN user_role on(user.id=user_role.user_id) 
-  	 LEFT JOIN role ON(user_role.role_id=role.role_id)
+  	 LEFT JOIN role ON(user_role.role_id=role.role_id AND cust_lock_rel.role_id=role.role_id)
   	 <where>
   	 	user.type=1 AND  
   	 	user.deleted=1  AND  	 	
