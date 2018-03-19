@@ -15,7 +15,7 @@ function isBlank(obj){
  */
 function showAgentBindOIS(id){
 
-	var url = BASE_CONTEXT_PATH + "/back/agent_bind/bind/"+id;
+	var url = BASE_CONTEXT_PATH + "/back/agent-bind/bind/"+id;
 
 	$("#edit-body").load(url, function(){
 		$("#edit-tab").removeClass("hide");

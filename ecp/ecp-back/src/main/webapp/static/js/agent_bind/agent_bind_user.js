@@ -6,7 +6,7 @@
 		public Object BindSalesToAgent(@RequestBody string parms, Model model)
 	 */
 	function bindAgentAndSales(agentId,saleIdList) {
-		var urlStr = BASE_CONTEXT_PATH + "/back/agent_bind/binduser"; // 需要提交的url
+		var urlStr = BASE_CONTEXT_PATH + "/back/agent-bind/binduser"; // 需要提交的url
 																		
 		var params=new Object();  //生成参数对象.
 		
@@ -53,7 +53,7 @@
 	 * saleIdList, Model model)
 	 */
 	function bindAgentAndSales1(agentId,saleIdList) {
-		var urlStr = BASE_CONTEXT_PATH + "/back/agent_bind/bindsales1"; // 需要提交的 url
+		var urlStr = BASE_CONTEXT_PATH + "/back/agent-bind/bindsales1"; // 需要提交的 url
 																		
 		var params=new Object();
 		

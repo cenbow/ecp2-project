@@ -135,7 +135,7 @@ tr:hover{
 										</div>
 										
 										<a
-											th:href="@{/back/agent_bind/show}" title="刷新列表"	style="float: right; margin-right: 10px">
+											th:href="@{/back/agent-bind/show}" title="刷新列表"	style="float: right; margin-right: 10px">
 											<i class="icon-refresh icon-large"></i>
 										</a>
 									</div>
@@ -251,7 +251,7 @@ tr:hover{
 		 */
 		function showAgentDetail(id){
 			
-			var url = BASE_CONTEXT_PATH + "/back/agent_bind/detail/"+id;
+			var url = BASE_CONTEXT_PATH + "/back/agent-bind/detail/"+id;
 			
 			$("#edit-body").load(url, function(){
 				$("#edit-tab").removeClass("hide");

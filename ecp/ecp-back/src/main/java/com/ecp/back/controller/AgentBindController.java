@@ -34,7 +34,7 @@ import com.github.pagehelper.PageInfo;
  * @version 1.0.0
  */
 @Controller
-@RequestMapping("/back/agent_bind")
+@RequestMapping("/back/agent-bind")
 public class AgentBindController {
 	private  final Logger log = Logger.getLogger(getClass());
 	
