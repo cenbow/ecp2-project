@@ -38,6 +38,7 @@
     <result column="highest_price" jdbcType="DECIMAL" property="highestPrice" />
     <result column="lowest_price" jdbcType="DECIMAL" property="lowestPrice" />
     <result column="hard_cost_price" jdbcType="DECIMAL" property="hardCostPrice" />
+    <result column="is_plan_product" jdbcType="TINYINT" property="isPlanProduct" />
     
     <result column="after_service" jdbcType="LONGVARCHAR" property="afterService" />
     <result column="describe_url" jdbcType="LONGVARCHAR" property="describeUrl" />
@@ -52,7 +53,7 @@
     has_price, inventory, item_name, item_status, keywords, listting_time, market_price, 
     market_price2, modified, operator, origin, packing_list, plat_link_status, product_id, 
     status_change_reason, timing_listing, volume, weight, weight_unit, deleted, model, 
-    highest_price, lowest_price, hard_cost_price, after_service, describe_url
+    highest_price, lowest_price, hard_cost_price, is_plan_product, after_service, describe_url
   </sql>
 
 	<!-- 通过品牌及类目属性查询 -->

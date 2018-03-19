@@ -226,8 +226,7 @@
 																			name="introduction" placeholder="商品简介" />
 																	</div>
 																</div> -->
-																
-																<!-- <div class="form-group">
+																<div class="form-group">
 																	<label class="col-sm-2 control-label">预算价格<b style="color:red;">&nbsp;*</b></label>
 																	<div class="col-sm-10">
 																		<input type="text" id="guide-price" name="guidePrice"
@@ -268,7 +267,7 @@
 																		<input type="text" id="hard-cost-price" name="hardCostPrice"
 																			class="form-control" placeholder="硬成本价格">
 																	</div>
-																</div> -->
+																</div>
 																<div class="form-group">
 																	<label class="col-sm-2 control-label">库存数量<b style="color:red;">&nbsp;*</b></label>
 																	<div class="col-sm-10">
@@ -473,7 +472,7 @@
 		</div>
 	</div>
 	
-	<script type="text/javascript" src="static/js/addItem.js"></script>
+	<script type="text/javascript" src="static/js/addItemPrice.js"></script>
 	<script>
 	/*
 	 * 点击下一步按钮时执行，显示添加商品基本信息选项卡
@@ -505,7 +504,7 @@
 			}
 		});
 		
-		url = "back/category/selectBrandAndAttr";//查询品牌、属性和属性值,不包括sku价格
+		url = "back/category/selectBrandAndAttrSkuPrice";//查询品牌、属性和属性值，包括sku价格
 		$("#attr-page").load(url, params, function(){
 			console.log("加载属性页面完成");
 			$('#tabs-add-item a[href="#tab-4"]').tab('show');

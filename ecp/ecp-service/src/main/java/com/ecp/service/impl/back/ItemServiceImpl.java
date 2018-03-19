@@ -618,16 +618,19 @@ public class ItemServiceImpl extends AbstractBaseService<Item, Long> implements 
 				if(rows>0){
 					//添加sku价格 trade_sku_price
 					List<SkuPrice> skuPriceList = JSONArray.parseArray(skuPriceJson, SkuPrice.class);
-					SkuPrice skuPrice = skuPriceList.get(i);
-					skuPrice.setItemId(item.getItemId());
-					skuPrice.setSkuId(sku.getSkuId());
-					if(skuPrice.getId()!=null && skuPrice.getId()>0){
-						skuPrice.setUpdateTime(new Date());
-						rows = skuPriceService.updateByPrimaryKeySelective(skuPrice);
-					}else{
-						skuPrice.setCreateTime(new Date());
-						rows = skuPriceService.insertSelective(skuPrice);//添加新的sku价格信息
+					if(skuPriceList!=null && !skuPriceList.isEmpty()){
+						SkuPrice skuPrice = skuPriceList.get(i);
+						skuPrice.setItemId(item.getItemId());
+						skuPrice.setSkuId(sku.getSkuId());
+						if(skuPrice.getId()!=null && skuPrice.getId()>0){
+							skuPrice.setUpdateTime(new Date());
+							rows = skuPriceService.updateByPrimaryKeySelective(skuPrice);
+						}else{
+							skuPrice.setCreateTime(new Date());
+							rows = skuPriceService.insertSelective(skuPrice);//添加新的sku价格信息
+						}
 					}
+					
 					if(rows>0){
 						//添加sku图片 item_sku_picture
 						if(filePathList!=null && filePathList.size()>0){

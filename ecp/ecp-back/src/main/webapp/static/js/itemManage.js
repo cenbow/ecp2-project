@@ -200,10 +200,40 @@ function bootstrapValidateFun(){
                     }
 	            }
 	        },
-	        guidePrice: {
+	        /*guidePrice: {
 	        	validators: {
 	                notEmpty: {
 	                    message: "商城指导价格不能为空"
+	                },
+	                regexp: {
+		                regexp: /(^[1-9]([0-9]+)?(\.[0-9]{1,2})?$)|(^(0){1}$)|(^[0-9]\.[0-9]([0-9])?$)/,
+		                message: "请输入正确价格"
+	                },
+	                stringLength: {
+                        max: 10,
+                        message: '长度不能超过10个字符'
+                    }
+	            }
+	        },
+	        highestPrice: {
+	        	validators: {
+	                notEmpty: {
+	                    message: "最高价格不能为空"
+	                },
+	                regexp: {
+		                regexp: /(^[1-9]([0-9]+)?(\.[0-9]{1,2})?$)|(^(0){1}$)|(^[0-9]\.[0-9]([0-9])?$)/,
+		                message: "请输入正确价格"
+	                },
+	                stringLength: {
+                        max: 10,
+                        message: '长度不能超过10个字符'
+                    }
+	            }
+	        },
+	        lowestPrice: {
+	        	validators: {
+	                notEmpty: {
+	                    message: "最低价格不能为空"
 	                },
 	                regexp: {
 		                regexp: /(^[1-9]([0-9]+)?(\.[0-9]{1,2})?$)|(^(0){1}$)|(^[0-9]\.[0-9]([0-9])?$)/,
@@ -245,6 +275,21 @@ function bootstrapValidateFun(){
                     }
 	            }
 	        },
+	        hardCostPrice: {
+	        	validators: {
+	                notEmpty: {
+	                    message: "硬成本价格不能为空"
+	                },
+	                regexp: {
+		                regexp: /(^[1-9]([0-9]+)?(\.[0-9]{1,2})?$)|(^(0){1}$)|(^[0-9]\.[0-9]([0-9])?$)/,
+		                message: "请输入正确价格"
+	                },
+	                stringLength: {
+                        max: 10,
+                        message: '长度不能超过10个字符'
+                    }
+	            }
+	        },*/
 	        inventory: {
 	        	validators: {
 	                notEmpty: {
@@ -337,9 +382,9 @@ function selectDetails(id, cid){
 }
 
 /**
- * 加载品牌、属性和属性值
+ * 加载品牌、属性和属性值，未用，此函数在页面中
  */
-function getAttrAndValueFun(id, cid){
+/*function getAttrAndValueFun(id, cid){
 	var url = "back/brand/selectByCid";
 	var params = {"cid": cid};
 	$.post(url, params, function(ret){//查询品牌
@@ -371,7 +416,7 @@ function getAttrAndValueFun(id, cid){
 		}
 	});
 	
-};
+};*/
 
 /**
  * ajax请求获取商品信息
@@ -394,13 +439,18 @@ function ajaxRequestGetItemInfo(id){
 				
 				$("#brand").val(item.brand);//品牌
 				
+				$("#is-plan-product").val(item.isPlanProduct);//是否方案性产品
+				
 				$("#item-name").val(item.itemName);//商品名称
 				$("#item-model").val(item.model);//型号
 				$("#keywords").val(item.keywords);//关键字
 				//$("#introduction").val(item.introduction);//商品简介	
-				$("#guide-price").val(item.guidePrice);//商城指导价格
+				/*$("#guide-price").val(item.guidePrice);//商城指导价格
+				$("#highest-price").val(item.highestPrice);//最高价格
+				$("#lowest-price").val(item.lowestPrice);//最低价格
 				$("#market-price").val(item.marketPrice);//市场价格
 				$("#market-price2").val(item.marketPrice2);//成本价格
+				$("#hard-cost-price").val(item.hardCostPrice);//硬成本价格*/
 				$("#inventory").val(item.inventory);//库存数量
 				$("#origin").val(item.origin);//商品产地
 				$("#packing-list").val(item.packingList);//包装清单
@@ -462,16 +512,22 @@ function ajaxRequestGetItemInfo(id){
 						var skuPrice = skuPriceList[j];
 						if(sku.skuId==skuPrice.skuId){
 							sku.skuPriceId = skuPrice.id;
+							sku.hardCostPrice = skuPrice.hardCostPrice;
 							sku.costPrice = skuPrice.costPrice;
 							sku.marketPrice = skuPrice.marketPrice;
+							sku.highestPrice = skuPrice.highestPrice;
+							sku.lowestPrice = skuPrice.lowestPrice;
 							sku.sellPrice = skuPrice.sellPrice;
 						}
 					}
 					$("#sku-id-"+i).val(sku.skuId);//skuId
-					$("#sku-price-id-"+i).val(sku.skuPriceId);//skuPriceId
+					/*$("#sku-price-id-"+i).val(sku.skuPriceId);//skuPriceId
+					$("#hard-cost-price-"+i).val(sku.hardCostPrice);//硬成本价格
 					$("#cost-price-"+i).val(sku.costPrice);//成本价
 					$("#market-price-"+i).val(sku.marketPrice);//指导价
-					$("#sell-price-"+i).val(sku.sellPrice);//销售价
+					$("#highest-price-"+i).val(sku.highestPrice);//最高价格
+					$("#lowest-price-"+i).val(sku.lowestPrice);//最低价格
+					$("#sell-price-"+i).val(sku.sellPrice);//销售价*/
 					$("#volume-"+i).val(sku.volume);//体积
 					$("#weight-"+i).val(sku.weight);//重量
 					$("#sku-short-spec-"+i).val(sku.skuShortSpec);//简单sku规格
@@ -743,12 +799,17 @@ function getParams(){
 	
 	params.brand = $("#brand").val();//品牌
 	
+	params.isPlanProduct = $("#is-plan-product").val();//是否方案性产品
+	
 	params.itemName = $("#item-name").val();//商品名称
 	params.model = $("#item-model").val();//型号
 	params.keywords = $("#keywords").val();//关键字
-	params.guidePrice = $("#guide-price").val();//商城指导价格
+	/*params.guidePrice = $("#guide-price").val();//商城指导价格
+	params.highestPrice = $("#highest-price").val();//最高价格
+	params.lowestPrice = $("#lowest-price").val();//最低价格
 	params.marketPrice = $("#market-price").val();//市场价格
 	params.marketPrice2 = $("#market-price2").val();//成本价格
+	params.hardCostPrice = $("#hard-cost-price").val();//硬成本价格*/
 	params.inventory = $("#inventory").val();//库存数量
 	params.origin = $("#origin").val();//商品产地
 	params.packingList = $("#packing-list").val();//包装清单

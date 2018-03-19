@@ -283,7 +283,7 @@ public class CategoryController {
 	}
 
 	/**
-	 * 根据类目ID查询品牌、属性和属性值
+	 * 根据类目ID查询品牌、属性和属性值, 不包括sku价格
 	 * @param request
 	 * @param response
 	 * @param cid
@@ -308,6 +308,35 @@ public class CategoryController {
 		}
 		mav.addObject("attrList", attrList);
 		mav.setViewName(StaticConstants.ATTR_PAGE);
+		return mav;
+	}
+	
+	/**
+	 * 根据类目ID查询品牌、属性和属性值，包括sku价格
+	 * @param request
+	 * @param response
+	 * @param cid
+	 * @return
+	 */
+	@RequestMapping("/selectBrandAndAttrSkuPrice")
+	public ModelAndView selectBrandAndAttrSkuPrice(HttpServletRequest request, HttpServletResponse response,
+			Long cid) {
+		ModelAndView mav = new ModelAndView();
+		// 品牌
+		List<Map<String, Object>> brandMapList = iBrandService.getBrandByCategoryId(cid);
+		mav.addObject("brandMapList", brandMapList);
+
+		// 属性和属性值
+		List<Map<String, Object>> attrList = iAttributeService.selectByCid(cid);
+		for(Map<String, Object> map : attrList){
+			String attr_id = map.get("attr_id").toString();
+			if(StringUtils.isNotBlank(attr_id)){
+				List<Map<String, Object>> valList = iAttributeValueService.selectByAttrId(Long.valueOf(attr_id));
+				map.put("valList", valList);
+			}
+		}
+		mav.addObject("attrList", attrList);
+		mav.setViewName(StaticConstants.ATTR_SKU_PRICE_PAGE);
 		return mav;
 	}
 

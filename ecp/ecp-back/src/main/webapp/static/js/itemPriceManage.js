@@ -128,11 +128,11 @@ var editorOption = {
 //商品详情（描述）
 var detail = new UE.ui.Editor(editorOption);  
 detail.render("item-ueditor");
-//var ue = UE.getEditor('item-ueditor', editorOption);
+
 //售后服务
 var after_service = new UE.ui.Editor(editorOption);  
 after_service.render("after-service");
-//var ue2 = UE.getEditor('after-service', editorOption);
+
 //$(function(){
 	
 	bootstrapValidateFun();//启用验证
@@ -365,11 +365,210 @@ function bootstrapValidateFun(){
                     }
 	            }
 	        },
-	        
 	    }
 	}).on('success.form.bv',function(e){
 	    e.preventDefault();
 	    saveFun();//验证通过保存内容
+	});
+}
+
+/**
+ * 点击查看详细信息按钮时执行，获取当前类目下属性和属性值，成功后请求获取商品信息
+ */
+function selectDetails(id, cid){
+	resetFun();
+	getAttrAndValueFun(id, cid);//查询属性和属性值
+	//ajaxRequestGetItemInfo(id);//ajax请求获取商品信息
+}
+
+/**
+ * 加载品牌、属性和属性值，未用，此函数在页面中
+ */
+/*function getAttrAndValueFun(id, cid){
+	var url = "back/brand/selectByCid";
+	var params = {"cid": cid};
+	$.post(url, params, function(ret){//查询品牌
+		var obj = $.parseJSON(ret);
+		if(obj.result_code=="success"){
+			var brandList = obj.brandList;
+			console.log(JSON.stringify(brandList));
+			if(brandList!=null){
+				$("#brand").empty();
+				var htmlStr = "<option value='0'>请选择</option>";
+				$.each(brandList,function(i,n){
+					htmlStr += "<option value='"+this.brand_id+"'>"+this.brand_name+"</option>";
+				});
+				$("#brand").append(htmlStr);
+			}else{
+				util.message("类目品牌为空！");
+			}
+			
+			var url = "back/category/selectBrandAndAttr";//查询品牌、属性和属性值
+			var params = {"cid": cid};
+			$("#attr-page").load(url, params, function(){
+				console.log("加载属性页面完成");
+				//$('#tabs-edit-item a[href="#tab-7"]').tab('show');
+				if(id!=null && id!=undefined){
+					console.log("ajax请求获取商品信息");
+					ajaxRequestGetItemInfo(id);//ajax请求获取商品信息
+				}
+			});
+		}
+	});
+	
+};*/
+
+/**
+ * ajax请求获取商品信息
+ */
+function ajaxRequestGetItemInfo(id){
+	var url = "back/item-price/selectUpdateById";
+	var params = {"id":id};
+	$.post(url, params, function(res){
+		console.log(res);
+		if(res!=null){
+			var resp = $.parseJSON(res);
+			if(resp.result_code=="success"){
+				$("#edit-item-li").removeClass("hide");//显示编辑商品选项卡
+				
+				var item =resp.item;
+				$("#item-id").val(item.itemId);//ID
+				
+				$("#curr-item-cid").val(item.cid);//用于保存当前商品的类目
+				$("#item-cid").val(item.cid);//商品三级类目
+				
+				$("#brand").val(item.brand);//品牌
+				
+				$("#is-plan-product").val(item.isPlanProduct);//是否方案性产品
+				
+				$("#item-name").val(item.itemName);//商品名称
+				$("#item-model").val(item.model);//型号
+				$("#keywords").val(item.keywords);//关键字
+				//$("#introduction").val(item.introduction);//商品简介	
+				$("#guide-price").val(item.guidePrice);//商城指导价格
+				$("#highest-price").val(item.highestPrice);//最高价格
+				$("#lowest-price").val(item.lowestPrice);//最低价格
+				$("#market-price").val(item.marketPrice);//市场价格
+				$("#market-price2").val(item.marketPrice2);//成本价格
+				$("#hard-cost-price").val(item.hardCostPrice);//硬成本价格
+				$("#inventory").val(item.inventory);//库存数量
+				$("#origin").val(item.origin);//商品产地
+				$("#packing-list").val(item.packingList);//包装清单
+				$("#volume").val(item.volume);//商品体积
+				$("#weight").val(item.weight);//商品毛重
+				$("#weight-unit").val(item.weightUnit);//重量单位
+				$("#create-time-str").val(new Date(item.created).format('yyyy-MM-dd HH:mm:ss'));//创建时间
+				
+				var describe = item.describeUrl;
+				if(describe!=null && describe!=""){
+					setContent("item-ueditor", describe);//商品详情（描述）
+				}
+				
+				var afterService = item.afterService;
+				if(afterService!=null && afterService!=""){
+					setContent("after-service", afterService);//售后服务
+				}
+				
+				var pictureList =resp.pictureList;
+				console.log("商品图片："+JSON.stringify(pictureList));
+				$("#thumbnail-portrait").empty();
+				$.each(pictureList, function(){
+					$("#thumbnail-portrait").append("<img id='' name='' src='"+this.pictureUrl+"' style='height:100px;' />&nbsp;&nbsp;");//图片
+				});
+				
+				var attributes = item.attributes;//商品属性
+				var attrs = attributes.split(",");
+				$("#item-attr input[name='itemAttr']").each(function(){
+					for(var i=0; i<attrs.length; i++){
+						var currAttr = $(this).val();
+						var selectAttr = attrs[i];//属性:属性值
+						if(currAttr==selectAttr){
+							$(this).prop("checked", true);
+						}
+					}
+				});
+				
+				var attrSale = item.attrSale;//销售属性
+				var attrSales = attrSale.split(",");
+				$("#sale-attr input[name='attrValId']").each(function(){
+					for(var i=0; i<attrSales.length; i++){
+						var currAttr = $(this).val();
+						var selectAttr = attrSales[i];//属性:属性值
+						var attrVal = selectAttr.split(":")[1];//属性值
+						if(currAttr==attrVal){
+							$(this).prop("checked", true);
+						}
+					}
+				});
+				
+				createSku();
+				g_is_save_sku = false;//是否保存sku(skuPage.jsp)
+				//debugger;
+				var skuList = resp.skuList;//SKU
+				var skuPriceList = resp.skuPriceList;//SKU价格
+				for(var i=0; i<skuList.length; i++){
+					var sku = skuList[i];
+					for(var j=0; j<skuPriceList.length; j++){
+						var skuPrice = skuPriceList[j];
+						if(sku.skuId==skuPrice.skuId){
+							sku.skuPriceId = skuPrice.id;
+							sku.hardCostPrice = skuPrice.hardCostPrice;
+							sku.costPrice = skuPrice.costPrice;
+							sku.marketPrice = skuPrice.marketPrice;
+							sku.highestPrice = skuPrice.highestPrice;
+							sku.lowestPrice = skuPrice.lowestPrice;
+							sku.sellPrice = skuPrice.sellPrice;
+						}
+					}
+					$("#sku-id-"+i).val(sku.skuId);//skuId
+					$("#sku-price-id-"+i).val(sku.skuPriceId);//skuPriceId
+					$("#hard-cost-price-"+i).val(sku.hardCostPrice);//硬成本价格
+					$("#cost-price-"+i).val(sku.costPrice);//成本价
+					$("#market-price-"+i).val(sku.marketPrice);//指导价
+					$("#highest-price-"+i).val(sku.highestPrice);//最高价格
+					$("#lowest-price-"+i).val(sku.lowestPrice);//最低价格
+					$("#sell-price-"+i).val(sku.sellPrice);//销售价
+					$("#volume-"+i).val(sku.volume);//体积
+					$("#weight-"+i).val(sku.weight);//重量
+					$("#sku-short-spec-"+i).val(sku.skuShortSpec);//简单sku规格
+					$("#short-spec-"+i).attr("onclick", "javascript:openShortSpecModel("+sku.skuId+", "+i+");");//设置简单sku规格点击事件
+					$("#spec-"+i).attr("onclick", "javascript:openSpecModel("+sku.skuId+", "+i+");");//设置标准sku规格点击事件
+				}
+				
+				//如果没有销售属性或未选择销售属性
+				var sale_attr_arr = getSaleAttr();
+				if(sale_attr_arr==null || sale_attr_arr.length<=0){
+					showOpenDefaultSpecBtn(skuList[0].skuId);
+					showOpenDefaultShortSpecBtn(skuList[0].skuId);
+				}else{
+					hideOpenDefaultSpecBtn(0);
+					hideOpenDefaultShortSpecBtn(0);
+				}
+				/*var skuHtml = $("#sku #sku-body").html().trim();
+				if(skuHtml==null || skuHtml==""){
+					showOpenDefaultSpecBtn();
+				}*/
+				
+				$('#tabs-243687 a[href="#tab-2"]').tab('show');
+				$('#tabs-edit-item a[href="#tab-5"]').tab('show');
+				
+				var status = item.itemStatus;
+				if(status!=null && status==4){
+					$("#save-submit-btn").attr("disabled", true);//设置保存按钮无效
+					$("#save-submit-btn").attr("title", "已上架的商品不能保存编辑");//设置保存按钮title提示
+					
+					$("#spec-submit-btn").attr("disabled", true);//设置sku规格对话框中保存按钮无效
+					$("#spec-submit-btn").attr("title", "已上架的商品不能保存编辑SKU规格");//设置sku规格对话框中保存按钮title提示
+				}else{
+					$("#save-submit-btn").attr("disabled", false);//设置保存按钮有效
+					
+					$("#spec-submit-btn").attr("disabled", false);//设置sku规格对话框中保存按钮有效
+				}
+				return;
+			}
+		}
+		util.message("查询异常");
+		
 	});
 }
 
@@ -378,7 +577,7 @@ function bootstrapValidateFun(){
  * 		参数1：父ID
  * 		参数2：第n级类目
  */
-function selectCategoryByPid(pid, index){
+/*function selectCategoryByPid(pid, index){
 	
 	index++;
 	var url = "back/category/selectByPid";
@@ -418,9 +617,9 @@ function selectCategoryByPid(pid, index){
 		
 	});
 }
-/*
+
  * 创建类目HTML字符串
- */
+ 
 function createCategoryHtmlStr(category, index){	//debugger;
 	var htmlStr = "";
 	if(index>=3){
@@ -435,24 +634,23 @@ function createCategoryHtmlStr(category, index){	//debugger;
 	return htmlStr;
 }
 
-/*
+
  * 加载属性页面
- */
+ 
 function loadAttrPage(cid, cname){
 	//alert("选择的类目是 "+cname);
 	$("#item-cid").val(cid);
-	/*var url = "back/category/selectBrandAndAttr";//查询品牌、属性和属性值
+	var url = "back/category/selectBrandAndAttr";//查询品牌、属性和属性值
 	var params = {"cid": cid};
 	$("#attr-page").load(url, params, function(){
 		console.log("加载属性页面完成");
-	});*/
+	});
 }
 
-/*
+
  * 给类目绑定点击事件，选择后把当前选择的突出显示
- */
+ 
 function bindClickEven(index){
-	$("#next-step-btn").attr("disabled", true);
 	if(index==1){
 		$(".item-category ul#first-category").on("click", "li", function(){
 			console.log("click first category");
@@ -476,13 +674,13 @@ function bindClickEven(index){
 			$(".item-category ul#third-category li").removeClass("current");
 			$(this).addClass("current");
 			$("#current-select-category #third").text("   >   "+$(this).text().replace(">", ""));
-			$("#next-step-btn").attr("disabled", false);
 		});
 	}else{
 		console.log("设置当前选中异常");
 	}
 }
 bindClickEven(1);//给一级类目绑定点击事件，选择后把当前选择的突出显示
+*/
 
 /*
  * 保存内容提交
@@ -501,7 +699,14 @@ function saveFun(){
 		return;
 	}
 	
-	var url = "back/item/insert";
+	var url = null;
+	var id = $("#item-id").val();
+	if(id==null || id==""){
+		util.message("此商品没有ID");
+		return;
+	}else{
+		url = "back/item-price/updateById";
+	}
 	
 	/*var createTimeStr = $("#create-time-str").val();
 	var createtime = null;
@@ -515,7 +720,7 @@ function saveFun(){
 	params.createstr = createtime.getTime();
 	params.describeUrl = getContent("item-ueditor");//商品详情（描述）
 	params.afterService = getContent("after-service");//售后服务
-	console.log(getContent("after-service"));
+	
 	try{
 		params.attributes = getItemAttr().toString();
 		params.attrSale = getSaleAttr().toString();
@@ -529,8 +734,8 @@ function saveFun(){
 	var skuObj = getSkuInfo();
 	var sku = skuObj.sku;
 	var skuPrice = skuObj.skuPrice;
-	console.log("insert sku:"+JSON.stringify(sku));
-	console.log("insert sku price:"+JSON.stringify(skuPrice));
+	console.log("update sku:"+JSON.stringify(sku));
+	console.log("update sku price:"+JSON.stringify(skuPrice));
 	params.skuJson = JSON.stringify(sku);
 	params.skuPriceJson = JSON.stringify(skuPrice);*/
 	
@@ -552,7 +757,7 @@ function saveFun(){
 			}
 		},
 	});*/
-	
+	//console.log("POST参数："+decodeURI($("#save-form").serialize()));
 	var params = getParams();
 	console.log("params:"+JSON.stringify(params));
 	if(!params){
@@ -579,6 +784,7 @@ function saveFun(){
         	console.log(e);
         }
 	});
+	
 }
 
 /**
@@ -598,12 +804,12 @@ function getParams(){
 	params.itemName = $("#item-name").val();//商品名称
 	params.model = $("#item-model").val();//型号
 	params.keywords = $("#keywords").val();//关键字
-	/*params.guidePrice = $("#guide-price").val();//商城指导价格
+	params.guidePrice = $("#guide-price").val();//商城指导价格
 	params.highestPrice = $("#highest-price").val();//最高价格
 	params.lowestPrice = $("#lowest-price").val();//最低价格
 	params.marketPrice = $("#market-price").val();//市场价格
 	params.marketPrice2 = $("#market-price2").val();//成本价格
-	params.hardCostPrice = $("#hard-cost-price").val();//硬成本价格*/
+	params.hardCostPrice = $("#hard-cost-price").val();//硬成本价格
 	params.inventory = $("#inventory").val();//库存数量
 	params.origin = $("#origin").val();//商品产地
 	params.packingList = $("#packing-list").val();//包装清单
@@ -624,7 +830,7 @@ function getParams(){
 	params.modified = new Date();//修改时间
 	params.describeUrl = getContent("item-ueditor");//商品详情（描述）
 	params.afterService = getContent("after-service");//售后服务
-	console.log(getContent("after-service"));
+	//alert(JSON.stringify(params));
 	try{
 		params.attributes = getItemAttr().toString();
 		params.attrSale = getSaleAttr().toString();
@@ -642,10 +848,12 @@ function getParams(){
 	}
 	var sku = skuObj.sku;
 	var skuPrice = skuObj.skuPrice;
-	console.log("insert sku:"+JSON.stringify(sku));
-	console.log("insert sku price:"+JSON.stringify(skuPrice));
+	console.log("update sku:"+JSON.stringify(sku));
+	console.log("update sku price:"+JSON.stringify(skuPrice));
 	params.skuJson = JSON.stringify(sku);
 	params.skuPriceJson = JSON.stringify(skuPrice);
+	
+	params.isSaveSku = g_is_save_sku;//是否保存sku（默认为false）(skuPage.jsp)
 	
 	params.skuShortSpec = $("#default-sku-short-spec").val();
 	params.skuSpec = $("#default-sku-spec").val();
@@ -654,19 +862,60 @@ function getParams(){
 }
 
 /*
+ * 删除信息AJAX请求（物理删除）
+ */
+function deleteInfoAjaxRequest(id){
+	var url = "back/item-price/deleteById";
+	var params = {"id":id};
+	//util.loading();
+	$.post(url, params, function(res){
+		console.log(res);
+		if(res!=null && res!=""){
+			var obj = $.parseJSON(res);
+			if(obj.result_code=="success"){
+				reloadInfoFun();
+			}else{
+				util.message(obj.result_err_msg);
+			}
+		}
+		
+	});
+}
+
+/*
+ * 单个删除
+ */
+function deleteInfoFun(id){
+	util.delConfirm("确认删除？", id, "deleteInfoAjaxRequest");
+}
+
+/*
  * 重新加载当前菜单内容
  */
 function reloadInfoFun(){
 	//操作成功后重新加载
-	var href = "back/item/addItem";
+	var href = "back/item-price/selectItems?pagehelperFun=clickPageBtnRequestFun";
 	parent.window.iframeLoading(href);//调用主页面中的在iframe中加载内容的方法
+}
+
+/*
+ * 点击页面中的页码执行此函数
+ * 		函数功能：根据页码数请求当前页内容
+ */
+function clickPageBtnRequestFun(params){
+	var action = "back/item-price/selectItems";
+	params.clickPageBtn = true;
+	//util.loading();
+	$("#item-div").load(action, params, function(){
+		//加载完成
+	});
 }
 
 /*
  * 验证图片文件大小
  */
 function validateImgFileSizeFun(file){
-	if(verifyFilesSize(file, 5120, '缩略图不能大于5M！')){
+	if(verifyFilesSize(file, 5120, '上传缩略图不能大于5M！')){
 		//showPreview(file, 'thumbnail-portrait');
 		showMutiPreview(file, 'thumbnail-portrait');
 		$("#save-submit-btn").attr("disabled", false);
@@ -675,19 +924,28 @@ function validateImgFileSizeFun(file){
 	}
 }
 
-/**
- * 点击选择类目选项卡时执行
- * @returns
+/*
+ * 点击列表中某个复选框时，全选或反选
  */
-function clickSelectCateTab(){
-	util.confirm("显示选择类目选项卡时，当前编辑的商品信息则会被重置，是否继续？", 0, "resetFun", "selectEditItemTab");
+function checkOne(){
+    
+    var flag = true;
+    $("#product-table tbody input[type='checkbox']").each(function(){
+    	if(!$(this).prop("checked")){
+    		flag = false;
+    	}
+    });
+    if(flag){
+    	$("#product-table thead input[type='checkbox']").prop('checked', true);
+    }else{
+    	$("#product-table thead input[type='checkbox']").prop('checked', false);
+    }
 }
-/**
- * 选择添加/编辑商品选项卡
- * @returns
+/*
+ * 点击列表中All复选框时，列表全选或反选
  */
-function selectEditItemTab(){
-	$('#tabs-add-item a[href="#tab-4"]').tab('show');//显示编辑商品选项卡
+function checkAll(obj){
+	$("#product-table tbody input[type='checkbox']").prop('checked', $(obj).prop('checked'));
 }
 
 /*
@@ -707,24 +965,14 @@ function resetFun(){
 	} else {
 	    $('#picture-url').val('');
 	}
-	
 	$("#thumbnail-portrait").empty();
 	$("#attr-page").empty();
 	setContent("item-ueditor", "");//商品详情（描述）
 	setContent("after-service", "");//售后服务
 	
-	$("#second-category").html("");//设置二级类目列表为空
-	$("#third-category").html("");//设置三级类目列表为空
-	$(".item-category ul#first-category li").removeClass("current");//设置一级类目未选中
-	$("#current-select-category #first").text("");//设置用户当前选择的一级类目为空
-	$("#current-select-category #second").text("");//设置用户当前选择的二级类目为空
-	$("#current-select-category #third").text("");//设置用户当前选择的三级类目为空
-	$("#next-step-btn").attr("disabled", true);//设置下一步按钮为不可点击
-	
 	$('#tabs-edit-item a[href="#tab-5"]').tab('show');//显示基本信息选项卡
-	$("#item-info-li").addClass("hide");//隐藏商品信息选项卡
-	$('#tabs-add-item a[href="#tab-3"]').tab('show');//显示选择类目选项卡
-	
+	$("#edit-item-li").addClass("hide");//隐藏商品信息选项卡
+	$('#tabs-243687 a[href="#tab-1"]').tab('show');//显示商品列表选项卡
 }
 
 /**
@@ -733,12 +981,90 @@ function resetFun(){
  */
 function isIE(){ //ie?
 	if(!!window.ActiveXObject || "ActiveXObject" in window){
-		console.log("浏览器是IE");
 		return true;
 	}else{
-		console.log("浏览器不是IE");
 		return false; 
 	}
+}
+
+/**
+ * change事件
+ * 		改变商品类目
+ * @returns
+ */
+function changeItemCategory(){
+	var cid = $("#item-cid").val();
+	util.confirm("改变商品类目，属性和SKU信息需要重新设置，是否继续？", cid, "reloadAttrAndValuePage", "cancelChangeItemCantegory");
+}
+
+/**
+ * 点击商品列表选项卡时执行
+ * @returns
+ */
+function clickItemTab(){
+	util.confirm("显示商品列表选项卡时，当前编辑的商品信息则会被重置，是否继续？", 0, "resetFun", "selectEditItemTab");
+}
+/**
+ * 选择添加/编辑商品选项卡
+ * @returns
+ */
+function selectEditItemTab(){
+	$('#tabs-243687 a[href="#tab-2"]').tab('show');//显示编辑商品选项卡
+}
+
+/**
+ * 根据类目ID重新加载品牌、属性和属性值
+ */
+function reloadAttrAndValuePage(cid){
+	getAttrAndValueFun(null, cid);
+	/*getBrandByCid(cid);//根据类目查询品牌
+	var url = "back/category/selectBrandAndAttr";//查询品牌、属性和属性值
+	var params = {"cid": cid};
+	$("#attr-page").load(url, params, function(){
+		console.log("加载属性页面完成");
+	});*/
+};
+
+/**
+ * 根据类目查询品牌
+ * @returns
+ */
+/*function getBrandByCid(cid){
+	var url = "back/brand/selectByCid";
+	var params = {"cid": cid};
+	$.post(url, params, function(ret){//查询品牌
+		var obj = $.parseJSON(ret);
+		if(obj.result_code=="success"){
+			var brandList = obj.brandList;
+			console.log(JSON.stringify(brandList));
+			if(brandList!=null){
+				$("#brand").empty();
+				var htmlStr = "<option value='0'>请选择</option>";
+				$.each(brandList,function(i,n){
+					htmlStr += "<option value='"+this.brand_id+"'>"+this.brand_name+"</option>";
+				});
+				$("#brand").append(htmlStr);
+			}else{
+				util.message("类目品牌为空！");
+			}
+			
+			var url = "back/category/selectBrandAndAttr";//查询品牌、属性和属性值
+			var params = {"cid": cid};
+			$("#attr-page").load(url, params, function(){
+				console.log("加载属性页面完成");
+				//$('#tabs-edit-item a[href="#tab-7"]').tab('show');
+				ajaxRequestGetItemInfo(id);//ajax请求获取商品信息
+			});
+		}
+	});
+}*/
+
+/**
+ * 取消改为商品原类目ID
+ */
+function cancelChangeItemCantegory(){
+	var curr_item_cid = $("#curr-item-cid").val();
+	$("#item-cid").val(curr_item_cid);
 }
 
 /*
@@ -751,6 +1077,202 @@ var parserDate = function (dateStr) {
     } else {  
         return new Date();  
     }  
+}
+
+/**
+ * 修改商品状态（4：上架，5：下架）
+ * @returns
+ */
+function updateItemStatus(itemId, status){
+	var url = "back/item-price/updateStatusById";
+	var params = {"itemId":itemId, "itemStatus":status};
+	//util.loading();
+	$.post(url, params, function(res){
+		console.log(res);
+		if(res!=null && res!=""){
+			var obj = $.parseJSON(res);
+			if(obj.result_code=="success"){
+				if(status==4){
+					$("#item-status-up-"+itemId).attr("disabled", true);
+					$("#item-status-down-"+itemId).attr("disabled", false);
+					$("#item-del-btn-"+itemId).attr("disabled", true);
+					$("#item-del-btn-"+itemId).attr("title", "已上架商品不能删除");
+				}else{
+					$("#item-status-up-"+itemId).attr("disabled", false);
+					$("#item-status-down-"+itemId).attr("disabled", true);
+					$("#item-del-btn-"+itemId).attr("disabled", false);
+					$("#item-del-btn-"+itemId).attr("title", "");
+				}
+				
+			}else{
+				util.message(obj.result_err_msg);
+			}
+		}
+		
+	});
+}
+
+/**
+ * 点击查询面板中的查询按钮时执行
+ * 		功能：根据条件过滤查询商品列表
+ */
+$("#search-submit-btn").click(function(){
+	var params = new Object();
+	params.pagehelperFun="filterItemFun";
+	filterItemFun(params);
+});
+/**
+ * 绑定查询表单的keydown事件
+ */
+$("#search-form").keydown(function(e){
+	var curKey = e.which;
+	if(curKey == 13){
+		$("#search-submit-btn").click();
+		return false;
+	}
+}); 
+
+/**
+ * 点击查询面板中的重置按钮时执行
+ * 		功能：重置查询面板中的form表单
+ */
+$("#search-reset-btn").click(function(){
+	$("#search-form")[0].reset();
+});
+
+/**
+ * 点击批量删除按钮时执行
+ * 		功能：批量删除商品（逻辑删除）
+ */
+$("#batch-delete-btn").click(function(){
+	var itemIds = getCheckedItem();
+	if(itemIds.length<=0){
+		util.message("请选择需要删除的商品！");
+		return;
+	}
+	deleteInfoByBatch();//批量删除确认
+});
+
+/*
+ * 批量删除确认
+ */
+function deleteInfoByBatch(){
+	util.delConfirm("确认删除？", 0, "ajaxRequestDelByBatch");
+}
+
+/**
+ * 批量删除ajax请求
+ * @returns
+ */
+function ajaxRequestDelByBatch(){
+	var itemIds = getCheckedItem();
+	if(itemIds.length<=0){
+		util.message("请选择需要删除的商品！");
+		return;
+	}
+	var url = "back/item-price/deleteByIds";
+	var params = {"ids":itemIds};
+	//util.loading();
+	$.post(url, params, function(res){
+		console.log(res);
+		if(res!=null && res!=""){
+			var obj = $.parseJSON(res);
+			if(obj.result_code=="success"){
+				reloadInfoFun();//删除成功重新刷新列表
+			}else{
+				util.message(obj.result_err_msg);
+			}
+		}
+	});
+}
+
+/**
+ * 点击批量上架按钮时执行
+ * 		功能：批量上架商品
+ * 		4=上架；5=下架
+ */
+$("#batch-shelve-btn").click(function(){
+	var itemIds = getCheckedItem(4);
+	if(itemIds==undefined || itemIds==null || itemIds==""){
+		util.message("请选择需要上架的商品（不包括已上架的商品）！");
+		return;
+	}
+	ajaxRequestUpdateStatusByBatch(itemIds, 4);//ajax请求批量修改商品上下架状态
+});
+
+/**
+ * 点击批量下架按钮时执行
+ * 		功能：批量下架商品
+ * 		4=上架；5=下架
+ */
+$("#batch-unshelve-btn").click(function(){
+	var itemIds = getCheckedItem(5);
+	if(itemIds==undefined || itemIds==null || itemIds==""){
+		util.message("请选择需要下架的商品（不包括已下架的商品）！");
+		return;
+	}
+	ajaxRequestUpdateStatusByBatch(itemIds, 5);//ajax请求批量修改商品上下架状态
+});
+
+/**
+ * ajax请求批量修改商品上下架状态
+ * @returns
+ */
+function ajaxRequestUpdateStatusByBatch(itemIds, status){
+	var url = "back/item-price/updateStatusByIds";
+	var params = {"itemIds":itemIds, "itemStatus":status};
+	//util.loading();
+	$.post(url, params, function(res){
+		console.log(res);
+		if(res!=null && res!=""){
+			var obj = $.parseJSON(res);
+			if(obj.result_code=="success"){
+				reloadInfoFun();//删除成功重新刷新列表
+			}else{
+				util.message(obj.result_err_msg);
+			}
+		}
+	});
+}
+
+/*
+ * 点击页面中的页码执行此函数
+ * 		函数功能：根据页码数请求当前页内容
+ */
+function filterItemFun(params){
+	var action = "back/item-price/selectItems";
+	params.clickPageBtn = true;
+	var keywords = $("#search-keywords").val();
+	params.search_keywords = keywords;
+	//util.loading();
+	$("#item-div").load(action, params, function(){
+		//加载完成
+	});
+}
+
+/**
+ * 获取用户选中的checkbox值
+ * 4=上架；5=下架
+ * @returns
+ */
+function getCheckedItem(status){
+	var itemIds = new Array();
+	$("#product-table tbody input:checkbox[name='itemCheckbox']:checked").each(function(i){
+		var itemId = $(this).val();
+		var currStatus = $("#item-status-"+itemId).val();
+		
+		if(status==undefined || status==null || status==""){//为空
+			itemIds.push(itemId);
+		}else{
+			if(status==4 && currStatus!=4){
+				itemIds.push(itemId);
+			}else if(status==5 && currStatus!=5){
+				itemIds.push(itemId);
+			}
+		}
+	});
+	console.log("用户选择的商品ID："+itemIds);
+	return itemIds.toString();
 }
 
 /*

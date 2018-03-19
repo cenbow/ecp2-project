@@ -501,7 +501,7 @@ function saveFun(){
 		return;
 	}
 	
-	var url = "back/item/insert";
+	var url = "back/item-price/insert";
 	
 	/*var createTimeStr = $("#create-time-str").val();
 	var createtime = null;
@@ -598,12 +598,12 @@ function getParams(){
 	params.itemName = $("#item-name").val();//商品名称
 	params.model = $("#item-model").val();//型号
 	params.keywords = $("#keywords").val();//关键字
-	/*params.guidePrice = $("#guide-price").val();//商城指导价格
+	params.guidePrice = $("#guide-price").val();//商城指导价格
 	params.highestPrice = $("#highest-price").val();//最高价格
 	params.lowestPrice = $("#lowest-price").val();//最低价格
 	params.marketPrice = $("#market-price").val();//市场价格
 	params.marketPrice2 = $("#market-price2").val();//成本价格
-	params.hardCostPrice = $("#hard-cost-price").val();//硬成本价格*/
+	params.hardCostPrice = $("#hard-cost-price").val();//硬成本价格
 	params.inventory = $("#inventory").val();//库存数量
 	params.origin = $("#origin").val();//商品产地
 	params.packingList = $("#packing-list").val();//包装清单
@@ -658,7 +658,7 @@ function getParams(){
  */
 function reloadInfoFun(){
 	//操作成功后重新加载
-	var href = "back/item/addItem";
+	var href = "back/item-price/addItem";
 	parent.window.iframeLoading(href);//调用主页面中的在iframe中加载内容的方法
 }
 

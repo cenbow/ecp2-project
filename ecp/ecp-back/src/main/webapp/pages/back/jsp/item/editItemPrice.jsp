@@ -103,7 +103,7 @@
 													name="introduction" placeholder="商品简介" />
 											</div>
 										</div> -->
-												<!-- <div class="form-group">
+												<div class="form-group">
 													<label class="col-sm-2 control-label">预算价格<b style="color:red;">&nbsp;*</b></label>
 													<div class="col-sm-10">
 														<input type="text" id="guide-price" name="guidePrice"
@@ -144,7 +144,7 @@
 														<input type="text" id="hard-cost-price" name="hardCostPrice"
 															class="form-control" placeholder="硬成本价格">
 													</div>
-												</div> -->
+												</div>
 												<div class="form-group">
 													<label class="col-sm-2 control-label">库存数量<b style="color:red;">&nbsp;*</b></label>
 													<div class="col-sm-10">
@@ -361,7 +361,7 @@ $("#item-cid").bind("change",function(){
 	}
 });
 /**
- * 加载品牌、属性和属性值，不包括sku价格
+ * 加载品牌、属性和属性值，包括sku价格
  */
 function getAttrAndValueFun(id, cid){
 	var url = "back/brand/selectByCid";
@@ -382,7 +382,7 @@ function getAttrAndValueFun(id, cid){
 				util.message("类目品牌为空！");
 			}
 			
-			var url = "back/category/selectBrandAndAttr";//查询品牌、属性和属性值，不包括sku价格
+			var url = "back/category/selectBrandAndAttrSkuPrice";//查询品牌、属性和属性值，包括sku价格
 			var params = {"cid": cid};
 			$("#attr-page").load(url, params, function(){
 				console.log("加载属性页面完成");

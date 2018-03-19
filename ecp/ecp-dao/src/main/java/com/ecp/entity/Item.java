@@ -103,6 +103,13 @@ public class Item {
      */
     @Column(name = "hard_cost_price")
     private BigDecimal hardCostPrice;
+    
+    /**
+     * 是否方案性产品（1：是；2：否）
+     */
+    @Column(name = "is_plan_product")
+    private Byte isPlanProduct;
+    
 
     /**
      * @return item_id
@@ -582,7 +589,25 @@ public class Item {
         this.hardCostPrice = hardCostPrice;
     }
 
-    @Override
+    /**
+     * 获取是否方案性产品（1：是；2：否）
+     *
+     * @return is_plan_product - 是否方案性产品（1：是；2：否）
+     */
+    public Byte getIsPlanProduct() {
+		return isPlanProduct;
+	}
+
+    /**
+     * 设置是否方案性产品（1：是；2：否）
+     *
+     * @param isPlanProduct 是否方案性产品（1：是；2：否）
+     */
+	public void setIsPlanProduct(Byte isPlanProduct) {
+		this.isPlanProduct = isPlanProduct;
+	}
+
+	@Override
     public String toString() {
         StringBuilder sb = new StringBuilder();
         sb.append(getClass().getSimpleName());
