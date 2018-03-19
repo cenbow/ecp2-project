@@ -1,5 +1,6 @@
 package com.ecp.back.shiro;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import javax.annotation.Resource;
@@ -17,8 +18,14 @@ import org.apache.shiro.util.ByteSource;
 
 import com.ecp.bean.UserBean;
 import com.ecp.entity.Menu;
+import com.ecp.entity.Role;
 import com.ecp.entity.User;
+import com.ecp.entity.UserRole;
+import com.ecp.service.back.IRoleService;
+import com.ecp.service.back.IUserRoleService;
 import com.ecp.service.back.IUserService;
+
+import tk.mybatis.mapper.entity.Example;
 
 /**
  * 自定义Realm
@@ -30,6 +37,10 @@ public class CustomRealm extends AuthorizingRealm {
 	
 	@Resource(name="userServiceBean")
 	private IUserService userService;
+	@Resource(name="roleServiceBean")
+	private IRoleService roleService;
+	@Resource(name="userRoleServiceBean")
+	private IUserRoleService userRoleService;
 
 	// 设置realm的名称
 	@Override
@@ -87,17 +98,35 @@ public class CustomRealm extends AuthorizingRealm {
 		activeUser.setUpdateTime(user.getUpdateTime());
 		//..
 		
-		//根据用户id取出菜单
-		List<Menu> menuList  = null;
 		try {
 			//通过service取出菜单 
-			menuList = userService.getMenuPermissionListByUserId(user.getId());
+			//根据用户id取出菜单
+			List<Menu> menuList = userService.getMenuPermissionListByUserId(user.getId());
+			//将菜单 设置到activeUser
+			activeUser.setMenuList(menuList);
 		} catch (Exception e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-		//将菜单 设置到activeUser
-		activeUser.setMenuList(menuList);
+		
+		
+		try {
+			List<UserRole> userRoleList = userRoleService.getByUserId(user.getId());
+			List<Long> roleIds = new ArrayList<Long>();
+			int size = userRoleList.size();
+			for(int i=0; i<size; i++){
+				roleIds.add(userRoleList.get(i).getRoleId());
+			}
+			
+			if(!roleIds.isEmpty()){
+				Example example = new Example(Role.class);
+				example.createCriteria().andIn("roleId", roleIds);
+				List<Role> roleList = roleService.selectByExample(example);
+				//将用户角色 设置到activeUser
+				activeUser.setRoleList(roleList);
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
 		
 		//将activeUser设置simpleAuthenticationInfo
 		SimpleAuthenticationInfo simpleAuthenticationInfo = new SimpleAuthenticationInfo(activeUser, password,ByteSource.Util.bytes(salt), this.getName());

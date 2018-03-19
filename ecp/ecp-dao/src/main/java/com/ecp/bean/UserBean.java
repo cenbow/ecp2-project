@@ -6,6 +6,7 @@ import java.util.Date;
 import java.util.List;
 
 import com.ecp.entity.Menu;
+import com.ecp.entity.Role;
 
 public class UserBean implements Serializable {
     
@@ -55,6 +56,8 @@ public class UserBean implements Serializable {
     private Date updateTime;
 
     private String username;
+    
+    private List<Role> roleList;
     
     private List<Menu> menuList;
 
@@ -411,7 +414,15 @@ public class UserBean implements Serializable {
         this.username = username == null ? null : username.trim();
     }
 
-    public List<Menu> getMenuList() {
+    public List<Role> getRoleList() {
+		return roleList;
+	}
+
+	public void setRoleList(List<Role> roleList) {
+		this.roleList = roleList;
+	}
+
+	public List<Menu> getMenuList() {
 		return menuList;
 	}
 
@@ -427,7 +438,7 @@ public class UserBean implements Serializable {
 				+ ", mobile=" + mobile + ", nickname=" + nickname + ", oldpassword=" + oldpassword + ", parentId="
 				+ parentId + ", password=" + password + ", quickType=" + quickType + ", securityLevel=" + securityLevel
 				+ ", status=" + status + ", type=" + type + ", updateTime=" + updateTime + ", username=" + username
-				+ ", menuList=" + menuList + "]";
+				+ ", roleList=" + roleList + ", menuList=" + menuList + "]";
 	}
 
 }
