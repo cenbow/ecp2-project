@@ -54,6 +54,7 @@ function selectDetails(id){
 				$("#edit-role-li").removeClass("hide");
 				var role =resp.role;
 				$("#role-id").val(role.roleId);//ID
+				$("#role-code").val(role.roleCode);//角色编码
 				$("#role-name").val(role.roleName);//角色名称
 				$("#role-description").val(role.roleDescription);//角色描述
 				

@@ -76,6 +76,13 @@
 													<form class="form-horizontal" id="save-form">
 														<input type="hidden" id="role-id" name="roleId" value="" />
 														<div class="form-group">
+															<label class="col-sm-2 control-label">角色编码</label>
+															<div class="col-sm-10">
+																<input type="text" id="role-code" name="roleCode"
+																	class="form-control" placeholder="角色编码" />
+															</div>
+														</div>
+														<div class="form-group">
 															<label class="col-sm-2 control-label">角色名称</label>
 															<div class="col-sm-10">
 																<input type="text" id="role-name" name="roleName"

@@ -142,6 +142,7 @@ $("#save-submit-btn").click(function(){
 
 /*
  * 验证用户名是否存在
+ * 		true：有效；false：无效
  */
 function remoteValidUsername(){
 	var valid = false;
@@ -167,7 +168,7 @@ function saveFun(){
 	var id = $("#user-id").val();
 	if(id==null || id==""){
 		var valid = remoteValidUsername();
-		if(!valid){
+		if(valid){
 			util.message("用户名已存在！");
 			return false;
 		}

@@ -6,6 +6,7 @@
       WARNING - @mbggenerated
     -->
     <id column="role_id" jdbcType="BIGINT" property="roleId" />
+    <result column="role_code" jdbcType="VARCHAR" property="roleCode" />
     <result column="role_name" jdbcType="VARCHAR" property="roleName" />
     <result column="role_description" jdbcType="VARCHAR" property="roleDescription" />
     <result column="deleted" jdbcType="INTEGER" property="deleted" />
@@ -14,6 +15,6 @@
     <!--
       WARNING - @mbggenerated
     -->
-    role_id, role_name, role_description, deleted
+    role_id, role_code, role_name, role_description, deleted
   </sql>
 </mapper>

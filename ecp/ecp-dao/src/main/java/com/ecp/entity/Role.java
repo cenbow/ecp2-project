@@ -13,6 +13,12 @@ public class Role {
     private Long roleId;
 
     /**
+     * 角色编码
+     */
+    @Column(name = "role_code")
+    private String roleCode;
+    
+    /**
      * 角色名称
      */
     @Column(name = "role_name")
@@ -42,6 +48,24 @@ public class Role {
         this.roleId = roleId;
     }
 
+    /**
+     * 获取角色编码
+     *
+     * @return role_code - 角色编码
+     */
+    public String getRoleCode() {
+        return roleCode;
+    }
+
+    /**
+     * 设置角色编码
+     *
+     * @param roleCode 角色编码
+     */
+    public void setRoleCode(String roleCode) {
+        this.roleCode = roleCode == null ? null : roleCode.trim();
+    }
+    
     /**
      * 获取角色名称
      *
@@ -97,7 +121,8 @@ public class Role {
 
 	@Override
 	public String toString() {
-		return "Role [roleId=" + roleId + ", roleName=" + roleName + ", roleDescription=" + roleDescription
-				+ ", deleted=" + deleted + "]";
+		return "Role [roleId=" + roleId + ", roleCode=" + roleCode + ", roleName=" + roleName + ", roleDescription="
+				+ roleDescription + ", deleted=" + deleted + "]";
 	}
+
 }

@@ -11,6 +11,7 @@
 				<label for="checkbox">ALL</label>
 			</th>
 			<th>ID</th>
+			<th>角色编码</th>
 			<th>角色名称</th>
 			<th>操作</th>
 		</tr>
@@ -20,6 +21,7 @@
 			<tr>
 				<td><input type="checkbox" name="checkbox2" id="user-td-${role.roleId}" onclick="javascript:checkOne();" value="${role.roleId}"></td>
 				<td>${role.roleId}</td>
+				<td>${role.roleCode}</td>
 				<td>${role.roleName}</td>
 				<td class="center ">
 					<div style="text-align: center;; height: auto;"
