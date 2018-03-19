@@ -43,6 +43,12 @@ public class CustLockRel {
     private Long bindUserId;
 
     /**
+     * 角色ID
+     */
+    @Column(name = "role_id")
+    private Long roleId;
+
+    /**
      * @return id
      */
     public Long getId() {
@@ -164,6 +170,24 @@ public class CustLockRel {
         this.bindUserId = bindUserId;
     }
 
+    /**
+     * 获取角色ID
+     *
+     * @return role_id - 角色ID
+     */
+    public Long getRoleId() {
+        return roleId;
+    }
+
+    /**
+     * 设置角色ID
+     *
+     * @param roleId 角色ID
+     */
+    public void setRoleId(Long roleId) {
+        this.roleId = roleId;
+    }
+
     @Override
     public String toString() {
         StringBuilder sb = new StringBuilder();
@@ -177,6 +201,7 @@ public class CustLockRel {
         sb.append(", masterSlaveFlag=").append(masterSlaveFlag);
         sb.append(", itemCatId=").append(itemCatId);
         sb.append(", bindUserId=").append(bindUserId);
+        sb.append(", roleId=").append(roleId);
         sb.append("]");
         return sb.toString();
     }
