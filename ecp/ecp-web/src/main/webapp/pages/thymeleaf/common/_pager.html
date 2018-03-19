@@ -6,9 +6,19 @@
 </head>
 <body>
 	<th:block th:fragment="pager">
+		<!-- 总的记录个数 -->
+		<div style="float:left">
+			<span>
+				<span th:text="'共'+${pageInfo.total}+'条记录,'"></span>
+				<!-- <span th:text="'当前显示第'+$(pageInfo.pageNum)+'/'+${pageInfo.pages}+'页'"></span> -->
+				<span th:text="'当前显示第'+${pageInfo.pageNum}+'/'+${pageInfo.pages}+'页'"></span>
+			</span>
+		</div>
 		<nav th:if="${not #lists.isEmpty(pageInfo.list)}" style="float: right;">
+						
 			<ul class="pagination">
-				<li><a href="#">&laquo;</a></li>
+				<!-- 首页 -->
+				<li><a href="javascript:void(0);" th:attr="data-bind=1+'-'+${pageInfo.pageSize}">&laquo;</a></li>
 				
 				<!-- 上一页 -->
 				<li>
@@ -38,7 +48,9 @@
 					<a	th:if="${pageInfo.isLastPage}" href="javascript:void(0);" data-bind="">下一页</a>
 				</li>
 
-				<li><a href="#">&raquo;</a></li>
+				<!-- 最后一页 -->
+				
+				<li><a href="javascript:void(0);" th:attr="data-bind=${pageInfo.pages}+'-'+${pageInfo.pageSize}">&raquo;</a></li>
 			</ul>
 		</nav>
 		<!-- 保存页号与页大小 -->

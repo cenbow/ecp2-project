@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>Insert title here</title>
+</head>
+<body>
+	<div class="container-fluid">
+		<div class="row clearfix">
+			<div class="col-md-12 column">
+				<h4>选择要绑定的OS/IS</h4>
+				<hr style="height:1px;border:none;border-top:1px solid blue;" />
+			</div>
+		</div>
+		<div class="row clearfix">
+			<div class="col-md-4 column">
+				<div class="row clearfix">
+					<div class="col-md-12 column">
+						<h5>外部销售人员列表</h5>
+					</div>
+				</div>
+				<table class="table">
+					<thead>
+						<tr>
+							<th><input type="checkbox" id="check-select-all-os"><label for="check-select-all-os">选择</label></th>
+							<th>ID</th>
+							<th>姓名</th>
+							<th>昵称</th>
+						</tr>
+					</thead>
+					<tbody id="oslist">
+						<tr th:each="os:${outsideSales}">
+							<td > <input type="checkbox" class="check-os" name="check-os" 
+								th:attr="id='check-os-'+${os.id},bind-id=${os.id}"> </td>
+							<td th:text="${os.id}">ID</td>
+							<td th:text="${os.username}">用户名</td>
+							<td th:text="${os.nickname}">昵称</td>
+						</tr>
+						
+					</tbody>
+				</table>
+			</div>
+			<div class="col-md-4 column">
+				<div class="row clearfix">
+					<div class="col-md-12 column">
+						<h5>内部销售人员列表</h5>
+					</div>
+				</div>
+				<table class="table">
+					<thead>
+						<tr>
+							<th><input type="checkbox" id="check-select-all-is" ><label for="check-select-all-is">选择</label></th>
+							<th>ID</th>
+							<th>姓名</th>
+							<th>昵称</th>
+						</tr>
+					</thead>
+					<tbody id="islist">
+						<tr th:each="is:${insideSales}">
+							<td > <input type="checkbox" class="check-is" name="check-is" 
+								th:attr="id='check-is-'+${is.id},bind-id=${is.id}"> </td>
+							<td th:text="${is.id}">ID</td>
+							<td th:text="${is.username}">用户名</td>
+							<td th:text="${is.nickname}">昵称</td>
+						</tr>
+					</tbody>
+				</table>
+			</div>
+			<div class="col-md-4 column">
+				<div class="row clearfix">
+					<div class="col-md-12 column">
+						<h5>绑定的OS/IS</h5>
+					</div>
+				</div>
+				<table class="table">
+					<thead>
+						<tr>
+							<th><input type="checkbox" id="check-select-all-is"><label for="check-select-all-is">选择</label></th>
+							<th>ID</th>
+							<th>姓名</th>
+							<th>昵称</th>
+							<th>类型</th>
+							<th>操作</th>
+						</tr>
+					</thead>
+					<tbody>
+						<tr th:each="bind:${agentBindList}">
+							<td > <input type="checkbox" class="check-osis" th:attr="data-id=${bind.sale.id}" > </td>
+							<td th:text="${bind.sale.id}">ID</td>
+							<td th:text="${bind.sale.username}">用户名</td>
+							<td th:text="${bind.sale.nickname}">昵称</td>
+							<td th:text="${bind.type}">类型</td>
+							<td ><a type="button" title="解绑"> </a></td>
+						</tr>
+					</tbody>
+				</table>
+			</div>
+		</div>
+		<div class="row clearfix">			
+			<div class="col-md-12 column">
+				<hr style="height:1px;border:none;border-top:1px solid blue;" />
+				<button type="button" class="btn btn-primary" id="btn-bind" style="float:right; margin-right:100px;">绑定</button>
+				<!-- <button type="button" class="btn btn-primary" id="btn-bind1" style="float:right; margin-right:100px;">绑定2</button> -->
+			</div>
+		</div>
+		
+		<div class="row clearfix">			
+			<div class="col-md-12 column">
+				<!-- 当前签约客户id  -->
+				<input type="hidden" id="curr-agent" th:value="${agentId}">
+			</div>
+		</div>
+		
+	</div>
+	
+	<script type="text/javascript" th:src="@{/static/js/agent_bind/agent_bind_user.js}"></script>
+	
+	
+</body>
+</html>

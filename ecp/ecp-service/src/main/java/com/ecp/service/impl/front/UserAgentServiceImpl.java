@@ -1,6 +1,5 @@
 package com.ecp.service.impl.front;
 
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -13,6 +12,8 @@ import com.ecp.service.front.IUserAgentService;
 import com.ecp.service.impl.AbstractBaseService;
 
 import tk.mybatis.mapper.entity.Example;
+import tk.mybatis.mapper.entity.Example.Criteria;
+import tk.mybatis.mapper.util.StringUtil;
 
 @Service
 public class UserAgentServiceImpl extends AbstractBaseService<UserExtends, Long> implements IUserAgentService {
@@ -52,9 +53,9 @@ public class UserAgentServiceImpl extends AbstractBaseService<UserExtends, Long>
 
 	@Override
 	public List<UserExtends> searchUserAgent(int searchTypeValue, String condValue) {
-		List<UserExtends> resultList=new ArrayList<UserExtends>();
+		List<UserExtends> resultList=null;
 		Example example =new Example(UserExtends.class);
-		Map<Integer,String> map=new HashMap<Integer,String>();
+		Map<Integer,String> map=new HashMap<Integer, String>();
 		map.put(1, "companyName");
 		map.put(2, "artificialPersonName");
 		map.put(3, "contactPhone");
@@ -76,6 +77,66 @@ public class UserAgentServiceImpl extends AbstractBaseService<UserExtends, Long>
 		
 		return resultList;
 		
+	}
+
+
+	@Override
+	public List<UserExtends> searchUserAgent(int searchTypeValue, String condValue, String provinceName,
+			String cityName, String countyName) {
+		List<UserExtends> resultList=null;
+		Example example =new Example(UserExtends.class);
+		Map<Integer,String> map=new HashMap<Integer, String>();
+		map.put(1, "companyName");
+		map.put(2, "artificialPersonName");
+		map.put(3, "contactPhone");
+		
+		Criteria criteria=example.createCriteria();
+		switch(searchTypeValue){
+		case 0:   	//没有选择条件类型时			
+			if(!StringUtil.isEmpty(provinceName)){				
+				criteria.andEqualTo("province", provinceName);				
+			}
+			if(!StringUtil.isEmpty(cityName)){
+				criteria.andEqualTo("city", cityName);
+			}
+			if(!StringUtil.isEmpty(countyName)){
+				criteria.andEqualTo("county", countyName);
+			}			
+			resultList=userExtendsMapper.selectByExample(example);
+			break;
+		case 1:
+		case 2:
+		case 3:
+			//区域条件			
+			if(!StringUtil.isEmpty(provinceName)){
+				criteria.andEqualTo("province", provinceName);
+			}
+			if(!StringUtil.isEmpty(cityName)){
+				criteria.andEqualTo("city", cityName);
+			}
+			if(!StringUtil.isEmpty(countyName)){
+				criteria.andEqualTo("county", countyName);
+			}
+			
+			
+			//条件类型
+			criteria.andLike(map.get(searchTypeValue), condValue);
+			resultList=userExtendsMapper.selectByExample(example);
+			break;
+		default:
+			if(!StringUtil.isEmpty(provinceName)){				
+				criteria.andEqualTo("province", provinceName);				
+			}
+			if(!StringUtil.isEmpty(cityName)){
+				criteria.andEqualTo("city", cityName);
+			}
+			if(!StringUtil.isEmpty(countyName)){
+				criteria.andEqualTo("county", countyName);
+			}			
+			resultList=userExtendsMapper.selectByExample(example);
+		}
+		
+		return resultList;
 	}
 	
 	

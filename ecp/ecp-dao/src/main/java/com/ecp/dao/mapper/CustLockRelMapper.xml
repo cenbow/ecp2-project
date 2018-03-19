@@ -1,22 +1,55 @@
-<?xml version="1.0" encoding="UTF-8" ?>
-<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
-<mapper namespace="com.ecp.dao.CustLockRelMapper" >
-  <resultMap id="BaseResultMap" type="com.ecp.entity.CustLockRel" >
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ecp.dao.CustLockRelMapper">
+  <resultMap id="BaseResultMap" type="com.ecp.entity.CustLockRel">
     <!--
       WARNING - @mbggenerated
     -->
-    <id column="id" property="id" jdbcType="BIGINT" />
-    <result column="cust_id" property="custId" jdbcType="BIGINT" />
-    <result column="area" property="area" jdbcType="VARCHAR" />
-    <result column="channel" property="channel" jdbcType="VARCHAR" />
-    <result column="master_slave_flag" property="masterSlaveFlag" jdbcType="TINYINT" />
-    <result column="item_cat_id" property="itemCatId" jdbcType="BIGINT" />
-    <result column="bind_user_id" property="bindUserId" jdbcType="BIGINT" />
+    <id column="id" jdbcType="BIGINT" property="id" />
+    <result column="cust_id" jdbcType="BIGINT" property="custId" />
+    <result column="area" jdbcType="VARCHAR" property="area" />
+    <result column="channel" jdbcType="VARCHAR" property="channel" />
+    <result column="master_slave_flag" jdbcType="TINYINT" property="masterSlaveFlag" />
+    <result column="item_cat_id" jdbcType="BIGINT" property="itemCatId" />
+    <result column="bind_user_id" jdbcType="BIGINT" property="bindUserId" />
+    <result column="role_id" jdbcType="BIGINT" property="roleId" />
   </resultMap>
-  <sql id="Base_Column_List" >
+  <sql id="Base_Column_List">
     <!--
       WARNING - @mbggenerated
     -->
-    id, cust_id, area, channel, master_slave_flag, item_cat_id, bind_user_id
+    id, cust_id, area, channel, master_slave_flag, item_cat_id, bind_user_id, role_id
   </sql>
+  
+  <select id="getSales" resultType="map">
+	SELECT user.id,user.username,user.nickname,role.role_id,role.role_name from user  
+	LEFT JOIN user_role ON (user.id=user_role.user_id)  
+	LEFT JOIN role ON(user_role.role_id=role.role_id) 
+	<where>
+		user.type=1  
+		AND   
+		user.deleted=1 
+		AND   
+		role.role_name=#{roleName}		
+	</where>   
+  </select>
+  
+  <select id="getSalesByAgentId" resultType="map">
+  	 SELECT user.id,user.username,user.nickname,cust_lock_rel.role_id,role.role_name from user 
+  	 LEFT JOIN cust_lock_rel ON (user.id=cust_lock_rel.bind_user_id) 
+  	 LEFT JOIN user_role on(user.id=user_role.user_id) 
+  	 LEFT JOIN role ON(user_role.role_id=role.role_id AND cust_lock_rel.role_id=role.role_id)
+  	 <where>
+  	 	user.type=1 AND  
+  	 	user.deleted=1  AND  	 	
+  	 	cust_lock_rel.cust_id=#{agentId} AND
+  	 	role.role_name=#{roleName} 
+  	 </where> 
+  
+  </select>
+  
+  
+  
+  
+  
 </mapper>

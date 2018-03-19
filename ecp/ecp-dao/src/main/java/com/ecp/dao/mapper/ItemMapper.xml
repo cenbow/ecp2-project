@@ -42,9 +42,7 @@
     
     <result column="after_service" jdbcType="LONGVARCHAR" property="afterService" />
     <result column="describe_url" jdbcType="LONGVARCHAR" property="describeUrl" />
-    
   </resultMap>
-    
   <sql id="Base_Column_List">
     <!--
       WARNING - @mbggenerated

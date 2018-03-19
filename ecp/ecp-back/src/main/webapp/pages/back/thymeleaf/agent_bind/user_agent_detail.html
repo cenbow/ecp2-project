@@ -2,7 +2,7 @@
 <html>
 <head>
 <meta charset="UTF-8">
-<div th:include="/back/thymeleaf/common/_head2::headx('客户资料详情')" th:remove="tag"></div>
+<!-- <div th:include="/back/thymeleaf/common/_head2::headx('客户资料详情')" th:remove="tag"></div> -->
 </head>
 <body>
 
@@ -109,61 +109,32 @@
 						</div>
 						
 						
-						
-						<!-- <div class="form-group" >
-							<label for="province" class="col-sm-2 control-label">省份</label>
-							<div class="col-sm-10">
-								<select class="form-control" id="province" ><option value="" data-code="">—— 省 ——</option></select>
-	          					<input type="hidden" value="" id="provinceCode" name="provinceCode">
-	          					<input type="hidden" value="" id="provinceName" name="provinceName">
-          					</div>		          				
-						</div>
-						
-						<div class="form-group" >
-							<label for="city" class="col-sm-2 control-label">市</label>
-							<div class="col-sm-10">
-								<select class="form-control" id="city" ><option value="" data-code="">—— 市 ——</option></select>
-	          					<input type="hidden" value="" id="cityCode" name="cityCode">
-	          					<input type="hidden" value="" id="cityName" name="cityName">
-          					</div>         				
-						</div>
-						
-						<div class="form-group" >
-							<label for="district" class="col-sm-2 control-label">区(县)</label>
-							<div class="col-sm-10">
-								<select class="form-control" id="district" ><option value="" data-code="">—— 区 ——</option></select>
-						        <input type="hidden" value="" id="countyCode" name="countyCode">
-						        <input type="hidden" value="" id="countyName" name="countyName">
-					        </div>         				
-						</div> -->
-						
-						
 						<!-- 地区选择 -->
 						<div class="form-group">
-							<label for="distpicker" class="col-sm-2 control-label">所在地区（*）</label>
+							<label for="distpicker1" class="col-sm-2 control-label">所在地区（*）</label>
 							<div class="col-sm-10">									
 								<!-- 地区选择 -->
-								<div data-toggle="distpicker" id="distpicker">
+								<div data-toggle="distpicker" id="distpicker1">
 									<div class="row clearfix">
 										<div class="col-md-12 column">
 											<div class="row clearfix">
 												<div class="col-md-4 column" style="padding-right:5px;">
-							          					<select class="form-control" id="province" th:value="${agent.province}" ><option  value="" data-code="">—— 省 ——</option></select>
+							          					<select class="form-control" id="province1" th:value="${agent.province}" ><option  value="" data-code="">—— 省 ——</option></select>
 							          					<!-- 省份编码、名称-隐藏字段 -->
-							          					<input type="hidden" th:value="${agent.provinceCode}" id="provinceCode" name="provinceCode">
-							          					<input type="hidden" th:value="${agent.province}" id="provinceName" name="province">
+							          					<input type="hidden" th:value="${agent.provinceCode}" id="provinceCode1" name="provinceCode">
+							          					<input type="hidden" th:value="${agent.province}" id="provinceName1" name="province">
 												</div>
 												<div class="col-md-4 column" style="padding:0px 0px 0px 0px;">
-							          					<select class="form-control" id="city" th:value="${agent.city}"><option value="" data-code="">—— 市 ——</option></select>
+							          					<select class="form-control" id="city1" th:value="${agent.city}"><option value="" data-code="">—— 市 ——</option></select>
 							          					<!-- 市级编码、名称-隐藏字段 -->
-							          					<input type="hidden" th:value="${agent.cityCode}" id="cityCode" name="cityCode">
-							          					<input type="hidden" th:value="${agent.city}" id="cityName" name="city">
+							          					<input type="hidden" th:value="${agent.cityCode}" id="cityCode1" name="cityCode">
+							          					<input type="hidden" th:value="${agent.city}" id="cityName1" name="city">
 												</div>
 												<div class="col-md-4 column" style="padding-left:5px">
-											          <select class="form-control" id="district" th:value="${agent.county}"><option value="" data-code="">—— 区 ——</option></select>
+											          <select class="form-control" id="district1" th:value="${agent.county}"><option value="" data-code="">—— 区 ——</option></select>
 											          <!-- 县级编码、名称-隐藏字段 -->
-											          <input type="hidden" th:value="${agent.countyCode}" id="countyCode" name="countyCode">
-											          <input type="hidden" th:value="${agent.county}" id="countyName" name="county">
+											          <input type="hidden" th:value="${agent.countyCode}" id="countyCode1" name="countyCode">
+											          <input type="hidden" th:value="${agent.county}" id="countyName1" name="county">
 												</div>
 											</div>
 										</div>
@@ -172,10 +143,7 @@
 								</div>
 							</div>
 						</div>
-						
-						
-						
-						
+											
 						
 						
 						<div class="form-group" >
@@ -470,10 +438,9 @@
 							</div> -->
 							
 							<div class="col-sm-10">
-								<button type="button" id="btnSave"  class="btn btn-primary"  style="float:right;margin-right:100px;" >保存</button>
+								<button type="button" id="btnReturn"  class="btn btn-primary"  style="float:right;margin-right:100px;" >关闭</button>
 							</div>
-						</div>
-						
+						</div>						
 					</form>
 				</div>
 			</div>
@@ -482,9 +449,9 @@
 </div>
 
 	<!-- 地区选择 -->
-	<script type="text/javascript" th:src="@{/static/js/distpicker/distpicker.data.js}"></script>
-	<script type="text/javascript" th:src="@{/static/js/distpicker/distpicker.js}"></script>
-	<script type="text/javascript" th:src="@{/static/js/distpicker/main.js}"></script>
+	<!-- <script type="text/javascript" th:src="@{/static/js/distpicker/distpicker.data.js}"></script>
+	<script type="text/javascript" th:src="@{/static/js/distpicker/distpicker.js}"></script> -->
+	
 	<!-- 日期组件 -->
 	<script type="text/javascript" th:src="@{/static/calendar/WdatePicker.js}"></script>
 	
@@ -492,7 +459,7 @@
 	/*<![CDATA[*/  
 	  
 	    var agent = [[${agent}]];  
-	    console.log(agent);  
+	    //console.log(agent);  
 	  
 	/*]]>*/  
 	</script>  
@@ -501,142 +468,99 @@
 		
 		//上下文信息  
 		var BASE_CONTEXT_PATH = $('meta[name=context-path]').attr("content");
-		BASE_CONTEXT_PATH = BASE_CONTEXT_PATH.substr(0,
-				BASE_CONTEXT_PATH.length - 1);
-	
-	
-	
-		/* 上传前预览图片 */
-		function preview(file) {
-			//alert(file.id);
-			if (isAllowUploadFile(file, 5120, '上传logo图不能大于5M！')) {
-				showPreview(file, file.id+'_prev');
-				//$("#save-content-submit-btn").attr("disabled", false);
-			} else {
-				//$("#save-content-submit-btn").attr("disabled", true);
-			}
-		}
-		
-		/* 保存内容 */
-		function saveFun(){
-			var url = null;
-			
-			url = BASE_CONTEXT_PATH+"/back/agent/update";
-			
-			
-			//util.loading();
-			$("#user-agent-form").ajaxSubmit({
-				type:"post",
-				url:url,
-				success : function(res) {
-					console.log(res);
-					if(res!=null){
-						var obj = $.parseJSON(res);
-						if(obj.result_code=="success"){
-							//$("#update-menu-modal-div").modal("hide");//隐藏修改菜单对话框
-							//util.message(obj.result_msg);
-							//window.location.href="loginSubmit";
-							//操作成功后重新加载当前菜单内容
-							//reloadInfoFun();
-							//window.opener.reloadPage();  //刷新父窗口中的网页  操作成功后重新加载当前菜单内容
-							//window.close();//关闭当前窗窗口
-							
-							resetTab();//重置选项卡
-							reloadPage();//重新加载列表
-							
-							
-						}else{
-							util.message(obj.result_err_msg);
-						}
-					}
-				},
-			});
-		}
+		BASE_CONTEXT_PATH = BASE_CONTEXT_PATH.substr(0,	BASE_CONTEXT_PATH.length - 1);
 		
 		//---------------------------区域操作-----------------------------
 		/**
 		 * 复位地区列表
 		 * @returns
 		 */
-		function resetDistPickerDeep(){
-			 var $distpicker = $('#distpicker');
-			 $distpicker.distpicker('reset', true);
+		function resetDistPickerDeep1(){
+			 var distpicker = $('#distpicker1');
+			 distpicker.distpicker('reset', true);
 		}
 
 		/**
 		 * 同步更新地区编码、名称
 		 * @returns
 		 */
-		function syncUpdateHiddenAreaCode(){
-			console.log("debug");
-			var code= $("#province").find("option:selected").attr("data-code");  //省级编码、名称
-			var name= $("#province").find("option:selected").val();
-			console.log("name:"+name);
-			$("#provinceCode").val(code);
-			$("#provinceName").val(name);
-			
-			console.log("debug end");
-			
-			
-			code= $("#city").find("option:selected").attr("data-code");  //市级编码、名称
-			name= $("#city").find("option:selected").val();
-			$("#cityCode").val(code);
-			$("#cityName").val(name);
+		function syncUpdateHiddenAreaCode1(){
+			//console.log("debug");
+			var code= $("#province1").find("option:selected").attr("data-code");  //省级编码、名称
+			var name= $("#province1").find("option:selected").val();
+			//console.log("name:"+name);
+			$("#provinceCode1").val(code);
+			$("#provinceName1").val(name);			
+			//console.log("debug end");
 			
 			
+			code= $("#city1").find("option:selected").attr("data-code");  //市级编码、名称
+			name= $("#city1").find("option:selected").val();
+			$("#cityCode1").val(code);
+			$("#cityName1").val(name);
 			
-			code= $("#district").find("option:selected").attr("data-code");  //县区级编码、名称
-			name= $("#district").find("option:selected").val();
-			$("#countyCode").val(code);
-			$("#countyName").val(name);
+			
+			
+			code= $("#district1").find("option:selected").attr("data-code");  //县区级编码、名称
+			name= $("#district1").find("option:selected").val();
+			$("#countyCode1").val(code);
+			$("#countyName1").val(name);
 			
 			
 		}
 		
 		/*
-			采用用户选择的地区值 初始化地区选择组件
+			采用签约客户地区值(省,市,县) 初始化地区选择组件
 		*/
 		function initArea(agent) {
 			//set distpicker
-			$("#province").val(agent.province);
-			$("#province").trigger("change");
-			$("#city").val(agent.city);
-			$("#city").trigger("change");
-			$("#district").val(agent.county);
+			//console.log("agent is:"+agent);
+			//console.log("province:"+agent.province);
+			$("#province1").val(agent.province);
+			$("#province1").trigger("change");
+			
+			$("#city1").val(agent.city);
+			$("#city1").trigger("change");
+			
+			$("#district1").val(agent.county);
+			
 		}
 		
 		
-		$(function() {		
+		$(function() {
 			
-			/*	保存签约用户 */
-			$("#btnSave").on('click', function(e){
-				saveFun();	
+			resetDistPickerDeep1();   //初始化区域选择组件
+			
+			/*	
+				关闭选项卡:签约用户详情   
+			*/
+			$("#btnReturn").on('click', function(e){
+				resetTab();//重置选项卡				
 			});
 			
 			
-			//==================地区选择====================
+			//----------------地区选择--------------
 			/*
-			 *当“省份”变化时，将code赋值给value; 
+			 *	“省份”变化:将code赋值给value; 
 			 */
-			$("#province").on("change",function(){
-				syncUpdateHiddenAreaCode();
-			});
-			
-			/*
-			 *当“市级”变化时，将ode赋值给value; 
-			 */
-			$("#city").on("change",function(){
-				syncUpdateHiddenAreaCode();
+			$("#province1").on("change",function(){
+				syncUpdateHiddenAreaCode1();
 			});
 			
 			/*
-			 *当“县级”变化时，将code赋值给value; 
+			 *“市级”变化:将code赋值给value; 
 			 */
-			$("#district").on("change",function(){
-				syncUpdateHiddenAreaCode();
+			$("#city1").on("change",function(){
+				syncUpdateHiddenAreaCode1();
 			});
 			
-			resetDistPickerDeep();   //初始化区域选择组件
+			/*
+			 *“县级”变化:将code赋值给value; 
+			 */
+			$("#district1").on("change",function(){
+				syncUpdateHiddenAreaCode1();
+			});
+			
 			initArea(agent);    //采用用户所选区域进行初始化.
 			
 		});

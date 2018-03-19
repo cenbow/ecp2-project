@@ -2,7 +2,14 @@ package com.ecp.entity;
 
 import java.math.BigDecimal;
 import java.util.Date;
-import javax.persistence.*;
+
+import javax.persistence.Column;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+import javax.persistence.Table;
+
+import org.springframework.format.annotation.DateTimeFormat;
 
 @Table(name = "user_extends")
 public class UserExtends {
@@ -85,19 +92,37 @@ public class UserExtends {
     private String country;
 
     /**
-     * 所在省份
+     * 省份名称
      */
     private String province;
 
     /**
-     * 所在城市
+     * 省份编码
+     */
+    @Column(name = "province_code")
+    private String provinceCode;
+
+    /**
+     * 城市名称
      */
     private String city;
 
     /**
-     * 所在区县
+     * 城市编码
      */
-    private String area;
+    @Column(name = "city_code")
+    private String cityCode;
+
+    /**
+     * 区县名称
+     */
+    private String county;
+
+    /**
+     * 区县编码
+     */
+    @Column(name = "county_code")
+    private String countyCode;
 
     /**
      * 补充区县
@@ -175,6 +200,7 @@ public class UserExtends {
      * 成立时间
      */
     @Column(name = "register_date")
+    @DateTimeFormat(pattern="yyyy-MM-dd")
     private Date registerDate;
 
     /**
@@ -538,57 +564,111 @@ public class UserExtends {
     }
 
     /**
-     * 获取所在省份
+     * 获取省份名称
      *
-     * @return province - 所在省份
+     * @return province - 省份名称
      */
     public String getProvince() {
         return province;
     }
 
     /**
-     * 设置所在省份
+     * 设置省份名称
      *
-     * @param province 所在省份
+     * @param province 省份名称
      */
     public void setProvince(String province) {
         this.province = province == null ? null : province.trim();
     }
 
     /**
-     * 获取所在城市
+     * 获取省份编码
      *
-     * @return city - 所在城市
+     * @return province_code - 省份编码
+     */
+    public String getProvinceCode() {
+        return provinceCode;
+    }
+
+    /**
+     * 设置省份编码
+     *
+     * @param provinceCode 省份编码
+     */
+    public void setProvinceCode(String provinceCode) {
+        this.provinceCode = provinceCode == null ? null : provinceCode.trim();
+    }
+
+    /**
+     * 获取城市名称
+     *
+     * @return city - 城市名称
      */
     public String getCity() {
         return city;
     }
 
     /**
-     * 设置所在城市
+     * 设置城市名称
      *
-     * @param city 所在城市
+     * @param city 城市名称
      */
     public void setCity(String city) {
         this.city = city == null ? null : city.trim();
     }
 
     /**
-     * 获取所在区县
+     * 获取城市编码
      *
-     * @return area - 所在区县
+     * @return city_code - 城市编码
      */
-    public String getArea() {
-        return area;
+    public String getCityCode() {
+        return cityCode;
     }
 
     /**
-     * 设置所在区县
+     * 设置城市编码
      *
-     * @param area 所在区县
+     * @param cityCode 城市编码
      */
-    public void setArea(String area) {
-        this.area = area == null ? null : area.trim();
+    public void setCityCode(String cityCode) {
+        this.cityCode = cityCode == null ? null : cityCode.trim();
+    }
+
+    /**
+     * 获取区县名称
+     *
+     * @return county - 区县名称
+     */
+    public String getCounty() {
+        return county;
+    }
+
+    /**
+     * 设置区县名称
+     *
+     * @param county 区县名称
+     */
+    public void setCounty(String county) {
+        this.county = county == null ? null : county.trim();
+    }
+
+    /**
+     * 获取区县编码
+     *
+     * @return county_code - 区县编码
+     */
+    public String getCountyCode() {
+        return countyCode;
+    }
+
+    /**
+     * 设置区县编码
+     *
+     * @param countyCode 区县编码
+     */
+    public void setCountyCode(String countyCode) {
+        this.countyCode = countyCode == null ? null : countyCode.trim();
     }
 
     /**
@@ -1049,8 +1129,11 @@ public class UserExtends {
         sb.append(", customerType=").append(customerType);
         sb.append(", country=").append(country);
         sb.append(", province=").append(province);
+        sb.append(", provinceCode=").append(provinceCode);
         sb.append(", city=").append(city);
-        sb.append(", area=").append(area);
+        sb.append(", cityCode=").append(cityCode);
+        sb.append(", county=").append(county);
+        sb.append(", countyCode=").append(countyCode);
         sb.append(", addedArea=").append(addedArea);
         sb.append(", mainTrade=").append(mainTrade);
         sb.append(", firstTrade=").append(firstTrade);
