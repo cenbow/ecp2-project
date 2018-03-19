@@ -18,4 +18,20 @@
     -->
     id, customer_type_id, customer_level_id, rule_type, rule_name, comment
   </sql>
+  <!-- 根据条件（map中的参数）查询商品 -->
+	<select id="getListMap" parameterType="map" resultType="map">
+		SELECT
+			lr.*, t.id AS type_id,
+			t.type_name,
+			t.type_code,
+			l.id AS level_id,
+			l.level_name,
+			l.level_code
+		FROM
+			customer_level_rule lr
+		LEFT JOIN customer_type t ON lr.customer_type_id = t.id
+		LEFT JOIN customer_level l ON lr.customer_level_id = l.id
+		ORDER BY
+			lr.id DESC
+	</select>
 </mapper>
