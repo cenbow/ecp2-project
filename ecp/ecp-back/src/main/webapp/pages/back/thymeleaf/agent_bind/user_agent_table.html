@@ -174,13 +174,19 @@ tr:hover{
 							<td th:case="'2'" style="color:red;">无效</td>
 						</span>
 
+						<!-- 外部销售人员列表  -->
 						<td>
-							<span th:text="${agentBind.os}">OS</span>
+							<span th:each="osUser:${agentBind.osUsers}" th:remove="tag">
+								<a th:text="${osUser.username}" href="javascript:void(0);" style="margin-right:5px"></a>
+							</span>
 						</td>
 						
 						
+						<!-- 内部销售人员列表 -->
 						<td>
-							<span th:text="${agentBind.is}"></span>
+							<span th:each="isUser:${agentBind.isUsers}" th:remove="tag">
+								<a th:text="${isUser.username}" href="javascript:void(0);" style="margin-right:5px"></a>
+							</span>
 						</td>
 						
 						<td>

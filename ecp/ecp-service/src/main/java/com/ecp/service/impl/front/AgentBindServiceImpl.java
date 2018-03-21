@@ -61,10 +61,11 @@ public class AgentBindServiceImpl extends AbstractBaseService<CustLockRel, Long>
 
 
 	@Override
-	public int addBindAgentToUser(long agentId, long userId) {
+	public int addBindAgentToUser(long agentId, long userId,long roleId) {
 		CustLockRel rec=new CustLockRel();
 		rec.setCustId(agentId);
 		rec.setBindUserId(userId);
+		rec.setRoleId(roleId);
 		return custLockRelMapper.insertSelective(rec);		
 		
 	}
