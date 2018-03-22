@@ -427,11 +427,11 @@
 			<generatedKey column="id" sqlStatement="MySql" identity="true"/>
 		</table> -->
 			
-		<table tableName="account_personal" domainObjectName="AccountPersonal" enableCountByExample="false" enableUpdateByExample="false" enableDeleteByExample="false" enableSelectByExample="false" selectByExampleQueryId="false">
+		<table tableName="account_company" domainObjectName="AccountCompany" enableCountByExample="false" enableUpdateByExample="false" enableDeleteByExample="false" enableSelectByExample="false" selectByExampleQueryId="false">
 			<generatedKey column="id" sqlStatement="MySql" identity="true"/>
 		</table>
 		
-		<table tableName="trade_orders" domainObjectName="Orders" enableCountByExample="false" enableUpdateByExample="false" enableDeleteByExample="false" enableSelectByExample="false" selectByExampleQueryId="false">
+		<!-- <table tableName="trade_orders" domainObjectName="Orders" enableCountByExample="false" enableUpdateByExample="false" enableDeleteByExample="false" enableSelectByExample="false" selectByExampleQueryId="false">
 			<generatedKey column="id" sqlStatement="MySql" identity="true"/>
 		</table>
 		
@@ -441,7 +441,7 @@
 		
 		<table tableName="contract_items" domainObjectName="ContractItems" enableCountByExample="false" enableUpdateByExample="false" enableDeleteByExample="false" enableSelectByExample="false" selectByExampleQueryId="false">
 			<generatedKey column="id" sqlStatement="MySql" identity="true"/>
-		</table>
+		</table> -->
 		
 		
 		

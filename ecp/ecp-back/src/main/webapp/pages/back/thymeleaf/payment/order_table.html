@@ -320,17 +320,10 @@
 													data-orderid=${order.order_id},
 													data-contractState=${order.contract_state},
 													data-contract-id=${order.contract_id}" 
-												class="edit-four-fee" 
-												title="四项费用管理">												
+												class="edit-payment" 
+												title="回款管理">												
 								<i class=" icon-money icon-large" style="color:darkblue"></i>
-							</a>
-							<!-- <a type="button" th:attr="data-id=${order.id},
-													data-orderid=${order.order_id},
-													data-contractState=${order.contract_state}" 
-											class="edit-market-fee" 
-											title="市场费用管理">
-								<i class=" icon-coffee icon-large" style="color:darkblue"></i>
-							</a> -->
+							</a>							
 						</td>
 
 					</tr>
@@ -360,14 +353,13 @@
 	<!-- footer -->
 	<!-- <div th:include="/thymeleaf/common/_footer::footer" class="footer"></div> -->
 
-	<!-- 当用户点击查询条件时，采用些隐藏表单提交 -->
-	<form th:action="@{/back/account/show}" method="post" id="searchform">
+	<form  method="post" id="searchform">
 		<!-- 保存页号与页大小 -->
 		<input type="hidden" name="pageNum" id="pageNum" th:value="${pageInfo.pageNum}"> 
 		<input type="hidden" name="pageSize" id="pageSize" th:value="${pageInfo.pageSize}">
 	</form>
 	
-	<script type="text/javascript"	th:src="@{/static/js/fourfee/fourFeeManagement.js}"></script>
+	<script type="text/javascript"	th:src="@{/static/js/payment/paymentManagement.js}"></script>
 
 </body>
 </html>

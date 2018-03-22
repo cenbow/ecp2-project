@@ -9,29 +9,30 @@
 	<div class="row clearfix">
 		<div class="col-md-12 column">
 			<h4>
-				四项费用管理
+				市场费用管理
 			</h4>
 		</div>		
 	</div>
 	
 	<!-- dialog  -->
-	<span th:include="/back/thymeleaf/fourfee/add_four_fee_dialog::dialog" th:remove="tag"></span>
+	<span th:include="/back/thymeleaf/marketfee/add_market_fee_dialog::dialog" th:remove="tag"></span>
 		
 	<div class="row clearfix">
 		<div class="col-md-12 column">
 			<div class="row clearfix">
 				<div class="col-md-12 column">
-					 <button type="button"  id="btn-add-four-fee" class="btn btn-primary" style="float:right;margin-right:100px;">增加</button>
+					 <button type="button"  id="btn-add-market-fee" class="btn btn-primary" style="float:right;margin-right:100px;">增加</button>
 				</div>
 			</div>
 			<hr  style="height:1px;border:none;border-top:1px solid #555555;">
 			<div class="row clearfix">
-				<!-- 四项费用列表 -->
-				<div class="col-md-12 column" id="fourfee-table">
-					<span th:include="/back/thymeleaf/fourfee/fourfee_table" th:remove="tag"></span>					
+				<!-- 市场费用列表 -->
+				<div class="col-md-12 column" id="marketfee-table">
+					<span th:include="/back/thymeleaf/marketfee/marketfee_table" th:remove="tag"></span>					
 				</div>
 			</div>
 			<hr  style="height:1px;border:none;border-top:1px solid #555555;">
+			
 		</div>
 	</div>
 </div>
@@ -49,6 +50,6 @@
 <script type="text/javascript" >
 </script>
 
- <script type="text/javascript" th:src="@{/static/js/fourfee/fourfee.js}"></script>
+ <script type="text/javascript" th:src="@{/static/js/marketfee/marketfee.js}"></script>
 </body>
 </html>

@@ -1,5 +1,6 @@
 package com.ecp.back.controller;
 
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -9,22 +10,14 @@ import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 
-import com.alibaba.fastjson.JSON;
-import com.alibaba.fastjson.JSONObject;
 import com.ecp.bean.AccountItemType;
 import com.ecp.common.util.RequestResultUtil;
 import com.ecp.entity.AccountCompany;
-import com.ecp.entity.Orders;
-import com.ecp.entity.User;
-import com.ecp.entity.UserExtends;
-import com.ecp.service.back.IUserService;
 import com.ecp.service.front.IAccountCompanyService;
 import com.ecp.service.front.IAccountPersonalService;
-import com.ecp.service.front.IAgentBindService;
 import com.ecp.service.front.IOrderItemService;
 import com.ecp.service.front.IOrderService;
 import com.ecp.service.front.IUserAgentService;
@@ -33,23 +26,20 @@ import com.github.pagehelper.PageInfo;
 
 /**
  * Copyright (c) 2018 by [个人或者公司信息]
- * @ClassName:     FourFeeController.java
- * @Description:   四项费用管理 
+ * @ClassName:     MarketFeeController.java
+ * @Description:   市场费用管理 
  * 
  * @author:        lenovo
  * @version:       V1.0  
  * @Date:          2018年3月21日 下午4:42:59 
  */
 @Controller
-@RequestMapping("/back/fourfee")
-public class FourFeeController {
+@RequestMapping("/back/marketfee")
+public class MarketFeeController {
 	private final Logger log = Logger.getLogger(getClass());
 	
-	private static final String RESPONSE_THYMELEAF_BACK = "back/thymeleaf/fourfee/";
+	private static final String RESPONSE_THYMELEAF_BACK = "back/thymeleaf/marketfee/";
 	private static final int PAGE_SIZE = 8;
-	
-	private static final String OUTSIDE_ROLE="Outside Sales";
-	private static final String INSIDE_ROLE="Inside Sales";
 
 	
 
@@ -63,10 +53,6 @@ public class FourFeeController {
 	IAccountCompanyService accountCompanyService; //公司帐户
 	@Autowired
 	IAccountPersonalService accountPersonalService;  //个人帐户
-	@Autowired
-	IAgentBindService agentBindService;  //客户绑定服务
-	@Autowired
-	IUserService userService;  //用户服务
 	
 
 	/**
@@ -91,13 +77,7 @@ public class FourFeeController {
 	 * @return
 	 */
 	@RequestMapping(value = "/ordertable")
-	public String order_table(int orderTimeCond,
-							  int dealStateCond,
-							  Integer pageNum, 
-							  Integer pageSize,
-							  Integer searchTypeValue,
-							  String condValue,
-							  Model model) {
+	public String order_table(int orderTimeCond,int dealStateCond,Integer pageNum, Integer pageSize,Integer searchTypeValue,String condValue,Model model) {
 		if(pageNum==null || pageNum==0)
 		{
 			pageNum=1;
@@ -137,77 +117,41 @@ public class FourFeeController {
 	
 	
 	/** 
-	* @Title: showFourFeeEditUI 
-	* @Description: 显示四项费用编辑界面 
+	* @Title: showMarketFeeEditUI 
+	* @Description: 显示市场费用编辑界面 
 	* @param @param id  订单自增ID
 	* @param @param orderId 订单NO
 	* @param @param model
 	* @param @return    设定文件 
-	* @return String    四项费用编辑UI
+	* @return String    市场费用编辑UI
 	* @throws 
 	*/
 	@RequestMapping(value="/edit")
-	public String showFourFeeEditUI(long orderId,String orderNo,Model model){
+	public String showMarketFeeEditUI(long orderId,String orderNo,Model model){
 		
 		//费用类型
-		List<Integer> itemTypeList=new ArrayList<Integer>();
-		itemTypeList.add(AccountItemType.COMMUNICATION_FEE);
-		itemTypeList.add(AccountItemType.ENTERTAINMENT_FEE);
-		itemTypeList.add(AccountItemType.TRANSPORTATION_FEE);
-		itemTypeList.add(AccountItemType.TRAVEL_EXPENSE_FEE);
+		List<Integer> itemTypeList=new ArrayList<Integer>();		
+		itemTypeList.add(AccountItemType.MARKET_FEE);  //市场费
 		
 		//查询公司帐薄
 		List<AccountCompany> accountCompanyList=accountCompanyService.getItemsByOrder(orderId, orderNo, itemTypeList);
 		
-		//查询与此订单相关的企业,而后查询与此企业相关的OS/IS人员列表.
-		//(1)先查询订单
-		Orders order=orderService.selectByPrimaryKey(orderId);		
-		//(2)根据订单中buyerId查询此户并获取主帐号信息
-		User user=userService.selectByPrimaryKey(order.getBuyerId());
-		long primaryAccountNo=user.getId();
-		if(user.getParentId()!=null && user.getParentId()!=0)  //下单者是子帐号
-		{
-			primaryAccountNo=user.getParentId();
-		}
-		//(3)根据主帐号可以查询所在的企业
-		UserExtends agent=userAgentService.getUserAgentByUserId(primaryAccountNo);
-		long agentId=agent.getExtendId();
-		//(4)根据企业与OS/IS的绑定关系查询所绑定的客服
-		List<Map<String,Object>> osList=agentBindService.getSalesByAgentId(agentId, OUTSIDE_ROLE);
-		List<Map<String,Object>> isList=agentBindService.getSalesByAgentId(agentId, INSIDE_ROLE);		
-		
-		
 		//回传参数
-		model.addAttribute("accountCompanyList",accountCompanyList);
-		model.addAttribute("osList",osList);
-		model.addAttribute("isList",isList);
-		
+		model.addAttribute("accountCompanyList",accountCompanyList);		
 		model.addAttribute("orderId", orderId);
 		model.addAttribute("orderNo",orderNo);
 		
-		return RESPONSE_THYMELEAF_BACK + "fourfee_edit";
+		return RESPONSE_THYMELEAF_BACK + "marketfee_edit";
 	}
 	
 	
-	/** 
-	* @Title: showFourFeeTable 
-	* @Description: 显示四项费用列表 
-	* @param @param orderId
-	* @param @param orderNo
-	* @param @param model
-	* @param @return    设定文件 
-	* @return String    返回类型 
-	* @throws 
-	*/
 	@RequestMapping(value="/table")
-	public String showFourFeeTable(long orderId,String orderNo,Model model){
+	public String showMarketFeeTable(long orderId,String orderNo,Model model){
 		
 		//费用类型
 		List<Integer> itemTypeList=new ArrayList<Integer>();
-		itemTypeList.add(AccountItemType.COMMUNICATION_FEE);
-		itemTypeList.add(AccountItemType.ENTERTAINMENT_FEE);
-		itemTypeList.add(AccountItemType.TRANSPORTATION_FEE);
-		itemTypeList.add(AccountItemType.TRAVEL_EXPENSE_FEE);
+		itemTypeList.add(AccountItemType.MARKET_FEE);  //市场费
+		
 		
 		//查询公司帐薄
 		List<AccountCompany> accountCompanyList=accountCompanyService.getItemsByOrder(orderId, orderNo, itemTypeList);
@@ -216,36 +160,20 @@ public class FourFeeController {
 		model.addAttribute("accountCompanyList",accountCompanyList);	
 		
 		
-		return RESPONSE_THYMELEAF_BACK + "fourfee_table";
+		return RESPONSE_THYMELEAF_BACK + "marketfee_table";
 	}
 	
-	
-	/** 
-	* @Title: addFeeItem 
-	* @Description: 增加费用条目记录 
-	* @param @param parms
-	* @param @param model
-	* @param @return    设定文件 
-	* @return Object    返回类型 
-	* @throws 
-	*/
 	@RequestMapping(value="/add")
 	@ResponseBody
-	public Object addFeeItem(@RequestBody String parms, Model model){		
-		//参数:long orderId,String orderNo,int itemType,BigDecimal amount,String comment,long bindUserId,long roleId
+	public Object addFeeItem(long orderId,String orderNo,int itemType,BigDecimal amount,String comment, Model model){
 		
-		AccountCompany accountCompanyItem =new AccountCompany();
-		JSONObject parm=JSON.parseObject(parms);
-		accountCompanyItem.setOrderId(parm.getLongValue("orderId"));
-		accountCompanyItem.setOrderNo(parm.getString("orderNo"));
-		accountCompanyItem.setType(parm.getIntValue("itemType"));
-		accountCompanyItem.setAmount(parm.getBigDecimal("amount"));
-		accountCompanyItem.setComment(parm.getString("comment"));
-		accountCompanyItem.setBindUserId(parm.getLongValue("bindUserId"));
-		accountCompanyItem.setRoleId(parm.getLongValue("roleId"));
-		
+		AccountCompany accountCompanyItem=new AccountCompany();
+		accountCompanyItem.setOrderId(orderId);
+		accountCompanyItem.setOrderNo(orderNo);
+		accountCompanyItem.setType(itemType);
+		accountCompanyItem.setAmount(amount);
+		accountCompanyItem.setComment(comment);
 		accountCompanyItem.setCreateTime(new Date());
-		
 		//记入公司帐薄
 		int row =accountCompanyService.addAccountItem(accountCompanyItem);
 		
