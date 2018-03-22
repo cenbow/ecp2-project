@@ -31,7 +31,10 @@
 					<tbody id="oslist">
 						<tr th:each="os:${outsideSales}">
 							<td > <input type="checkbox" class="check-os" name="check-os" 
-								th:attr="id='check-os-'+${os.id},bind-id=${os.id}"> </td>
+								th:attr="id='check-os-'+${os.id},
+										bind-id=${os.id},
+										role-id=${os.role_id}"> 
+							</td>
 							<td th:text="${os.id}">ID</td>
 							<td th:text="${os.username}">用户名</td>
 							<td th:text="${os.nickname}">昵称</td>
@@ -58,7 +61,10 @@
 					<tbody id="islist">
 						<tr th:each="is:${insideSales}">
 							<td > <input type="checkbox" class="check-is" name="check-is" 
-								th:attr="id='check-is-'+${is.id},bind-id=${is.id}"> </td>
+								th:attr="id='check-is-'+${is.id}, 
+										bind-id=${is.id}, 
+										role-id=${is.role_id}"> 
+							</td>
 							<td th:text="${is.id}">ID</td>
 							<td th:text="${is.username}">用户名</td>
 							<td th:text="${is.nickname}">昵称</td>
@@ -66,34 +72,8 @@
 					</tbody>
 				</table>
 			</div>
-			<div class="col-md-4 column">
-				<div class="row clearfix">
-					<div class="col-md-12 column">
-						<h5>绑定的OS/IS</h5>
-					</div>
-				</div>
-				<table class="table">
-					<thead>
-						<tr>
-							<th><input type="checkbox" id="check-select-all-is"><label for="check-select-all-is">选择</label></th>
-							<th>ID</th>
-							<th>姓名</th>
-							<th>昵称</th>
-							<th>类型</th>
-							<th>操作</th>
-						</tr>
-					</thead>
-					<tbody>
-						<tr th:each="bind:${agentBindList}">
-							<td > <input type="checkbox" class="check-osis" th:attr="data-id=${bind.sale.id}" > </td>
-							<td th:text="${bind.sale.id}">ID</td>
-							<td th:text="${bind.sale.username}">用户名</td>
-							<td th:text="${bind.sale.nickname}">昵称</td>
-							<td th:text="${bind.type}">类型</td>
-							<td ><a type="button" title="解绑"> </a></td>
-						</tr>
-					</tbody>
-				</table>
+			<div class="col-md-4 column" id="binded-users">
+				
 			</div>
 		</div>
 		<div class="row clearfix">			

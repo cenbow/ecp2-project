@@ -1,9 +1,11 @@
 package com.ecp.entity;
 
+import java.math.BigDecimal;
 import java.util.Date;
 import javax.persistence.*;
 
-public class Performance {
+@Table(name = "account_company")
+public class AccountCompany {
     /**
      * 业绩表自增ID
      */
@@ -30,32 +32,26 @@ public class Performance {
     private String orderNo;
 
     /**
-     * 商品ID
+     * 合同ID
      */
-    @Column(name = "item_id")
-    private Long itemId;
+    @Column(name = "contract_id")
+    private Long contractId;
 
     /**
-     * SKU_ID
+     * 合同编号
      */
-    @Column(name = "sku_id")
-    private Long skuId;
-
-    /**
-     * 跟单人ID
-     */
-    @Column(name = "bind_user_id")
-    private Long bindUserId;
+    @Column(name = "contract_no")
+    private String contractNo;
 
     /**
      * 金额
      */
-    private Long money;
+    private BigDecimal amount;
 
     /**
      * 类型（1、业绩；2、市场费；3、四项费用；4、销售滞纳金；5、价差；）
      */
-    private Byte type;
+    private Integer type;
 
     /**
      * 时间
@@ -66,14 +62,16 @@ public class Performance {
     /**
      * 操作员ID
      */
-    @Column(name = "user_id")
-    private Long userId;
+    @Column(name = "operator_id")
+    private Long operatorId;
 
     /**
      * 操作员姓名
      */
-    @Column(name = "user_name")
-    private String userName;
+    @Column(name = "operator_name")
+    private String operatorName;
+
+    private String comment;
 
     /**
      * 获取业绩表自增ID
@@ -148,75 +146,57 @@ public class Performance {
     }
 
     /**
-     * 获取商品ID
+     * 获取合同ID
      *
-     * @return item_id - 商品ID
+     * @return contract_id - 合同ID
      */
-    public Long getItemId() {
-        return itemId;
+    public Long getContractId() {
+        return contractId;
     }
 
     /**
-     * 设置商品ID
+     * 设置合同ID
      *
-     * @param itemId 商品ID
+     * @param contractId 合同ID
      */
-    public void setItemId(Long itemId) {
-        this.itemId = itemId;
+    public void setContractId(Long contractId) {
+        this.contractId = contractId;
     }
 
     /**
-     * 获取SKU_ID
+     * 获取合同编号
      *
-     * @return sku_id - SKU_ID
+     * @return contract_no - 合同编号
      */
-    public Long getSkuId() {
-        return skuId;
+    public String getContractNo() {
+        return contractNo;
     }
 
     /**
-     * 设置SKU_ID
+     * 设置合同编号
      *
-     * @param skuId SKU_ID
+     * @param contractNo 合同编号
      */
-    public void setSkuId(Long skuId) {
-        this.skuId = skuId;
-    }
-
-    /**
-     * 获取跟单人ID
-     *
-     * @return bind_user_id - 跟单人ID
-     */
-    public Long getBindUserId() {
-        return bindUserId;
-    }
-
-    /**
-     * 设置跟单人ID
-     *
-     * @param bindUserId 跟单人ID
-     */
-    public void setBindUserId(Long bindUserId) {
-        this.bindUserId = bindUserId;
+    public void setContractNo(String contractNo) {
+        this.contractNo = contractNo == null ? null : contractNo.trim();
     }
 
     /**
      * 获取金额
      *
-     * @return money - 金额
+     * @return amount - 金额
      */
-    public Long getMoney() {
-        return money;
+    public BigDecimal getAmount() {
+        return amount;
     }
 
     /**
      * 设置金额
      *
-     * @param money 金额
+     * @param amount 金额
      */
-    public void setMoney(Long money) {
-        this.money = money;
+    public void setAmount(BigDecimal amount) {
+        this.amount = amount;
     }
 
     /**
@@ -224,7 +204,7 @@ public class Performance {
      *
      * @return type - 类型（1、业绩；2、市场费；3、四项费用；4、销售滞纳金；5、价差；）
      */
-    public Byte getType() {
+    public Integer getType() {
         return type;
     }
 
@@ -233,7 +213,7 @@ public class Performance {
      *
      * @param type 类型（1、业绩；2、市场费；3、四项费用；4、销售滞纳金；5、价差；）
      */
-    public void setType(Byte type) {
+    public void setType(Integer type) {
         this.type = type;
     }
 
@@ -258,37 +238,51 @@ public class Performance {
     /**
      * 获取操作员ID
      *
-     * @return user_id - 操作员ID
+     * @return operator_id - 操作员ID
      */
-    public Long getUserId() {
-        return userId;
+    public Long getOperatorId() {
+        return operatorId;
     }
 
     /**
      * 设置操作员ID
      *
-     * @param userId 操作员ID
+     * @param operatorId 操作员ID
      */
-    public void setUserId(Long userId) {
-        this.userId = userId;
+    public void setOperatorId(Long operatorId) {
+        this.operatorId = operatorId;
     }
 
     /**
      * 获取操作员姓名
      *
-     * @return user_name - 操作员姓名
+     * @return operator_name - 操作员姓名
      */
-    public String getUserName() {
-        return userName;
+    public String getOperatorName() {
+        return operatorName;
     }
 
     /**
      * 设置操作员姓名
      *
-     * @param userName 操作员姓名
+     * @param operatorName 操作员姓名
      */
-    public void setUserName(String userName) {
-        this.userName = userName == null ? null : userName.trim();
+    public void setOperatorName(String operatorName) {
+        this.operatorName = operatorName == null ? null : operatorName.trim();
+    }
+
+    /**
+     * @return comment
+     */
+    public String getComment() {
+        return comment;
+    }
+
+    /**
+     * @param comment
+     */
+    public void setComment(String comment) {
+        this.comment = comment == null ? null : comment.trim();
     }
 
     @Override
@@ -301,14 +295,14 @@ public class Performance {
         sb.append(", custId=").append(custId);
         sb.append(", orderId=").append(orderId);
         sb.append(", orderNo=").append(orderNo);
-        sb.append(", itemId=").append(itemId);
-        sb.append(", skuId=").append(skuId);
-        sb.append(", bindUserId=").append(bindUserId);
-        sb.append(", money=").append(money);
+        sb.append(", contractId=").append(contractId);
+        sb.append(", contractNo=").append(contractNo);
+        sb.append(", amount=").append(amount);
         sb.append(", type=").append(type);
         sb.append(", createTime=").append(createTime);
-        sb.append(", userId=").append(userId);
-        sb.append(", userName=").append(userName);
+        sb.append(", operatorId=").append(operatorId);
+        sb.append(", operatorName=").append(operatorName);
+        sb.append(", comment=").append(comment);
         sb.append("]");
         return sb.toString();
     }

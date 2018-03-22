@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
-<mapper namespace="com.ecp.dao.PerformanceMapper" >
-  <resultMap id="BaseResultMap" type="com.ecp.entity.Performance" >
+<mapper namespace="com.ecp.dao.AccountPersonalMapper" >
+  <resultMap id="BaseResultMap" type="com.ecp.entity.AccountPersonal" >
     <!--
       WARNING - @mbggenerated
     -->
@@ -9,20 +9,23 @@
     <result column="cust_id" property="custId" jdbcType="BIGINT" />
     <result column="order_id" property="orderId" jdbcType="BIGINT" />
     <result column="order_no" property="orderNo" jdbcType="VARCHAR" />
+    <result column="contract_id" property="contractId" jdbcType="BIGINT" />
+    <result column="contract_no" property="contractNo" jdbcType="VARCHAR" />
     <result column="item_id" property="itemId" jdbcType="BIGINT" />
     <result column="sku_id" property="skuId" jdbcType="BIGINT" />
     <result column="bind_user_id" property="bindUserId" jdbcType="BIGINT" />
-    <result column="money" property="money" jdbcType="DECIMAL" />
-    <result column="type" property="type" jdbcType="TINYINT" />
+    <result column="amount" property="amount" jdbcType="DECIMAL" />
+    <result column="type" property="type" jdbcType="INTEGER" />
     <result column="create_time" property="createTime" jdbcType="TIMESTAMP" />
-    <result column="user_id" property="userId" jdbcType="BIGINT" />
-    <result column="user_name" property="userName" jdbcType="VARCHAR" />
+    <result column="operator_id" property="operatorId" jdbcType="BIGINT" />
+    <result column="operator_name" property="operatorName" jdbcType="VARCHAR" />
+    <result column="comment" property="comment" jdbcType="VARCHAR" />
   </resultMap>
   <sql id="Base_Column_List" >
     <!--
       WARNING - @mbggenerated
     -->
-    id, cust_id, order_id, order_no, item_id, sku_id, bind_user_id, money, type, create_time, 
-    user_id, user_name
+    id, cust_id, order_id, order_no, contract_id, contract_no, item_id, sku_id, bind_user_id, 
+    amount, type, create_time, operator_id, operator_name, comment
   </sql>
 </mapper>

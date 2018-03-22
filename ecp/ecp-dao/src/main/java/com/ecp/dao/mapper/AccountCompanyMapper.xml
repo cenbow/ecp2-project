@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.ecp.dao.AccountCompanyMapper" >
+  <resultMap id="BaseResultMap" type="com.ecp.entity.AccountCompany" >
+    <!--
+      WARNING - @mbggenerated
+    -->
+    <id column="id" property="id" jdbcType="BIGINT" />
+    <result column="cust_id" property="custId" jdbcType="BIGINT" />
+    <result column="order_id" property="orderId" jdbcType="BIGINT" />
+    <result column="order_no" property="orderNo" jdbcType="VARCHAR" />
+    <result column="contract_id" property="contractId" jdbcType="BIGINT" />
+    <result column="contract_no" property="contractNo" jdbcType="VARCHAR" />
+    <result column="amount" property="amount" jdbcType="DECIMAL" />
+    <result column="type" property="type" jdbcType="INTEGER" />
+    <result column="create_time" property="createTime" jdbcType="TIMESTAMP" />
+    <result column="operator_id" property="operatorId" jdbcType="BIGINT" />
+    <result column="operator_name" property="operatorName" jdbcType="VARCHAR" />
+    <result column="comment" property="comment" jdbcType="VARCHAR" />
+  </resultMap>
+  <sql id="Base_Column_List" >
+    <!--
+      WARNING - @mbggenerated
+    -->
+    id, cust_id, order_id, order_no, contract_id, contract_no, amount, type, create_time, 
+    operator_id, operator_name, comment
+  </sql>
+  
+  <select id="getItemsByOrder" resultMap="BaseResultMap">
+  	select * from account_company 
+  	<where>
+  		order_id=#{orderId} AND
+  		order_no=#{orderNo} 
+  		
+  		<if test="itemTypeList!=null and itemTypeList.size>0">
+  			AND
+  			type in 	
+  			<foreach collection="itemTypeList" index="index" item="itemType" open="(" separator="," close=")">  
+            	#{itemType}  
+        	</foreach>	
+  		
+  		</if>
+  		
+  	</where>
+  </select>
+  
+  
+  
+</mapper>

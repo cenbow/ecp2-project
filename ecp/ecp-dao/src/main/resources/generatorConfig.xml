@@ -342,9 +342,9 @@
 		</table> -->
 		
 		<!-- user_extends -->
-		<table tableName="user_extends" domainObjectName="UserExtends" enableCountByExample="false" enableUpdateByExample="false" enableDeleteByExample="false" enableSelectByExample="false" selectByExampleQueryId="false">
+		<!-- <table tableName="user_extends" domainObjectName="UserExtends" enableCountByExample="false" enableUpdateByExample="false" enableDeleteByExample="false" enableSelectByExample="false" selectByExampleQueryId="false">
 			<generatedKey column="extend_id" sqlStatement="MySql" identity="true"/>
-		</table> 
+		</table>  -->
 		
 		<!-- contract 
 		<table tableName="contract" domainObjectName="Contract" enableCountByExample="false" enableUpdateByExample="false" enableDeleteByExample="false" enableSelectByExample="false" selectByExampleQueryId="false">
@@ -380,9 +380,7 @@
 		<table tableName="commission_percentage_config" domainObjectName="CommissionPercentageConfig" enableCountByExample="false" enableUpdateByExample="false" enableDeleteByExample="false" enableSelectByExample="false" selectByExampleQueryId="false">
 			<generatedKey column="id" sqlStatement="MySql" identity="true"/>
 		</table>
-		<table tableName="cust_lock_rel" domainObjectName="CustLockRel" enableCountByExample="false" enableUpdateByExample="false" enableDeleteByExample="false" enableSelectByExample="false" selectByExampleQueryId="false">
-			<generatedKey column="id" sqlStatement="MySql" identity="true"/>
-		</table>
+		
 		<table tableName="suppliers" domainObjectName="Suppliers" enableCountByExample="false" enableUpdateByExample="false" enableDeleteByExample="false" enableSelectByExample="false" selectByExampleQueryId="false">
 			<generatedKey column="id" sqlStatement="MySql" identity="true"/>
 		</table>
@@ -394,10 +392,7 @@
 		</table>
 		<table tableName="customer_type" domainObjectName="CustomerType" enableCountByExample="false" enableUpdateByExample="false" enableDeleteByExample="false" enableSelectByExample="false" selectByExampleQueryId="false">
 			<generatedKey column="id" sqlStatement="MySql" identity="true"/>
-		</table>
-		<table tableName="four_sales_fee" domainObjectName="FourSalesFee" enableCountByExample="false" enableUpdateByExample="false" enableDeleteByExample="false" enableSelectByExample="false" selectByExampleQueryId="false">
-			<generatedKey column="id" sqlStatement="MySql" identity="true"/>
-		</table>
+		</table>		
 		<table tableName="final_customer" domainObjectName="FinalCustomer" enableCountByExample="false" enableUpdateByExample="false" enableDeleteByExample="false" enableSelectByExample="false" selectByExampleQueryId="false">
 			<generatedKey column="id" sqlStatement="MySql" identity="true"/>
 		</table>
@@ -425,12 +420,24 @@
 		<table tableName="log_system_access" domainObjectName="LogSystemAccess" enableCountByExample="false" enableUpdateByExample="false" enableDeleteByExample="false" enableSelectByExample="false" selectByExampleQueryId="false">
 			<generatedKey column="log_id" sqlStatement="MySql" identity="true"/>
 		</table>
-		<table tableName="performance" domainObjectName="Performance" enableCountByExample="false" enableUpdateByExample="false" enableDeleteByExample="false" enableSelectByExample="false" selectByExampleQueryId="false">
-			<generatedKey column="id" sqlStatement="MySql" identity="true"/>
-		</table>
+		
 		<table tableName="sales_target" domainObjectName="SalesTarget" enableCountByExample="false" enableUpdateByExample="false" enableDeleteByExample="false" enableSelectByExample="false" selectByExampleQueryId="false">
 			<generatedKey column="id" sqlStatement="MySql" identity="true"/>
 		</table> -->
+		
+		<!-- <table tableName="cust_lock_rel" domainObjectName="CustLockRel" enableCountByExample="false" enableUpdateByExample="false" enableDeleteByExample="false" enableSelectByExample="false" selectByExampleQueryId="false">
+			<generatedKey column="id" sqlStatement="MySql" identity="true"/>
+		</table> -->
+		
+		<table tableName="account_company" domainObjectName="AccountCompany" enableCountByExample="false" enableUpdateByExample="false" enableDeleteByExample="false" enableSelectByExample="false" selectByExampleQueryId="false">
+			<generatedKey column="id" sqlStatement="MySql" identity="true"/>
+		</table>	
+		<table tableName="account_personal" domainObjectName="AccountPersonal" enableCountByExample="false" enableUpdateByExample="false" enableDeleteByExample="false" enableSelectByExample="false" selectByExampleQueryId="false">
+			<generatedKey column="id" sqlStatement="MySql" identity="true"/>
+		</table>
+		
+		
+		
 		
 	</context>
 </generatorConfiguration>

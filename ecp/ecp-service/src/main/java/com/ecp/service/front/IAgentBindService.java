@@ -47,6 +47,6 @@ public interface IAgentBindService extends IBaseService<CustLockRel, Long> {
 	* @return int    返回类型 
 	* @throws 
 	*/
-	public int addBindAgentToUser(long agentId,long userId); 
+	public int addBindAgentToUser(long agentId,long userId,long roleId); 
 	
 }

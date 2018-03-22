@@ -67,6 +67,43 @@ public class AgentBindController {
 		return RESPONSE_THYMELEAF_BACK + "user_agent_show";
 	}
 	
+	/** 
+	* @Title: showBindedUsers 
+	* @Description: 显示-指定的签约客户绑定的user列表 
+	* @param @param agentId  代理商ID
+	* @param @param model
+	* @param @return    绑定的用户列表页面 
+	* @return String     
+	* @throws 
+	*/
+	@RequestMapping(value = "/showbindedusers")
+	public String showBindedUsers(long agentId,Model model) {
+		//查询签约客户所绑定的OS/IS
+		List<Map<String,Object>> agentBindedOS= agentBindService.getSalesByAgentId(agentId,OUTSIDE_ROLE);
+		List<Map<String,Object>> agentBindedIS= agentBindService.getSalesByAgentId(agentId,INSIDE_ROLE);
+		//组装成前台需要的格式
+		List<Map<String,Object>> agentBindList=new ArrayList<Map<String,Object>>();
+		for(int i=0;i<agentBindedOS.size();i++){
+			Map<String,Object> map=new HashMap<String,Object>();
+			map.put("user", agentBindedOS.get(i));
+			map.put("type", OUTSIDE_ROLE);
+			agentBindList.add(map);
+		}
+		for(int i=0;i<agentBindedIS.size();i++){
+			Map<String,Object> map=new HashMap<String,Object>();
+			map.put("user", agentBindedIS.get(i));
+			map.put("type", INSIDE_ROLE);
+			agentBindList.add(map);
+		}		
+		
+		model.addAttribute("agentBindList", agentBindList);
+		
+		
+		return RESPONSE_THYMELEAF_BACK + "agent_binded_users";
+	}
+	
+	
+	
 	/**
 	 * @Description 
 	 * @param pageNum 查询页号
@@ -127,11 +164,11 @@ public class AgentBindController {
 			
 			map.put("agent", userAgents.get(i));
 			
-			String osNames=getAgentOs(userAgents.get(i).getExtendId());
-			map.put("os", osNames);
+			List<Map<String,Object>> osUsers=getAgentOs(userAgents.get(i).getExtendId());
+			map.put("osUsers", osUsers);
 			
-			String isNames=getAgentIS(userAgents.get(i).getExtendId());
-			map.put("is",isNames);
+			List<Map<String,Object>> isUsers=getAgentIS(userAgents.get(i).getExtendId());
+			map.put("isUsers",isUsers);
 			
 			agentBinds.add(map);
 		}
@@ -142,22 +179,23 @@ public class AgentBindController {
 	}
 	
 	
+	
+	
 	/**
 	 * @param agentId 签约代理商ID
 	 * @return 返回签约代理商OS姓名,如果有多个,以逗号进行分隔
 	 */
-	private String getAgentOs(long agentId){
-		List<Map<String,Object>> saleList1=agentBindService.getSales(OUTSIDE_ROLE);
-		return "";
+	private List<Map<String,Object>> getAgentOs(long agentId){
+		return agentBindService.getSalesByAgentId(agentId,OUTSIDE_ROLE);
+		
 	}
 	
 	/**
 	 * @param agentId 签约代理商ID
 	 * @return 返回签约代理商IS姓名,如果有多个,以逗号进行分隔
 	 */
-	private String getAgentIS(long agentId){
-		List<Map<String,Object>> saleList1=agentBindService.getSalesByAgentId(agentId, OUTSIDE_ROLE);		
-		return "";
+	private List<Map<String,Object>> getAgentIS(long agentId){
+		return agentBindService.getSalesByAgentId(agentId, INSIDE_ROLE);		
 	}
 	
 	
@@ -229,27 +267,8 @@ public class AgentBindController {
 		List<Map<String,Object>> insideSales=agentBindService.getSales(INSIDE_ROLE);
 		
 		model.addAttribute("outsideSales",outsideSales);
-		model.addAttribute("insideSales",insideSales);
-	
-		//查询签约客户所绑定的OS/IS
-		List<Map<String,Object>> agentBindedOS= agentBindService.getSalesByAgentId(extendId,OUTSIDE_ROLE);
-		List<Map<String,Object>> agentBindedIS= agentBindService.getSalesByAgentId(extendId,INSIDE_ROLE);
-		//组装成前台需要的格式
-		List<Map<String,Object>> agentBindList=new ArrayList<Map<String,Object>>();
-		for(int i=0;i<agentBindedOS.size();i++){
-			Map<String,Object> map=new HashMap<String,Object>();
-			map.put("sale", agentBindedOS.get(i));
-			map.put("type", OUTSIDE_ROLE);
-			agentBindList.add(map);
-		}
-		for(int i=0;i<agentBindedIS.size();i++){
-			Map<String,Object> map=new HashMap<String,Object>();
-			map.put("sale", agentBindedIS.get(i));
-			map.put("type", INSIDE_ROLE);
-			agentBindList.add(map);
-		}		
+		model.addAttribute("insideSales",insideSales);	
 		
-		model.addAttribute("agentBindList", agentBindList);
 		model.addAttribute("agentId",extendId);
 	
 		return RESPONSE_THYMELEAF_BACK + "agent_bind_osis";
@@ -259,7 +278,7 @@ public class AgentBindController {
 	/** 
 	* @Title: BindSalesToAgent 
 	* @Description: 绑定签约客户与OS/IS 
-	* @param @param parms 绑定参数,格式json  {"agentId":1,"saleIdList":[1,2]}
+	* @param @param parms 绑定参数,格式json  {"agentId":1,"userList":[{userId:john,roleId:1},{userId:mike,roleId:2}]}
 	* @param @param model
 	* @param @return     
 	* @return Object    返回类型 JSON格式 
@@ -275,9 +294,12 @@ public class AgentBindController {
 		long agentId=parm.getLongValue("agentId");
 		
 		//解析参数:获取所要绑定的用户ID 数组.
-		JSONArray idArr=JSON.parseArray(parm.getString("saleIdList"));
-		for(int i=0;i<idArr.size();i++){
-			this.agentBindService.addBindAgentToUser(agentId, idArr.getLongValue(i));
+		JSONArray userArr=JSON.parseArray(parm.getString("userList"));
+		for(int i=0;i<userArr.size();i++){
+			this.agentBindService.addBindAgentToUser(agentId, 
+													 userArr.getJSONObject(i).getLongValue("userId"),
+													 userArr.getJSONObject(i).getLongValue("roleId")
+													 );
 		}
 		
 		return RequestResultUtil.getResultUpdateSuccess();		
