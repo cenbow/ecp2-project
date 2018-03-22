@@ -81,12 +81,36 @@ public class ContractItems {
      */
     private Integer deleted;
 
-    private String model;
-
     @Column(name = "brand_name")
     private String brandName;
 
+    private String model;
+
     private String parms;
+
+    /**
+     * 最高限价
+     */
+    @Column(name = "highest_price")
+    private BigDecimal highestPrice;
+
+    /**
+     * 最低限价
+     */
+    @Column(name = "lowest_price")
+    private BigDecimal lowestPrice;
+
+    /**
+     * 硬成本
+     */
+    @Column(name = "hard_cost_price")
+    private BigDecimal hardCostPrice;
+
+    /**
+     * 是否方案性产品
+     */
+    @Column(name = "is_plan_product")
+    private Byte isPlanProduct;
 
     /**
      * @return id
@@ -443,20 +467,6 @@ public class ContractItems {
     }
 
     /**
-     * @return model
-     */
-    public String getModel() {
-        return model;
-    }
-
-    /**
-     * @param model
-     */
-    public void setModel(String model) {
-        this.model = model == null ? null : model.trim();
-    }
-
-    /**
      * @return brand_name
      */
     public String getBrandName() {
@@ -471,6 +481,20 @@ public class ContractItems {
     }
 
     /**
+     * @return model
+     */
+    public String getModel() {
+        return model;
+    }
+
+    /**
+     * @param model
+     */
+    public void setModel(String model) {
+        this.model = model == null ? null : model.trim();
+    }
+
+    /**
      * @return parms
      */
     public String getParms() {
@@ -482,6 +506,78 @@ public class ContractItems {
      */
     public void setParms(String parms) {
         this.parms = parms == null ? null : parms.trim();
+    }
+
+    /**
+     * 获取最高限价
+     *
+     * @return highest_price - 最高限价
+     */
+    public BigDecimal getHighestPrice() {
+        return highestPrice;
+    }
+
+    /**
+     * 设置最高限价
+     *
+     * @param highestPrice 最高限价
+     */
+    public void setHighestPrice(BigDecimal highestPrice) {
+        this.highestPrice = highestPrice;
+    }
+
+    /**
+     * 获取最低限价
+     *
+     * @return lowest_price - 最低限价
+     */
+    public BigDecimal getLowestPrice() {
+        return lowestPrice;
+    }
+
+    /**
+     * 设置最低限价
+     *
+     * @param lowestPrice 最低限价
+     */
+    public void setLowestPrice(BigDecimal lowestPrice) {
+        this.lowestPrice = lowestPrice;
+    }
+
+    /**
+     * 获取硬成本
+     *
+     * @return hard_cost_price - 硬成本
+     */
+    public BigDecimal getHardCostPrice() {
+        return hardCostPrice;
+    }
+
+    /**
+     * 设置硬成本
+     *
+     * @param hardCostPrice 硬成本
+     */
+    public void setHardCostPrice(BigDecimal hardCostPrice) {
+        this.hardCostPrice = hardCostPrice;
+    }
+
+    /**
+     * 获取是否方案性产品
+     *
+     * @return is_plan_product - 是否方案性产品
+     */
+    public Byte getIsPlanProduct() {
+        return isPlanProduct;
+    }
+
+    /**
+     * 设置是否方案性产品
+     *
+     * @param isPlanProduct 是否方案性产品
+     */
+    public void setIsPlanProduct(Byte isPlanProduct) {
+        this.isPlanProduct = isPlanProduct;
     }
 
     @Override
@@ -515,9 +611,13 @@ public class ContractItems {
         sb.append(", updateTime=").append(updateTime);
         sb.append(", discountPrice=").append(discountPrice);
         sb.append(", deleted=").append(deleted);
-        sb.append(", model=").append(model);
         sb.append(", brandName=").append(brandName);
+        sb.append(", model=").append(model);
         sb.append(", parms=").append(parms);
+        sb.append(", highestPrice=").append(highestPrice);
+        sb.append(", lowestPrice=").append(lowestPrice);
+        sb.append(", hardCostPrice=").append(hardCostPrice);
+        sb.append(", isPlanProduct=").append(isPlanProduct);
         sb.append("]");
         return sb.toString();
     }

@@ -61,6 +61,9 @@ public class AccountPersonal {
     @Column(name = "bind_user_id")
     private Long bindUserId;
 
+    @Column(name = "role_id")
+    private Long roleId;
+
     /**
      * 金额
      */
@@ -254,6 +257,20 @@ public class AccountPersonal {
     }
 
     /**
+     * @return role_id
+     */
+    public Long getRoleId() {
+        return roleId;
+    }
+
+    /**
+     * @param roleId
+     */
+    public void setRoleId(Long roleId) {
+        this.roleId = roleId;
+    }
+
+    /**
      * 获取金额
      *
      * @return amount - 金额
@@ -372,6 +389,7 @@ public class AccountPersonal {
         sb.append(", itemId=").append(itemId);
         sb.append(", skuId=").append(skuId);
         sb.append(", bindUserId=").append(bindUserId);
+        sb.append(", roleId=").append(roleId);
         sb.append(", amount=").append(amount);
         sb.append(", type=").append(type);
         sb.append(", createTime=").append(createTime);

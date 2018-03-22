@@ -74,6 +74,35 @@ public class OrderItems {
     private Date updateTime;
 
     /**
+     * 是否删除（1-未删除，2-删除，默认1）
+     */
+    private Integer deleted;
+
+    /**
+     * 最高限价
+     */
+    @Column(name = "highest_price")
+    private BigDecimal highestPrice;
+
+    /**
+     * 最低限价
+     */
+    @Column(name = "lowest_price")
+    private BigDecimal lowestPrice;
+
+    /**
+     * 硬成本
+     */
+    @Column(name = "hard_cost_price")
+    private BigDecimal hardCostPrice;
+
+    /**
+     * 是否有是方案性产品(1:是;2:否)
+     */
+    @Column(name = "is_plan_product")
+    private Byte isPlanProduct;
+
+    /**
      * @return id
      */
     public Long getId() {
@@ -395,32 +424,131 @@ public class OrderItems {
         this.updateTime = updateTime;
     }
 
-    @Column(name = "deleted")
-    private Integer deleted;//是否删除（1-未删除，2-删除，默认1）
-
     /**
-     * @return	是否删除（1-未删除，2-删除，默认1）
+     * 获取是否删除（1-未删除，2-删除，默认1）
+     *
+     * @return deleted - 是否删除（1-未删除，2-删除，默认1）
      */
     public Integer getDeleted() {
-		return deleted;
-	}
+        return deleted;
+    }
 
-	/**
-	 * @param deleted 是否删除（1-未删除，2-删除，默认1）
-	 */
-	public void setDeleted(Integer deleted) {
-		this.deleted = deleted;
-	}
+    /**
+     * 设置是否删除（1-未删除，2-删除，默认1）
+     *
+     * @param deleted 是否删除（1-未删除，2-删除，默认1）
+     */
+    public void setDeleted(Integer deleted) {
+        this.deleted = deleted;
+    }
 
-	@Override
-	public String toString() {
-		return "OrderItems [id=" + id + ", activitesDetailId=" + activitesDetailId + ", areaId=" + areaId + ", cid="
-				+ cid + ", contractNo=" + contractNo + ", couponDiscount=" + couponDiscount + ", createTime="
-				+ createTime + ", deliveryType=" + deliveryType + ", integral=" + integral + ", integralDiscount="
-				+ integralDiscount + ", itemId=" + itemId + ", num=" + num + ", orderId=" + orderId + ", payPrice="
-				+ payPrice + ", payPriceTotal=" + payPriceTotal + ", primitivePrice=" + primitivePrice
-				+ ", promotionDiscount=" + promotionDiscount + ", promotionId=" + promotionId + ", promotionType="
-				+ promotionType + ", shopFreightTemplateId=" + shopFreightTemplateId + ", skuId=" + skuId + ", skuName="
-				+ skuName + ", updateTime=" + updateTime + ", deleted=" + deleted + "]";
-	}
+    /**
+     * 获取最高限价
+     *
+     * @return highest_price - 最高限价
+     */
+    public BigDecimal getHighestPrice() {
+        return highestPrice;
+    }
+
+    /**
+     * 设置最高限价
+     *
+     * @param highestPrice 最高限价
+     */
+    public void setHighestPrice(BigDecimal highestPrice) {
+        this.highestPrice = highestPrice;
+    }
+
+    /**
+     * 获取最低限价
+     *
+     * @return lowest_price - 最低限价
+     */
+    public BigDecimal getLowestPrice() {
+        return lowestPrice;
+    }
+
+    /**
+     * 设置最低限价
+     *
+     * @param lowestPrice 最低限价
+     */
+    public void setLowestPrice(BigDecimal lowestPrice) {
+        this.lowestPrice = lowestPrice;
+    }
+
+    /**
+     * 获取硬成本
+     *
+     * @return hard_cost_price - 硬成本
+     */
+    public BigDecimal getHardCostPrice() {
+        return hardCostPrice;
+    }
+
+    /**
+     * 设置硬成本
+     *
+     * @param hardCostPrice 硬成本
+     */
+    public void setHardCostPrice(BigDecimal hardCostPrice) {
+        this.hardCostPrice = hardCostPrice;
+    }
+
+    /**
+     * 获取是否有是方案性产品(1:是;2:否)
+     *
+     * @return is_plan_product - 是否有是方案性产品(1:是;2:否)
+     */
+    public Byte getIsPlanProduct() {
+        return isPlanProduct;
+    }
+
+    /**
+     * 设置是否有是方案性产品(1:是;2:否)
+     *
+     * @param isPlanProduct 是否有是方案性产品(1:是;2:否)
+     */
+    public void setIsPlanProduct(Byte isPlanProduct) {
+        this.isPlanProduct = isPlanProduct;
+    }
+
+    @Override
+    public String toString() {
+        StringBuilder sb = new StringBuilder();
+        sb.append(getClass().getSimpleName());
+        sb.append(" [");
+        sb.append("Hash = ").append(hashCode());
+        sb.append(", id=").append(id);
+        sb.append(", activitesDetailId=").append(activitesDetailId);
+        sb.append(", areaId=").append(areaId);
+        sb.append(", cid=").append(cid);
+        sb.append(", contractNo=").append(contractNo);
+        sb.append(", couponDiscount=").append(couponDiscount);
+        sb.append(", createTime=").append(createTime);
+        sb.append(", deliveryType=").append(deliveryType);
+        sb.append(", integral=").append(integral);
+        sb.append(", integralDiscount=").append(integralDiscount);
+        sb.append(", itemId=").append(itemId);
+        sb.append(", num=").append(num);
+        sb.append(", orderId=").append(orderId);
+        sb.append(", payPrice=").append(payPrice);
+        sb.append(", payPriceTotal=").append(payPriceTotal);
+        sb.append(", primitivePrice=").append(primitivePrice);
+        sb.append(", promotionDiscount=").append(promotionDiscount);
+        sb.append(", promotionId=").append(promotionId);
+        sb.append(", promotionType=").append(promotionType);
+        sb.append(", shopFreightTemplateId=").append(shopFreightTemplateId);
+        sb.append(", skuId=").append(skuId);
+        sb.append(", skuName=").append(skuName);
+        sb.append(", updateTime=").append(updateTime);
+        sb.append(", deleted=").append(deleted);
+        sb.append(", highestPrice=").append(highestPrice);
+        sb.append(", lowestPrice=").append(lowestPrice);
+        sb.append(", hardCostPrice=").append(hardCostPrice);
+        sb.append(", isPlanProduct=").append(isPlanProduct);
+        sb.append("]");
+        return sb.toString();
+    }
 }

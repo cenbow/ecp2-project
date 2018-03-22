@@ -29,6 +29,10 @@
     <result column="sku_name" jdbcType="VARCHAR" property="skuName" />
     <result column="update_time" jdbcType="TIMESTAMP" property="updateTime" />
     <result column="deleted" jdbcType="INTEGER" property="deleted" />
+    <result column="highest_price" jdbcType="DECIMAL" property="highestPrice" />
+    <result column="lowest_price" jdbcType="DECIMAL" property="lowestPrice" />
+    <result column="hard_cost_price" jdbcType="DECIMAL" property="hardCostPrice" />
+    <result column="is_plan_product" jdbcType="TINYINT" property="isPlanProduct" />
   </resultMap>
   <sql id="Base_Column_List">
     <!--
@@ -37,7 +41,8 @@
     id, activites_detail_id, area_id, cid, contract_no, coupon_discount, create_time, 
     delivery_type, integral, integral_discount, item_id, num, order_id, pay_price, pay_price_total, 
     primitive_price, promotion_discount, promotion_id, promotion_type, shop_freight_template_id, 
-    sku_id, sku_name, update_time, deleted
+    sku_id, sku_name, update_time, deleted, highest_price, lowest_price, hard_cost_price, 
+    is_plan_product
   </sql>
   
   <select id="selectItemsByOrderId" resultType="map">

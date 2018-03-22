@@ -65,6 +65,7 @@
     <result column="contract_no" jdbcType="VARCHAR" property="contractNo" />
     <result column="contract_id" jdbcType="BIGINT" property="contractId" />
     <result column="contract_state" jdbcType="TINYINT" property="contractState" />
+    <result column="account_state" jdbcType="TINYINT" property="accountState" />
   </resultMap>
   <sql id="Base_Column_List">
     <!--
@@ -78,7 +79,7 @@
     order_jfs_key, order_time, order_type, paid, parent_order_id, pay_period, payment_method, 
     payment_price, payment_time, payment_type, phone, promo_code, province_id, refund, 
     refund_time, seller_evaluate, shipment_type, state, total_discount, total_price, 
-    update_time, yn, contract_no, contract_id, contract_state
+    update_time, yn, contract_no, contract_id, contract_state, account_state
   </sql>
   
   <select id="selectOrderByOrderTimeAndDealState" resultMap="BaseResultMap">

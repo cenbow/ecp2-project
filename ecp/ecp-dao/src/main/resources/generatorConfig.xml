@@ -165,9 +165,7 @@
 		</table>
 		
 		item_orders 
-		<table tableName="trade_orders" domainObjectName="Orders" enableCountByExample="false" enableUpdateByExample="false" enableDeleteByExample="false" enableSelectByExample="false" selectByExampleQueryId="false">
-			<generatedKey column="id" sqlStatement="MySql" identity="true"/>
-		</table>
+		
 		
 		trade_approved_orders 
 		<table tableName="trade_approved_orders" domainObjectName="ApprovedOrders" enableCountByExample="false" enableUpdateByExample="false" enableDeleteByExample="false" enableSelectByExample="false" selectByExampleQueryId="false">
@@ -180,9 +178,7 @@
 		</table>
 		
 		trade_order_items 
-		<table tableName="trade_order_items" domainObjectName="OrderItems" enableCountByExample="false" enableUpdateByExample="false" enableDeleteByExample="false" enableSelectByExample="false" selectByExampleQueryId="false">
-			<generatedKey column="id" sqlStatement="MySql" identity="true"/>
-		</table>
+		
 		
 		trade_order_items_discount 
 		<table tableName="trade_order_items_discount" domainObjectName="OrderItemsDiscount" enableCountByExample="false" enableUpdateByExample="false" enableDeleteByExample="false" enableSelectByExample="false" selectByExampleQueryId="false">
@@ -359,9 +355,7 @@
 			<generatedKey column="id" sqlStatement="MySql" identity="true"/>
 		</table>
 		
-		<table tableName="contract_items" domainObjectName="ContractItems" enableCountByExample="false" enableUpdateByExample="false" enableDeleteByExample="false" enableSelectByExample="false" selectByExampleQueryId="false">
-			<generatedKey column="id" sqlStatement="MySql" identity="true"/>
-		</table>
+		
 		
 		<table tableName="contract_template" domainObjectName="ContractTemplate" enableCountByExample="false" enableUpdateByExample="false" enableDeleteByExample="false" enableSelectByExample="false" selectByExampleQueryId="false">
 			<generatedKey column="id" sqlStatement="MySql" identity="true"/>
@@ -429,13 +423,25 @@
 			<generatedKey column="id" sqlStatement="MySql" identity="true"/>
 		</table> -->
 		
-		<table tableName="account_company" domainObjectName="AccountCompany" enableCountByExample="false" enableUpdateByExample="false" enableDeleteByExample="false" enableSelectByExample="false" selectByExampleQueryId="false">
+		<!-- <table tableName="account_company" domainObjectName="AccountCompany" enableCountByExample="false" enableUpdateByExample="false" enableDeleteByExample="false" enableSelectByExample="false" selectByExampleQueryId="false">
 			<generatedKey column="id" sqlStatement="MySql" identity="true"/>
-		</table>	
+		</table> -->
+			
 		<table tableName="account_personal" domainObjectName="AccountPersonal" enableCountByExample="false" enableUpdateByExample="false" enableDeleteByExample="false" enableSelectByExample="false" selectByExampleQueryId="false">
 			<generatedKey column="id" sqlStatement="MySql" identity="true"/>
 		</table>
 		
+		<table tableName="trade_orders" domainObjectName="Orders" enableCountByExample="false" enableUpdateByExample="false" enableDeleteByExample="false" enableSelectByExample="false" selectByExampleQueryId="false">
+			<generatedKey column="id" sqlStatement="MySql" identity="true"/>
+		</table>
+		
+		<table tableName="trade_order_items" domainObjectName="OrderItems" enableCountByExample="false" enableUpdateByExample="false" enableDeleteByExample="false" enableSelectByExample="false" selectByExampleQueryId="false">
+			<generatedKey column="id" sqlStatement="MySql" identity="true"/>
+		</table>
+		
+		<table tableName="contract_items" domainObjectName="ContractItems" enableCountByExample="false" enableUpdateByExample="false" enableDeleteByExample="false" enableSelectByExample="false" selectByExampleQueryId="false">
+			<generatedKey column="id" sqlStatement="MySql" identity="true"/>
+		</table>
 		
 		
 		
