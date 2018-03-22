@@ -218,4 +218,13 @@ public class UserServiceImpl extends AbstractBaseService<User, Long> implements 
 		return menuService.getByMenuIds(menuIds);
 	}
 
+	/**
+	 * 查询IS和OS
+	 * @see com.ecp.service.back.IUserService#getISAndOS()
+	 */
+	@Override
+	public List<Map<String, Object>> getISAndOS() {
+		return userMapper.getISAndOS();
+	}
+	
 }

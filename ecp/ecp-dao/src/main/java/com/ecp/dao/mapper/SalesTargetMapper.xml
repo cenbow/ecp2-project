@@ -9,9 +9,10 @@
     <result column="user_id" property="userId" jdbcType="BIGINT" />
     <result column="target_rate" property="targetRate" jdbcType="VARCHAR" />
     <result column="target_amount" property="targetAmount" jdbcType="VARCHAR" />
+    <result column="check_cycle_id" property="checkCycleId" jdbcType="BIGINT" />
     <result column="cycle_name" property="cycleName" jdbcType="VARCHAR" />
     <result column="year_name" property="yearName" jdbcType="VARCHAR" />
-    <result column="cal_type" property="calType" jdbcType="INTEGER" />
+    <result column="cal_type" property="calType" jdbcType="TINYINT" />
     <result column="start_date" property="startDate" jdbcType="TIMESTAMP" />
     <result column="end_date" property="endDate" jdbcType="TIMESTAMP" />
   </resultMap>
@@ -19,7 +20,19 @@
     <!--
       WARNING - @mbggenerated
     -->
-    id, user_id, target_rate, target_amount, cycle_name, year_name, cal_type, start_date, 
+    id, user_id, target_rate, target_amount, check_cycle_id, cycle_name, year_name, cal_type, start_date, 
     end_date
   </sql>
+  <!-- 根据Map中的条件查询销售指标 -->
+	<select id="getListMap" parameterType="map" resultType="map">
+		SELECT
+			st.*, u.username,
+			u.nickname
+		FROM
+			sales_target st
+		LEFT JOIN `user` u ON st.user_id = u.id
+		WHERE
+			u.deleted = 1
+		AND u.type = 1
+	</select>
 </mapper>

@@ -56,4 +56,10 @@ public class StaticConstants {
 	public static final String CUSTOMER_LEVEL_RULE_MANAGE_PAGE = "back/jsp/customer_level_rule/customer_level_rule_manage";//客户级别规则管理页面
 	public static final String CUSTOMER_LEVEL_RULE_MANAGE_TABLE_PAGE = "back/jsp/customer_level_rule/customer_level_rule_table";//客户级别规则管理列表页面
 	
+	public static final String CHECK_CYCLE_MANAGE_PAGE = "back/jsp/check_cycle/check_cycle_manage";//考核周期管理页面
+	public static final String CHECK_CYCLE_MANAGE_TABLE_PAGE = "back/jsp/check_cycle/check_cycle_table";//考核周期管理列表页面
+	
+	public static final String SALES_TARGET_MANAGE_PAGE = "back/jsp/sales_target/sales_target_manage";//销售指标管理页面
+	public static final String SALES_TARGET_MANAGE_TABLE_PAGE = "back/jsp/sales_target/sales_target_table";//销售指标管理列表页面
+	
 }

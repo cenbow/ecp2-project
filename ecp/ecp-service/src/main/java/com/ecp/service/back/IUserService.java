@@ -61,4 +61,10 @@ public interface IUserService extends IBaseService<User, Long> {
 	 * @return
 	 */
 	public List<Menu> getMenuPermissionListByUserId(Long userId);
+	
+	/**
+	 * 查询IS和OS
+	 * @return
+	 */
+	public List<Map<String, Object>> getISAndOS();
 }

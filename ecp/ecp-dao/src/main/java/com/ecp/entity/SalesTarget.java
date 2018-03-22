@@ -31,6 +31,12 @@ public class SalesTarget {
     private String targetAmount;
 
     /**
+     * 考核周期ID
+     */
+    @Column(name = "check_cycle_id")
+    private Long checkCycleId;
+    
+    /**
      * 周期名
      */
     @Column(name = "cycle_name")
@@ -46,7 +52,7 @@ public class SalesTarget {
      * 时间段计法（对于周期的定义可以采用三种计时方式：1：day；2：month；3：year）
      */
     @Column(name = "cal_type")
-    private Integer calType;
+    private Byte calType;
 
     /**
      * 开始时间
@@ -132,7 +138,15 @@ public class SalesTarget {
         this.targetAmount = targetAmount == null ? null : targetAmount.trim();
     }
 
-    /**
+    public Long getCheckCycleId() {
+		return checkCycleId;
+	}
+
+	public void setCheckCycleId(Long checkCycleId) {
+		this.checkCycleId = checkCycleId;
+	}
+
+	/**
      * 获取周期名
      *
      * @return cycle_name - 周期名
@@ -173,7 +187,7 @@ public class SalesTarget {
      *
      * @return cal_type - 时间段计法（对于周期的定义可以采用三种计时方式：1：day；2：month；3：year）
      */
-    public Integer getCalType() {
+    public Byte getCalType() {
         return calType;
     }
 
@@ -182,7 +196,7 @@ public class SalesTarget {
      *
      * @param calType 时间段计法（对于周期的定义可以采用三种计时方式：1：day；2：month；3：year）
      */
-    public void setCalType(Integer calType) {
+    public void setCalType(Byte calType) {
         this.calType = calType;
     }
 

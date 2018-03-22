@@ -1,5 +1,7 @@
 package com.ecp.service.impl.back;
 
+import java.util.List;
+
 import javax.annotation.Resource;
 
 import org.apache.commons.lang3.StringUtils;
@@ -13,6 +15,8 @@ import com.ecp.entity.RolePermission;
 import com.ecp.service.back.IRolePermissionService;
 import com.ecp.service.back.IRoleService;
 import com.ecp.service.impl.AbstractBaseService;
+
+import tk.mybatis.mapper.entity.Example;
 
 @Service("roleServiceBean")
 public class RoleServiceImpl extends AbstractBaseService<Role, Long> implements IRoleService {
@@ -120,6 +124,13 @@ public class RoleServiceImpl extends AbstractBaseService<Role, Long> implements 
 		}
 		TransactionAspectSupport.currentTransactionStatus().setRollbackOnly();
 		return 0;
+	}
+
+	@Override
+	public List<Role> getByCode(String roleCode) {
+		Example example = new Example(Role.class);
+		example.createCriteria().andEqualTo("deleted", 1).andEqualTo("roleCode", roleCode);
+		return roleMapper.selectByExample(example);
 	}
 
 }

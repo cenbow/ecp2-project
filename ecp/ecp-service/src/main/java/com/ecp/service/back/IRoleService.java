@@ -1,5 +1,7 @@
 package com.ecp.service.back;
 
+import java.util.List;
+
 import com.ecp.entity.Role;
 import com.ecp.service.IBaseService;
 
@@ -27,5 +29,13 @@ public interface IRoleService extends IBaseService<Role, Long> {
 	 * @return
 	 */
 	public int del(Long roleId);
+	
+	/**
+	 * 根据角色编码查询角色
+	 * 
+	 * @param roleCode
+	 * @return
+	 */
+	public List<Role> getByCode(String roleCode);
 	
 }
