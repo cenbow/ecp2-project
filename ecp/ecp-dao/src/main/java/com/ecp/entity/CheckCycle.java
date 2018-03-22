@@ -3,6 +3,8 @@ package com.ecp.entity;
 import java.util.Date;
 import javax.persistence.*;
 
+import org.apache.commons.lang3.time.DateFormatUtils;
+
 @Table(name = "check_cycle")
 public class CheckCycle {
     /**
@@ -122,6 +124,14 @@ public class CheckCycle {
     public Date getStartDate() {
         return startDate;
     }
+    
+    public String getStartDateStr(){
+    	if(startDate==null){
+    		return null;
+    	}
+    	//return DateFormatUtils.format(startDate, "yyyy-MM-dd HH:mm:ss");
+    	return DateFormatUtils.format(startDate, "yyyy-MM-dd");
+    }
 
     /**
      * 设置开始时间
@@ -139,6 +149,14 @@ public class CheckCycle {
      */
     public Date getEndDate() {
         return endDate;
+    }
+    
+    public String getEndDateStr(){
+    	if(endDate==null){
+    		return null;
+    	}
+    	//return DateFormatUtils.format(endDate, "yyyy-MM-dd HH:mm:ss");
+    	return DateFormatUtils.format(endDate, "yyyy-MM-dd");
     }
 
     /**
