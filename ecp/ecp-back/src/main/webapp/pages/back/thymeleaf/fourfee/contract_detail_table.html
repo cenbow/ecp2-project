@@ -1,0 +1,171 @@
+<!DOCTYPE html>
+<html> 
+<head>
+<meta charset="UTF-8">
+<title>合同详情模块</title>
+</head>
+<body>
+	<div class="row clearfix">
+		<div class="col-md-12 column">
+			<h3>合同详情</h3>
+			<div class="row clearfix">
+				<div class="col-md-6 column">
+					<div class="panel panel-default">
+						<div class="panel-heading">
+							<h3 class="panel-title">
+								<span  th:text="'合同号:'+${contract.contractNo}"></span>								
+								<span  th:text="'建立时间:'+${#calendars.format(contract.createDate,'yyyy-MM-dd HH:MM:SS')}" style="margin-left:50px;"></span>
+							</h3>
+						</div>
+						<div class="panel-body">
+							<table class="table">
+								<thead>
+									<tr>
+										<th style="width:100px;"></th>
+										<th></th>
+									</tr>
+								</thead>
+								<tbody>
+									<tr>
+										<td>状态</td>
+										<td>
+											<span th:switch="${contract.contractStatus}" th:remove="tag"> 
+												<span th:case='2' th:remove="tag">
+													<span class="contract-status"> 己建合同 </span> <br>
+												</span> 
+												<span th:case='3' th:remove="tag">
+													<span class="contract-status"> 乙方已确认 </span> <br>
+												</span> 
+												<span th:case='4' th:remove="tag">
+													<span class="contract-status"> 甲方已确认 </span> <br>
+												</span> 
+												<span th:case='5' th:remove="tag">
+													<span class="contract-status"> 执行中 </span> <br>
+												</span> 
+												<span th:case='6' th:remove="tag">
+													<span class="contract-status"> 执行完毕 </span> <br>
+												</span>
+											</span>
+										</td>
+
+									</tr>
+									<tr>
+										<td>乙方确定日期</td>
+										<td th:text="${#calendars.format(contract.confirmDateSecondParty,'yyyy-MM-dd HH:MM:SS')}"></td>
+									</tr>
+									<tr>
+										<td>甲方确定日期</td>
+										<td th:text="${#calendars.format(contract.confirmDateFirstParty,'yyyy-MM-dd HH:MM:SS')}"></td>
+									</tr>
+									<tr>
+										<td>相关订单</td>
+										<td th:text="${contract.orderNo}"></td>
+									</tr>
+								</tbody>
+							</table>
+						</div>
+					</div>
+				</div>
+				<div class="col-md-6 column">
+					<div class="panel panel-default">
+						<div class="panel-heading">
+							<h3 class="panel-title">代理商 </h3>
+						</div>
+						<div class="panel-body">
+							<table class="table">
+								<thead>
+									<tr>
+										<th style="width:100px;"></th>
+										<th></th>
+									</tr>
+								</thead>
+								<tbody>
+									<tr>
+										<td>公司名称</td>
+										<td style="word-break:break-all; word-wrap:break-word;" th:text="${agent.companyName}"></td>
+
+									</tr>
+									<tr>
+										<td>法人名称</td>
+										<td th:text="${agent.artificialPersonName}"></td>
+
+									</tr>
+									<tr>
+										<td>联系电话</td>
+										<td th:text="${agent.contactPhone}">TB - Monthly</td>
+									</tr>
+									<tr>
+										<td>联系地址</td>
+										<td  th:text="${agent.contactAddress}" style="word-break:break-all; word-wrap:break-word;" >XXXXXXXXXXXXXXX</td>
+									</tr>
+									<tr>
+										<td>EMail</td>
+										<td th:text="${agent.contactEmail}"></td>
+									</tr>
+								</tbody>
+							</table>
+						</div>
+					</div>
+				</div>
+			</div>
+			<div class="panel panel-default">
+				<div class="panel-heading">
+					<h3 class="panel-title">合同商品</h3>
+				</div>
+				<div class="panel-body">
+					<table class="table">
+						<thead>
+							<tr>
+								<th>编号</th>
+								<th>图片</th>
+								<th>名称</th>
+								<th>网价</th>
+								<th>折减</th>
+								<th>实价</th>
+								<th>数量</th>
+								<th>实付金额</th>
+							</tr>
+						</thead>
+						<tbody>
+							<tr th:each="contractItem,iterStat:${contractItems}">
+								<td th:text="${iterStat.count}">序号</td>
+								<td>
+									<img class=""
+											th:src="${contractItem.picture_url}"
+											th:title="${contractItem.sku_name}"											
+											data-lazy-img="done" height="60" width="60">
+									<!-- <a th:href="@{/front/product/detail/{itemId}/{skuId}(itemId=${contractItem.item_id},skuId=${contractItem.sku_id})}"
+											target="_blank">
+											 
+											<img class=""
+											th:src="${contractItem.picture_url}"
+											th:title="${contractItem.sku_name}"											
+											data-lazy-img="done" height="60" width="60">
+
+										</a> -->
+								</td>
+								<td th:text="${contractItem.sku_name}">名称</td>
+								<td th:text="'￥'+${contractItem.primitive_price}">网价</td>
+								<td th:text="'￥'+${contractItem.discount_price}">网价</td>
+								<td th:text="'￥'+${contractItem.pay_price}">网价</td>
+								<td th:text="${contractItem.num}">数量</td>
+								<td th:text="'￥'+${contractItem.pay_price_total}">金额</td>
+							</tr>
+							<tr>
+								<td></td>
+								<td></td>
+								<td></td>
+								<td></td>
+								<td></td>
+								<td></td>
+								<td></td>
+								<td><b th:text="'总金额:'+'￥'+${contractItemTotal}"></b></td>
+							</tr>
+						</tbody>
+					</table>
+				</div>
+			</div>
+		</div>
+	</div>
+</body>
+</html>
