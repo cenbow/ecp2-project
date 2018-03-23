@@ -2,6 +2,7 @@ package com.ecp.back.controller;
 
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -21,6 +22,7 @@ import com.ecp.entity.AccountCompany;
 import com.ecp.entity.Orders;
 import com.ecp.entity.User;
 import com.ecp.entity.UserExtends;
+import com.ecp.service.back.IRoleService;
 import com.ecp.service.back.IUserService;
 import com.ecp.service.front.IAccountCompanyService;
 import com.ecp.service.front.IAccountPersonalService;
@@ -67,6 +69,8 @@ public class FourFeeController {
 	IAgentBindService agentBindService;  //客户绑定服务
 	@Autowired
 	IUserService userService;  //用户服务
+	@Autowired
+	IRoleService roleService;  //角色服务
 	
 
 	/**
@@ -149,30 +153,11 @@ public class FourFeeController {
 	@RequestMapping(value="/edit")
 	public String showFourFeeEditUI(long orderId,String orderNo,Model model){
 		
-		//费用类型
-		List<Integer> itemTypeList=new ArrayList<Integer>();
-		itemTypeList.add(AccountItemType.COMMUNICATION_FEE);
-		itemTypeList.add(AccountItemType.ENTERTAINMENT_FEE);
-		itemTypeList.add(AccountItemType.TRANSPORTATION_FEE);
-		itemTypeList.add(AccountItemType.TRAVEL_EXPENSE_FEE);
+		List<Map<String,Object>> accountCompanyList=searchOrderFourFee(orderId,orderNo);
 		
-		//查询公司帐薄
-		List<AccountCompany> accountCompanyList=accountCompanyService.getItemsByOrder(orderId, orderNo, itemTypeList);
-		
-		//查询与此订单相关的企业,而后查询与此企业相关的OS/IS人员列表.
-		//(1)先查询订单
-		Orders order=orderService.selectByPrimaryKey(orderId);		
-		//(2)根据订单中buyerId查询此户并获取主帐号信息
-		User user=userService.selectByPrimaryKey(order.getBuyerId());
-		long primaryAccountNo=user.getId();
-		if(user.getParentId()!=null && user.getParentId()!=0)  //下单者是子帐号
-		{
-			primaryAccountNo=user.getParentId();
-		}
-		//(3)根据主帐号可以查询所在的企业
-		UserExtends agent=userAgentService.getUserAgentByUserId(primaryAccountNo);
-		long agentId=agent.getExtendId();
+		//查询与此订单相关的企业,而后查询与此企业相关的OS/IS人员列表.		
 		//(4)根据企业与OS/IS的绑定关系查询所绑定的客服
+		long agentId=searchAgentByOrder(orderId);
 		List<Map<String,Object>> osList=agentBindService.getSalesByAgentId(agentId, OUTSIDE_ROLE);
 		List<Map<String,Object>> isList=agentBindService.getSalesByAgentId(agentId, INSIDE_ROLE);		
 		
@@ -186,6 +171,31 @@ public class FourFeeController {
 		model.addAttribute("orderNo",orderNo);
 		
 		return RESPONSE_THYMELEAF_BACK + "fourfee_edit";
+	}
+	
+	/** 
+	* @Title: searchAgentByOrder 
+	* @Description: 根据订单查询下单代理商 
+	* @param @param orderId
+	* @param @return    设定文件 
+	* @return long    返回类型 
+	* @throws 
+	*/
+	private long searchAgentByOrder(long orderId){
+		//(1)先查询订单
+		Orders order=orderService.selectByPrimaryKey(orderId);		
+		//(2)根据订单中buyerId查询此户并获取主帐号信息
+		User user=userService.selectByPrimaryKey(order.getBuyerId());
+		long primaryAccountNo=user.getId();
+		if(user.getParentId()!=null && user.getParentId()!=0)  //下单者是子帐号
+		{
+			primaryAccountNo=user.getParentId();
+		}
+		//(3)根据主帐号可以查询所在的企业
+		UserExtends agent=userAgentService.getUserAgentByUserId(primaryAccountNo);
+		long agentId=agent.getExtendId();
+		
+		return agentId;
 	}
 	
 	
@@ -202,6 +212,26 @@ public class FourFeeController {
 	@RequestMapping(value="/table")
 	public String showFourFeeTable(long orderId,String orderNo,Model model){
 		
+		List<Map<String,Object>> accountCompanyList=searchOrderFourFee(orderId,orderNo);
+		
+		//回传参数
+		model.addAttribute("accountCompanyList",accountCompanyList);	
+		
+		
+		return RESPONSE_THYMELEAF_BACK + "fourfee_table";
+	}
+	
+	
+	/** 
+	* @Title: searchOrderFourFee 
+	* @Description: 查询订单的四项费用 
+	* @param @param orderId
+	* @param @param orderNo
+	* @param @return    设定文件 
+	* @return List<Map<String,Object>>    返回类型 
+	* @throws 
+	*/
+	private List<Map<String,Object>> searchOrderFourFee(long orderId,String orderNo){
 		//费用类型
 		List<Integer> itemTypeList=new ArrayList<Integer>();
 		itemTypeList.add(AccountItemType.COMMUNICATION_FEE);
@@ -210,13 +240,39 @@ public class FourFeeController {
 		itemTypeList.add(AccountItemType.TRAVEL_EXPENSE_FEE);
 		
 		//查询公司帐薄
-		List<AccountCompany> accountCompanyList=accountCompanyService.getItemsByOrder(orderId, orderNo, itemTypeList);
+		List<AccountCompany> accountList=accountCompanyService.getItemsByOrder(orderId, orderNo, itemTypeList);
 		
-		//回传参数
-		model.addAttribute("accountCompanyList",accountCompanyList);	
+		//根据帐薄条目查询费用归属
+		List<Map<String,Object>> accountCompanyList=new ArrayList<Map<String,Object>>();
+		for(int i=0;i<accountList.size();i++){
+			Map<String,Object> accountItem=new HashMap<String,Object>();
+			
+			
+			Long bindUserId=accountList.get(i).getBindUserId();
+			Long roleId=accountList.get(i).getRoleId();
+			
+			String bindUserName="";
+			String bindUserRole="";
+			
+			if(bindUserId==null || bindUserId==0){		
+				bindUserName="公司内部";
+				bindUserRole="";
+			}
+			else{
+				bindUserName=userService.selectByPrimaryKey(bindUserId).getUsername();
+				bindUserRole=roleService.selectByPrimaryKey(roleId).getRoleName();
+				
+			}
+			
+			accountItem.put("bindUserName", bindUserName);
+			accountItem.put("bindUserRole", bindUserRole);
+			accountItem.put("accountItem", accountList.get(i));
+						
+			accountCompanyList.add(accountItem);
+			
+		}
 		
-		
-		return RESPONSE_THYMELEAF_BACK + "fourfee_table";
+		return accountCompanyList;
 	}
 	
 	
