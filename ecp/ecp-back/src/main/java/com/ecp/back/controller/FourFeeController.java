@@ -85,12 +85,12 @@ public class FourFeeController {
 	
 	/**
 	 * @Description 订单查询列表
-	 * @param orderTimeCond  订单时间条件
-	 * @param dealStateCond  订单处理状态条件
-	 * @param pageNum		  页号
-	 * @param pageSize		 页大小
+	 * @param orderTimeCond   订单时间条件
+	 * @param dealStateCond   订单处理状态条件
+	 * @param pageNum		    页号
+	 * @param pageSize		    页大小
 	 * @param searchTypeValue 搜索类型
-	 * @param condValue		  搜索条件值
+	 * @param condValue		    搜索条件值
 	 * @param model
 	 * @return
 	 */
