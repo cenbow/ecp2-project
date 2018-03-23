@@ -387,12 +387,6 @@
 		<table tableName="customer_type" domainObjectName="CustomerType" enableCountByExample="false" enableUpdateByExample="false" enableDeleteByExample="false" enableSelectByExample="false" selectByExampleQueryId="false">
 			<generatedKey column="id" sqlStatement="MySql" identity="true"/>
 		</table>		
-		<table tableName="final_customer" domainObjectName="FinalCustomer" enableCountByExample="false" enableUpdateByExample="false" enableDeleteByExample="false" enableSelectByExample="false" selectByExampleQueryId="false">
-			<generatedKey column="id" sqlStatement="MySql" identity="true"/>
-		</table>
-		<table tableName="linkman" domainObjectName="Linkman" enableCountByExample="false" enableUpdateByExample="false" enableDeleteByExample="false" enableSelectByExample="false" selectByExampleQueryId="false">
-			<generatedKey column="id" sqlStatement="MySql" identity="true"/>
-		</table>
 		<table tableName="log_cust_lock_rel" domainObjectName="LogCustLockRel" enableCountByExample="false" enableUpdateByExample="false" enableDeleteByExample="false" enableSelectByExample="false" selectByExampleQueryId="false">
 			<generatedKey column="log_id" sqlStatement="MySql" identity="true"/>
 		</table>
@@ -427,9 +421,9 @@
 			<generatedKey column="id" sqlStatement="MySql" identity="true"/>
 		</table> -->
 			
-		<table tableName="account_company" domainObjectName="AccountCompany" enableCountByExample="false" enableUpdateByExample="false" enableDeleteByExample="false" enableSelectByExample="false" selectByExampleQueryId="false">
+		<!-- <table tableName="account_company" domainObjectName="AccountCompany" enableCountByExample="false" enableUpdateByExample="false" enableDeleteByExample="false" enableSelectByExample="false" selectByExampleQueryId="false">
 			<generatedKey column="id" sqlStatement="MySql" identity="true"/>
-		</table>
+		</table> -->
 		
 		<!-- <table tableName="trade_orders" domainObjectName="Orders" enableCountByExample="false" enableUpdateByExample="false" enableDeleteByExample="false" enableSelectByExample="false" selectByExampleQueryId="false">
 			<generatedKey column="id" sqlStatement="MySql" identity="true"/>
@@ -443,7 +437,12 @@
 			<generatedKey column="id" sqlStatement="MySql" identity="true"/>
 		</table> -->
 		
-		
+		<table tableName="linkman" domainObjectName="Linkman" enableCountByExample="false" enableUpdateByExample="false" enableDeleteByExample="false" enableSelectByExample="false" selectByExampleQueryId="false">
+			<generatedKey column="id" sqlStatement="MySql" identity="true"/>
+		</table>
+		<!-- <table tableName="final_customer" domainObjectName="FinalCustomer" enableCountByExample="false" enableUpdateByExample="false" enableDeleteByExample="false" enableSelectByExample="false" selectByExampleQueryId="false">
+			<generatedKey column="id" sqlStatement="MySql" identity="true"/>
+		</table> -->		
 		
 	</context>
 </generatorConfiguration>

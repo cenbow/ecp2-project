@@ -1,5 +1,6 @@
 package com.ecp.entity;
 
+import java.util.Date;
 import javax.persistence.*;
 
 @Table(name = "final_customer")
@@ -32,14 +33,32 @@ public class FinalCustomer {
     private String province;
 
     /**
+     * 省份编码
+     */
+    @Column(name = "province_code")
+    private String provinceCode;
+
+    /**
      * 所在城市
      */
     private String city;
 
     /**
+     * 城市编码
+     */
+    @Column(name = "city_code")
+    private String cityCode;
+
+    /**
      * 所在区县
      */
-    private String area;
+    private String county;
+
+    /**
+     * 县(区)编码
+     */
+    @Column(name = "county_code")
+    private String countyCode;
 
     /**
      * 补充区县
@@ -76,6 +95,23 @@ public class FinalCustomer {
      */
     @Column(name = "linkman_phone")
     private String linkmanPhone;
+
+    /**
+     * 相关订单ID
+     */
+    @Column(name = "order_id")
+    private Long orderId;
+
+    /**
+     * 是否删除（1-未删除，2-删除，默认1）
+     */
+    private Byte deleted;
+
+    /**
+     * 记录创建时间
+     */
+    @Column(name = "create_time")
+    private Date createTime;
 
     /**
      * 获取最终客户表自增ID
@@ -168,6 +204,24 @@ public class FinalCustomer {
     }
 
     /**
+     * 获取省份编码
+     *
+     * @return province_code - 省份编码
+     */
+    public String getProvinceCode() {
+        return provinceCode;
+    }
+
+    /**
+     * 设置省份编码
+     *
+     * @param provinceCode 省份编码
+     */
+    public void setProvinceCode(String provinceCode) {
+        this.provinceCode = provinceCode == null ? null : provinceCode.trim();
+    }
+
+    /**
      * 获取所在城市
      *
      * @return city - 所在城市
@@ -186,21 +240,57 @@ public class FinalCustomer {
     }
 
     /**
+     * 获取城市编码
+     *
+     * @return city_code - 城市编码
+     */
+    public String getCityCode() {
+        return cityCode;
+    }
+
+    /**
+     * 设置城市编码
+     *
+     * @param cityCode 城市编码
+     */
+    public void setCityCode(String cityCode) {
+        this.cityCode = cityCode == null ? null : cityCode.trim();
+    }
+
+    /**
      * 获取所在区县
      *
-     * @return area - 所在区县
+     * @return county - 所在区县
      */
-    public String getArea() {
-        return area;
+    public String getCounty() {
+        return county;
     }
 
     /**
      * 设置所在区县
      *
-     * @param area 所在区县
+     * @param county 所在区县
      */
-    public void setArea(String area) {
-        this.area = area == null ? null : area.trim();
+    public void setCounty(String county) {
+        this.county = county == null ? null : county.trim();
+    }
+
+    /**
+     * 获取县(区)编码
+     *
+     * @return county_code - 县(区)编码
+     */
+    public String getCountyCode() {
+        return countyCode;
+    }
+
+    /**
+     * 设置县(区)编码
+     *
+     * @param countyCode 县(区)编码
+     */
+    public void setCountyCode(String countyCode) {
+        this.countyCode = countyCode == null ? null : countyCode.trim();
     }
 
     /**
@@ -311,6 +401,60 @@ public class FinalCustomer {
         this.linkmanPhone = linkmanPhone == null ? null : linkmanPhone.trim();
     }
 
+    /**
+     * 获取相关订单ID
+     *
+     * @return order_id - 相关订单ID
+     */
+    public Long getOrderId() {
+        return orderId;
+    }
+
+    /**
+     * 设置相关订单ID
+     *
+     * @param orderId 相关订单ID
+     */
+    public void setOrderId(Long orderId) {
+        this.orderId = orderId;
+    }
+
+    /**
+     * 获取是否删除（1-未删除，2-删除，默认1）
+     *
+     * @return deleted - 是否删除（1-未删除，2-删除，默认1）
+     */
+    public Byte getDeleted() {
+        return deleted;
+    }
+
+    /**
+     * 设置是否删除（1-未删除，2-删除，默认1）
+     *
+     * @param deleted 是否删除（1-未删除，2-删除，默认1）
+     */
+    public void setDeleted(Byte deleted) {
+        this.deleted = deleted;
+    }
+
+    /**
+     * 获取记录创建时间
+     *
+     * @return create_time - 记录创建时间
+     */
+    public Date getCreateTime() {
+        return createTime;
+    }
+
+    /**
+     * 设置记录创建时间
+     *
+     * @param createTime 记录创建时间
+     */
+    public void setCreateTime(Date createTime) {
+        this.createTime = createTime;
+    }
+
     @Override
     public String toString() {
         StringBuilder sb = new StringBuilder();
@@ -322,14 +466,20 @@ public class FinalCustomer {
         sb.append(", phone=").append(phone);
         sb.append(", country=").append(country);
         sb.append(", province=").append(province);
+        sb.append(", provinceCode=").append(provinceCode);
         sb.append(", city=").append(city);
-        sb.append(", area=").append(area);
+        sb.append(", cityCode=").append(cityCode);
+        sb.append(", county=").append(county);
+        sb.append(", countyCode=").append(countyCode);
         sb.append(", addedArea=").append(addedArea);
         sb.append(", paymentAddress=").append(paymentAddress);
         sb.append(", deliveryAddress=").append(deliveryAddress);
         sb.append(", installAddress=").append(installAddress);
         sb.append(", linkmanName=").append(linkmanName);
         sb.append(", linkmanPhone=").append(linkmanPhone);
+        sb.append(", orderId=").append(orderId);
+        sb.append(", deleted=").append(deleted);
+        sb.append(", createTime=").append(createTime);
         sb.append("]");
         return sb.toString();
     }
