@@ -31,7 +31,7 @@ public class LinkmanServiceImpl extends AbstractBaseService<Linkman, Long> imple
 		Linkman rec=new Linkman();
 		rec.setOrderId(orderId);
 		
-		return linkmanMapper.selectByExample(rec);
+		return linkmanMapper.select(rec);
 		
 	}
 

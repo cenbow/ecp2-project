@@ -1,5 +1,6 @@
 package com.ecp.back.controller;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
@@ -125,12 +126,7 @@ public class LinkmanController {
 	*/
 	@RequestMapping(value="/edit")
 	public String showLinkmanEditUI(long orderId,String orderNo,Model model){
-		
-		//查询此订单下的联系人
-		List<Linkman> linkManList=linkmanService.getLinkmanByOrder(orderId);
-		
-		//回传参数
-		model.addAttribute("linkManList",linkManList);		
+		setLinkmanListToModel(orderId,model);		
 		model.addAttribute("orderId", orderId);
 		model.addAttribute("orderNo",orderNo);
 		
@@ -140,16 +136,15 @@ public class LinkmanController {
 	
 	@RequestMapping(value="/table")
 	public String showLinkmanTable(long orderId,String orderNo,Model model){
-		
-		//查询此订单下的联系人
-		List<Linkman> linkmanList=linkmanService.getLinkmanByOrder(orderId);
-		
-		//回传参数
-		model.addAttribute("linkmanList",linkmanList);	
-		
-		
+		setLinkmanListToModel(orderId,model);	
 		return RESPONSE_THYMELEAF_BACK + "linkman_table";
 	}
+	
+	private void setLinkmanListToModel(long orderId,Model model){
+		List<Linkman> linkmanList=linkmanService.getLinkmanByOrder(orderId); //查询此订单下的联系人
+		model.addAttribute("linkmanList",linkmanList);  //回传参数
+	}
+	
 	
 	@RequestMapping(value="/add")
 	@ResponseBody

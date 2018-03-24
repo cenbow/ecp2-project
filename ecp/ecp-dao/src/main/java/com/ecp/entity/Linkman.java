@@ -3,6 +3,8 @@ package com.ecp.entity;
 import java.util.Date;
 import javax.persistence.*;
 
+import org.springframework.format.annotation.DateTimeFormat;
+
 public class Linkman {
     /**
      * 联系人表自增ID
@@ -24,6 +26,7 @@ public class Linkman {
     /**
      * 出生日期
      */
+    @DateTimeFormat(pattern="yyyy-MM-dd")
     private Date birthday;
 
     /**
@@ -199,6 +202,7 @@ public class Linkman {
      *
      * @return birthday - 出生日期
      */
+      
     public Date getBirthday() {
         return birthday;
     }

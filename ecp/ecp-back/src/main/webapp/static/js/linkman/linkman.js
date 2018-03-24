@@ -4,9 +4,12 @@
  * 打开增加联系人窗口
  * @returns
  */
-function openAddLinkmanFeeDialog() {
-	//modal-container-306690
+function openAddLinkmanDialog() {
+	//modal-container-306690	
 	console.log("debug!");
+	
+	$("#orderId").val(curr_orderId);  //置当前orderId
+	
 	$('#modal-container-306690').modal({
 		backdrop : 'static',
 		keyboard : false
@@ -14,7 +17,7 @@ function openAddLinkmanFeeDialog() {
 }
 
 /* close dialog :增加联系人窗口*/
-function closeAddLinkmanFeeDialog() {	
+function closeAddLinkmanDialog() {	
 	$("#modal-container-306690").modal("hide");
 }
 
@@ -38,8 +41,8 @@ function reloadLinkmanTable(){
  * @returns
  */
 function addLinkmanItem(){
-	var urlStr = BASE_CONTEXT_PATH + "/back/linkman/add"; // 需要提交的url
-	
+	var url = BASE_CONTEXT_PATH + "/back/linkman/add"; // 需要提交的url
+	console.log("form commit:"+url);
 	$("#linkman-form").ajaxSubmit({
 		type : "post",
 		url : url,
