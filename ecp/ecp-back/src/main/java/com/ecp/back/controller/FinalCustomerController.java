@@ -126,31 +126,30 @@ public class FinalCustomerController {
 	*/
 	@RequestMapping(value="/edit")
 	public String showFinalCustomerEditUI(long orderId,String orderNo,Model model){
-		
-		//查询此订单下的最终用户
-		List<FinalCustomer> finalCustomerList=finalCustomerService.getFinalCustomerByOrder(orderId);
+		setFinalCustomerToModel(orderId,model);
 		
 		//回传参数
-		model.addAttribute("finalCustomerList",finalCustomerList);		
 		model.addAttribute("orderId", orderId);
 		model.addAttribute("orderNo",orderNo);
 		
-		return RESPONSE_THYMELEAF_BACK + "finalCustomer_edit";
+		return RESPONSE_THYMELEAF_BACK + "finalcustomer_edit";
 	}
 	
 	
 	@RequestMapping(value="/table")
 	public String showFinalCustomerTable(long orderId,String orderNo,Model model){
-		
+		setFinalCustomerToModel(orderId,model);
+		return RESPONSE_THYMELEAF_BACK + "finalcustomer_table";
+	}
+	
+	private void setFinalCustomerToModel(long orderId,Model model){
 		//查询此订单下的最终用户
 		List<FinalCustomer> finalCustomerList=finalCustomerService.getFinalCustomerByOrder(orderId);
-		
+				
 		//回传参数
 		model.addAttribute("finalCustomerList",finalCustomerList);
-		
-		
-		return RESPONSE_THYMELEAF_BACK + "finalCustomer_table";
 	}
+	
 	
 	@RequestMapping(value="/add")
 	@ResponseBody

@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>Insert title here</title>
+</head>
+<body>
+<table class="table">
+
+<!-- 
+CREATE TABLE `final_customer` (
+  `id` bigint(20) NOT NULL AUTO_INCREMENT COMMENT '最终客户表自增ID',
+  `name` varchar(50) DEFAULT NULL COMMENT '客户姓名',
+  `phone` varchar(20) DEFAULT NULL COMMENT '客户电话',
+  `country` varchar(30) DEFAULT NULL COMMENT '所在国家',
+  `province` varchar(30) DEFAULT NULL COMMENT '所在省份',
+  `province_code` varchar(20) DEFAULT NULL COMMENT '省份编码',
+  `city` varchar(30) DEFAULT NULL COMMENT '所在城市',
+  `city_code` varchar(20) DEFAULT NULL COMMENT '城市编码',
+  `county` varchar(30) DEFAULT NULL COMMENT '所在区县',
+  `county_code` varchar(20) DEFAULT NULL COMMENT '县(区)编码',
+  `added_area` varchar(100) DEFAULT NULL COMMENT '补充区县',
+  `payment_address` varchar(200) DEFAULT NULL COMMENT '付款地址',
+  `delivery_address` varchar(200) DEFAULT NULL COMMENT '送货地址',
+  `install_address` varchar(200) DEFAULT NULL COMMENT '装机地址',
+  `linkman_name` varchar(50) DEFAULT NULL COMMENT '联系人',
+  `linkman_phone` varchar(20) DEFAULT NULL COMMENT '联系电话',
+  `order_id` bigint(20) DEFAULT NULL COMMENT '相关订单ID',
+  `deleted` tinyint(2) DEFAULT '1' COMMENT '是否删除（1-未删除，2-删除，默认1）',
+  `create_time` datetime DEFAULT NULL COMMENT '记录创建时间',
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='最终客户表';
+
+ -->
+
+
+						<thead>
+							<tr>
+								<th>客户姓名</th>								
+								<th>客户电话	</th>								
+								<th>区域</th>
+								<th>联系人</th>
+								<th>联系人电话 </th>
+								<th>送货地址</th>
+								<th>装机地址</th>
+								<th>操作</th>
+							</tr>
+						</thead>
+						<tbody>
+							<tr th:each="finalcustomer:${finalCustomerList}">
+								<td th:text="${finalcustomer.name}">客户姓名</td>								
+								<td th:text="${finalcustomer.phone}">客户电话</td>								
+								<td th:text="${finalcustomer.province}+${finalcustomer.city}+${finalcustomer.county}">区域</td>
+								<td th:text="${finalcustomer.linkmanName}">联系人 </td>
+								<td th:text="${finalcustomer.linkmanPhone}">联系人电话</td>
+								<td th:text="${finalcustomer.deliveryAddress}">送货地址</td>
+								<td th:text="${finalcustomer.installAddress}">装机地址</td>
+								
+																								
+								<td>				
+									<a type="button" class="modi-finalcustomer" th:attr="bind-id=${finalcustomer.id}"><i class=" icon-edit icon-large" style="color:darkblue"></i></a>
+									<a type="button" class="del-finalcustomer" th:attr="bind-id=${finalcustomer.id}"><i class=" icon-remove-circle icon-large" style="color:darkblue"></i></a>	
+								</td>
+							</tr>
+							
+						</tbody>
+					</table>
+					
+					
+	<script type="text/javascript">
+		$('.modi-finalcustomer').on('click',function(){
+			console.log("modify finalcustomer");
+		})
+		
+		$('.del-finalcustomer').on('click',function(){
+			console.log("delete finalcustomer");
+		})
+	</script>
+</body>
+</html>

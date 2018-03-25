@@ -1,12 +1,12 @@
 package com.ecp.service.impl.front;
 
+import java.util.Date;
 import java.util.List;
 
 import org.springframework.stereotype.Service;
 
 import com.ecp.dao.FinalCustomerMapper;
 import com.ecp.entity.FinalCustomer;
-import com.ecp.entity.Linkman;
 import com.ecp.service.front.IFinalCustomerService;
 import com.ecp.service.impl.AbstractBaseService;
 
@@ -31,14 +31,14 @@ public class FinalCustomerServiceImpl extends AbstractBaseService<FinalCustomer,
 		FinalCustomer rec=new FinalCustomer();
 		rec.setOrderId(orderId);
 		
-		return finalCustomerMapper.selectByExample(rec);
+		return finalCustomerMapper.select(rec);
 		
 	}
 
 
 	@Override
 	public int addFinalCustomer(FinalCustomer finalCustomer) {
-		
+		finalCustomer.setCreateTime(new Date());
 		return finalCustomerMapper.insertSelective(finalCustomer);
 	}
 
