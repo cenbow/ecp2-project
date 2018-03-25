@@ -32,6 +32,16 @@ public interface ISkuService extends IBaseService<Sku, Long> {
 	
 	public SkuPriceBean getSkuBySkuId(long skuId);
 	
+	/** 
+		* @Title: getPriceBySkuId 
+		* @Description: 获取SKU价格信息(预算价,商城价,最高限价,最低限价,硬成本) 
+		* @param @param skuId  SKU ID
+		* @param @return     
+		* @return List<Map<String,Object>>    返回类型 
+		* @throws 
+	*/
+	public List<Map<String,Object>> getPriceBySkuId(Long skuId);
+	
 	
 	/**
 	 * @Description 获取sku商品介绍

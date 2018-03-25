@@ -89,11 +89,6 @@
 		<table tableName="item_category_brand" domainObjectName="CategoryBrand" enableCountByExample="false" enableUpdateByExample="false" enableDeleteByExample="false" enableSelectByExample="false" selectByExampleQueryId="false">
 			<generatedKey column="category_brand_id" sqlStatement="MySql" identity="true"/>
 		</table> -->
-		<!-- item -->
-		<!-- <table tableName="item" domainObjectName="Item" enableCountByExample="false" enableUpdateByExample="false" enableDeleteByExample="false" enableSelectByExample="false" selectByExampleQueryId="false">
-			<generatedKey column="item_id" sqlStatement="MySql" identity="true"/>
-		</table> -->
-		
 		<!-- item_attr_value_item
 		<table tableName="item_attr_value_item" domainObjectName="ItemAttrValue" enableCountByExample="false" enableUpdateByExample="false" enableDeleteByExample="false" enableSelectByExample="false" selectByExampleQueryId="false">
 			<generatedKey column="id" sqlStatement="MySql" identity="true"/>
@@ -437,12 +432,20 @@
 			<generatedKey column="id" sqlStatement="MySql" identity="true"/>
 		</table> -->
 		
-		<table tableName="linkman" domainObjectName="Linkman" enableCountByExample="false" enableUpdateByExample="false" enableDeleteByExample="false" enableSelectByExample="false" selectByExampleQueryId="false">
+		<!-- <table tableName="linkman" domainObjectName="Linkman" enableCountByExample="false" enableUpdateByExample="false" enableDeleteByExample="false" enableSelectByExample="false" selectByExampleQueryId="false">
 			<generatedKey column="id" sqlStatement="MySql" identity="true"/>
-		</table>
+		</table> -->
 		<!-- <table tableName="final_customer" domainObjectName="FinalCustomer" enableCountByExample="false" enableUpdateByExample="false" enableDeleteByExample="false" enableSelectByExample="false" selectByExampleQueryId="false">
 			<generatedKey column="id" sqlStatement="MySql" identity="true"/>
-		</table> -->		
+		</table> -->
+		
+		
+		<table tableName="item" domainObjectName="Item" enableCountByExample="false" enableUpdateByExample="false" enableDeleteByExample="false" enableSelectByExample="false" selectByExampleQueryId="false">
+			<generatedKey column="item_id" sqlStatement="MySql" identity="true"/>
+		</table>
+		
+		
+				
 		
 	</context>
 </generatorConfiguration>

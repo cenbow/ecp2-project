@@ -1,11 +1,13 @@
 package com.ecp.service.front;
 
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
 import com.ecp.bean.AddSkuToOrderBean;
 import com.ecp.entity.OrderItems;
 import com.ecp.service.IBaseService;
+
 
 public interface IOrderItemService extends IBaseService<OrderItems, Long> {
 	
@@ -16,6 +18,19 @@ public interface IOrderItemService extends IBaseService<OrderItems, Long> {
 	 * @param orderId
 	 */
 	public void addItemIntoOrder(List<AddSkuToOrderBean> itemList,String orderId);
+	
+	/** 
+		* @Title: addItemIntoOrder 
+		* @Description: 向订单中增加sku条目 
+		* @param @param itemList sku数据(来自于购物车)
+		* @param @param skuAppendAttrList sku附加的属性(价格阈值,硬成本,是否方案性产品),与itemList中的数据一一对应
+		* @param @param orderId    订单No 
+		* @return void    返回类型 
+		* @throws 
+	*/
+	public void addItemIntoOrder(List<AddSkuToOrderBean> itemList,List<HashMap<String,Object>> skuAppendAttrList, String orderId);
+	
+	
 	
 	/**
 	 * @Description 根据订单id读取订单数据

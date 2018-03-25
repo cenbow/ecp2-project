@@ -87,6 +87,9 @@
   
   
   
+  
+  
+  
   <resultMap id="skuPriceMap" type="com.ecp.bean.SkuPriceBean">
   	<result column="attributes" jdbcType="VARCHAR" property="attributes" />
   	<result column="item_id" jdbcType="BIGINT" property="item_id" />
@@ -109,8 +112,25 @@
 		i.describe_url
   	 FROM item_sku s LEFT JOIN item i ON (s.item_id=i.item_id) 
   	 WHERE s.sku_id=#{skuId} and s.deleted=1 and i.deleted=1
-  
   </select>
+  
+  <select id="getPriceBySkuId" resultType="map">
+  	SELECT  	 	
+  	 	s.attributes,
+		s.item_id,
+		s.sku_id,
+		s.volume,
+		s.weight,		
+		p.sell_price,
+		p.market_price,
+		p.lowest_price,
+		p.highest_price,
+		p.hard_cost_price		
+  	 FROM item_sku s left JOIN trade_sku_price p on(s.item_id=p.item_id and s.sku_id=p.sku_id) 
+  	 WHERE s.sku_id=#{skuId} and s.deleted=1 and p.deleted=1  
+  </select>
+  
+  
   
   
 </mapper>

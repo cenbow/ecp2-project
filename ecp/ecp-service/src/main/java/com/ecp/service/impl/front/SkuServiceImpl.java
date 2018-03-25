@@ -47,6 +47,11 @@ public class SkuServiceImpl extends AbstractBaseService<Sku, Long> implements IS
 	public List<Map<String, String>> getSkuIntroduce(long skuId) {
 		return skuMapper.getSkuIntroduce(skuId);
 	}
+
+	@Override
+	public List<Map<String, Object>> getPriceBySkuId(Long skuId) {
+		return skuMapper.getPriceBySkuId(skuId);
+	}
 	
 
 		
