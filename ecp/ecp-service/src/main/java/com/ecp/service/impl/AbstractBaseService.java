@@ -46,6 +46,14 @@ public abstract class AbstractBaseService<T,ID> implements IBaseService<T,ID> {
     }
     
     /**
+     * @see com.ecp.service.IBaseService#select(java.lang.Object)
+     */
+    @Override
+	public List<T> select(T entity) {
+		return mapper.select(entity);
+	}
+
+	/**
      * @author: srd $Date: 2017年2月21日
      * @see com.ecp.service.IBaseService#selectByPrimaryKey(java.lang.Object)
      * 根据主键查询实体

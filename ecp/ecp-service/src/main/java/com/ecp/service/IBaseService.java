@@ -41,6 +41,19 @@ public interface IBaseService<T,ID> {
     public List<T> selectAll();
     
     /**
+     * 方法功能：根据实体查询
+     * @param entity
+     * @return
+     * <hr>
+     * <b>描述：</b>
+     * <p>Description:方法功能详细说明</p> 
+     * <p>Version: 1.0</p>
+     * <p>Author: srd </p>
+     * <p>Date: 2017年1月10日 下午6:01:09</p>
+     */
+    public List<T> select(T entity);
+    
+    /**
      * 方法功能：根据主键查询
      * @param id
      * @return
