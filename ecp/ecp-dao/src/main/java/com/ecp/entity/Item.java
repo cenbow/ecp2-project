@@ -78,6 +78,15 @@ public class Item {
 
     @Column(name = "weight_unit")
     private String weightUnit;
+    
+    //需要手工加入
+    @Column(name = "after_service")
+    private String afterService;
+    
+    //需要手工加入
+    @Column(name = "describe_url")
+    private String describeUrl;
+    
 
     /**
      * 是否删除（1-未删除，2-删除，默认1）

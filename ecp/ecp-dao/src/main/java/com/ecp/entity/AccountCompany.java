@@ -73,6 +73,12 @@ public class AccountCompany {
 
     private String comment;
 
+    @Column(name = "bind_user_id")
+    private Long bindUserId;
+
+    @Column(name = "role_id")
+    private Long roleId;
+
     /**
      * 获取业绩表自增ID
      *
@@ -285,6 +291,34 @@ public class AccountCompany {
         this.comment = comment == null ? null : comment.trim();
     }
 
+    /**
+     * @return bind_user_id
+     */
+    public Long getBindUserId() {
+        return bindUserId;
+    }
+
+    /**
+     * @param bindUserId
+     */
+    public void setBindUserId(Long bindUserId) {
+        this.bindUserId = bindUserId;
+    }
+
+    /**
+     * @return role_id
+     */
+    public Long getRoleId() {
+        return roleId;
+    }
+
+    /**
+     * @param roleId
+     */
+    public void setRoleId(Long roleId) {
+        this.roleId = roleId;
+    }
+
     @Override
     public String toString() {
         StringBuilder sb = new StringBuilder();
@@ -303,6 +337,8 @@ public class AccountCompany {
         sb.append(", operatorId=").append(operatorId);
         sb.append(", operatorName=").append(operatorName);
         sb.append(", comment=").append(comment);
+        sb.append(", bindUserId=").append(bindUserId);
+        sb.append(", roleId=").append(roleId);
         sb.append("]");
         return sb.toString();
     }

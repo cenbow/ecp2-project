@@ -402,18 +402,14 @@ function createFormAndCommit(url, cartItemList, addrId,memo) {
 	cartItemList
 			.forEach(function(item, index) {
 
-				var cid = generateHideElement("cartItemList[" + index + "]."
-						+ "cid", item.cid), itemId = generateHideElement(
-						"cartItemList[" + index + "]." + "itemId", item.itemId), skuId = generateHideElement(
-						"cartItemList[" + index + "]." + "skuId", item.skuId), skuName = generateHideElement(
-						"cartItemList[" + index + "]." + "skuName",
-						item.skuName), skuPrice = generateHideElement(
-						"cartItemList[" + index + "]." + "skuPrice",
-						item.skuPrice), skuPicture = generateHideElement(
-						"cartItemList[" + index + "]." + "skuPicture",
-						item.skuPicture), skuNum = generateHideElement(
-						"cartItemList[" + index + "]." + "skuNum", item.skuNum), id = generateHideElement(
-						"cartItemList[" + index + "]." + "id", item.id);
+				var cid = generateHideElement("cartItemList[" + index + "]."+ "cid", item.cid), 
+						itemId = generateHideElement("cartItemList[" + index + "]." + "itemId", item.itemId), 
+						skuId = generateHideElement("cartItemList[" + index + "]." + "skuId", item.skuId), 
+						skuName = generateHideElement("cartItemList[" + index + "]." + "skuName",item.skuName), 
+						skuPrice = generateHideElement("cartItemList[" + index + "]." + "skuPrice",	item.skuPrice), 
+						skuPicture = generateHideElement("cartItemList[" + index + "]." + "skuPicture",	item.skuPicture), 
+						skuNum = generateHideElement("cartItemList[" + index + "]." + "skuNum", item.skuNum), 
+						id = generateHideElement("cartItemList[" + index + "]." + "id", item.id);
 
 				form.appendChild(cid);
 				form.appendChild(itemId);

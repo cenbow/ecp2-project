@@ -18,6 +18,16 @@ public interface SkuMapper extends Mapper<Sku> {
 	
 	public SkuPriceBean getSkuBySkuId(@Param("skuId") long skuId);
 	
+	/** 
+		* @Title: getPriceBySkuId 
+		* @Description: 读取指定SKU的价格信息. 
+		* @param @param skuId
+		* @param @return     
+		* @return List<Map<String,Object>>    返回类型 
+		* @throws 
+	*/
+	public List<Map<String, Object>> getPriceBySkuId(@Param("skuId") Long skuId);
+	
 	/**
 	 * @Description 根据skuid获取sku介绍
 	 * @param skuId

@@ -4,7 +4,16 @@
 <meta charset="UTF-8">
 <title>Insert title here</title>
 </head>
-<body>
+
+<style>
+	/* @font-face {  
+	    font-family: glyphicons;  
+	    font-size: small;
+	    src: url('../../../static/3.3.5/fonts/fontawesome-webfont.woff') format('woff'); 
+	}
+	body { font-family: glyphicons, "Microsoft YaHei UI";}   */
+</style>
+<body >
 
 <th:block th:fragment="dialog">
 
@@ -26,7 +35,7 @@
 
 									<!-- 费用类型 -->
 									<div class="form-group">
-										<label for="accountItemType" class="col-sm-2 control-label">费用类型</label>
+										<label for="accountItemType" class="col-sm-2 control-label">类型</label>
 										<div class="col-sm-10">
 											<select class="form-control" id="accountItemType"
 												name="itemType">
@@ -38,7 +47,25 @@
 										</div>
 									</div>
 									
-									<!-- 选择人员 -->
+									<!-- 费用归属 -->
+									<div class="form-group">
+										<label for="belongUserRole" class="col-sm-2 control-label">归属</label>
+										<div class="col-sm-10">
+											<select class="form-control" id="belongUserRole" name="belongUserRole">
+													<option th:attr="data-bind-user-id='0',data-bind-role-id='0'">LM公司  <i class="glyphicon glyphicon-camera"></i> </option>
+												<span th:if="${not #lists.isEmpty(osList)}" th:remove="tag">													
+													<span th:each="osUser:${osList}" th:remove="tag">
+														<option th:attr="data-bind-user-id=${osUser.id},data-bind-role-id=${osUser.role_id}" th:text="${osUser.nickname}+'('+${osUser.role_name}+')'">外部销售</option>
+													</span>
+												</span>
+												<span th:if="${not #lists.isEmpty(isList)}" th:remove="tag">													
+													<span th:each="isUser:${isList}" th:remove="tag">
+														<option th:attr="data-bind-user-id=${isUser.id},data-bind-role-id=${isUser.role_id}" th:text="${isUser.nickname}+'('+${isUser.role_name}+')'">内部销售</option>
+													</span>
+												</span>
+											</select>
+										</div>
+									</div>
 
 									<!-- 金额 -->
 									<div class="form-group">
@@ -48,6 +75,17 @@
 												name="amount" />
 										</div>
 									</div>
+									
+									<!-- 备注 -->
+									<div class="form-group">
+										<label for="comment" class="col-sm-2 control-label">备注</label>
+										<div class="col-sm-10">
+											<input type="text" class="form-control" id="comment" name="comment" />
+										</div>
+									</div>
+									
+									
+									
 
 								</form>
 							</div>

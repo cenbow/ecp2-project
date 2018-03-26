@@ -11,17 +11,18 @@
 								<th>ID</th>								
 								<th>金额	</th>
 								<th>费用类型	</th>
-								<th>人员</th>
-								<th>日期	</th>
+								<th>归属</th>
+								<th>备注</th>
+								<th>日期	</th>								
 								<th>操作 </th>
 							</tr>
 						</thead>
 						<tbody>
 							<tr th:each="item: ${accountCompanyList}">
-								<td th:text="${item.id}">条目ID</td>
-								<td th:text="${item.amount}">金额</td>
+								<td th:text="${item.accountItem.id}">条目ID</td>
+								<td th:text="${item.accountItem.amount}">金额</td>
 								<td>
-									<span th:switch="${item.type}" th:remove="tag">
+									<span th:switch="${item.accountItem.type}" th:remove="tag">
 										<span th:case=1 th:remove="tag">
 									  		<span>交通费</span>
 									  	</span>
@@ -40,11 +41,13 @@
 									</span>									
 								</td>
 								
-								<td>人员</td>
-								<td th:text="${#dates.format(item.createTime,'yyyy-MM-dd HH:mm:ss')}">日期</td>
+								<td th:text="${item.bindUserName}+'('+${item.bindUserRole} +')'"></td>
+								<!-- 备注 -->
+								<td th:text="${item.accountItem.comment}">备注</td>
+								<td th:text="${#dates.format(item.accountItem.createTime,'yyyy-MM-dd HH:mm:ss')}">日期</td>
 								<td>				
-									<a type="button" class="modi-four-fee" th:attr="bind-id=${item.id}"><i class=" icon-edit icon-large" style="color:darkblue"></i></a>
-									<a type="button" class="del-four-fee" th:attr="bind-id=${item.id}"><i class=" icon-remove-circle icon-large" style="color:darkblue"></i></a>	
+									<a type="button" class="modi-four-fee" th:attr="bind-id=${item.accountItem.id}"><i class=" icon-edit icon-large" style="color:darkblue"></i></a>
+									<a type="button" class="del-four-fee" th:attr="bind-id=${item.accountItem.id}"><i class=" icon-remove-circle icon-large" style="color:darkblue"></i></a>	
 								</td>
 							</tr>
 							

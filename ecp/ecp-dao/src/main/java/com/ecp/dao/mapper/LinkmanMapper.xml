@@ -1,38 +1,42 @@
-<?xml version="1.0" encoding="UTF-8" ?>
-<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
-<mapper namespace="com.ecp.dao.LinkmanMapper" >
-  <resultMap id="BaseResultMap" type="com.ecp.entity.Linkman" >
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ecp.dao.LinkmanMapper">
+  <resultMap id="BaseResultMap" type="com.ecp.entity.Linkman">
     <!--
       WARNING - @mbggenerated
     -->
-    <id column="id" property="id" jdbcType="BIGINT" />
-    <result column="name" property="name" jdbcType="VARCHAR" />
-    <result column="sex" property="sex" jdbcType="TINYINT" />
-    <result column="birthday" property="birthday" jdbcType="TIMESTAMP" />
-    <result column="department" property="department" jdbcType="VARCHAR" />
-    <result column="department_desc" property="departmentDesc" jdbcType="VARCHAR" />
-    <result column="position" property="position" jdbcType="VARCHAR" />
-    <result column="edu_level" property="eduLevel" jdbcType="VARCHAR" />
-    <result column="rel_level" property="relLevel" jdbcType="VARCHAR" />
-    <result column="attitude" property="attitude" jdbcType="VARCHAR" />
-    <result column="schooltag" property="schooltag" jdbcType="VARCHAR" />
-    <result column="work_address" property="workAddress" jdbcType="VARCHAR" />
-    <result column="work_postcode" property="workPostcode" jdbcType="VARCHAR" />
-    <result column="work_tel" property="workTel" jdbcType="VARCHAR" />
-    <result column="work_fax" property="workFax" jdbcType="VARCHAR" />
-    <result column="email" property="email" jdbcType="VARCHAR" />
-    <result column="address" property="address" jdbcType="VARCHAR" />
-    <result column="postcode" property="postcode" jdbcType="VARCHAR" />
-    <result column="tel" property="tel" jdbcType="VARCHAR" />
-    <result column="mobile" property="mobile" jdbcType="VARCHAR" />
-    <result column="tendency" property="tendency" jdbcType="VARCHAR" />
+    <id column="id" jdbcType="BIGINT" property="id" />
+    <result column="name" jdbcType="VARCHAR" property="name" />
+    <result column="sex" jdbcType="TINYINT" property="sex" />
+    <result column="birthday" jdbcType="TIMESTAMP" property="birthday" />
+    <result column="department" jdbcType="VARCHAR" property="department" />
+    <result column="department_desc" jdbcType="VARCHAR" property="departmentDesc" />
+    <result column="position" jdbcType="VARCHAR" property="position" />
+    <result column="edu_level" jdbcType="VARCHAR" property="eduLevel" />
+    <result column="rel_level" jdbcType="VARCHAR" property="relLevel" />
+    <result column="attitude" jdbcType="VARCHAR" property="attitude" />
+    <result column="schooltag" jdbcType="VARCHAR" property="schooltag" />
+    <result column="work_address" jdbcType="VARCHAR" property="workAddress" />
+    <result column="work_postcode" jdbcType="VARCHAR" property="workPostcode" />
+    <result column="work_tel" jdbcType="VARCHAR" property="workTel" />
+    <result column="work_fax" jdbcType="VARCHAR" property="workFax" />
+    <result column="email" jdbcType="VARCHAR" property="email" />
+    <result column="address" jdbcType="VARCHAR" property="address" />
+    <result column="postcode" jdbcType="VARCHAR" property="postcode" />
+    <result column="tel" jdbcType="VARCHAR" property="tel" />
+    <result column="mobile" jdbcType="VARCHAR" property="mobile" />
+    <result column="tendency" jdbcType="VARCHAR" property="tendency" />
+    <result column="qqwechat" jdbcType="VARCHAR" property="qqwechat" />
+    <result column="order_id" jdbcType="BIGINT" property="orderId" />
+    <result column="deleted" jdbcType="TINYINT" property="deleted" />
+    <result column="create_time" jdbcType="TIMESTAMP" property="createTime" />
   </resultMap>
-  <sql id="Base_Column_List" >
+  <sql id="Base_Column_List">
     <!--
       WARNING - @mbggenerated
     -->
     id, name, sex, birthday, department, department_desc, position, edu_level, rel_level, 
     attitude, schooltag, work_address, work_postcode, work_tel, work_fax, email, address, 
-    postcode, tel, mobile, tendency
+    postcode, tel, mobile, tendency, qqwechat, order_id, deleted, create_time
   </sql>
 </mapper>

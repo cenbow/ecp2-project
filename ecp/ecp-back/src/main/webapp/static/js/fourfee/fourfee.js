@@ -40,29 +40,35 @@ function reloadFourFeeTable(){
 function addFourFeeItem(){
 	var urlStr = BASE_CONTEXT_PATH + "/back/fourfee/add"; // 需要提交的url
 	
-	/*var params=new Object();  //生成参数对象.
+	var params=new Object();  //生成参数对象.
 	
-	params.agentId=agentId;
-	params.userList=userList;*/
-	
-	var orderId=curr_orderId;
-	var orderNo=curr_orderNo;
 	
 	//自对话框中取得所输入的值
 	var itemType=$('#accountItemType').val();
 	var amount=$('#amount').val();
+	var comment=$('#comment').val();
+	
+	var bindUserId=$("#belongUserRole option:selected").attr("data-bind-user-id");
+	var roleId=$("#belongUserRole option:selected").attr("data-bind-role-id");
+	
+	params.orderId=curr_orderId;
+	params.orderNo=curr_orderNo;	
+	params.itemType=$('#accountItemType').val();  //类型
+	params.amount=$('#amount').val();		//金额
+	params.comment=$('#comment').val();	  	//备注
+	
+	
+	
+	params.bindUserId=bindUserId;
+	params.roleId=roleId;	
+	
 
 	$.ajax({
 		type : "POST", // 提交方式 get/post
 		url : urlStr,
-		//contentType : "application/json", // 如果采用json格式传送所有参数时必须有,如果采普通js对象传送时,则不可以加此参数
+		contentType : "application/json", // 如果采用json格式传送所有参数时必须有,如果采普通js对象传送时,则不可以加此参数
 		//dataType : "html", //表示返回值类型，不必须,如果返回的是面页，则必须
-		data : {
-			'orderId':orderId,
-			'orderNo':orderNo,
-			'itemType':itemType,
-			'amount':amount
-		},
+		data :JSON.stringify(params),
 		success : function(res) { // data 保存提交后返回的数据，一般为 json 数据
 			//console.log(res);
 			if (res != null && res != "") {

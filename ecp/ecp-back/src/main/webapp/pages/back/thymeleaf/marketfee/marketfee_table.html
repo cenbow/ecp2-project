@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>Insert title here</title>
+</head>
+<body>
+<table class="table">
+						<thead>
+							<tr>
+								<th>ID</th>								
+								<th>金额	</th>
+								<th>费用类型	</th>
+								<th>费用归属</th>
+								<th>备注</th>
+								<th>日期	</th>
+								<th>操作 </th>
+							</tr>
+						</thead>
+						<tbody>
+							<tr th:each="item: ${accountCompanyList}">
+								<td th:text="${item.id}">条目ID</td>
+								<td th:text="${item.amount}">金额</td>
+								<td>
+									<span th:switch="${item.type}" th:remove="tag">
+										<!-- <span th:case=1 th:remove="tag">
+									  		<span>交通费</span>
+									  	</span>
+									  	<span th:case=2 th:remove="tag">
+									  		<span>通讯费</span>
+									  	</span>
+										<span th:case=3 th:remove="tag">
+									  		<span>招待费</span>
+									  	</span>
+									  	<span th:case=4 th:remove="tag">
+									  		<span>差旅费</span>
+									  	</span> -->
+									  	<span th:case=5 th:remove="tag">
+									  		<span>市场费</span>
+									  	</span>
+									  	<span th:case="*" th:remove="tag">
+									  		<span>其它费用</span>
+									  	</span>
+									</span>									
+								</td>
+								
+								<td>人员/公司</td>
+								<td th:text="${item.comment}">备注</td>
+								<td th:text="${#dates.format(item.createTime,'yyyy-MM-dd HH:mm:ss')}">日期</td>								
+								<td>				
+									<a type="button" class="modi-market-fee" th:attr="bind-id=${item.id}"><i class=" icon-edit icon-large" style="color:darkblue"></i></a>
+									<a type="button" class="del-market-fee" th:attr="bind-id=${item.id}"><i class=" icon-remove-circle icon-large" style="color:darkblue"></i></a>	
+								</td>
+							</tr>
+							
+						</tbody>
+					</table>
+					
+					
+	<script type="text/javascript">
+		$('.modi-market-fee').on('click',function(){
+			console.log("modify market fee");
+		})
+		
+		$('.del-market-fee').on('click',function(){
+			console.log("delete market fee");
+		})
+	</script>
+</body>
+</html>

@@ -34,15 +34,8 @@ public class AccountCompanyServiceImpl extends AbstractBaseService<AccountCompan
 
 
 	@Override
-	public int addAccountItem(long orderId, String orderNo, int itemType, BigDecimal amount) {
-		AccountCompany rec=new AccountCompany();
-		rec.setOrderId(orderId);
-		rec.setOrderNo(orderNo);
-		rec.setType(itemType);
-		rec.setAmount(amount);
-		rec.setCreateTime(new Date());
-		
-		return accountCompanyMapper.insertSelective(rec);
+	public int addAccountItem(AccountCompany accountItem) {
+		return accountCompanyMapper.insertSelective(accountItem);
 	}
 
 	

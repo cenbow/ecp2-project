@@ -24,13 +24,17 @@ import com.ecp.bean.DeletedType;
 import com.ecp.common.SessionConstants;
 import com.ecp.common.util.OrderIdGenerator;
 import com.ecp.common.util.RequestResultUtil;
+import com.ecp.entity.Item;
 import com.ecp.entity.Orders;
+import com.ecp.entity.SkuPrice;
 import com.ecp.entity.User;
 import com.ecp.entity.UserAddressInfo;
 import com.ecp.entity.UserExtends;
 import com.ecp.service.front.ICartService;
+import com.ecp.service.front.IItemService;
 import com.ecp.service.front.IOrderItemService;
 import com.ecp.service.front.IOrderService;
+import com.ecp.service.front.ISkuService;
 import com.ecp.service.front.IUserAddressInfoService;
 import com.ecp.service.front.IUserAgentService;
 
@@ -61,6 +65,10 @@ public class OrderController {
 	IUserAddressInfoService userAddressInfoService;
 	@Autowired
 	IUserAgentService userAgentService;
+	@Autowired
+	ISkuService skuService;
+	@Autowired
+	IItemService itemService;
 	
 
 	@RequestMapping(value = "/add", method = RequestMethod.POST)
@@ -74,8 +82,10 @@ public class OrderController {
 		/*HttpSession session = request.getSession();
 		User user = (User) session.getAttribute(SessionConstants.USER);*/
 
-		String orderId = createOrder(cartItemList, addr,cartToOrderItemList.getMemo()); //增加订单
-		orderItemService.addItemIntoOrder(cartItemList, orderId); //增加订单条目
+		List<HashMap<String,Object>> appendAttrList=getSkuAppendAttrList(cartItemList);  //读取二期所增加属性(最高限价,最低限价,硬成本,)
+		String orderId = createOrder(cartItemList, addr,cartToOrderItemList.getMemo()); //增加订单	
+		
+		orderItemService.addItemIntoOrder(cartItemList,appendAttrList, orderId); //增加订单条目
 		delSelectedCartItem(cartItemList); //自购购物车删除用户已下单商品
 
 		//准备用于订单提交成功的数据
@@ -87,6 +97,41 @@ public class OrderController {
 		//订单提交成功页面
 		return RESPONSE_THYMELEAF + "my_order_add_ok";
 	}
+	
+	
+	/** 
+		* @Title: getSkuAppendAttrList 
+		* @Description: 读取商城二期所附加的SKU属性. 
+		* @param @param cartItemList 需要加入订单的条目
+		* @param @return     
+		* @return List<HashMap<String,Object>>    附加属性列表 
+		* @throws 
+	*/
+	private  List<HashMap<String,Object>>  getSkuAppendAttrList(List<AddSkuToOrderBean> cartItemList){
+		
+		List<HashMap<String, Object>> appendAttrList=new ArrayList<HashMap<String,Object>>();
+		for(int i=0;i<cartItemList.size();i++){
+			HashMap<String,Object> map=new HashMap<String,Object>();
+			
+			long itemId=cartItemList.get(i).getItemId();  //获取SPU(Item) ID
+			long skuId=cartItemList.get(i).getSkuId();
+			
+			Item item=itemService.selectByPrimaryKey(itemId);  //读取SPU信息
+			List<Map<String,Object>> skuPrice=skuService.getPriceBySkuId(skuId);  //读取SKU价格信息
+			
+			map.put("lowestPrice", skuPrice.get(0).get("lowest_price"));    	//最高限价
+			map.put("highestPrice", skuPrice.get(0).get("highest_price")); 		//最低限价
+			map.put("hardCostPrice", skuPrice.get(0).get("hard_cost_price"));	//硬成本
+			map.put("isPlanProduct", item.getIsPlanProduct());					//是否是方案性产品(在SPU中查询)
+			
+			appendAttrList.add(map);
+			
+		}
+		
+		return appendAttrList;
+		
+	}
+	
 
 	@RequestMapping(value = "/show")
 	public String order_show(int orderTimeCond,int dealStateCond, Model model, HttpServletRequest request) {

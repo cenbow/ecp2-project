@@ -2,6 +2,7 @@ package com.ecp.service.impl.front;
 
 import java.math.BigDecimal;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -17,6 +18,7 @@ import com.ecp.service.impl.AbstractBaseService;
 public class OrderItemServiceImpl extends AbstractBaseService<OrderItems, Long> implements IOrderItemService {
 	
 	OrderItemsMapper orderItemsMapper; 
+	
 	
 	/**
 	 * @param mapper
@@ -38,12 +40,15 @@ public class OrderItemServiceImpl extends AbstractBaseService<OrderItems, Long> 
 			record.setSkuId(item.getSkuId());  //sku id
 			record.setSkuName(item.getSkuName());  //sku name			
 			record.setPrimitivePrice(item.getSkuPrice());  //原始价（未折减价格）
-			record.setNum(item.getSkuNum());
+			record.setNum(item.getSkuNum());  //SKU数量
+			//计算此SKU的金额
 			BigDecimal num=new BigDecimal(item.getSkuNum());
 			record.setPayPriceTotal(item.getSkuPrice().multiply(num));
 			
 			
 			record.setCreateTime(new Date());
+			
+			
 			
 			orderItemsMapper.insert(record);
 			
@@ -56,6 +61,47 @@ public class OrderItemServiceImpl extends AbstractBaseService<OrderItems, Long> 
 		
 		return orderItemsMapper.selectItemsByOrderId(orderId);
 	
+	}
+
+	@Override
+	public void addItemIntoOrder(List<AddSkuToOrderBean> itemList, List<HashMap<String, Object>> skuAppendAttrList,String orderId) {
+		
+		for(int i=0;i<itemList.size();i++){
+			AddSkuToOrderBean item=itemList.get(i);
+			
+			OrderItems record=new OrderItems();
+			
+			record.setOrderId(orderId);  //订单号
+			record.setCid(item.getCid());  //类目id
+			record.setItemId(item.getItemId()); //spu id
+			record.setSkuId(item.getSkuId());  //sku id
+			record.setSkuName(item.getSkuName());  //sku name			
+			record.setPrimitivePrice(item.getSkuPrice());  //原始价（未折减价格）
+			record.setNum(item.getSkuNum());  //SKU数量
+			//计算此SKU的金额
+			BigDecimal num=new BigDecimal(item.getSkuNum());
+			record.setPayPriceTotal(item.getSkuPrice().multiply(num));
+			
+			//加入二期所增加的属性			
+			record.setLowestPrice((BigDecimal)skuAppendAttrList.get(i).get("lowestPrice"));
+			record.setHighestPrice((BigDecimal)skuAppendAttrList.get(i).get("highestPrice"));
+			record.setHardCostPrice((BigDecimal)skuAppendAttrList.get(i).get("hardCostPrice"));
+			record.setIsPlanProduct((Byte)skuAppendAttrList.get(i).get("isPlanProduct"));
+			
+			//记录插入时间
+			record.setCreateTime(new Date());
+			
+			
+			orderItemsMapper.insert(record);
+			
+			
+		}
+		
+		for(AddSkuToOrderBean item:itemList){
+			
+			
+		}
+		
 	}
 	
 	

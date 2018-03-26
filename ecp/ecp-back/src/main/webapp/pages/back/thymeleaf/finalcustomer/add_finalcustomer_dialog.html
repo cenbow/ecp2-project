@@ -1,0 +1,182 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>Insert title here</title>
+</head>
+<body>
+
+<th:block th:fragment="dialog">
+
+<div class="row clearfix">
+		<div class="col-md-12 column">
+				
+			<!--  <a id="modal-306690" href="#modal-container-306690" role="button" class="btn" data-toggle="modal" type="hidden"></a> -->
+				<div class="modal fade" id="modal-container-306690" role="dialog"
+					aria-labelledby="myModalLabel" aria-hidden="true">
+					<div class="modal-dialog">
+						<div class="modal-content">
+							<div class="modal-header">
+								<button type="button" class="close" data-dismiss="modal"
+									aria-hidden="true">×</button>
+								<h4 class="modal-title" id="myModalLabel">增加最终用户</h4>
+							</div>
+							<div class="modal-body">
+								<form class="form-horizontal" role="form" id="finalcustomer-form">
+								
+								
+								<!-- 
+CREATE TABLE `final_customer` (
+  `id` bigint(20) NOT NULL AUTO_INCREMENT COMMENT '最终客户表自增ID',
+  `name` varchar(50) DEFAULT NULL COMMENT '客户姓名',
+  `phone` varchar(20) DEFAULT NULL COMMENT '客户电话',
+  `country` varchar(30) DEFAULT NULL COMMENT '所在国家',
+  `province` varchar(30) DEFAULT NULL COMMENT '所在省份',
+  `province_code` varchar(20) DEFAULT NULL COMMENT '省份编码',
+  `city` varchar(30) DEFAULT NULL COMMENT '所在城市',
+  `city_code` varchar(20) DEFAULT NULL COMMENT '城市编码',
+  `county` varchar(30) DEFAULT NULL COMMENT '所在区县',
+  `county_code` varchar(20) DEFAULT NULL COMMENT '县(区)编码',
+  `added_area` varchar(100) DEFAULT NULL COMMENT '补充区县',
+  `payment_address` varchar(200) DEFAULT NULL COMMENT '付款地址',
+  `delivery_address` varchar(200) DEFAULT NULL COMMENT '送货地址',
+  `install_address` varchar(200) DEFAULT NULL COMMENT '装机地址',
+  `linkman_name` varchar(50) DEFAULT NULL COMMENT '联系人',
+  `linkman_phone` varchar(20) DEFAULT NULL COMMENT '联系电话',
+  `order_id` bigint(20) DEFAULT NULL COMMENT '相关订单ID',
+  `deleted` tinyint(2) DEFAULT '1' COMMENT '是否删除（1-未删除，2-删除，默认1）',
+  `create_time` datetime DEFAULT NULL COMMENT '记录创建时间',
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='最终客户表';
+
+ -->
+								
+									<div class="form-group">
+										<label for="name" class="col-sm-2 control-label">姓名</label>
+										<div class="col-sm-10">
+											<input type="text" class="form-control" id="name" name="name" />
+										</div>
+									</div>
+									
+									<div class="form-group">
+										<label for="phone" class="col-sm-2 control-label">电话</label>
+										<div class="col-sm-10">
+											<input type="text" class="form-control" id="phone" name="phone" />
+										</div>
+									</div>
+									
+									<div class="form-group">
+										<label for="country" class="col-sm-2 control-label">国家</label>
+										<div class="col-sm-10">
+											<input type="text" class="form-control" id="country" name="country" value="中国" />
+										</div>
+									</div>
+									
+									<div class="form-group">
+										<label for="distpicker" class="col-sm-2 control-label">所在地区（*）</label>
+										<div class="col-sm-10">									
+											<!-- 地区选择 -->
+											<div data-toggle="distpicker" id="distpicker">
+												<div class="row clearfix">
+													<div class="col-md-12 column">
+														<div class="row clearfix">
+															<div class="col-md-4 column" style="padding-right:5px;">
+										          					<select class="form-control" id="province" ><option value="" data-code="">—— 省 ——</option></select>
+										          					<!-- 省份编码、名称-隐藏字段 -->
+										          					<input type="hidden" value="" id="provinceCode" name="provinceCode">
+										          					<input type="hidden" value="" id="provinceName" name="province">
+															</div>
+															<div class="col-md-4 column" style="padding:0px 0px 0px 0px;">
+										          					<select class="form-control" id="city" ><option value="" data-code="">—— 市 ——</option></select>
+										          					<!-- 市级编码、名称-隐藏字段 -->
+										          					<input type="hidden" value="" id="cityCode" name="cityCode">
+										          					<input type="hidden" value="" id="cityName" name="city">
+															</div>
+															<div class="col-md-4 column" style="padding-left:5px">
+														          <select class="form-control" id="district" ><option value="" data-code="">—— 区 ——</option></select>
+														          <!-- 县级编码、名称-隐藏字段 -->
+														          <input type="hidden" value="" id="countyCode" name="countyCode">
+														          <input type="hidden" value="" id="countyName" name="county">
+															</div>
+														</div>
+													</div>
+												</div>
+												
+											</div>
+										</div>
+									</div>
+								
+									<div class="form-group" >
+										<label for="addedArea" class="col-sm-2 control-label">补充区县</label>
+										<div class="col-sm-10">
+											<input class="form-control" id="addedArea" name="addedArea" type="text" />
+										</div>
+									</div>
+									
+									<div class="form-group">
+										<label for="paymentAddress" class="col-sm-2 control-label">付款地址</label>
+										<div class="col-sm-10">
+											<input type="text" class="form-control" id="paymentAddress" name="paymentAddress" />
+										</div>
+									</div>
+									
+									<div class="form-group">
+										<label for="deliveryAddress" class="col-sm-2 control-label">送货地址</label>
+										<div class="col-sm-10">
+											<input type="text" class="form-control" id="deliveryAddress" name="deliveryAddress" />
+										</div>
+									</div>
+									
+									<div class="form-group">
+										<label for="installAddress" class="col-sm-2 control-label">装机地址</label>
+										<div class="col-sm-10">
+											<input type="text" class="form-control" id="installAddress" name="installAddress" />
+										</div>
+									</div>
+									
+									<!--
+									`linkman_name` varchar(50) DEFAULT NULL COMMENT '联系人',
+  									`linkman_phone` varchar(20) DEFAULT NULL COMMENT '联系电话', 
+									 -->
+									<div class="form-group">
+										<label for="linkmanName" class="col-sm-2 control-label">联系人</label>
+										<div class="col-sm-10">
+											<input type="text" class="form-control" id="linkmanName" name="linkmanName" />
+										</div>
+									</div>
+									
+									<div class="form-group">
+										<label for="linkmanPhone" class="col-sm-2 control-label">联系电话</label>
+										<div class="col-sm-10">
+											<input type="text" class="form-control" id="linkmanPhone" name="linkmanPhone" />
+										</div>
+									</div>
+									
+									<!-- 保存订单Id -->
+									<div class="form-group">										
+										<div class="col-sm-10">
+											<input type="hidden" class="form-control" id="orderId" name="orderId" />											
+										</div>
+									</div>
+
+								</form>
+							</div>
+							<div class="modal-footer">
+								<button type="button" class="btn btn-default"
+									data-dismiss="modal">关闭</button>
+								<button type="button" class="btn btn-primary"
+									id="btn-save-finalcustomer">保存</button>
+							</div>
+						</div>
+
+					</div>
+
+				</div>
+
+			</div>
+	</div>
+	
+	</th:block>
+	
+</body>
+</html>

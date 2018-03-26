@@ -3,6 +3,8 @@ package com.ecp.entity;
 import java.util.Date;
 import javax.persistence.*;
 
+import org.springframework.format.annotation.DateTimeFormat;
+
 public class Linkman {
     /**
      * 联系人表自增ID
@@ -17,13 +19,14 @@ public class Linkman {
     private String name;
 
     /**
-     * 性别
+     * 性别(1:男;2:女)
      */
     private Byte sex;
 
     /**
      * 出生日期
      */
+    @DateTimeFormat(pattern="yyyy-MM-dd")
     private Date birthday;
 
     /**
@@ -119,6 +122,28 @@ public class Linkman {
     private String tendency;
 
     /**
+     * QQ或微信
+     */
+    private String qqwechat;
+
+    /**
+     * 订单ID
+     */
+    @Column(name = "order_id")
+    private Long orderId;
+
+    /**
+     * 是否删除（1-未删除，2-删除，默认1）
+     */
+    private Byte deleted;
+
+    /**
+     * 记录创建时间
+     */
+    @Column(name = "create_time")
+    private Date createTime;
+
+    /**
      * 获取联系人表自增ID
      *
      * @return id - 联系人表自增ID
@@ -155,18 +180,18 @@ public class Linkman {
     }
 
     /**
-     * 获取性别
+     * 获取性别(1:男;2:女)
      *
-     * @return sex - 性别
+     * @return sex - 性别(1:男;2:女)
      */
     public Byte getSex() {
         return sex;
     }
 
     /**
-     * 设置性别
+     * 设置性别(1:男;2:女)
      *
-     * @param sex 性别
+     * @param sex 性别(1:男;2:女)
      */
     public void setSex(Byte sex) {
         this.sex = sex;
@@ -177,6 +202,7 @@ public class Linkman {
      *
      * @return birthday - 出生日期
      */
+      
     public Date getBirthday() {
         return birthday;
     }
@@ -496,6 +522,78 @@ public class Linkman {
         this.tendency = tendency == null ? null : tendency.trim();
     }
 
+    /**
+     * 获取QQ或微信
+     *
+     * @return qqwechat - QQ或微信
+     */
+    public String getQqwechat() {
+        return qqwechat;
+    }
+
+    /**
+     * 设置QQ或微信
+     *
+     * @param qqwechat QQ或微信
+     */
+    public void setQqwechat(String qqwechat) {
+        this.qqwechat = qqwechat == null ? null : qqwechat.trim();
+    }
+
+    /**
+     * 获取订单ID
+     *
+     * @return order_id - 订单ID
+     */
+    public Long getOrderId() {
+        return orderId;
+    }
+
+    /**
+     * 设置订单ID
+     *
+     * @param orderId 订单ID
+     */
+    public void setOrderId(Long orderId) {
+        this.orderId = orderId;
+    }
+
+    /**
+     * 获取是否删除（1-未删除，2-删除，默认1）
+     *
+     * @return deleted - 是否删除（1-未删除，2-删除，默认1）
+     */
+    public Byte getDeleted() {
+        return deleted;
+    }
+
+    /**
+     * 设置是否删除（1-未删除，2-删除，默认1）
+     *
+     * @param deleted 是否删除（1-未删除，2-删除，默认1）
+     */
+    public void setDeleted(Byte deleted) {
+        this.deleted = deleted;
+    }
+
+    /**
+     * 获取记录创建时间
+     *
+     * @return create_time - 记录创建时间
+     */
+    public Date getCreateTime() {
+        return createTime;
+    }
+
+    /**
+     * 设置记录创建时间
+     *
+     * @param createTime 记录创建时间
+     */
+    public void setCreateTime(Date createTime) {
+        this.createTime = createTime;
+    }
+
     @Override
     public String toString() {
         StringBuilder sb = new StringBuilder();
@@ -523,6 +621,10 @@ public class Linkman {
         sb.append(", tel=").append(tel);
         sb.append(", mobile=").append(mobile);
         sb.append(", tendency=").append(tendency);
+        sb.append(", qqwechat=").append(qqwechat);
+        sb.append(", orderId=").append(orderId);
+        sb.append(", deleted=").append(deleted);
+        sb.append(", createTime=").append(createTime);
         sb.append("]");
         return sb.toString();
     }

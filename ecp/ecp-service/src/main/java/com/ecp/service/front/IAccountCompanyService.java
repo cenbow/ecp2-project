@@ -39,11 +39,12 @@ public interface IAccountCompanyService extends IBaseService<AccountCompany, Lon
 	* @param @param orderNo  订单No
 	* @param @param itemType 帐薄条目类型
 	* @param @param amount	 金额
+	* @param @param comment	 备注
 	* @param @return     
 	* @return int    返回类型 
 	* @throws 
 	*/
-	public int addAccountItem(long orderId,String orderNo, int itemType,BigDecimal amount); 
+	public int addAccountItem(AccountCompany accountItem); 
 	
 	
 }

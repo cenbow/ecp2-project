@@ -1,26 +1,32 @@
 package com.ecp.back.controller;
 
-import java.math.BigDecimal;
 import java.util.ArrayList;
+import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-
-import javax.servlet.http.HttpServletRequest;
 
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 
+import com.alibaba.fastjson.JSON;
+import com.alibaba.fastjson.JSONObject;
 import com.ecp.bean.AccountItemType;
 import com.ecp.common.util.RequestResultUtil;
 import com.ecp.entity.AccountCompany;
 import com.ecp.entity.Orders;
+import com.ecp.entity.User;
 import com.ecp.entity.UserExtends;
+import com.ecp.service.back.IRoleService;
+import com.ecp.service.back.IUserService;
 import com.ecp.service.front.IAccountCompanyService;
 import com.ecp.service.front.IAccountPersonalService;
+import com.ecp.service.front.IAgentBindService;
 import com.ecp.service.front.IOrderItemService;
 import com.ecp.service.front.IOrderService;
 import com.ecp.service.front.IUserAgentService;
@@ -43,6 +49,9 @@ public class FourFeeController {
 	
 	private static final String RESPONSE_THYMELEAF_BACK = "back/thymeleaf/fourfee/";
 	private static final int PAGE_SIZE = 8;
+	
+	private static final String OUTSIDE_ROLE="Outside Sales";
+	private static final String INSIDE_ROLE="Inside Sales";
 
 	
 
@@ -56,6 +65,12 @@ public class FourFeeController {
 	IAccountCompanyService accountCompanyService; //公司帐户
 	@Autowired
 	IAccountPersonalService accountPersonalService;  //个人帐户
+	@Autowired
+	IAgentBindService agentBindService;  //客户绑定服务
+	@Autowired
+	IUserService userService;  //用户服务
+	@Autowired
+	IRoleService roleService;  //角色服务
 	
 
 	/**
@@ -69,18 +84,24 @@ public class FourFeeController {
 	}
 	
 	/**
-	 * @Description 订单查询
-	 * @param orderTimeCond  订单时间条件
-	 * @param dealStateCond  订单处理状态条件
-	 * @param pageNum		  页号
-	 * @param pageSize		 页大小
+	 * @Description 订单查询列表
+	 * @param orderTimeCond   订单时间条件
+	 * @param dealStateCond   订单处理状态条件
+	 * @param pageNum		    页号
+	 * @param pageSize		    页大小
 	 * @param searchTypeValue 搜索类型
-	 * @param condValue		  搜索条件值
+	 * @param condValue		    搜索条件值
 	 * @param model
 	 * @return
 	 */
 	@RequestMapping(value = "/ordertable")
-	public String order_table(int orderTimeCond,int dealStateCond,Integer pageNum, Integer pageSize,Integer searchTypeValue,String condValue,Model model) {
+	public String order_table(int orderTimeCond,
+							  int dealStateCond,
+							  Integer pageNum, 
+							  Integer pageSize,
+							  Integer searchTypeValue,
+							  String condValue,
+							  Model model) {
 		if(pageNum==null || pageNum==0)
 		{
 			pageNum=1;
@@ -117,61 +138,7 @@ public class FourFeeController {
 		return RESPONSE_THYMELEAF_BACK + "order_table";
 	}
 	
-	/**
-	 * @Description 订单详情（后台）
-	 * @param id  订单主键（pk）
-	 * @param model
-	 * @param request
-	 * @return
-	 */
-	@RequestMapping(value = "/detail")
-	public String order_detail(Long id,Model model,HttpServletRequest request){
-		
-		model.addAttribute("orderId", id);  //向订单详细table传递参数
-		
-		return RESPONSE_THYMELEAF_BACK + "order_detail";
-	}
 	
-	/**
-	 * @Description 合同详情（后台）
-	 * @param id 合同id（pk）
-	 * @param model
-	 * @param request
-	 * @return
-	 */
-	@RequestMapping(value = "/contractdetail")
-	public String order_contract_detail(Long id,Model model,HttpServletRequest request){
-		
-		model.addAttribute("contractId", id);
-		
-		return RESPONSE_THYMELEAF_BACK + "contract_detail";
-	}
-	
-	/**
-	 * @Description 订单详情模块页
-	 * @param id
-	 * @param model
-	 * @param request
-	 * @return
-	 */
-	@RequestMapping(value = "/detailtable")
-	public String order_detail_table(Long id,Model model,HttpServletRequest request){
-		//return "forward:"+RESPONSE_FRONT + "order/"+"detailtable";
-		//(1)读取订单
-		Orders order=orderService.selectByPrimaryKey(id);		
-		//(2)读取订单商品列表
-		List<Map<String, String>> orderItems = orderItemService.selectItemsByOrderId(order.getOrderId());
-		//(3)收货人信息(此信息已经保存至订单中)		
-		//(4)代理商信息
-		//UserExtends agent=userAgentService.selectByPrimaryKey(order.getBuyerId());
-		UserExtends agent=userAgentService.getUserAgentByUserId(order.getBuyerId());
-		
-		model.addAttribute("order", order);
-		model.addAttribute("orderItems", orderItems);
-		model.addAttribute("agent", agent);
-		
-		return RESPONSE_THYMELEAF_BACK + "order_detail_table";
-	}
 	
 	/** 
 	* @Title: showFourFeeEditUI 
@@ -186,37 +153,66 @@ public class FourFeeController {
 	@RequestMapping(value="/edit")
 	public String showFourFeeEditUI(long orderId,String orderNo,Model model){
 		
-		//费用类型
-		List<Integer> itemTypeList=new ArrayList<Integer>();
-		itemTypeList.add(AccountItemType.COMMUNICATION_FEE);
-		itemTypeList.add(AccountItemType.ENTERTAINMENT_FEE);
-		itemTypeList.add(AccountItemType.TRANSPORTATION_FEE);
-		itemTypeList.add(AccountItemType.TRAVEL_EXPENSE_FEE);
+		List<Map<String,Object>> accountCompanyList=searchOrderFourFee(orderId,orderNo);
 		
-		//查询公司帐薄
-		List<AccountCompany> accountCompanyList=accountCompanyService.getItemsByOrder(orderId, orderNo, itemTypeList);
+		//查询与此订单相关的企业,而后查询与此企业相关的OS/IS人员列表.		
+		//(4)根据企业与OS/IS的绑定关系查询所绑定的客服
+		long agentId=searchAgentByOrder(orderId);
+		List<Map<String,Object>> osList=agentBindService.getSalesByAgentId(agentId, OUTSIDE_ROLE);
+		List<Map<String,Object>> isList=agentBindService.getSalesByAgentId(agentId, INSIDE_ROLE);		
+		
 		
 		//回传参数
-		model.addAttribute("accountCompanyList",accountCompanyList);		
+		model.addAttribute("accountCompanyList",accountCompanyList);
+		model.addAttribute("osList",osList);
+		model.addAttribute("isList",isList);
+		
 		model.addAttribute("orderId", orderId);
 		model.addAttribute("orderNo",orderNo);
 		
 		return RESPONSE_THYMELEAF_BACK + "fourfee_edit";
 	}
 	
+	/** 
+	* @Title: searchAgentByOrder 
+	* @Description: 根据订单查询下单代理商 
+	* @param @param orderId
+	* @param @return    设定文件 
+	* @return long    返回类型 
+	* @throws 
+	*/
+	private long searchAgentByOrder(long orderId){
+		//(1)先查询订单
+		Orders order=orderService.selectByPrimaryKey(orderId);		
+		//(2)根据订单中buyerId查询此户并获取主帐号信息
+		User user=userService.selectByPrimaryKey(order.getBuyerId());
+		long primaryAccountNo=user.getId();
+		if(user.getParentId()!=null && user.getParentId()!=0)  //下单者是子帐号
+		{
+			primaryAccountNo=user.getParentId();
+		}
+		//(3)根据主帐号可以查询所在的企业
+		UserExtends agent=userAgentService.getUserAgentByUserId(primaryAccountNo);
+		long agentId=agent.getExtendId();
+		
+		return agentId;
+	}
 	
+	
+	/** 
+	* @Title: showFourFeeTable 
+	* @Description: 显示四项费用列表 
+	* @param @param orderId
+	* @param @param orderNo
+	* @param @param model
+	* @param @return    设定文件 
+	* @return String    返回类型 
+	* @throws 
+	*/
 	@RequestMapping(value="/table")
 	public String showFourFeeTable(long orderId,String orderNo,Model model){
 		
-		//费用类型
-		List<Integer> itemTypeList=new ArrayList<Integer>();
-		itemTypeList.add(AccountItemType.COMMUNICATION_FEE);
-		itemTypeList.add(AccountItemType.ENTERTAINMENT_FEE);
-		itemTypeList.add(AccountItemType.TRANSPORTATION_FEE);
-		itemTypeList.add(AccountItemType.TRAVEL_EXPENSE_FEE);
-		
-		//查询公司帐薄
-		List<AccountCompany> accountCompanyList=accountCompanyService.getItemsByOrder(orderId, orderNo, itemTypeList);
+		List<Map<String,Object>> accountCompanyList=searchOrderFourFee(orderId,orderNo);
 		
 		//回传参数
 		model.addAttribute("accountCompanyList",accountCompanyList);	
@@ -226,15 +222,90 @@ public class FourFeeController {
 	}
 	
 	
+	/** 
+	* @Title: searchOrderFourFee 
+	* @Description: 查询订单的四项费用 
+	* @param @param orderId
+	* @param @param orderNo
+	* @param @return    设定文件 
+	* @return List<Map<String,Object>>    返回类型 
+	* @throws 
+	*/
+	private List<Map<String,Object>> searchOrderFourFee(long orderId,String orderNo){
+		//费用类型
+		List<Integer> itemTypeList=new ArrayList<Integer>();
+		itemTypeList.add(AccountItemType.COMMUNICATION_FEE);
+		itemTypeList.add(AccountItemType.ENTERTAINMENT_FEE);
+		itemTypeList.add(AccountItemType.TRANSPORTATION_FEE);
+		itemTypeList.add(AccountItemType.TRAVEL_EXPENSE_FEE);
+		
+		//查询公司帐薄
+		List<AccountCompany> accountList=accountCompanyService.getItemsByOrder(orderId, orderNo, itemTypeList);
+		
+		//根据帐薄条目查询费用归属
+		List<Map<String,Object>> accountCompanyList=new ArrayList<Map<String,Object>>();
+		for(int i=0;i<accountList.size();i++){
+			Map<String,Object> accountItem=new HashMap<String,Object>();
+			
+			
+			Long bindUserId=accountList.get(i).getBindUserId();
+			Long roleId=accountList.get(i).getRoleId();
+			
+			String bindUserName="";
+			String bindUserRole="";
+			
+			if(bindUserId==null || bindUserId==0){		
+				bindUserName="公司内部";
+				bindUserRole="";
+			}
+			else{
+				bindUserName=userService.selectByPrimaryKey(bindUserId).getUsername();
+				bindUserRole=roleService.selectByPrimaryKey(roleId).getRoleName();
+				
+			}
+			
+			accountItem.put("bindUserName", bindUserName);
+			accountItem.put("bindUserRole", bindUserRole);
+			accountItem.put("accountItem", accountList.get(i));
+						
+			accountCompanyList.add(accountItem);
+			
+		}
+		
+		return accountCompanyList;
+	}
 	
 	
-	
-	
+	/** 
+	* @Title: addFeeItem 
+	* @Description: 增加费用条目记录 
+	* @param @param parms
+	* @param @param model
+	* @param @return    设定文件 
+	* @return Object    返回类型 
+	* @throws 
+	*/
 	@RequestMapping(value="/add")
 	@ResponseBody
-	public Object addFeeItem(long orderId,String orderNo,int itemType,BigDecimal amount, Model model){
+	public Object addFeeItem(@RequestBody String parms, Model model){		
+		//参数:long orderId,String orderNo,int itemType,BigDecimal amount,String comment,long bindUserId,long roleId
 		
-		int row =accountCompanyService.addAccountItem(orderId, orderNo, itemType, amount);
+		AccountCompany accountCompanyItem =new AccountCompany();
+		JSONObject parm=JSON.parseObject(parms);
+		accountCompanyItem.setOrderId(parm.getLongValue("orderId"));
+		accountCompanyItem.setOrderNo(parm.getString("orderNo"));
+		accountCompanyItem.setType(parm.getIntValue("itemType"));
+		accountCompanyItem.setAmount(parm.getBigDecimal("amount"));
+		accountCompanyItem.setComment(parm.getString("comment"));
+		accountCompanyItem.setBindUserId(parm.getLongValue("bindUserId"));
+		accountCompanyItem.setRoleId(parm.getLongValue("roleId"));
+		
+		accountCompanyItem.setCreateTime(new Date());
+		
+		//记入公司帐薄
+		int row =accountCompanyService.addAccountItem(accountCompanyItem);
+		
+		//TODO 记入个人帐薄
 		
 		if (row>0){
 			return RequestResultUtil.getResultAddSuccess();
