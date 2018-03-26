@@ -221,6 +221,9 @@ public class ItemServiceImpl extends AbstractBaseService<Item, Long> implements 
 						skuPrice.setCostPrice(item.getMarketPrice2());
 						skuPrice.setMarketPrice(item.getGuidePrice());
 						skuPrice.setSellPrice(item.getMarketPrice());
+						skuPrice.setHighestPrice(item.getHighestPrice());
+						skuPrice.setLowestPrice(item.getLowestPrice());
+						skuPrice.setHardCostPrice(item.getHardCostPrice());
 						skuPriceList.add(skuPrice);
 						skuPriceJson = JSON.toJSONString(skuPriceList);
 					}
@@ -355,6 +358,9 @@ public class ItemServiceImpl extends AbstractBaseService<Item, Long> implements 
 							skuPrice.setCostPrice(item.getMarketPrice2());
 							skuPrice.setMarketPrice(item.getGuidePrice());
 							skuPrice.setSellPrice(item.getMarketPrice());
+							skuPrice.setHighestPrice(item.getHighestPrice());
+							skuPrice.setLowestPrice(item.getLowestPrice());
+							skuPrice.setHardCostPrice(item.getHardCostPrice());
 							skuPriceList.add(skuPrice);
 							skuPriceJson = JSON.toJSONString(skuPriceList);
 						}
@@ -433,6 +439,9 @@ public class ItemServiceImpl extends AbstractBaseService<Item, Long> implements 
 					skuPrice.setCostPrice(item.getMarketPrice2());
 					skuPrice.setMarketPrice(item.getGuidePrice());
 					skuPrice.setSellPrice(item.getMarketPrice());
+					skuPrice.setHighestPrice(item.getHighestPrice());
+					skuPrice.setLowestPrice(item.getLowestPrice());
+					skuPrice.setHardCostPrice(item.getHardCostPrice());
 					rows = skuPriceService.updateByExampleSelective(skuPrice, example);
 					if(rows<=0){
 						log.error("更新sku价格等异常");
