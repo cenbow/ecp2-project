@@ -67,16 +67,16 @@
 															<label class="col-sm-2 control-label">周期名称</label>
 															<div class="col-sm-10">
 																<input type="text" id="check-cycle-name" name="cycleName"
-																	class="datetimepicker datetime form-control"
-																			readonly="readonly" placeholder="周期名称"
-																			onClick="WdatePicker({dateFmt:'yyyy'})" />
+																			class="form-control" placeholder="周期名称" />
 															</div>
 														</div>
 														<div class="form-group">
 															<label class="col-md-2 control-label">年度名称</label>
 															<div class="col-md-10">
 																<input type="text" id="check-cycle-year-name" name="yearName"
-																	class="form-control" placeholder="年度名称" />
+																			class="datetimepicker datetime form-control"
+																			readonly="readonly" placeholder="年度名称"
+																			onClick="WdatePicker({dateFmt:'yyyy'})" />
 															</div>
 														</div>
 														<div class="form-group">
