@@ -4,6 +4,8 @@ import java.io.Serializable;
 import java.math.BigDecimal;
 import java.util.Date;
 
+import javax.persistence.Column;
+
 /**
  * @ClassName ContractOrderItemBean
  * @Description 用于生成合同（合同中商品列表）
@@ -49,6 +51,26 @@ public class ContractOrderItemBean implements Serializable  {
 	private String picture_url;
 	private Long picture_id;
 	private Integer picture_status;
+	
+	/**
+     * 最高限价
+     */
+    private BigDecimal highest_price;
+
+    /**
+     * 最低限价
+     */
+    private BigDecimal lowest_price;
+
+    /**
+     * 硬成本
+     */
+    private BigDecimal hard_cost_price;
+
+    /**
+     * 是否有是方案性产品(1:是;2:否)
+     */
+    private Byte is_plan_product;
 	
 	public Long getItemId() {
 		return item_id;
@@ -135,6 +157,30 @@ public class ContractOrderItemBean implements Serializable  {
 	public void setCreateTime(Date create_time) {
 		this.create_time = create_time;
 	}
+	public BigDecimal getHighest_price() {
+		return highest_price;
+	}
+	public void setHighest_price(BigDecimal highest_price) {
+		this.highest_price = highest_price;
+	}
+	public BigDecimal getLowest_price() {
+		return lowest_price;
+	}
+	public void setLowest_price(BigDecimal lowest_price) {
+		this.lowest_price = lowest_price;
+	}
+	public BigDecimal getHard_cost_price() {
+		return hard_cost_price;
+	}
+	public void setHard_cost_price(BigDecimal hard_cost_price) {
+		this.hard_cost_price = hard_cost_price;
+	}
+	public Byte getIs_plan_product() {
+		return is_plan_product;
+	}
+	public void setIs_plan_product(Byte is_plan_product) {
+		this.is_plan_product = is_plan_product;
+	}
 	
 	@Override
 	public String toString() {
@@ -142,7 +188,9 @@ public class ContractOrderItemBean implements Serializable  {
 				+ ", primitive_price=" + primitive_price + ", sku_name=" + sku_name + ", order_id=" + order_id
 				+ ", cid=" + cid + ", discount_price=" + discount_price + ", pay_price=" + pay_price
 				+ ", pay_price_total=" + pay_price_total + ", create_time=" + create_time + ", picture_url="
-				+ picture_url + ", picture_id=" + picture_id + ", picture_status=" + picture_status + "]";
+				+ picture_url + ", picture_id=" + picture_id + ", picture_status=" + picture_status + ", highest_price="
+				+ highest_price + ", lowest_price=" + lowest_price + ", hard_cost_price=" + hard_cost_price
+				+ ", is_plan_product=" + is_plan_product + "]";
 	}
 	
 }

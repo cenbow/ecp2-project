@@ -19,6 +19,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.alibaba.fastjson.JSONArray;
+import com.ecp.back.commons.Arith;
+import com.ecp.bean.AccountItemType;
 import com.ecp.bean.ContractAttrValueBean;
 import com.ecp.bean.ContractOrderItemBean;
 import com.ecp.bean.ContractOrderItemDisplayBean;
@@ -26,18 +28,24 @@ import com.ecp.bean.ContractStateType;
 import com.ecp.bean.UserBean;
 import com.ecp.common.util.NumberToCN;
 import com.ecp.common.util.RequestResultUtil;
+import com.ecp.entity.AccountCompany;
+import com.ecp.entity.AccountPersonal;
 import com.ecp.entity.Brand;
 import com.ecp.entity.CompanyInfo;
 import com.ecp.entity.Contract;
 import com.ecp.entity.ContractAttrValue;
 import com.ecp.entity.ContractAttribute;
 import com.ecp.entity.ContractItems;
+import com.ecp.entity.CustLockRel;
 import com.ecp.entity.Item;
 import com.ecp.entity.Orders;
 import com.ecp.entity.Sku;
 import com.ecp.entity.UserExtends;
 import com.ecp.service.back.IAttributeValueService;
 import com.ecp.service.back.ICompanyInfoService;
+import com.ecp.service.front.IAccountCompanyService;
+import com.ecp.service.front.IAccountPersonalService;
+import com.ecp.service.front.IAgentBindService;
 import com.ecp.service.front.IAttributeService;
 import com.ecp.service.front.IBrandService;
 import com.ecp.service.front.IContractAttrValueService;
@@ -100,7 +108,12 @@ public class ContractController {
 	IAttributeService attributeService;
 	@Autowired
 	IAttributeValueService attributeValueService;	
-	
+	@Autowired
+	IAccountCompanyService accountCompanyService;
+	@Autowired
+	IAccountPersonalService accountPersonalService;
+	@Autowired
+	IAgentBindService agentBindService;
 	
 	/**
 	 * @Description 合同详情
@@ -506,6 +519,12 @@ public class ContractController {
 		
 		setContractStatus(orderId,contractId,status,user.getId(),BACK_CONTRACT_CONFIRM);
 		
+		//如果设置合同状态为执行完毕，则记录账本（公司账本和个人账本）
+		if(Integer.valueOf(status)==ContractStateType.FINISHED){
+			this.addAccountCompany(orderId, contractId);//记录公司账本
+			this.addAccountPersonal(orderId, contractId);//记录个人账本
+		}
+		
 		return RequestResultUtil.getResultUpdateSuccess();
 	}
 	
@@ -708,7 +727,11 @@ public class ContractController {
 							"cid":13,
 							"discount_price":0,
 							"pay_price":222,
-							"pay_price_total":444}, 
+							"pay_price_total":444
+							highest_price
+							lowest_price
+							hard_cost_price
+							is_plan_product
 			 */
 			
 			
@@ -720,6 +743,11 @@ public class ContractController {
 			record.setSkuName(orderItem.getSkuName());
 			record.setOrderId(orderItem.getOrderId());
 			record.setContractNo(contractNo);
+			
+			record.setHighestPrice(orderItem.getHighest_price());//最高限价
+			record.setLowestPrice(orderItem.getLowest_price());//最低限价
+			record.setHardCostPrice(orderItem.getHard_cost_price());//硬成本价格
+			record.setIsPlanProduct(orderItem.getIs_plan_product());//是否是方案性产品（1：是；2：否；）
 			
 			record.setPrimitivePrice(orderItem.getPrimitivePrice());  //原始价
 			record.setDiscountPrice(orderItem.getDiscountPrice());  //价格折减
@@ -895,5 +923,162 @@ public class ContractController {
 		List<ContractOrderItemBean> list =JSONArray.parseArray(resp,ContractOrderItemBean.class);    
         return list;
 	} 
+	
+	/**
+	 * 增加公司账本记录
+	 * 
+	 * @param orderId
+	 * @param contractId
+	 */
+	private void addAccountCompany(long orderId,long contractId){
+		
+		Orders order = orderService.selectByPrimaryKey(orderId);
+		Contract contract = contractService.selectByPrimaryKey(contractId);
+		
+		int type = 0;//类型
+		Date createTime = new Date();
+		//在账本中增加业绩
+		type = AccountItemType.PERFORMANCE_FEE;//业绩
+		AccountCompany accountCompany = this.getAccountCompanyEntity(order, contract, this.getAmount(contract.getContractNo(), type), type, createTime);
+		accountCompanyService.insertSelective(accountCompany);
+		//在账本中增加差价
+		type = AccountItemType.PRICE_DIFFERENCE_FEE;//差价
+		accountCompany = this.getAccountCompanyEntity(order, contract, this.getAmount(contract.getContractNo(), type), type, createTime);
+		accountCompanyService.insertSelective(accountCompany);
+		//在账本中增加纯利润
+		type = AccountItemType.NET_PROFIT_FEE;//纯利润
+		accountCompany = this.getAccountCompanyEntity(order, contract, this.getAmount(contract.getContractNo(), type), type, createTime);
+		accountCompanyService.insertSelective(accountCompany);
+	}
+	/**
+	 * 根据type分别计算业绩、差价和纯利润
+	 * 
+	 * @param contractNo
+	 * @param type
+	 * @return
+	 */
+	private BigDecimal getAmount(String contractNo, int type){
+		try {
+			ContractItems contractItems = new ContractItems();
+			contractItems.setContractNo(contractNo);
+			List<ContractItems> contractItemsList = contractItemsService.select(contractItems);
+			if(contractItemsList!=null && !contractItemsList.isEmpty()){
+				BigDecimal amount = null;
+				for(ContractItems temp : contractItemsList){
+					switch (type) {
+					case AccountItemType.PERFORMANCE_FEE://业绩
+						amount = temp.getPayPriceTotal();
+						break;
+					case AccountItemType.PRICE_DIFFERENCE_FEE://差价
+						//支付总价-最低限价*商品数量
+						BigDecimal total1 = temp.getLowestPrice().multiply(new BigDecimal(temp.getNum().toString()));
+						amount = temp.getPayPriceTotal().subtract(total1);
+						break;
+					case AccountItemType.NET_PROFIT_FEE://纯利润
+						//支付总价-硬成本价格*商品数量
+						BigDecimal total2 = temp.getHardCostPrice().multiply(new BigDecimal(temp.getNum().toString()));
+						amount = temp.getPayPriceTotal().subtract(total2);
+						break;
+
+					default:
+						System.out.println("type为null	type:"+type);
+						break;
+					}
+				}
+				return amount;
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return new BigDecimal("0.00");
+	}
+	/**
+	 * 创建公司账本实体类
+	 * 
+	 * @param order
+	 * @param contract
+	 * @param amount
+	 * @param type
+	 * @param createTime
+	 * @return
+	 */
+	private AccountCompany getAccountCompanyEntity(Orders order, Contract contract, BigDecimal amount, int type, Date createTime){
+		Subject subject = SecurityUtils.getSubject();
+		UserBean user = (UserBean)subject.getPrincipal();
+		
+		AccountCompany accountCompany = new AccountCompany();
+		accountCompany.setCustId(contract.getAgentId());
+		accountCompany.setOrderId(order.getId());
+		accountCompany.setOrderNo(order.getOrderId());
+		accountCompany.setContractId(contract.getId());
+		accountCompany.setContractNo(contract.getContractNo());
+		accountCompany.setAmount(amount);
+		accountCompany.setType(type);
+		accountCompany.setOperatorId(user.getId());
+		accountCompany.setOperatorName(user.getNickname());
+		accountCompany.setCreateTime(createTime);
+		return accountCompany;
+	}
+	
+	/**
+	 * 增加个人账本记录（IS/OS）
+	 * @param orderId
+	 * @param contractId
+	 */
+	private void addAccountPersonal(long orderId,long contractId){
+		Orders order = orderService.selectByPrimaryKey(orderId);
+		Contract contract = contractService.selectByPrimaryKey(contractId);
+		
+		int type = 0;//类型
+		Date createTime = new Date();
+		//获取绑定关系列表
+		CustLockRel custLockRel = new CustLockRel();
+		custLockRel.setCustId(order.getBuyerId());
+		List<CustLockRel> tempList = agentBindService.select(custLockRel);
+		for(CustLockRel temp : tempList){
+			Long bindUserId = temp.getBindUserId();
+			Long roleId = temp.getRoleId();
+			//在账本中增加业绩
+			type = AccountItemType.PERFORMANCE_FEE;//业绩
+			AccountPersonal accountPersonal = this.getAccountPersonalEntity(order, contract, this.getAmount(contract.getContractNo(), type), type, bindUserId, roleId, createTime);
+			accountPersonalService.insertSelective(accountPersonal);
+			//在账本中增加差价
+			type = AccountItemType.PRICE_DIFFERENCE_FEE;//差价
+			accountPersonal = this.getAccountPersonalEntity(order, contract, this.getAmount(contract.getContractNo(), type), type, bindUserId, roleId, createTime);
+			accountPersonalService.insertSelective(accountPersonal);
+		}
+	}
+	/**
+	 * 创建个人账本实体类
+	 * @param order
+	 * @param contract
+	 * @param amount
+	 * @param type
+	 * @param bindUserId
+	 * @param roleId
+	 * @param createTime
+	 * @return
+	 */
+	private AccountPersonal getAccountPersonalEntity(Orders order, Contract contract, BigDecimal amount, int type, long bindUserId, long roleId, Date createTime){
+		Subject subject = SecurityUtils.getSubject();
+		UserBean user = (UserBean)subject.getPrincipal();
+		
+		AccountPersonal accountPersonal = new AccountPersonal();
+		accountPersonal.setCustId(contract.getAgentId());
+		accountPersonal.setOrderId(order.getId());
+		accountPersonal.setOrderNo(order.getOrderId());
+		accountPersonal.setContractId(contract.getId());
+		accountPersonal.setContractNo(contract.getContractNo());
+		accountPersonal.setItemId(0l);
+		accountPersonal.setSkuId(0l);
+		accountPersonal.setAmount(amount);
+		accountPersonal.setType(type);
+		accountPersonal.setBindUserId(bindUserId);
+		accountPersonal.setRoleId(roleId);
+		accountPersonal.setOperatorId(user.getId());
+		accountPersonal.setOperatorName(user.getNickname());
+		accountPersonal.setCreateTime(createTime);
+		return accountPersonal;
+	}
 	
 }
