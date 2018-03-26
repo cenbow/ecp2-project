@@ -7,6 +7,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
 
 import org.apache.log4j.Logger;
@@ -39,9 +40,12 @@ import com.ecp.entity.CustLockRel;
 import com.ecp.entity.Item;
 import com.ecp.entity.Orders;
 import com.ecp.entity.Sku;
+import com.ecp.entity.User;
 import com.ecp.entity.UserExtends;
 import com.ecp.service.back.IAttributeValueService;
 import com.ecp.service.back.ICompanyInfoService;
+import com.ecp.service.back.IUserExtendsService;
+import com.ecp.service.back.IUserService;
 import com.ecp.service.front.IAccountCompanyService;
 import com.ecp.service.front.IAccountPersonalService;
 import com.ecp.service.front.IAgentBindService;
@@ -113,6 +117,10 @@ public class ContractController {
 	IAccountPersonalService accountPersonalService;
 	@Autowired
 	IAgentBindService agentBindService;
+	@Resource(name="userServiceBean")
+	private IUserService userService;
+	@Resource(name="userExtendsServiceBean")
+	private IUserExtendsService userExtendsService;
 	
 	/**
 	 * @Description 合同详情
@@ -1030,9 +1038,12 @@ public class ContractController {
 		
 		int type = 0;//类型
 		Date createTime = new Date();
-		//获取绑定关系列表
+		
+		long custId = this.getCustId(order.getBuyerId());
+		
+		//查询绑定关系列表
 		CustLockRel custLockRel = new CustLockRel();
-		custLockRel.setCustId(order.getBuyerId());
+		custLockRel.setCustId(custId);
 		List<CustLockRel> tempList = agentBindService.select(custLockRel);
 		for(CustLockRel temp : tempList){
 			Long bindUserId = temp.getBindUserId();
@@ -1046,6 +1057,38 @@ public class ContractController {
 			accountPersonal = this.getAccountPersonalEntity(order, contract, this.getAmount(contract.getContractNo(), type), type, bindUserId, roleId, createTime);
 			accountPersonalService.insertSelective(accountPersonal);
 		}
+	}
+	/**
+	 * 查询代理商信息ID
+	 * @param buyerId
+	 * @return
+	 */
+	private Long getCustId(Long buyerId){
+		long custId = 0l;
+		User user = userService.selectByPrimaryKey(buyerId);
+		if(user!=null){
+			if(user.getParentId()==null || user.getParentId()==0){
+				UserExtends userExtends = new UserExtends();
+				userExtends.setUserId(user.getId());
+				List<UserExtends> tempList = userExtendsService.select(userExtends);
+				if(tempList!=null && !tempList.isEmpty()){
+					custId = tempList.get(0).getExtendId();
+				}
+			}else{
+				user = userService.selectByPrimaryKey(user.getParentId());
+				if(user.getParentId()==null || user.getParentId()==0){
+					UserExtends userExtends = new UserExtends();
+					userExtends.setUserId(user.getId());
+					List<UserExtends> tempList = userExtendsService.select(userExtends);
+					if(tempList!=null && !tempList.isEmpty()){
+						custId = tempList.get(0).getExtendId();
+					}
+				}
+			}
+		}else{
+			System.out.println("订单中的购买者信息为null");
+		}
+		return custId;
 	}
 	/**
 	 * 创建个人账本实体类
