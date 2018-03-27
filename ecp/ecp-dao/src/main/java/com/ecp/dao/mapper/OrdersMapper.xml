@@ -171,7 +171,7 @@
   	 select o.*,a.company_name,a.artificial_person_name,a.contact_phone from trade_orders o LEFT JOIN  user_extends a on(o.extend_id=a.extend_id) <where>
   	 	o.deleted=1 AND o.yn=1 and o.extend_id!=null
   	 	AND
-  	 	o.create_time&gt;=DATE_ADD(o.create_time,INTERVAL #{orderTimeCond} MONTH)
+  	 	o.create_time&gt;=DATE_ADD(now(),INTERVAL #{orderTimeCond} MONTH)
   	 	<if test="dealStateCond!=null and dealStateCond!='' and dealStateCond!='0'.toString()">
   			AND 
   			o.contract_state=#{dealStateCond}	
