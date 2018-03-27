@@ -26,10 +26,10 @@ import com.ecp.common.util.OrderIdGenerator;
 import com.ecp.common.util.RequestResultUtil;
 import com.ecp.entity.Item;
 import com.ecp.entity.Orders;
-import com.ecp.entity.SkuPrice;
 import com.ecp.entity.User;
 import com.ecp.entity.UserAddressInfo;
 import com.ecp.entity.UserExtends;
+import com.ecp.service.back.IUserService;
 import com.ecp.service.front.ICartService;
 import com.ecp.service.front.IItemService;
 import com.ecp.service.front.IOrderItemService;
@@ -69,6 +69,8 @@ public class OrderController {
 	ISkuService skuService;
 	@Autowired
 	IItemService itemService;
+	@Autowired
+	IUserService userService;
 	
 
 	@RequestMapping(value = "/add", method = RequestMethod.POST)
@@ -268,9 +270,10 @@ public class OrderController {
 		//(2)读取订单商品列表
 		List<Map<String, String>> orderItems = orderItemService.selectItemsByOrderId(order.getOrderId());
 		//(3)收货人信息(此信息已经保存至订单中)		
-		//(4)代理商信息
-		//UserExtends agent=userAgentService.selectByPrimaryKey(order.getBuyerId());
-		UserExtends agent=userAgentService.getUserAgentByUserId(order.getBuyerId());
+		//(4)代理商信息				
+		//TODO 对于个人用户来说,返回的UserExtends为空
+		UserExtends agent = userAgentService.getUserAgentByUserId(order.getBuyerId());
+		
 		
 		model.addAttribute("order", order);
 		model.addAttribute("orderItems", orderItems);
@@ -279,8 +282,6 @@ public class OrderController {
 		return RESPONSE_THYMELEAF + "order_detail_table";
 	}
 	
-	
-
 	/**
 	 * @Description 计算应付总金额（优惠前）
 	 * @param cartItemList
@@ -312,7 +313,14 @@ public class OrderController {
 		order.setOrderId(orderId); //订单号
 		order.setCreateTime(new Date()); //订单创建时间
 		order.setOrderTime(new Date()); //下单时间
+		
 		order.setBuyerId(addr.getBuyerId()); //买家id
+		//买家所对应的代理商
+		UserExtends agent=userAgentService.getUserAgentByUserId(order.getBuyerId());  //此值有可能为空(对于个人用户)
+		if(agent!=null){
+			order.setExtendId(agent.getExtendId());
+		}
+		
 		order.setName(addr.getContactPerson()); //收货人姓名
 		order.setPhone(addr.getContactTel()); //收货人固定电话
 		order.setMobile(addr.getContactPhone()); //收货人手机号码

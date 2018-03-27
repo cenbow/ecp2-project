@@ -156,8 +156,8 @@ public class FourFeeController {
 		List<Map<String,Object>> accountCompanyList=searchOrderFourFee(orderId,orderNo);
 		
 		//查询与此订单相关的企业,而后查询与此企业相关的OS/IS人员列表.		
-		//(4)根据企业与OS/IS的绑定关系查询所绑定的客服
-		long agentId=searchAgentByOrder(orderId);
+		//(4)根据企业与OS/IS的绑定关系查询所绑定的客服		
+		long agentId=searchAgentByOrder(orderId);		
 		List<Map<String,Object>> osList=agentBindService.getSalesByAgentId(agentId, OUTSIDE_ROLE);
 		List<Map<String,Object>> isList=agentBindService.getSalesByAgentId(agentId, INSIDE_ROLE);		
 		
@@ -178,22 +178,18 @@ public class FourFeeController {
 	* @Description: 根据订单查询下单代理商 
 	* @param @param orderId
 	* @param @return    设定文件 
-	* @return long    返回类型 
+	* @return long      如果查询到代理商则返回代理商ID,否则返回0 
 	* @throws 
 	*/
 	private long searchAgentByOrder(long orderId){
 		//(1)先查询订单
-		Orders order=orderService.selectByPrimaryKey(orderId);		
-		//(2)根据订单中buyerId查询此户并获取主帐号信息
-		User user=userService.selectByPrimaryKey(order.getBuyerId());
-		long primaryAccountNo=user.getId();
-		if(user.getParentId()!=null && user.getParentId()!=0)  //下单者是子帐号
-		{
-			primaryAccountNo=user.getParentId();
-		}
+		Orders order=orderService.selectByPrimaryKey(orderId);
+		
 		//(3)根据主帐号可以查询所在的企业
-		UserExtends agent=userAgentService.getUserAgentByUserId(primaryAccountNo);
-		long agentId=agent.getExtendId();
+		UserExtends agent=userAgentService.getUserAgentByUserId(order.getBuyerId());
+		long agentId=0;
+		if(agent!=null)
+			agentId=agent.getExtendId();
 		
 		return agentId;
 	}

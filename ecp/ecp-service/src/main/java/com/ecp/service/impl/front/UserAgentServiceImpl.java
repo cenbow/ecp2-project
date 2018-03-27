@@ -4,10 +4,13 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.ecp.dao.UserExtendsMapper;
+import com.ecp.entity.User;
 import com.ecp.entity.UserExtends;
+import com.ecp.service.back.IUserService;
 import com.ecp.service.front.IUserAgentService;
 import com.ecp.service.impl.AbstractBaseService;
 
@@ -19,6 +22,9 @@ import tk.mybatis.mapper.util.StringUtil;
 public class UserAgentServiceImpl extends AbstractBaseService<UserExtends, Long> implements IUserAgentService {
 	
 	UserExtendsMapper userExtendsMapper;
+	
+	@Autowired
+	IUserService userService;   //用户服务
 
 	/**
 	 * @param userMapper the mapper to set
@@ -44,8 +50,15 @@ public class UserAgentServiceImpl extends AbstractBaseService<UserExtends, Long>
 
 	@Override
 	public UserExtends getUserAgentByUserId(long userId) {
+		User user=userService.selectByPrimaryKey(userId);
+		long primaryAccountNo=user.getId();
+		if(user.getParentId()!=null && user.getParentId()!=0)  //下单者是子帐号
+		{
+			primaryAccountNo=user.getParentId();
+		}
+		
 		UserExtends record=new UserExtends();
-		record.setUserId(userId);
+		record.setUserId(primaryAccountNo);
 		return userExtendsMapper.selectOne(record);
 		
 	}

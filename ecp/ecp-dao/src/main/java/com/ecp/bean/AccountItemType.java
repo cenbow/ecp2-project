@@ -18,7 +18,7 @@ public class AccountItemType {
 	public static final int MARKET_FEE=5;			//市场费
 	public static final int PAYMENT=6;				//回款
 	public static final int PERFORMANCE_FEE=7;			//业绩
-	public static final int PRICE_DIFFERENCE_FEE=8;			//差价
+	public static final int PRICE_DIFFERENCE_FEE=8;		//差价
 	public static final int NET_PROFIT_FEE=9;			//纯利润
 	
 }

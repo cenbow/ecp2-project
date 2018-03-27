@@ -43,13 +43,15 @@ public class Orders {
     private Date deleteTime;
     
     @Column(name = "extend_id")
-    private BigDecimal extendId;
+    private Long extendId;
+    
+    
 
-    public BigDecimal getExtendId() {
+	public Long getExtendId() {
 		return extendId;
 	}
 
-	public void setExtendId(BigDecimal extendId) {
+	public void setExtendId(Long extendId) {
 		this.extendId = extendId;
 	}
 
