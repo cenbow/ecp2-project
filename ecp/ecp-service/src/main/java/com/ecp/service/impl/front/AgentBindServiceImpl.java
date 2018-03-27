@@ -31,34 +31,16 @@ public class AgentBindServiceImpl extends AbstractBaseService<CustLockRel, Long>
 		this.setMapper(mapper);
 	}
 
-
-	/* (非 Javadoc) 
-	* <p>Title: getSalesByAgentId</p> 
-	* <p>Description: </p> 
-	* @param agentId
-	* @param roleName
-	* @return 
-	* @see com.ecp.service.front.IAgentBindService#getSalesByAgentId(long, java.lang.String) 
-	*/
+	
 	@Override
-	public List<Map<String, Object>> getSalesByAgentId(long agentId, String roleName) {
-		return custLockRelMapper.getSalesByAgentId(agentId,roleName);		
+	public List<Map<String, Object>> getSalesByAgentId(long agentId, String roleCode) {
+		return custLockRelMapper.getSalesByAgentId(agentId,roleCode);		
 	}
 
-
-	/* (非 Javadoc) 
-	* <p>Title: getSales</p> 
-	* <p>Description: </p> 
-	* @param roleName
-	* @return 
-	* @see com.ecp.service.front.IAgentBindService#getSales(java.lang.String) 
-	*/
 	@Override
 	public List<Map<String, Object>> getUsersByRoleName(String roleName) {
 		return custLockRelMapper.getUsersByRoleName(roleName);
-		
 	}
-
 
 	@Override
 	public int addBindAgentToUser(long agentId, long userId,long roleId) {
@@ -67,13 +49,11 @@ public class AgentBindServiceImpl extends AbstractBaseService<CustLockRel, Long>
 		rec.setBindUserId(userId);
 		rec.setRoleId(roleId);
 		return custLockRelMapper.insertSelective(rec);		
-		
 	}
 
 
 	@Override
 	public List<Map<String, Object>> getUsersByRoleCode(List<String> roleCodeList) {
-		
 		return custLockRelMapper.getUsersByRoleCode(roleCodeList);
 	}
 

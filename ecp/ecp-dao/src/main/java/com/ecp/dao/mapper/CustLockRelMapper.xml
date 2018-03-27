@@ -65,7 +65,7 @@
   	 	user.type=1 AND  
   	 	user.deleted=1  AND  	 	
   	 	cust_lock_rel.cust_id=#{agentId} AND
-  	 	role.role_name=#{roleName} 
+  	 	role.role_code=#{roleCode} 
   	 </where> 
   
   </select>
