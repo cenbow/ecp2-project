@@ -54,8 +54,8 @@ public class AgentBindServiceImpl extends AbstractBaseService<CustLockRel, Long>
 	* @see com.ecp.service.front.IAgentBindService#getSales(java.lang.String) 
 	*/
 	@Override
-	public List<Map<String, Object>> getSales(String roleName) {
-		return custLockRelMapper.getSales(roleName);
+	public List<Map<String, Object>> getUsersByRoleName(String roleName) {
+		return custLockRelMapper.getUsersByRoleName(roleName);
 		
 	}
 
@@ -68,6 +68,13 @@ public class AgentBindServiceImpl extends AbstractBaseService<CustLockRel, Long>
 		rec.setRoleId(roleId);
 		return custLockRelMapper.insertSelective(rec);		
 		
+	}
+
+
+	@Override
+	public List<Map<String, Object>> getUsersByRoleCode(List<String> roleCodeList) {
+		
+		return custLockRelMapper.getUsersByRoleCode(roleCodeList);
 	}
 
 	
