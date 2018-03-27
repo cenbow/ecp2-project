@@ -57,6 +57,24 @@ public class AgentBindServiceImpl extends AbstractBaseService<CustLockRel, Long>
 		return custLockRelMapper.getUsersByRoleCode(roleCodeList);
 	}
 
+
+	@Override
+	public List<Map<String, Object>> getUsersByUserIdAndRoleCode(long userId, List<String> roleCodeList) {
+		return custLockRelMapper.getUsersByUserIdAndRoleCode(userId,roleCodeList);
+	}
+
+
+	@Override
+	public List<Map<String,Object>> getAgentIdListByBindedUser(long userId, long roleId) {
+		return custLockRelMapper.getAgentIdListByBindedUserRoleId(userId,roleId);
+	}
+
+
+	@Override
+	public List<Map<String,Object>> getAgentIdListByBindedUser(long userId) {
+		return custLockRelMapper.getAgentIdListByBindedUserId(userId);
+	}
+
 	
 
 }

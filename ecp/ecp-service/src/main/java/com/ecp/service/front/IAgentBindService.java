@@ -46,7 +46,41 @@ public interface IAgentBindService extends IBaseService<CustLockRel, Long> {
 		* @return List<Map<String,Object>>    返回类型 
 		* @throws 
 	*/
-	public List<Map<String,Object>> getUsersByRoleCode(List<String> roleCodeList);	
+	public List<Map<String,Object>> getUsersByRoleCode(List<String> roleCodeList);
+	
+	
+	
+	/** 
+		* @Title: getUsersByUserIdAndRoleCode 
+		* @Description: 根据角色编码,及用户ID 选择用户 
+		* @param @param userId
+		* @param @param roleCodeList
+		* @param @return     
+		* @return List<Map<String,Object>>    返回类型 
+		* @throws 
+	*/
+	public List<Map<String,Object>> getUsersByUserIdAndRoleCode(long userId,List<String> roleCodeList);
+	
+	
+	/** 
+		* @Title: getAgentIdListByBindedUser 
+		* @Description: 获取指定用户所绑定的代理商ID列表 
+		* @param @param userId
+		* @param @param roleId
+		* @param @return     
+		* @return List<Map<String,Object>>    返回类型 
+		* @throws 
+	*/
+	public List<Map<String,Object>> getAgentIdListByBindedUser(long userId,long roleId);
+	/** 
+		* @Title: getAgentIdListByBindedUser 
+		* @Description: 获取指定用户所绑定的代理商ID列表 
+		* @param @param userId
+		* @param @return     
+		* @return List<Map<String,Object>>    返回类型 
+		* @throws 
+	*/
+	public List<Map<String,Object>> getAgentIdListByBindedUser(long userId);
 	
 	
 	/** 

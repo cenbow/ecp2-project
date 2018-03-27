@@ -58,4 +58,15 @@ public interface OrdersMapper extends Mapper<Orders> {
 													   @Param("searchTypeValue") int searchTypeValue,
 													   @Param("condValue")	String condValue);
 	
+	
+	
+	public List<Map<String, Object>> selectOrder(@Param("orderTimeCond") int orderTimeCond, 
+			   									 @Param("dealStateCond") int dealStateCond, 
+			   									 @Param("searchTypeValue") int searchTypeValue,
+			   									 @Param("condValue")	String condValue, 
+												 @Param("provinceName") String provinceName, 
+												 @Param("cityName") 	String cityName, 
+												 @Param("countyName")	String countyName,
+												 @Param("agentIdList") List<Map<String, Object>> agentIdList);
+	
 }

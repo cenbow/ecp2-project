@@ -167,5 +167,73 @@
   	 
   </select>
   
+  <select id="selectOrder" resultType="map">
+  	 select o.*,a.company_name,a.artificial_person_name,a.contact_phone from trade_orders o LEFT JOIN  user_extends a on(o.extend_id=a.extend_id) <where>
+  	 	o.deleted=1 AND o.yn=1 and o.extend_id!=null
+  	 	AND
+  	 	o.create_time&gt;=DATE_ADD(o.create_time,INTERVAL #{orderTimeCond} MONTH)
+  	 	<if test="dealStateCond!=null and dealStateCond!='' and dealStateCond!='0'.toString()">
+  			AND 
+  			o.contract_state=#{dealStateCond}	
+  		</if>
+  		<if test="condValue!=null and condValue!=''">
+  			<choose>  			
+	  			<when test="searchTypeValue==1">  					
+	  				AND o.order_id LIKE concat(concat('%',#{condValue}),'%') 
+	  			</when>
+	  			<when test="searchTypeValue==2">
+	  				AND o.contract_no LIKE concat(concat('%',#{condValue}),'%') 
+	  			</when>
+	  			<when test="searchTypeValue==3">
+	  				AND o.name LIKE concat(concat('%',#{condValue}),'%') 
+	  			</when>
+	  			<when test="searchTypeValue==4">
+	  				AND o.mobile LIKE concat(concat('%',#{condValue}),'%') 
+	  			</when>
+	  			<when test="searchTypeValue==5">
+	  				AND a.company_name LIKE concat(concat('%',#{condValue}),'%') 
+	  			</when>
+	  			<when test="searchTypeValue==6">
+	  				AND a.artificial_person_name LIKE concat(concat('%',#{condValue}),'%') 
+	  			</when>
+	  			<when test="searchTypeValue==7">
+	  				AND a.contact_phone LIKE concat(concat('%',#{condValue}),'%') 
+	  			</when>  			
+  			</choose>  						
+  		</if>
+  		
+  		<if test="provinceName!=null and provinceName!=''">
+  			AND a.province=#{provinceName} 
+  		</if>  		
+  		<if test="cityName!=null and cityName!=''">
+  			AND a.city=#{cityName} 
+  		</if>
+  		<if test="countyName!=null and countyName!=''">
+  			AND a.county=#{countyName} 
+  		</if>
+  		
+  		<!-- 数据范围 -->  		
+  		<if test="agentIdList!=null and agentIdList.size>0">
+  			<if test="agentIdList.size>0">
+  				AND a.extend_id in
+  				<foreach collection="agentIdList" index="index" item="item" open="(" separator="," close=")" >
+  					#{item.cust_id}
+  				</foreach>
+  			</if>
+  			
+  			<if test="agentIdList.size==0">
+  				and 1==0
+  			</if>
+  			   			 
+  		</if>  		
+  		
+  	 </where>  	 
+  	 	order by o.create_time DESC
+  	 
+  </select>
+  
+  
+  
+  
   
 </mapper>

@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<div th:include="/back/thymeleaf/common/_head2::headx('订单管理')"
+	th:remove="tag"></div>
+</head>
+<body>
+
+<div class="container-fluid" style="margin-top: 20px;">
+	<div class="row clearfix">
+		<div class="col-md-12 column">
+			<div class="tabbable" id="tabs-14933">
+				<ul class="nav nav-tabs">
+					<li class="active" onclick="javascript:resetTab();">
+						 <a href="#panel-150383" data-toggle="tab">列表</a>
+					</li>
+					<li id="edit-tab" class="hide">
+						 <a href="#panel-602679" data-toggle="tab" id="edit-tab-title">编辑</a>
+					</li>
+				</ul>
+				<div class="tab-content">
+					<div class="tab-pane active" id="panel-150383">
+						<div class="container-fluid" style="margin-top: 20px;">
+							<div class="row clearfix">
+								<div class="col-md-12 column">
+									<div class="panel panel-default">
+										<div class="panel-heading">
+											<h3 class="panel-title">
+												费用查询
+											</h3>
+										</div>
+										<div class="panel-body" id="container">
+											<!-- content -->
+										</div>
+									</div>
+								</div>
+							</div>
+						</div>
+					</div>
+					<div class="tab-pane" id="panel-602679">
+						<div id="edit-body"></div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>
+
+
+	<script>
+		/*function:加载页面 */
+		function loadOrder(parms, callback) {
+			var url = "/back/fee/ordertable";
+			var callbackFunc = callback;
+			var containerId = "#container";
+			loadPage(containerId, url, parms, callbackFunc);
+		}
+
+		/**
+			function:加载页面
+			parameters:
+				orderTimeCond:订单时间条件值
+				dealStateCond:处理状态条件值
+		 */
+		function defaultLoadOrder(orderTimeCond, dealStateCond) {
+			//var url = "/back/order/ordertable";
+
+			var parms = new Object(); //参数
+			parms.orderTimeCond = orderTimeCond; //时间段条件：近三个月订单
+			parms.dealStateCond = dealStateCond; //订单处理状态条件：全部状态
+			//分页
+			parms.pageNum = null;
+			parms.pageSize = null;
+			
+			//查询类型，查询条件值
+			parms.searchTypeValue=0;
+			parms.condValue="";			
+			
+			//区域条件
+			parms.provinceName="";
+			parms.cityName="";
+			parms.countyName="";
+			
+			//角色条件
+			parms.userId=0;
+			parms.roleId=0;
+			
+
+			loadOrder(parms,null);
+		}
+		$(function() {
+			defaultLoadOrder(1, 0);
+		})
+
+		
+		/**
+		 * 重置选项卡
+		 */
+		function resetTab(){
+			$('#tabs-14933 a[href="#panel-150383"]').tab('show');
+			$("#edit-body").empty();
+			$("#edit-tab").addClass("hide");
+		}
+		
+	</script>
+
+
+</body>
+</html>
