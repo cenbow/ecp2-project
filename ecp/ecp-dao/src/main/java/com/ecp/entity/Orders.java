@@ -41,8 +41,19 @@ public class Orders {
 
     @Column(name = "delete_time")
     private Date deleteTime;
+    
+    @Column(name = "extend_id")
+    private BigDecimal extendId;
 
-    /**
+    public BigDecimal getExtendId() {
+		return extendId;
+	}
+
+	public void setExtendId(BigDecimal extendId) {
+		this.extendId = extendId;
+	}
+
+	/**
      * 是否删除（1-未删除，2-删除，默认1）
      */
     private Integer deleted;
