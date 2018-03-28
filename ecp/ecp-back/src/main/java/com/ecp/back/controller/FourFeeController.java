@@ -16,6 +16,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
+import com.ecp.back.commons.RoleCodeConstants;
 import com.ecp.bean.AccountItemType;
 import com.ecp.common.util.RequestResultUtil;
 import com.ecp.entity.AccountCompany;
@@ -49,10 +50,6 @@ public class FourFeeController {
 	
 	private static final String RESPONSE_THYMELEAF_BACK = "back/thymeleaf/fourfee/";
 	private static final int PAGE_SIZE = 8;
-	
-	private static final String OUTSIDE_ROLE="Outside Sales";
-	private static final String INSIDE_ROLE="Inside Sales";
-
 	
 
 	@Autowired
@@ -158,8 +155,8 @@ public class FourFeeController {
 		//查询与此订单相关的企业,而后查询与此企业相关的OS/IS人员列表.		
 		//(4)根据企业与OS/IS的绑定关系查询所绑定的客服		
 		long agentId=searchAgentByOrder(orderId);		
-		List<Map<String,Object>> osList=agentBindService.getSalesByAgentId(agentId, OUTSIDE_ROLE);
-		List<Map<String,Object>> isList=agentBindService.getSalesByAgentId(agentId, INSIDE_ROLE);		
+		List<Map<String,Object>> osList=agentBindService.getSalesByAgentId(agentId, RoleCodeConstants.OS);
+		List<Map<String,Object>> isList=agentBindService.getSalesByAgentId(agentId, RoleCodeConstants.IS);		
 		
 		
 		//回传参数

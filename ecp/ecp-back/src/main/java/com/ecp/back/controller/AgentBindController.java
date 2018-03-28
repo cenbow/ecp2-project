@@ -44,10 +44,6 @@ public class AgentBindController {
 
 	private static final int PAGE_SIZE = 8;
 	
-	//private static final String OUTSIDE_ROLE="Outside Sales";
-	//private static final String INSIDE_ROLE="Inside Sales";
-
-	
 
 	@Autowired
 	IUserAgentService userAgentService;

@@ -50,11 +50,6 @@ public class SearchFeeController {
 	private static final String RESPONSE_THYMELEAF_BACK = "back/thymeleaf/searchfee/";
 	private static final int PAGE_SIZE = 8;
 	
-	private static final String OUTSIDE_ROLE="Outside Sales";
-	private static final String INSIDE_ROLE="Inside Sales";
-
-	
-
 	@Autowired
 	IOrderService orderService;  //订单服务
 	@Autowired
@@ -346,8 +341,8 @@ public class SearchFeeController {
 		//查询与此订单相关的企业,而后查询与此企业相关的OS/IS人员列表.		
 		//(4)根据企业与OS/IS的绑定关系查询所绑定的客户
 		long agentId=searchAgentByOrder(orderId);
-		List<Map<String,Object>> osList=agentBindService.getSalesByAgentId(agentId, OUTSIDE_ROLE);
-		List<Map<String,Object>> isList=agentBindService.getSalesByAgentId(agentId, INSIDE_ROLE);		
+		List<Map<String,Object>> osList=agentBindService.getSalesByAgentId(agentId, RoleCodeConstants.OS);
+		List<Map<String,Object>> isList=agentBindService.getSalesByAgentId(agentId, RoleCodeConstants.IS);		
 		
 		
 		//回传参数
