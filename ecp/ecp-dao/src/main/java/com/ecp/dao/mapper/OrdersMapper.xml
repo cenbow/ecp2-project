@@ -168,8 +168,13 @@
   </select>
   
   <select id="selectOrder" resultType="map">
-  	 select o.*,a.company_name,a.artificial_person_name,a.contact_phone from trade_orders o LEFT JOIN  user_extends a on(o.extend_id=a.extend_id) <where>
-  	 	o.deleted=1 AND o.yn=1 and o.extend_id!=null
+  	 select o.*,
+  	 		a.company_name,
+  	 		a.artificial_person_name,
+  	 		a.contact_phone 
+  	 		from trade_orders o LEFT JOIN  user_extends a on(o.extend_id=a.extend_id) 
+  	 <where>
+  	 	o.deleted=1 AND o.yn=1 and o.extend_id is not NULL
   	 	AND
   	 	o.create_time&gt;=DATE_ADD(now(),INTERVAL #{orderTimeCond} MONTH)
   	 	<if test="dealStateCond!=null and dealStateCond!='' and dealStateCond!='0'.toString()">
@@ -213,7 +218,7 @@
   		</if>
   		
   		<!-- 数据范围 -->  		
-  		<if test="agentIdList!=null and agentIdList.size>0">
+  		<if test="agentIdList!=null and agentIdList.size>=0">
   			<if test="agentIdList.size>0">
   				AND a.extend_id in
   				<foreach collection="agentIdList" index="index" item="item" open="(" separator="," close=")" >
@@ -222,13 +227,13 @@
   			</if>
   			
   			<if test="agentIdList.size==0">
-  				and 1==0
+  				and (0>1)
   			</if>
   			   			 
   		</if>  		
   		
   	 </where>  	 
-  	 	order by o.create_time DESC
+  	 order by o.create_time DESC
   	 
   </select>
   

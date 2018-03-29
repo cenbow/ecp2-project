@@ -1,8 +1,7 @@
 package com.ecp.service.impl.front;
 
-import java.math.BigDecimal;
-import java.util.Date;
 import java.util.List;
+import java.util.Map;
 
 import org.springframework.stereotype.Service;
 
@@ -36,6 +35,42 @@ public class AccountCompanyServiceImpl extends AbstractBaseService<AccountCompan
 	@Override
 	public int addAccountItem(AccountCompany accountItem) {
 		return accountCompanyMapper.insertSelective(accountItem);
+	}
+
+
+	@Override
+	public List<AccountCompany> getItemsByOrderAndBindUser(long orderId, List<Integer> itemTypeList, long userId,
+			List<Long> roleIdList) {
+		
+		return accountCompanyMapper.getItemsByOrderAndBindUser(orderId,itemTypeList,userId,roleIdList);
+	}
+
+
+	@Override
+	public List<AccountCompany> selectItems(
+			int orderTimeCond, 
+			int dealStateCond, 
+			int searchTypeValue,
+			String condValue, 
+			String provinceName, String cityName, String countyName,
+			List<Map<String, Object>> agentIdList, 
+			List<Integer> itemTypeList, 
+			long bindedUserId,
+			List<Long> roleIdList) {
+		
+		return accountCompanyMapper.selectItems(
+				-orderTimeCond, 
+				dealStateCond, 
+				searchTypeValue,
+				condValue,  
+				provinceName,  
+				cityName,  
+				countyName,
+				agentIdList,				
+				itemTypeList, 
+				bindedUserId,
+				roleIdList
+				);
 	}
 
 	

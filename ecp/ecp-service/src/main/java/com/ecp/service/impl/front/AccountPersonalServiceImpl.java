@@ -27,16 +27,15 @@ public class AccountPersonalServiceImpl extends AbstractBaseService<AccountPerso
 
 
 	@Override
-	public List<AccountCompany> getItemsByOrder(long orderId, String orderNo, List<Integer> itemTypeList) {
+	public List<AccountPersonal> getItemsByOrder(long orderId, String orderNo, List<Integer> itemTypeList) {
 		
 		return null;
 	}
 
 
 	@Override
-	public int addAccountItem(long orderId, String orderNo, int itemType, BigDecimal amount) {
-		// TODO Auto-generated method stub
-		return 0;
+	public int addAccountItem(AccountPersonal accountItem) {
+		return accountPersonalMapper.insertSelective(accountItem);
 	}
 	
 	

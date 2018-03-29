@@ -7,6 +7,8 @@ import java.util.List;
 import java.util.Map;
 
 import org.apache.log4j.Logger;
+import org.apache.shiro.SecurityUtils;
+import org.apache.shiro.subject.Subject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -18,10 +20,11 @@ import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
 import com.ecp.back.commons.RoleCodeConstants;
 import com.ecp.bean.AccountItemType;
+import com.ecp.bean.UserBean;
 import com.ecp.common.util.RequestResultUtil;
 import com.ecp.entity.AccountCompany;
+import com.ecp.entity.AccountPersonal;
 import com.ecp.entity.Orders;
-import com.ecp.entity.User;
 import com.ecp.entity.UserExtends;
 import com.ecp.service.back.IRoleService;
 import com.ecp.service.back.IUserService;
@@ -280,34 +283,113 @@ public class FourFeeController {
 	*/
 	@RequestMapping(value="/add")
 	@ResponseBody
-	public Object addFeeItem(@RequestBody String parms, Model model){		
-		//参数:long orderId,String orderNo,int itemType,BigDecimal amount,String comment,long bindUserId,long roleId
+	public Object addFeeItem(@RequestBody String parms, Model model){
 		
-		AccountCompany accountCompanyItem =new AccountCompany();
-		JSONObject parm=JSON.parseObject(parms);
-		accountCompanyItem.setOrderId(parm.getLongValue("orderId"));
-		accountCompanyItem.setOrderNo(parm.getString("orderNo"));
-		accountCompanyItem.setType(parm.getIntValue("itemType"));
-		accountCompanyItem.setAmount(parm.getBigDecimal("amount"));
-		accountCompanyItem.setComment(parm.getString("comment"));
-		accountCompanyItem.setBindUserId(parm.getLongValue("bindUserId"));
-		accountCompanyItem.setRoleId(parm.getLongValue("roleId"));
+		//记入帐薄
+		int row1 =keepAccountCompany(parms);  	//公司帐薄
+		int row2=keepAccountPersonal(parms);	//个人帐薄
 		
-		accountCompanyItem.setCreateTime(new Date());
-		
-		//记入公司帐薄
-		int row =accountCompanyService.addAccountItem(accountCompanyItem);
-		
-		//TODO 记入个人帐薄
-		
-		if (row>0){
+		if (row1>0 && row2>0){
 			return RequestResultUtil.getResultAddSuccess();
 		}
 		else
 			return RequestResultUtil.getResultAddWarn();
 		
-		
 	}
+	
+	/** 
+		* @Title: keepAccountCompany 
+		* @Description: 记入公司帐薄 
+		* @param @param parms
+		* @param @return     
+		* @return int    返回类型 
+		* @throws 
+	*/
+	private int keepAccountCompany(String parms){
+		//参数:long orderId,String orderNo,int itemType,BigDecimal amount,String comment,long bindUserId,long roleId
+		AccountCompany accountItem =new AccountCompany();
+		JSONObject parm=JSON.parseObject(parms);
+		accountItem.setOrderId(parm.getLongValue("orderId"));
+		accountItem.setOrderNo(parm.getString("orderNo"));
+		accountItem.setType(parm.getIntValue("itemType"));
+		accountItem.setAmount(parm.getBigDecimal("amount"));
+		accountItem.setComment(parm.getString("comment"));
+		accountItem.setBindUserId(parm.getLongValue("bindUserId"));
+		accountItem.setRoleId(parm.getLongValue("roleId"));
+		
+		
+		long agentId=searchAgentByOrder(parm.getLongValue("orderId"));
+		accountItem.setCustId(agentId);  //代理商ID
+		
+		//操作员信息
+		UserBean user=getLoginUser();
+		accountItem.setOperatorId(user.getId());
+		accountItem.setOperatorName(user.getNickname());
+		
+		
+		accountItem.setCreateTime(new Date());
+		
+		//记入公司帐薄
+		int row =accountCompanyService.addAccountItem(accountItem);
+		
+		return row;
+	}
+	
+	/** 
+		* @Title: keepAccountPersonal 
+		* @Description: 记入个人帐薄 
+		* @param @param parms
+		* @param @return     
+		* @return int    返回类型 
+		* @throws 
+	*/
+	private int keepAccountPersonal(String parms){
+		//参数:long orderId,String orderNo,int itemType,BigDecimal amount,String comment,long bindUserId,long roleId
+		AccountPersonal accountItem =new AccountPersonal();
+		JSONObject parm=JSON.parseObject(parms);
+		accountItem.setOrderId(parm.getLongValue("orderId"));
+		accountItem.setOrderNo(parm.getString("orderNo"));
+		accountItem.setType(parm.getIntValue("itemType"));
+		accountItem.setAmount(parm.getBigDecimal("amount"));
+		accountItem.setComment(parm.getString("comment"));
+		
+		accountItem.setBindUserId(parm.getLongValue("bindUserId"));
+		accountItem.setRoleId(parm.getLongValue("roleId"));
+		
+		
+		long agentId=searchAgentByOrder(parm.getLongValue("orderId"));
+		accountItem.setCustId(agentId);  //代理商ID
+		
+		//操作员信息
+		UserBean user=getLoginUser();
+		accountItem.setOperatorId(user.getId());
+		accountItem.setOperatorName(user.getNickname());
+		
+		
+		accountItem.setCreateTime(new Date());
+		
+		//记入个人帐薄
+		int row =accountPersonalService.addAccountItem(accountItem);
+		
+		return row;
+	}
+	
+	
+	/** 
+	* @Title: getLoginUserId 
+	* @Description: 获取登录用户的ID 
+	* @param @return     
+	* @return long    返回类型 
+	* @throws 
+	*/
+	private UserBean getLoginUser(){
+		//取得当前用户角色列表
+		Subject subject = SecurityUtils.getSubject();
+		UserBean user = (UserBean)subject.getPrincipal();
+		
+		return user;
+		
+	} 
 	
 	
 	

@@ -7,17 +7,25 @@ import java.util.List;
 import java.util.Map;
 
 import org.apache.log4j.Logger;
+import org.apache.shiro.SecurityUtils;
+import org.apache.shiro.subject.Subject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 
+import com.ecp.back.commons.RoleCodeConstants;
 import com.ecp.bean.AccountItemType;
+import com.ecp.bean.UserBean;
 import com.ecp.common.util.RequestResultUtil;
 import com.ecp.entity.AccountCompany;
+import com.ecp.entity.AccountPersonal;
+import com.ecp.entity.Orders;
+import com.ecp.entity.UserExtends;
 import com.ecp.service.front.IAccountCompanyService;
 import com.ecp.service.front.IAccountPersonalService;
+import com.ecp.service.front.IAgentBindService;
 import com.ecp.service.front.IOrderItemService;
 import com.ecp.service.front.IOrderService;
 import com.ecp.service.front.IUserAgentService;
@@ -53,6 +61,8 @@ public class MarketFeeController {
 	IAccountCompanyService accountCompanyService; //公司帐户
 	@Autowired
 	IAccountPersonalService accountPersonalService;  //个人帐户
+	@Autowired
+	IAgentBindService agentBindService;  //代理商绑定服务
 	
 
 	/**
@@ -167,28 +177,147 @@ public class MarketFeeController {
 	@ResponseBody
 	public Object addFeeItem(long orderId,String orderNo,int itemType,BigDecimal amount,String comment, Model model){
 		
-		AccountCompany accountCompanyItem=new AccountCompany();
-		accountCompanyItem.setOrderId(orderId);
-		accountCompanyItem.setOrderNo(orderNo);
-		accountCompanyItem.setType(itemType);
-		accountCompanyItem.setAmount(amount);
-		accountCompanyItem.setComment(comment);
-		accountCompanyItem.setCreateTime(new Date());
-		//记入公司帐薄
-		int row =accountCompanyService.addAccountItem(accountCompanyItem);
 		
-		//TODO 记入个人帐薄
 		
-		if (row>0){
+		int row1=keepAccountCompany( orderId, orderNo, itemType, amount, comment);  //记公司帐薄
+		int row2=keepAccountPersonal( orderId, orderNo, itemType, amount, comment);	//记个人帐薄
+		
+		if (row1>0 && row2>0){
 			return RequestResultUtil.getResultAddSuccess();
 		}
 		else
 			return RequestResultUtil.getResultAddWarn();
-		
-		
 	}
 	
+	/** 
+		* @Title: keepAccountCompany 
+		* @Description: 记公司帐薄 
+		* @param @param orderId
+		* @param @param orderNo
+		* @param @param itemType
+		* @param @param amount
+		* @param @param comment
+		* @param @return     
+		* @return int    返回类型 
+		* @throws 
+	*/
+	private int keepAccountCompany(long orderId,String orderNo,int itemType,BigDecimal amount,String comment){
+		AccountCompany accountItem=new AccountCompany();
+		accountItem.setOrderId(orderId);
+		accountItem.setOrderNo(orderNo);
+		accountItem.setType(itemType);
+		accountItem.setAmount(amount);
+		accountItem.setComment(comment);
+		accountItem.setCreateTime(new Date());
+		
+		long agentId=searchAgentByOrder(orderId);
+		accountItem.setCustId(agentId);  //代理商ID
+		
+		//操作员信息
+		UserBean user=getLoginUser();
+		accountItem.setOperatorId(user.getId());
+		accountItem.setOperatorName(user.getNickname());
+		
+		//记入公司帐薄
+		int row =accountCompanyService.addAccountItem(accountItem);
+		return row;
+	}
 	
+	/** 
+		* @Title: keepAccountPersonal 
+		* @Description: 记入个人帐户(对绑定的OS/IS进行市场费记帐) 
+		* @param @param orderId
+		* @param @param orderNo
+		* @param @param itemType
+		* @param @param amount
+		* @param @param comment
+		* @param @return     
+		* @return int    返回类型 
+		* @throws 
+	*/
+	private int keepAccountPersonal(long orderId,String orderNo,int itemType,BigDecimal amount,String comment){
+		
+		//操作员信息
+		UserBean user=getLoginUser();
+		
+		//查询代理商
+		long agentId=searchAgentByOrder(orderId);
+		
+		
+		//TODO 如果订单的account_state为特殊状态时的处理.不记入个人帐薄
+		
+		//查询与此代理商相绑定的OS/IS
+		//记入个人帐薄
+		int row=0;
+		List<String> roleCodeList=new ArrayList<String>();
+		roleCodeList.add(RoleCodeConstants.OS);
+		roleCodeList.add(RoleCodeConstants.IS);
+		List<Map<String,Object>>  userRoleList=  agentBindService.getSalesByAgentIdAndRoleCodes(agentId,roleCodeList);
+		for(int i=0;i<userRoleList.size();i++){
+			AccountPersonal accountItem=new AccountPersonal();
+			
+			accountItem.setOrderId(orderId);
+			accountItem.setOrderNo(orderNo);
+			accountItem.setType(itemType);
+			accountItem.setAmount(amount);
+			accountItem.setComment(comment);
+			accountItem.setCreateTime(new Date());
+			
+			//查询代理商
+			accountItem.setCustId(agentId);
+			
+			//写入操作员
+			accountItem.setOperatorId(user.getId());
+			accountItem.setOperatorName(user.getNickname());
+			
+			//写入绑定用户信息
+			long userId=(long)userRoleList.get(i).get("id");
+			long roleId=(long)userRoleList.get(i).get("role_id");
+			accountItem.setBindUserId(userId);
+			accountItem.setRoleId(roleId);
+			
+			//记入个人帐薄
+			row =accountPersonalService.addAccountItem(accountItem);
+		}
+		
+		return row;
+		
+	}
+
+	/** 
+	* @Title: searchAgentByOrder 
+	* @Description: 根据订单查询下单代理商 
+	* @param @param orderId
+	* @param @return    设定文件 
+	* @return long      如果查询到代理商则返回代理商ID,否则返回0 
+	* @throws 
+	*/
+	private long searchAgentByOrder(long orderId){
+		//(1)先查询订单
+		Orders order=orderService.selectByPrimaryKey(orderId);
+		
+		//(2)根据主帐号可以查询所在的企业
+		UserExtends agent=userAgentService.getUserAgentByUserId(order.getBuyerId());
+		long agentId=0;
+		if(agent!=null)
+			agentId=agent.getExtendId();
+		
+		return agentId;
+	}
+	
+	/** 
+	* @Title: getLoginUserId 
+	* @Description: 获取登录用户的ID 
+	* 				可取得当前登录用户的角色列表
+	* @param @return     
+	* @return long    返回类型 
+	* @throws 
+	*/
+	private UserBean getLoginUser(){		
+		Subject subject = SecurityUtils.getSubject(); 
+		UserBean user = (UserBean)subject.getPrincipal();
+		return user;
+	} 
 	
 
 }

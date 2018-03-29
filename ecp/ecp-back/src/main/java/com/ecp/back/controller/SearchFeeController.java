@@ -159,10 +159,7 @@ public class SearchFeeController {
 		model.addAttribute("countyName", countyName);
 		model.addAttribute("userId", userId);
 		model.addAttribute("roleId", roleId);
-		
-		
-		
-		
+				
 		return RESPONSE_THYMELEAF_BACK + "order_table";
 	}
 	
@@ -256,6 +253,13 @@ public class SearchFeeController {
 	}
 	
 	
+	/** 
+		* @Title: needSearchAll 
+		* @Description: 根据登录用户的角色查询:是否查询所有
+		* @param @return     
+		* @return boolean    返回类型 
+		* @throws 
+	*/
 	private boolean needSearchAll(){
 		//取得当前用户角色列表
 		Subject subject = SecurityUtils.getSubject();
@@ -313,18 +317,13 @@ public class SearchFeeController {
 		//取得当前用户角色列表
 		Subject subject = SecurityUtils.getSubject();
 		UserBean user = (UserBean)subject.getPrincipal();
-		
 		return user.getId();
-		
 	}
-	
-	
-	
 	
 	
 	/** 
 		* @Title: showFeeUI 
-		* @Description: 显示费用界面 
+		* @Description: 显示指定定单的费用列表 
 		* @param @param orderId 订单自增ID
 		* @param @param orderNo 订单NO
 		* @param @param model
@@ -333,10 +332,10 @@ public class SearchFeeController {
 		* @throws 
 	*/
 	@RequestMapping(value="/showfee")
-	public String showFeeUI(long orderId,String orderNo,Model model){
+	public String showFeeUI(long orderId,String orderNo,long userId,long roleId,Model model){
 		
 		//自公司帐薄查询费用
-		List<Map<String,Object>> accountCompanyList=searchOrderFourFee(orderId,orderNo);
+		List<Map<String,Object>> accountCompanyList=searchOrderFee(orderId,orderNo,userId,roleId);
 		
 		//查询与此订单相关的企业,而后查询与此企业相关的OS/IS人员列表.		
 		//(4)根据企业与OS/IS的绑定关系查询所绑定的客户
@@ -354,6 +353,158 @@ public class SearchFeeController {
 		model.addAttribute("orderNo",orderNo);
 		
 		return RESPONSE_THYMELEAF_BACK + "fee_show";
+	}
+	
+	
+	
+	/** 
+		* @Title: showAllFeeUI 
+		* @Description: 查询指定条件的费用并返回列表视图
+		* @param @param orderTimeCond
+		* @param @param dealStateCond
+		* @param @param pageNum
+		* @param @param pageSize
+		* @param @param searchTypeValue
+		* @param @param condValue
+		* @param @param provinceName
+		* @param @param cityName
+		* @param @param countyName
+		* @param @param userId
+		* @param @param roleId
+		* @param @param model
+		* @param @return     
+		* @return String    返回类型 
+		* @throws 
+	*/
+	@RequestMapping(value="/showallfee")
+	public String showAllFeeUI(int orderTimeCond,
+							  int dealStateCond,
+							  int pageNum, 
+							  int pageSize,
+							  Integer searchTypeValue,
+							  String condValue,							  
+							  String provinceName,
+							  String cityName,
+							  String countyName,
+							  long userId,
+							  long roleId,
+							  Model model){
+		int searchType=0;
+		String condStr="";
+		
+		//置默认值(搜索)
+		if(searchTypeValue!=null){
+			searchType=searchTypeValue;
+			condStr=condValue;
+		}
+		
+		//回传查询条件
+		/*
+		 model.addAttribute("orderTimeCond", orderTimeCond);
+		model.addAttribute("dealStateCond", dealStateCond);
+		
+		//搜索条件类型、搜索条件值
+		model.addAttribute("searchTypeValue", searchTypeValue);  	//查询字段值
+		model.addAttribute("condValue", condValue);  				//查询条件值
+		*/
+		
+		
+		//(1)准备查询条件
+		//费用类型列表:四项费用,市场费用
+		List<Integer> itemTypeList=new ArrayList<Integer>();		
+		itemTypeList.add(AccountItemType.COMMUNICATION_FEE);
+		itemTypeList.add(AccountItemType.ENTERTAINMENT_FEE);
+		itemTypeList.add(AccountItemType.TRANSPORTATION_FEE);
+		itemTypeList.add(AccountItemType.TRAVEL_EXPENSE_FEE);
+		itemTypeList.add(AccountItemType.MARKET_FEE);  		
+
+		Long bindedUserId=userId;		
+		List<Long> roleIdList=new ArrayList<Long>();  //查询登录用户的角色列表		
+		if(userId==0 && roleId==0){
+			//如果登录的是admin
+			boolean searchAll=needSearchAll();
+			if(!searchAll){
+				bindedUserId=getLoginUserId();
+				List<Map<String,Object>> userRoleList=getUserRoles();
+				for(int i=0;i<userRoleList.size();i++){
+					roleIdList.add((Long)userRoleList.get(i).get("role_id"));
+				}
+			}
+		}
+		else{
+			roleIdList.add(roleId);
+		}
+		
+		//确定用户的查询范围(代理商范围)
+		List<Map<String,Object>> agentIdList=getSearchScope(userId,roleId);
+		
+		//查询并分页:开始		
+		//PageHelper.startPage(pageNum, pageSize); // PageHelper
+		//询公司帐薄
+		List<AccountCompany> accountList=accountCompanyService.selectItems(
+																orderTimeCond,
+																dealStateCond,
+																searchType,
+																condStr,
+																provinceName,cityName,countyName,
+																agentIdList,														
+																itemTypeList,
+																bindedUserId,
+																roleIdList);
+		//PageInfo<Map<String,Object>> pageInfo = new PageInfo<Map<String,Object>>(orderList);// (使用了拦截器或是AOP进行查询的再次处理) 查询分页:结束
+		
+		//根据帐薄条目查询费用归属
+		List<Map<String,Object>> accountCompanyList=new ArrayList<Map<String,Object>>();
+		for(int i=0;i<accountList.size();i++){
+			Map<String,Object> accountItem=new HashMap<String,Object>();
+			
+			
+			Long bindUserId=accountList.get(i).getBindUserId();
+			Long bindRoleId=accountList.get(i).getRoleId();
+			
+			String bindUserName="";
+			String bindUserRole="";
+			
+			if(bindUserId==null || bindUserId==0){		
+				bindUserName="公司内部";
+				bindUserRole="";
+			}
+			else{
+				bindUserName=userService.selectByPrimaryKey(bindUserId).getUsername();
+				bindUserRole=roleService.selectByPrimaryKey(bindRoleId).getRoleName();
+				
+			}
+			
+			accountItem.put("bindUserName", bindUserName);
+			accountItem.put("bindUserRole", bindUserRole);
+			accountItem.put("accountItem", accountList.get(i));
+						
+			accountCompanyList.add(accountItem);
+			
+		}
+		
+		model.addAttribute("accountCompanyList",accountCompanyList);
+		
+		
+		/*
+		List<Map<String,Object>> userRoleList=getUserRoles();
+		model.addAttribute("userRoleList", userRoleList);  //查询用户角色列表
+		
+		model.addAttribute("pageInfo", pageInfo);   //分页		
+		model.addAttribute("orderList", orderList); //列表
+	    */
+		
+		//回传区域条件及用户/角色
+		/*model.addAttribute("provinceName", provinceName);
+		model.addAttribute("cityName", cityName);
+		model.addAttribute("countyName", countyName);
+		model.addAttribute("userId", userId);
+		model.addAttribute("roleId", roleId);*/
+		
+		
+		
+		
+		return RESPONSE_THYMELEAF_BACK + "fee_all_show";
 	}
 	
 	/** 
@@ -380,7 +531,7 @@ public class SearchFeeController {
 	
 	/** 
 		* @Title: showFeeTable 
-		* @Description: 显示费用列表 
+		* @Description: 显示订单费用列表 
 		* @param @param orderId
 		* @param @param orderNo
 		* @param @param model
@@ -388,7 +539,7 @@ public class SearchFeeController {
 		* @return String    返回类型 
 		* @throws 
 	*/
-	@RequestMapping(value="/table")
+	/*@RequestMapping(value="/table")
 	public String showFeeTable(long orderId,String orderNo,Model model){
 		
 		List<Map<String,Object>> accountCompanyList=searchOrderFourFee(orderId,orderNo);
@@ -398,30 +549,52 @@ public class SearchFeeController {
 		
 		
 		return RESPONSE_THYMELEAF_BACK + "fee_table";
-	}
+	}*/
 	
 	
 	/** 
 	* @Title: searchOrderFourFee 
-	* @Description: 查询订单费用 
+	* @Description: 查询订单费用
+	* 				当是个人查询费用时,只查询自己的费用(可能多个角色)
+					当是系统管理员/经理查询时, 查询所有的用户 
 	* @param @param orderId 订单ID(自增)
 	* @param @param orderNo	订单No
 	* @param @return    
 	* @return List<Map<String,Object>>    返回类型 
 	* @throws 
 	*/
-	private List<Map<String,Object>> searchOrderFourFee(long orderId,String orderNo){
-		//费用类型
-		List<Integer> itemTypeList=new ArrayList<Integer>();
+	private List<Map<String,Object>> searchOrderFee(long orderId,String orderNo,long userId,long roleId){
+		//(1)准备查询条件
+		//费用类型列表 //四项费用及市场费用
+		List<Integer> itemTypeList=new ArrayList<Integer>();		
 		itemTypeList.add(AccountItemType.COMMUNICATION_FEE);
 		itemTypeList.add(AccountItemType.ENTERTAINMENT_FEE);
 		itemTypeList.add(AccountItemType.TRANSPORTATION_FEE);
 		itemTypeList.add(AccountItemType.TRAVEL_EXPENSE_FEE);
-		itemTypeList.add(AccountItemType.MARKET_FEE);  //加入市场费
+		itemTypeList.add(AccountItemType.MARKET_FEE);  		//市场费
+
+		Long bindedUserId=userId;		
+		List<Long> roleIdList=new ArrayList<Long>();  //查询登录用户的角色列表		
+		if(userId==0 && roleId==0){
+			//如果登录的是admin
+			boolean searchAll=needSearchAll();
+			if(!searchAll){
+				bindedUserId=getLoginUserId();
+				List<Map<String,Object>> userRoleList=getUserRoles();
+				for(int i=0;i<userRoleList.size();i++){
+					roleIdList.add((Long)userRoleList.get(i).get("role_id"));
+				}
+			}
+		}
+		else{
+			roleIdList.add(roleId);
+		}
 		
 		
-		//查询公司帐薄
-		List<AccountCompany> accountList=accountCompanyService.getItemsByOrder(orderId, orderNo, itemTypeList);
+		
+		//(2)查询公司帐薄
+		//List<AccountCompany> accountList=accountCompanyService.getItemsByOrder(orderId, orderNo, itemTypeList);
+		List<AccountCompany> accountList=accountCompanyService.getItemsByOrderAndBindUser(orderId, itemTypeList,bindedUserId,roleIdList);
 		
 		//根据帐薄条目查询费用归属
 		List<Map<String,Object>> accountCompanyList=new ArrayList<Map<String,Object>>();
@@ -430,7 +603,7 @@ public class SearchFeeController {
 			
 			
 			Long bindUserId=accountList.get(i).getBindUserId();
-			Long roleId=accountList.get(i).getRoleId();
+			Long bindRoleId=accountList.get(i).getRoleId();
 			
 			String bindUserName="";
 			String bindUserRole="";
@@ -441,7 +614,7 @@ public class SearchFeeController {
 			}
 			else{
 				bindUserName=userService.selectByPrimaryKey(bindUserId).getUsername();
-				bindUserRole=roleService.selectByPrimaryKey(roleId).getRoleName();
+				bindUserRole=roleService.selectByPrimaryKey(bindRoleId).getRoleName();
 				
 			}
 			

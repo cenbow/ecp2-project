@@ -74,19 +74,82 @@ var generateHideElement = function(name, value) {
 }
 
 /**
- * 加载费用显示页面
- * @param url	
- * @param orderId	order:自增ID
- * @param orderNo 订单No
+ * 加载指定订单的费用页面
+ * @param url
+ * @param orderId
+ * @param orderNo
+ * @param urserId  所绑定的内部用户ID(条件)
+ * @param roleId   所绑定用户角色ID(条件)
  * @returns
  */
-function showFee(url,orderId,orderNo){
+function showOrderFee(url,orderId,orderNo,userId,roleId){
+	
+	//console.log("debug show order fee!");
 	
 	var params = {	"orderId":orderId, 
-					"orderNo":orderNo
+					"orderNo":orderNo,
+					"userId":userId,
+					"roleId":roleId
 				 };
 	
 	$("#edit-body").load(url,params, function(){		
+		$("#edit-tab").removeClass("hide");
+		$("#edit-tab-title").text("费用列表");
+		$('#tabs-14933 a[href="#panel-602679"]').tab('show');
+	});	
+}
+
+/**
+ * 加载所有订单的费用页面
+ * @param url
+ * @param userId 所绑定的内部用户ID(条件)
+ * @param roleId 所绑定用户角色ID(条件)
+ * @returns
+ */
+function showAllOrderFee(){
+	var url = BASE_CONTEXT_PATH + "/back/fee/showallfee"; //需要提交的 url
+	
+	//console.log("debug show order fee!");
+	parms=new Object(); //生成参数对象
+	
+	//分页数据
+	/*parms.pageNum=$("#pageNum").val();
+	parms.pageSize=$("#pageSize").val();*/
+	
+	//分页条件暂时无效
+	parms.pageNum=0;
+	parms.pageSize=0;
+	
+	
+	//时间段、订单状态
+	var dealStateCond=$("#dealstate-cond").val();
+	var orderTimeCond=$("#ordertime-cond").val(); 	
+	parms.dealStateCond=dealStateCond;
+	parms.orderTimeCond=orderTimeCond;
+	
+	//搜索类型，搜索条件值
+	var condType=$("#search-cond").val();
+	var condStr=$("#searchCond").val();	
+	parms.searchTypeValue=condType;
+	parms.condValue=condStr;
+	
+	//区域条件
+	var provinceName=$("#provinceName").val();
+	var cityName=$("#cityName").val();
+	var countyName=$("#countyName").val();	
+	parms.provinceName=provinceName;
+	parms.cityName=cityName;
+	parms.countyName=countyName;
+	
+	//用户/角色条件
+	var option=$("#select-user-role option:selected");
+	var userId=option.attr("data-bind-userid");
+	var roleId=option.attr("data-bind-roleid");
+	
+	parms.userId=userId;
+	parms.roleId=roleId;	
+	
+	$("#edit-body").load(url,parms, function(){		
 		$("#edit-tab").removeClass("hide");
 		$("#edit-tab-title").text("费用列表");
 		$('#tabs-14933 a[href="#panel-602679"]').tab('show');
@@ -173,6 +236,10 @@ function updateUISearchCond(condType){
 			setSearchCond(selectedTxt,value);
 		}
 	});
+}
+
+function updateUISearchCondValue(condValue){
+	$("#searchCond").val(condValue);
 }
 
 /**
@@ -339,6 +406,7 @@ $(function() {
 	updateUIDealState(g_dealstate_cond);
 	updateUIOrderTime(g_ordertime_cond);
 	updateUISearchCond(g_searchTypeValue);
+	updateUISearchCondValue(g_condValue);
 	
 	//----------event binding--------------
 
@@ -350,10 +418,14 @@ $(function() {
 		
 		var orderId = $(this).attr("data-id");  //订单id(PK)
 		var orderNo = $(this).attr("data-orderid");  //订单号
+		
+		//所选用户及角色
+		var userId=ret_userId;
+		var roleId=ret_roleId;
+		
 		var contractState=$(this).attr("data-contractState"); //合同状态
 		
-		showFee(url, orderId, orderNo);	
-		
+		showOrderFee(url, orderId, orderNo,userId,roleId);
 		
 		//如果此合同已经执行完毕后,不可以再录入四项费用		
 		//TODO 是否加入此业务规则约束?
@@ -364,8 +436,11 @@ $(function() {
 		else{
 			//util.message("此合同已经执行完毕,不可以再录入四项费用！");
 		}
-
-		
+	});
+	
+	//费用列表(所有)
+	$("#btn-all-fee-list").on("click",function(){
+		showAllOrderFee();
 	});
 	
 	
@@ -405,6 +480,12 @@ $(function() {
 			
 		}
 	});
+	
+	//当选择角色时,自动查询
+	$("#select-user-role").on("change",function(){
+		$(".start-search").trigger("click");
+	});
+	
 	
 	//--------------地区选择---------------
 	/*

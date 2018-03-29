@@ -83,9 +83,32 @@
   	 	user.deleted=1  AND  	 	
   	 	cust_lock_rel.cust_id=#{agentId} AND
   	 	role.role_code=#{roleCode} 
-  	 </where> 
-  
+  	 </where>  
   </select>
+  
+  
+  <select id="getSalesByAgentIdAndRoleCodes" resultType="map">
+  	 SELECT user.id,user.username,user.nickname,cust_lock_rel.role_id,role.role_name,role.role_code from user 
+  	 LEFT JOIN cust_lock_rel ON (user.id=cust_lock_rel.bind_user_id) 
+  	 LEFT JOIN user_role on(user.id=user_role.user_id) 
+  	 LEFT JOIN role ON(user_role.role_id=role.role_id AND cust_lock_rel.role_id=role.role_id)
+  	 <where>
+  	 	user.type=1 AND  
+  	 	user.deleted=1  AND  	 	
+  	 	cust_lock_rel.cust_id=#{agentId}
+  	 	<if test="roleCodeList!=null and roleCodeList.size()>0">		
+			AND
+			<foreach collection="roleCodeList" index="index" item="item" open="("  separator="or"  close=")" >
+				role.role_code=#{item}
+			</foreach>
+		</if>
+		
+  	 </where>  
+  </select>
+  
+  
+  
+  
   
   <select id="getAgentIdListByBindedUserRoleId" resultType="map">
   	select distinct(cust_id)  from  cust_lock_rel cr 

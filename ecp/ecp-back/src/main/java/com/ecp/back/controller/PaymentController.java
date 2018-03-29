@@ -9,6 +9,8 @@ import java.util.Map;
 import javax.servlet.http.HttpServletRequest;
 
 import org.apache.log4j.Logger;
+import org.apache.shiro.SecurityUtils;
+import org.apache.shiro.subject.Subject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -16,6 +18,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.ecp.bean.AccountItemType;
+import com.ecp.bean.UserBean;
 import com.ecp.common.util.RequestResultUtil;
 import com.ecp.entity.AccountCompany;
 import com.ecp.entity.Orders;
@@ -169,16 +172,23 @@ public class PaymentController {
 	
 	@RequestMapping(value="/add")
 	@ResponseBody
-	public Object addFeeItem(long orderId,String orderNo,int itemType,BigDecimal amount,String comment, Model model){
+	public Object addPaymentItem(long orderId,String orderNo,int itemType,BigDecimal amount,String comment, Model model){
 		
 		AccountCompany accountCompanyItem=new AccountCompany();
 		accountCompanyItem.setOrderId(orderId);
 		accountCompanyItem.setOrderNo(orderNo);
 		accountCompanyItem.setType(itemType);
 		accountCompanyItem.setAmount(amount);
-		accountCompanyItem.setComment(comment);
-		
+		accountCompanyItem.setComment(comment);	
 		accountCompanyItem.setCreateTime(new Date());
+		
+		long agentId=searchAgentByOrder(orderId);
+		accountCompanyItem.setCustId(agentId);  //代理商ID
+		
+		//操作员信息
+		UserBean user=getLoginUser();
+		accountCompanyItem.setOperatorId(user.getId());
+		accountCompanyItem.setOperatorName(user.getNickname());
 		
 		//记入公司帐薄
 		int row =accountCompanyService.addAccountItem(accountCompanyItem);
@@ -190,11 +200,42 @@ public class PaymentController {
 		}
 		else
 			return RequestResultUtil.getResultAddWarn();
-		
-		
 	}
 	
+	/** 
+	* @Title: searchAgentByOrder 
+	* @Description: 根据订单查询下单代理商 
+	* @param @param orderId
+	* @param @return    设定文件 
+	* @return long      如果查询到代理商则返回代理商ID,否则返回0 
+	* @throws 
+	*/
+	private long searchAgentByOrder(long orderId){
+		//(1)先查询订单
+		Orders order=orderService.selectByPrimaryKey(orderId);
+		
+		//(2)根据主帐号可以查询所在的企业
+		UserExtends agent=userAgentService.getUserAgentByUserId(order.getBuyerId());
+		long agentId=0;
+		if(agent!=null)
+			agentId=agent.getExtendId();
+		
+		return agentId;
+	}
 	
+	/** 
+	* @Title: getLoginUserId 
+	* @Description: 获取登录用户的ID 
+	* 				可取得当前登录用户的角色列表
+	* @param @return     
+	* @return long    返回类型 
+	* @throws 
+	*/
+	private UserBean getLoginUser(){		
+		Subject subject = SecurityUtils.getSubject(); 
+		UserBean user = (UserBean)subject.getPrincipal();
+		return user;
+	} 
 	
 
 }

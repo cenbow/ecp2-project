@@ -189,7 +189,7 @@
 			<!-- 区域查询条件 -->
 			<div class="search-box" style="display:inline-block;margin-left:50px;">
 				<!-- 增加地区查询条件 -->
-				<span>区域:</span>
+				<label for="distpicker">区域:</label>
 				<div data-toggle="distpicker" id="distpicker" style="display:inline-block; vertical-align:middle;">
 					
 					<div class="col-md-4 column" style="padding-right:5px;">
@@ -214,9 +214,9 @@
 			</div>
 			
 			<!-- 在此列表登录用户的角色 -->
-			<div style="display:inline-block; margin-left:150px;" >
-				<span>角色:</span>
-				<select id="select-user-role" class="">
+			<div style="display:inline-block;  margin-left:150px;" >
+				<label for="select-user-role" >角色:</label>
+				<select id="select-user-role" >
 					<!-- 全部角色 -->
 					<option  		th:attr="data-bind-roleid='0',data-bind-userid='0'" 
 									th:value ="0" 
@@ -237,6 +237,7 @@
 					</span>
 										
 				</select>
+				
 			</div>
 			
 			<hr style="height:1px;border:none;border-top:1px solid lightgray;">
@@ -394,7 +395,7 @@
 
 					</tr>
 					<tr>						
-						<td colspan="8"><a type="button"  class="btn btn-primary show-detail" style="float:right;">费用列表</a></td>
+						<td colspan="8"><a type="button" id="btn-all-fee-list" class="btn btn-primary" style="float:right;">费用列表</a></td>
 					</tr>
 
 				</tbody>
