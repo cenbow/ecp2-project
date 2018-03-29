@@ -5,7 +5,7 @@
 <title>Insert title here</title>
 </head>
 <body>
-<div class="container-">
+<div class="container-fluid">
 	<div class="row clearfix">
 		<div class="col-md-12 column">
 			<h4>
@@ -29,8 +29,16 @@
 				<!-- 费用列表 -->
 				<div class="col-md-12 column" id="fee-table">
 					<span th:include="/back/thymeleaf/searchfee/fee_table" th:remove="tag"></span>					
-				</div>
+				</div>				
 			</div>
+			
+			<div class="row clearfix">
+				<!-- 费用列表 -->
+				<div class="col-md-12 column" id="market-fee-table">
+					<span th:include="/back/thymeleaf/searchfee/fee_table_market" th:remove="tag"></span>					
+				</div>				
+			</div>
+			
 			<hr  style="height:1px;border:none;border-top:1px solid #555555;">
 			<div class="row clearfix">
 				<div class="col-md-12 column">

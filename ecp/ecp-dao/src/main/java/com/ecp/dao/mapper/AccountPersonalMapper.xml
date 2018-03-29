@@ -29,4 +29,32 @@
     id, cust_id, order_id, order_no, contract_id, contract_no, item_id, sku_id, bind_user_id, 
     role_id, amount, type, create_time, operator_id, operator_name, comment
   </sql>
+  
+  <select id="getItemsByOrderAndBindUser" resultMap="BaseResultMap">
+  	select * from account_personal 
+  	<where>
+  		order_id=#{orderId}  		   		
+  		<if test="itemTypeList!=null and itemTypeList.size&gt;0">
+  			AND
+  			type in 	
+  			<foreach close=")" collection="itemTypeList" index="index" item="itemType" open="(" separator=",">  
+            	#{itemType}  
+        	</foreach>  		
+  		</if>
+  		<if test="userId!=0">
+  			AND bind_user_id=#{userId}
+  		</if>
+  		<if test="roleIdList!=null and roleIdList.size&gt;0">
+  			AND role_id in
+  			<foreach close=")" collection="roleIdList" index="index" item="item" open="(" separator=",">  
+            	#{item}  
+        	</foreach>
+  		</if>
+  		
+  	</where>
+  </select>
+  
+  
+  
+  
 </mapper>

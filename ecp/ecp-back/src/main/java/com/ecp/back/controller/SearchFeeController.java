@@ -5,8 +5,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import javax.servlet.http.HttpServletRequest;
-
 import org.apache.log4j.Logger;
 import org.apache.shiro.SecurityUtils;
 import org.apache.shiro.subject.Subject;
@@ -19,6 +17,7 @@ import com.ecp.back.commons.RoleCodeConstants;
 import com.ecp.bean.AccountItemType;
 import com.ecp.bean.UserBean;
 import com.ecp.entity.AccountCompany;
+import com.ecp.entity.AccountPersonal;
 import com.ecp.entity.Orders;
 import com.ecp.entity.Role;
 import com.ecp.entity.UserExtends;
@@ -49,6 +48,11 @@ public class SearchFeeController {
 	
 	private static final String RESPONSE_THYMELEAF_BACK = "back/thymeleaf/searchfee/";
 	private static final int PAGE_SIZE = 8;
+	private static final String PERSPECTIVE_TYPE_COMPANY="company";
+	private static final String PERSPECTIVE_TYPE_PERSONAL="personal";
+	private static final int PERSPECTIVE_VALUE_COMPANY=1;
+	private static final int PERSPECTIVE_VALUE_PERSONAL=2;
+	
 	
 	@Autowired
 	IOrderService orderService;  //订单服务
@@ -92,6 +96,8 @@ public class SearchFeeController {
 		* @param @param countyName		区(县)名称
 		* @param @param userId			用户ID
 		* @param @param roleId			角色ID
+		* @param @param perspectiveType	视角类型
+		* @param @param perspectiveValie视角值
 		* @param @param model
 		* @param @return     
 		* @return String    返回类型 
@@ -109,7 +115,8 @@ public class SearchFeeController {
 							  String countyName,
 							  long userId,
 							  long roleId,
-							  
+							  String perspectiveType,
+							  int perspectiveValue,
 							  Model model) {
 		if(pageNum==null || pageNum==0)
 		{
@@ -131,9 +138,8 @@ public class SearchFeeController {
 		model.addAttribute("searchTypeValue", searchTypeValue);  	//查询字段值
 		model.addAttribute("condValue", condValue);  				//查询条件值
 		
-		List<Map<String,Object>> agentIdList=getSearchScope(userId,roleId);
-		
-		// 查询 并分页		
+		List<Map<String,Object>> agentIdList=getSearchScope(userId,roleId);		
+		// 分页:Start		
 		PageHelper.startPage(pageNum, pageSize); // PageHelper
 		
 
@@ -144,7 +150,7 @@ public class SearchFeeController {
 											 provinceName,cityName,countyName,
 											 agentIdList);  //查询订单
 		
-				
+		//分页:End		
 		PageInfo<Map<String,Object>> pageInfo = new PageInfo<Map<String,Object>>(orderList);// (使用了拦截器或是AOP进行查询的再次处理)
 		
 		List<Map<String,Object>> userRoleList=getUserRoles();
@@ -159,6 +165,28 @@ public class SearchFeeController {
 		model.addAttribute("countyName", countyName);
 		model.addAttribute("userId", userId);
 		model.addAttribute("roleId", roleId);
+		
+		/*  
+		 *查询当前登录用户的角色权限,
+		 *	true:经理级别-两个视角
+		 *	false:个人帐号:一个视角 
+		 */
+		boolean manFlag=needSearchAll();
+		if(perspectiveValue==0){
+			if(manFlag){
+				model.addAttribute("perspectiveType", PERSPECTIVE_TYPE_COMPANY);
+				model.addAttribute("perspectiveValue",PERSPECTIVE_VALUE_COMPANY);
+			}
+			else{
+				model.addAttribute("perspectiveType", PERSPECTIVE_TYPE_PERSONAL);
+				model.addAttribute("perspectiveValue", PERSPECTIVE_VALUE_PERSONAL);
+			}
+		}
+		else{
+			model.addAttribute("perspectiveType", perspectiveType);
+			model.addAttribute("perspectiveValue", perspectiveValue);
+		}
+		
 				
 		return RESPONSE_THYMELEAF_BACK + "order_table";
 	}
@@ -248,7 +276,7 @@ public class SearchFeeController {
 			}
 		}
 		
-		return null;
+		return new ArrayList<Map<String,Object>>();
 		
 	}
 	
@@ -322,7 +350,7 @@ public class SearchFeeController {
 	
 	
 	/** 
-		* @Title: showFeeUI 
+		* @Title: showFee 
 		* @Description: 显示指定定单的费用列表 
 		* @param @param orderId 订单自增ID
 		* @param @param orderNo 订单NO
@@ -332,23 +360,24 @@ public class SearchFeeController {
 		* @throws 
 	*/
 	@RequestMapping(value="/showfee")
-	public String showFeeUI(long orderId,String orderNo,long userId,long roleId,Model model){
+	public String showOrderFee(long orderId,String orderNo,long userId,long roleId,String perspectiveType,int perspectiveValue,  Model model){
 		
-		//自公司帐薄查询费用
-		List<Map<String,Object>> accountCompanyList=searchOrderFee(orderId,orderNo,userId,roleId);
-		
-		//查询与此订单相关的企业,而后查询与此企业相关的OS/IS人员列表.		
-		//(4)根据企业与OS/IS的绑定关系查询所绑定的客户
-		long agentId=searchAgentByOrder(orderId);
-		List<Map<String,Object>> osList=agentBindService.getSalesByAgentId(agentId, RoleCodeConstants.OS);
-		List<Map<String,Object>> isList=agentBindService.getSalesByAgentId(agentId, RoleCodeConstants.IS);		
-		
-		
-		//回传参数
-		model.addAttribute("accountCompanyList",accountCompanyList);
-		model.addAttribute("osList",osList);
-		model.addAttribute("isList",isList);
-		
+		if(perspectiveValue==PERSPECTIVE_VALUE_COMPANY){  //公司视角
+			List<Map<String,Object>> accountCompanyList=searchOrderFee_company(orderId,orderNo,userId,roleId);
+			model.addAttribute("accountItemList",accountCompanyList);
+			
+			if(userId!=0 && roleId!=0){				
+				List<Map<String,Object>> accountCompanyMarketList=searchOrderMarketFee_company(orderId,orderNo,userId,roleId);
+				model.addAttribute("marketFeeList", accountCompanyMarketList);
+			}
+			
+			
+		}
+		else{  //个人视角
+			List<Map<String,Object>> accountPersonalList=searchOrderFee_personal(orderId,orderNo,userId,roleId);
+			model.addAttribute("accountItemList",accountPersonalList);
+		}			
+				
 		model.addAttribute("orderId", orderId);
 		model.addAttribute("orderNo",orderNo);
 		
@@ -388,6 +417,8 @@ public class SearchFeeController {
 							  String countyName,
 							  long userId,
 							  long roleId,
+							  String perspectiveType,
+							  int	perspectiveValue,
 							  Model model){
 		int searchType=0;
 		String condStr="";
@@ -465,9 +496,15 @@ public class SearchFeeController {
 			String bindUserName="";
 			String bindUserRole="";
 			
-			if(bindUserId==null || bindUserId==0){		
-				bindUserName="公司内部";
-				bindUserRole="";
+			if(bindUserId==null || bindUserId==0){
+				if(accountList.get(i).getCompanyFeeFlag()==1){  //如果是计公司内部费用时
+					bindUserName="公司内部";
+					bindUserRole="";
+				}
+				else{
+					bindUserName="双计";
+					bindUserRole="";
+				}
 			}
 			else{
 				bindUserName=userService.selectByPrimaryKey(bindUserId).getUsername();
@@ -563,7 +600,7 @@ public class SearchFeeController {
 	* @return List<Map<String,Object>>    返回类型 
 	* @throws 
 	*/
-	private List<Map<String,Object>> searchOrderFee(long orderId,String orderNo,long userId,long roleId){
+	private List<Map<String,Object>> searchOrderFee_company(long orderId,String orderNo,long userId,long roleId){
 		//(1)准备查询条件
 		//费用类型列表 //四项费用及市场费用
 		List<Integer> itemTypeList=new ArrayList<Integer>();		
@@ -573,18 +610,17 @@ public class SearchFeeController {
 		itemTypeList.add(AccountItemType.TRAVEL_EXPENSE_FEE);
 		itemTypeList.add(AccountItemType.MARKET_FEE);  		//市场费
 
-		Long bindedUserId=userId;		
-		List<Long> roleIdList=new ArrayList<Long>();  //查询登录用户的角色列表		
-		if(userId==0 && roleId==0){
-			//如果登录的是admin
-			boolean searchAll=needSearchAll();
-			if(!searchAll){
+		//Long bindedUserId=userId;		
+		List<Long> roleIdList=new ArrayList<Long>();  		//查询登录用户的角色列表		
+		if(userId==0 && roleId==0){ //按订单查询
+			/*boolean searchAll=needSearchAll();
+			if(!searchAll){  //如果登录的不是admin
 				bindedUserId=getLoginUserId();
 				List<Map<String,Object>> userRoleList=getUserRoles();
 				for(int i=0;i<userRoleList.size();i++){
 					roleIdList.add((Long)userRoleList.get(i).get("role_id"));
 				}
-			}
+			}*/
 		}
 		else{
 			roleIdList.add(roleId);
@@ -594,7 +630,7 @@ public class SearchFeeController {
 		
 		//(2)查询公司帐薄
 		//List<AccountCompany> accountList=accountCompanyService.getItemsByOrder(orderId, orderNo, itemTypeList);
-		List<AccountCompany> accountList=accountCompanyService.getItemsByOrderAndBindUser(orderId, itemTypeList,bindedUserId,roleIdList);
+		List<AccountCompany> accountList=accountCompanyService.getItemsByOrderAndBindUser(orderId, itemTypeList,userId,roleIdList);
 		
 		//根据帐薄条目查询费用归属
 		List<Map<String,Object>> accountCompanyList=new ArrayList<Map<String,Object>>();
@@ -608,15 +644,128 @@ public class SearchFeeController {
 			String bindUserName="";
 			String bindUserRole="";
 			
-			if(bindUserId==null || bindUserId==0){		
-				bindUserName="公司内部";
-				bindUserRole="";
+			if(bindUserId==null || bindUserId==0){
+				if(accountList.get(i).getCompanyFeeFlag()==1){  //如果是计公司内部费用时
+					bindUserName="公司内部";
+					bindUserRole="";
+				}
 			}
 			else{
 				bindUserName=userService.selectByPrimaryKey(bindUserId).getUsername();
 				bindUserRole=roleService.selectByPrimaryKey(bindRoleId).getRoleName();
 				
 			}
+			
+			accountItem.put("bindUserName", bindUserName);
+			accountItem.put("bindUserRole", bindUserRole);
+			accountItem.put("accountItem", accountList.get(i));
+						
+			accountCompanyList.add(accountItem);
+			
+		}
+		
+		return accountCompanyList;
+	}
+	
+	private List<Map<String,Object>> searchOrderMarketFee_company(long orderId,String orderNo,long userId,long roleId){
+		//(1)准备查询条件
+		//费用类型列表
+		List<Integer> itemTypeList=new ArrayList<Integer>();		
+		itemTypeList.add(AccountItemType.MARKET_FEE);  		//市场费
+		
+		//(2)查询公司帐薄
+		List<AccountCompany> accountList=accountCompanyService.getItemsByOrder(orderId, orderNo, itemTypeList);
+		
+		//根据帐薄条目查询费用归属
+		List<Map<String,Object>> accountCompanyList=new ArrayList<Map<String,Object>>();
+		for(int i=0;i<accountList.size();i++){
+			Map<String,Object> accountItem=new HashMap<String,Object>();
+			
+			
+			Long bindUserId=accountList.get(i).getBindUserId();
+			Long bindRoleId=accountList.get(i).getRoleId();
+			
+			String bindUserName="";
+			String bindUserRole="";
+			
+			if(bindUserId==null || bindUserId==0){
+				if(accountList.get(i).getCompanyFeeFlag()==1){  //如果是计公司内部费用时
+					bindUserName="公司内部";
+					bindUserRole="";
+				}
+				else{
+					bindUserName="双计";
+					bindUserRole="";
+				}
+			}
+			else{
+				bindUserName=userService.selectByPrimaryKey(bindUserId).getUsername();
+				bindUserRole=roleService.selectByPrimaryKey(bindRoleId).getRoleName();
+				
+			}
+			
+			accountItem.put("bindUserName", bindUserName);
+			accountItem.put("bindUserRole", bindUserRole);
+			accountItem.put("accountItem", accountList.get(i));
+						
+			accountCompanyList.add(accountItem);
+			
+		}
+		
+		return accountCompanyList;
+	}
+	
+	
+	/** 
+		* @Title: searchOrderFee_personal 
+		* @Description: 查询订单费用:个人帐户 
+		* @param @param orderId
+		* @param @param orderNo
+		* @param @param userId
+		* @param @param roleId
+		* @param @return     
+		* @return List<Map<String,Object>>    返回类型 
+		* @throws 
+	*/
+	private List<Map<String,Object>> searchOrderFee_personal(long orderId,String orderNo,long userId,long roleId){
+		//(1)准备查询条件
+		//费用类型列表 //四项费用及市场费用
+		List<Integer> itemTypeList=new ArrayList<Integer>();		
+		itemTypeList.add(AccountItemType.COMMUNICATION_FEE);
+		itemTypeList.add(AccountItemType.ENTERTAINMENT_FEE);
+		itemTypeList.add(AccountItemType.TRANSPORTATION_FEE);
+		itemTypeList.add(AccountItemType.TRAVEL_EXPENSE_FEE);
+		itemTypeList.add(AccountItemType.MARKET_FEE);  		//市场费
+
+		List<Long> roleIdList=new ArrayList<Long>();  //查询登录用户的角色列表		
+		if(userId==0 && roleId==0){ //查询全部
+			boolean searchAll=needSearchAll();
+			if(!searchAll){  //如果登录的不是admin
+				userId=getLoginUserId();
+				List<Map<String,Object>> userRoleList=getUserRoles();
+				for(int i=0;i<userRoleList.size();i++){
+					roleIdList.add((Long)userRoleList.get(i).get("role_id"));
+				}
+			}
+		}
+		else{
+			roleIdList.add(roleId);
+		}
+		
+		//(2)查询个人帐薄
+		List<AccountPersonal> accountList=accountPersonalService.getItemsByOrderAndBindUser(orderId, itemTypeList,userId,roleIdList);
+		
+		//根据帐薄条目查询费用归属
+		List<Map<String,Object>> accountCompanyList=new ArrayList<Map<String,Object>>();
+		for(int i=0;i<accountList.size();i++){
+			Map<String,Object> accountItem=new HashMap<String,Object>();
+			
+			
+			Long bindUserId=accountList.get(i).getBindUserId();
+			Long bindRoleId=accountList.get(i).getRoleId();
+			
+			String bindUserName=userService.selectByPrimaryKey(bindUserId).getUsername();
+			String bindUserRole=roleService.selectByPrimaryKey(bindRoleId).getRoleName();
 			
 			accountItem.put("bindUserName", bindUserName);
 			accountItem.put("bindUserRole", bindUserRole);

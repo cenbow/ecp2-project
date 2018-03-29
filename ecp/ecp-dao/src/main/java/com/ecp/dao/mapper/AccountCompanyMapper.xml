@@ -19,13 +19,14 @@
     <result column="comment" jdbcType="VARCHAR" property="comment" />
     <result column="bind_user_id" jdbcType="BIGINT" property="bindUserId" />
     <result column="role_id" jdbcType="BIGINT" property="roleId" />
+    <result column="company_fee_flag" jdbcType="TINYINT" property="companyFeeFlag" />
   </resultMap>
   <sql id="Base_Column_List">
     <!--
       WARNING - @mbggenerated
     -->
     id, cust_id, order_id, order_no, contract_id, contract_no, amount, type, create_time, 
-    operator_id, operator_name, comment, bind_user_id, role_id
+    operator_id, operator_name, comment, bind_user_id, role_id, company_fee_flag
   </sql>
   
   <select id="getItemsByOrder" resultMap="BaseResultMap">
@@ -59,9 +60,9 @@
   		<if test="userId!=0">
   			AND bind_user_id=#{userId}
   		</if>
-  		<if test="roleIdList!=null and roleIdList.size>0">
+  		<if test="roleIdList!=null and roleIdList.size&gt;0">
   			AND role_id in
-  			<foreach  collection="roleIdList" index="index" item="item" open="(" separator="," close=")">  
+  			<foreach close=")" collection="roleIdList" index="index" item="item" open="(" separator=",">  
             	#{item}  
         	</foreach>
   		</if>
@@ -129,24 +130,24 @@
 			<if test="userId!=0">
 				AND ac.bind_user_id=#{userId}
 			</if>
-			<if test="roleIdList!=null and roleIdList.size>0">
+			<if test="roleIdList!=null and roleIdList.size&gt;0">
 				AND ac.role_id in
-				<foreach  collection="roleIdList" index="index" item="item" open="(" separator="," close=")">  
+				<foreach close=")" collection="roleIdList" index="index" item="item" open="(" separator=",">  
 					#{item}  
 				</foreach>
 			</if>
 			
 			<!-- 数据范围 -->  		
-			<if test="agentIdList!=null and agentIdList.size>=0">
-				<if test="agentIdList.size>0">
+			<if test="agentIdList!=null and agentIdList.size&gt;=0">
+				<if test="agentIdList.size&gt;0">
 					AND a.extend_id in
-					<foreach collection="agentIdList" index="index" item="item" open="(" separator="," close=")" >
+					<foreach close=")" collection="agentIdList" index="index" item="item" open="(" separator=",">
 						#{item.cust_id}
 					</foreach>
 				</if>
 				
 				<if test="agentIdList.size==0">
-					and (0>1)
+					and (0&gt;1)
 				</if>
 							 
 			</if>  		

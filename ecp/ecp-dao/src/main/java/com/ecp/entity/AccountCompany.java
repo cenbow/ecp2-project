@@ -80,6 +80,12 @@ public class AccountCompany {
     private Long roleId;
 
     /**
+     * 是否公司内部费用(0:不是 1:是)
+     */
+    @Column(name = "company_fee_flag")
+    private Byte companyFeeFlag;
+
+    /**
      * 获取业绩表自增ID
      *
      * @return id - 业绩表自增ID
@@ -319,6 +325,24 @@ public class AccountCompany {
         this.roleId = roleId;
     }
 
+    /**
+     * 获取是否公司内部费用(0:不是 1:是)
+     *
+     * @return company_fee_flag - 是否公司内部费用(0:不是 1:是)
+     */
+    public Byte getCompanyFeeFlag() {
+        return companyFeeFlag;
+    }
+
+    /**
+     * 设置是否公司内部费用(0:不是 1:是)
+     *
+     * @param companyFeeFlag 是否公司内部费用(0:不是 1:是)
+     */
+    public void setCompanyFeeFlag(Byte companyFeeFlag) {
+        this.companyFeeFlag = companyFeeFlag;
+    }
+
     @Override
     public String toString() {
         StringBuilder sb = new StringBuilder();
@@ -339,6 +363,7 @@ public class AccountCompany {
         sb.append(", comment=").append(comment);
         sb.append(", bindUserId=").append(bindUserId);
         sb.append(", roleId=").append(roleId);
+        sb.append(", companyFeeFlag=").append(companyFeeFlag);
         sb.append("]");
         return sb.toString();
     }

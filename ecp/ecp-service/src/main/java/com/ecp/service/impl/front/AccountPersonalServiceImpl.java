@@ -27,8 +27,8 @@ public class AccountPersonalServiceImpl extends AbstractBaseService<AccountPerso
 
 
 	@Override
-	public List<AccountPersonal> getItemsByOrder(long orderId, String orderNo, List<Integer> itemTypeList) {
-		
+	public List<AccountPersonal> getItemsByOrder(long orderId,List<Integer> itemTypeList) {
+		//TODO 
 		return null;
 	}
 
@@ -36,6 +36,13 @@ public class AccountPersonalServiceImpl extends AbstractBaseService<AccountPerso
 	@Override
 	public int addAccountItem(AccountPersonal accountItem) {
 		return accountPersonalMapper.insertSelective(accountItem);
+	}
+
+
+	@Override
+	public List<AccountPersonal> getItemsByOrderAndBindUser(long orderId, List<Integer> itemTypeList, long userId,
+			List<Long> roleIdList) {
+		return accountPersonalMapper.getItemsByOrderAndBindUser(orderId, itemTypeList, userId, roleIdList);
 	}
 	
 	

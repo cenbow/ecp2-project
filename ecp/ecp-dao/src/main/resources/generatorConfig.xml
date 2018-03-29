@@ -440,11 +440,13 @@
 		</table> -->
 		
 		
-		<table tableName="item" domainObjectName="Item" enableCountByExample="false" enableUpdateByExample="false" enableDeleteByExample="false" enableSelectByExample="false" selectByExampleQueryId="false">
+		<!-- <table tableName="item" domainObjectName="Item" enableCountByExample="false" enableUpdateByExample="false" enableDeleteByExample="false" enableSelectByExample="false" selectByExampleQueryId="false">
 			<generatedKey column="item_id" sqlStatement="MySql" identity="true"/>
+		</table> -->
+		
+		<table tableName="account_company" domainObjectName="AccountCompany" enableCountByExample="false" enableUpdateByExample="false" enableDeleteByExample="false" enableSelectByExample="false" selectByExampleQueryId="false">
+			<generatedKey column="id" sqlStatement="MySql" identity="true"/>
 		</table>
-		
-		
 				
 		
 	</context>

@@ -2,6 +2,8 @@ package com.ecp.service.front;
 
 import java.util.List;
 
+import org.apache.ibatis.annotations.Param;
+
 import com.ecp.entity.AccountPersonal;
 import com.ecp.service.IBaseService;
 
@@ -21,13 +23,22 @@ public interface IAccountPersonalService extends IBaseService<AccountPersonal, L
 	* @Title: getItemsByOrder 
 	* @Description: 根据订单及帐薄条目类型 查询 
 	* @param @param orderId	订单自增ID
-	* @param @param orderNo	订单No
 	* @param @param itemTypeList 帐薄条目类型列表.
 	* @param @return    设定文件 
 	* @return List<AccountPersonal>    个人帐薄条目 
 	* @throws 
 	*/
-	public List<AccountPersonal> getItemsByOrder(long orderId,String orderNo,List<Integer> itemTypeList);
+	public List<AccountPersonal> getItemsByOrder(long orderId,List<Integer> itemTypeList);
+	
+	
+	
+	public List<AccountPersonal> getItemsByOrderAndBindUser( long orderId, 
+			    List<Integer> itemTypeList, 
+			    long userId,
+			    List<Long> roleIdList);
+	
+	
+	
 	
 	/** 
 		* @Title: addAccountItem 

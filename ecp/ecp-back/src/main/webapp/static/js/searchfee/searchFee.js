@@ -47,9 +47,18 @@ function search(){
 	var roleId=option.attr("data-bind-roleid");
 	
 	parms.userId=userId;
-	parms.roleId=roleId;	
+	parms.roleId=roleId;
 	
-	loadOrder(parms,null); // 加载页面
+	//查询视角类型及视角值
+	var option1=$("#select-perspective option:selected");
+	var perspectiveType=option1.attr("data-bind-perspective-type");
+	var perspectiveValue=option1.val();
+	
+	parms.perspectiveType=perspectiveType;
+	parms.perspectiveValue=perspectiveValue;
+	
+	
+	loadOrder(parms,null); //加载页面
 }
 
 function search_normal() {
@@ -82,19 +91,35 @@ var generateHideElement = function(name, value) {
  * @param roleId   所绑定用户角色ID(条件)
  * @returns
  */
-function showOrderFee(url,orderId,orderNo,userId,roleId){
+function showOrderFee(that){
+	var url = BASE_CONTEXT_PATH + "/back/fee/showfee"; //需要提交的 url
 	
-	//console.log("debug show order fee!");
+	var orderId = $(that).attr("data-id");  		//订单id(PK)
+	var orderNo = $(that).attr("data-orderid");  	//订单号
+	
+	//所选用户及角色
+	var option=$("#select-user-role option:selected");
+	var userId=option.attr("data-bind-userid");
+	var roleId=option.attr("data-bind-roleid");
+	
+	//var contractState=$(that).attr("data-contractState"); //合同状态
+	
+	//视角类型及值
+	var option1=$("#select-perspective option:selected");
+	var perspectiveType=option1.attr("data-bind-perspective-type");
+	var perspectiveValue=option1.val();
 	
 	var params = {	"orderId":orderId, 
 					"orderNo":orderNo,
 					"userId":userId,
-					"roleId":roleId
+					"roleId":roleId,
+					"perspectiveType":perspectiveType,
+					"perspectiveValue":perspectiveValue
 				 };
 	
 	$("#edit-body").load(url,params, function(){		
 		$("#edit-tab").removeClass("hide");
-		$("#edit-tab-title").text("费用列表");
+		$("#edit-tab-title").text("订单费用列表");
 		$('#tabs-14933 a[href="#panel-602679"]').tab('show');
 	});	
 }
@@ -147,7 +172,17 @@ function showAllOrderFee(){
 	var roleId=option.attr("data-bind-roleid");
 	
 	parms.userId=userId;
-	parms.roleId=roleId;	
+	parms.roleId=roleId;
+	
+	//查询视角类型及视角值
+	var option1=$("#select-perspective option:selected");
+	var perspectiveType=option1.attr("data-bind-perspective-type");
+	var perspectiveValue=option1.val();
+	
+	parms.perspectiveType=perspectiveType;
+	parms.perspectiveValue=perspectiveValue;
+	
+	
 	
 	$("#edit-body").load(url,parms, function(){		
 		$("#edit-tab").removeClass("hide");
@@ -414,28 +449,18 @@ $(function() {
 	 * 订单列表中【费用】按钮:click event binding  显示此订单下的费用列表
 	 */
 	$(".show-order-fee").on("click", function(e) {
-		var url = BASE_CONTEXT_PATH + "/back/fee/showfee"; //需要提交的 url
 		
-		var orderId = $(this).attr("data-id");  //订单id(PK)
-		var orderNo = $(this).attr("data-orderid");  //订单号
-		
-		//所选用户及角色
-		var userId=ret_userId;
-		var roleId=ret_roleId;
-		
-		var contractState=$(this).attr("data-contractState"); //合同状态
-		
-		showOrderFee(url, orderId, orderNo,userId,roleId);
+		showOrderFee(this);
 		
 		//如果此合同已经执行完毕后,不可以再录入四项费用		
 		//TODO 是否加入此业务规则约束?
 		//TODO 采有枚举类型对合同的状态进行描述.		
-		if(!contractState==6){  //如果是未建合同状态
-			
+		/*if(!contractState==6){  //如果是未建合同状态
+			//TODO
 		}
 		else{
 			//util.message("此合同已经执行完毕,不可以再录入四项费用！");
-		}
+		}*/
 	});
 	
 	//费用列表(所有)
