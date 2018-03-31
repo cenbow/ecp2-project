@@ -311,7 +311,37 @@ function updateUserRole(){
 			
 		});		
 	}	
+}
+
+/**
+ * 根据回传的值:更新视角下拉框当前选择
+ * @returns
+ */
+function updatePerspective(){
+	var selector="#select-perspective";
+	var value=ret_perspectiveValue;
+	var type=ret_perspectiveType;
 	
+	/*
+	 var ret_perspectiveType=[[${perspectiveType}]]   //视角类型
+	 var ret_perspectiveValue=[[${perspectiveValue}]]  //视角值
+	 */
+	
+	console.log("--ret_perspectiveValue----"+ret_perspectiveValue);
+	console.log("--------ret_perspectiveType------------")
+	
+	if(value==1){
+		$(selector).eq(0).attr("selected",true);
+	}
+	else{
+		$(selector + " option").each(function(){
+			if(($(this).attr("data-bind-perspective-type")==type) && ($(this).val()==value)){
+				$(this).attr("selected",true);
+				return;
+			}
+			
+		});		
+	}	
 }
 
 //----------------设置数据及数据准备--------------------
@@ -437,6 +467,7 @@ $(function() {
 	
 	updateUIArea();
 	updateUserRole();
+	updatePerspective();
 	
 	updateUIDealState(g_dealstate_cond);
 	updateUIOrderTime(g_ordertime_cond);

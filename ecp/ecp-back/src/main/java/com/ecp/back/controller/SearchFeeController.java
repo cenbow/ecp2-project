@@ -53,6 +53,9 @@ public class SearchFeeController {
 	private static final int PERSPECTIVE_VALUE_COMPANY=1;
 	private static final int PERSPECTIVE_VALUE_PERSONAL=2;
 	
+	private static final byte COMPANY_FEE_FLAG_TRUE=1;
+	private static final byte COMPANY_FEE_FLAG_FALSE=0;
+	
 	
 	@Autowired
 	IOrderService orderService;  //订单服务
@@ -552,6 +555,21 @@ public class SearchFeeController {
 		//PageInfo<Map<String,Object>> pageInfo = new PageInfo<Map<String,Object>>(orderList);// (使用了拦截器或是AOP进行查询的再次处理) 查询分页:结束
 		
 		//根据帐薄条目查询费用归属
+		List<Map<String,Object>> accountCompanyList=addFeeBelongCompany(accountList);
+		
+		return accountCompanyList;
+	}
+	
+	/** 
+		* @Title: addFeeBelongCompany 
+		* @Description: 增加费用归属信息 
+		* @param @param accountList
+		* @param @return     
+		* @return List<Map<String,Object>>    返回类型 
+		* @throws 
+	*/
+	private List<Map<String,Object>> addFeeBelongCompany(List<AccountCompany> accountList){
+		//根据帐薄条目查询费用归属
 		List<Map<String,Object>> accountCompanyList=new ArrayList<Map<String,Object>>();
 		for(int i=0;i<accountList.size();i++){
 			Map<String,Object> accountItem=new HashMap<String,Object>();
@@ -564,13 +582,13 @@ public class SearchFeeController {
 			String bindUserRole="";
 			
 			if(bindUserId==null || bindUserId==0){
-				if(accountList.get(i).getCompanyFeeFlag()==1){  //如果是计公司内部费用时
+				if(accountList.get(i).getCompanyFeeFlag()==COMPANY_FEE_FLAG_TRUE){  //如果是计公司内部费用时
 					bindUserName="公司内部";
-					bindUserRole="";
+					bindUserRole="不计OS/IS费用";
 				}
 				else{
 					bindUserName="双计";
-					bindUserRole="";
+					bindUserRole="计OS/IS费用";
 				}
 			}
 			else{
@@ -586,7 +604,6 @@ public class SearchFeeController {
 			accountCompanyList.add(accountItem);
 			
 		}
-		
 		return accountCompanyList;
 	}
 	
@@ -656,40 +673,7 @@ public class SearchFeeController {
 		//PageInfo<Map<String,Object>> pageInfo = new PageInfo<Map<String,Object>>(orderList);// (使用了拦截器或是AOP进行查询的再次处理) 查询分页:结束
 		
 		//根据帐薄条目查询费用归属
-		List<Map<String,Object>> accountCompanyList=new ArrayList<Map<String,Object>>();
-		for(int i=0;i<accountList.size();i++){
-			Map<String,Object> accountItem=new HashMap<String,Object>();
-			
-			
-			Long bindUserId=accountList.get(i).getBindUserId();
-			Long bindRoleId=accountList.get(i).getRoleId();
-			
-			String bindUserName="";
-			String bindUserRole="";
-			
-			if(bindUserId==null || bindUserId==0){
-				if(accountList.get(i).getCompanyFeeFlag()==1){  //如果是计公司内部费用时
-					bindUserName="公司内部";
-					bindUserRole="";
-				}
-				else{
-					bindUserName="双计";
-					bindUserRole="";
-				}
-			}
-			else{
-				bindUserName=userService.selectByPrimaryKey(bindUserId).getUsername();
-				bindUserRole=roleService.selectByPrimaryKey(bindRoleId).getRoleName();
-				
-			}
-			
-			accountItem.put("bindUserName", bindUserName);
-			accountItem.put("bindUserRole", bindUserRole);
-			accountItem.put("accountItem", accountList.get(i));
-						
-			accountCompanyList.add(accountItem);
-			
-		}
+		List<Map<String,Object>> accountCompanyList=this.addFeeBelongCompany(accountList);
 		
 		return accountCompanyList;
 	}
@@ -773,35 +757,11 @@ public class SearchFeeController {
 		//PageInfo<Map<String,Object>> pageInfo = new PageInfo<Map<String,Object>>(orderList);// (使用了拦截器或是AOP进行查询的再次处理) 查询分页:结束
 		
 		//根据帐薄条目查询费用归属
-		List<Map<String,Object>> accountCompanyList=new ArrayList<Map<String,Object>>();
-		for(int i=0;i<accountList.size();i++){
-			Map<String,Object> accountItem=new HashMap<String,Object>();
-			
-			
-			Long bindUserId=accountList.get(i).getBindUserId();
-			Long bindRoleId=accountList.get(i).getRoleId();
-			
-			String bindUserName="";
-			String bindUserRole="";			
-			
-			bindUserName=userService.selectByPrimaryKey(bindUserId).getUsername();
-			bindUserRole=roleService.selectByPrimaryKey(bindRoleId).getRoleName();
-			
-			
-			accountItem.put("bindUserName", bindUserName);
-			accountItem.put("bindUserRole", bindUserRole);
-			accountItem.put("accountItem", accountList.get(i));
-						
-			accountCompanyList.add(accountItem);
-			
-		}
+		List<Map<String,Object>> accountCompanyList=addFeeBelongPersonal(accountList);
 		
 		return accountCompanyList;
 		
 	}
-	
-	
-	
 	
 	/** 
 	* @Title: searchAgentByOrder 
@@ -844,64 +804,17 @@ public class SearchFeeController {
 		List<Long> roleIdList=new ArrayList<Long>();  
 		//确定所查询(用户-角色范围)
 		if(userId==0 && roleId==0){ //对某订单查询全部(用户-角色)
-			/*boolean searchAll=needSearchAll();
-			if(!searchAll){  //如果登录的不是admin,且查询的是此用户的角色全部.
-				userId=getLoginUserId();
-				List<Map<String,Object>> userRoleList=getUserRoles();
-				for(int i=0;i<userRoleList.size();i++){
-					roleIdList.add((Long)userRoleList.get(i).get("role_id"));
-				}
-			}
-			else{
-				userId=-1;  //对于系统管理员:user条件置为无效.
-			}*/
 			userId=-1;  //此时用户条件无效,角色条件无效.只有order及费用类型列表有效.
 		}
 		else{  //对某订单查询指定的用户-角色(条件全部有效.只查询了此订单下的绑定费用)
 			roleIdList.add(roleId);
 		}
 		
-		
-		
-		
 		//(2)查询公司帐薄
 		List<AccountCompany> accountList=accountCompanyService.getItemsByOrderAndBindUser(orderId, itemTypeList,userId,roleIdList);
 		
 		//根据帐薄条目查询费用归属
-		List<Map<String,Object>> accountCompanyList=new ArrayList<Map<String,Object>>();
-		for(int i=0;i<accountList.size();i++){
-			Map<String,Object> accountItem=new HashMap<String,Object>();
-			
-			
-			Long bindUserId=accountList.get(i).getBindUserId();
-			Long bindRoleId=accountList.get(i).getRoleId();
-			
-			String bindUserName="";
-			String bindUserRole="";
-			
-			if(bindUserId==null || bindUserId==0){
-				if(accountList.get(i).getCompanyFeeFlag()==1){  //如果是计公司内部费用时
-					bindUserName="公司内部";
-					bindUserRole="不计OS/IS费用";
-				}
-				else{
-					bindUserName="双计";
-					bindUserRole="计OS/IS费用";		
-				}
-			}
-			else{
-				bindUserName=userService.selectByPrimaryKey(bindUserId).getUsername();
-				bindUserRole=roleService.selectByPrimaryKey(bindRoleId).getRoleName();
-				
-			}
-			
-			accountItem.put("bindUserName", bindUserName);
-			accountItem.put("bindUserRole", bindUserRole);
-			accountItem.put("accountItem", accountList.get(i));
-						
-			accountCompanyList.add(accountItem);
-			
-		}
+		List<Map<String,Object>> accountCompanyList=addFeeBelongCompany(accountList);
 		
 		return accountCompanyList;
 	}
@@ -930,40 +843,7 @@ public class SearchFeeController {
 		List<AccountCompany> accountList=accountCompanyService.getItemsByOrderAndBindUser(orderId, itemTypeList, userId, roleIdList);
 		
 		//根据帐薄条目查询费用归属
-		List<Map<String,Object>> accountCompanyList=new ArrayList<Map<String,Object>>();
-		for(int i=0;i<accountList.size();i++){
-			Map<String,Object> accountItem=new HashMap<String,Object>();
-			
-			
-			Long bindUserId=accountList.get(i).getBindUserId();
-			Long bindRoleId=accountList.get(i).getRoleId();
-			
-			String bindUserName="";
-			String bindUserRole="";
-			
-			if(bindUserId==null || bindUserId==0){
-				if(accountList.get(i).getCompanyFeeFlag()==1){  //如果是计公司内部费用时
-					bindUserName="公司内部";
-					bindUserRole="";
-				}
-				else{
-					bindUserName="双计";
-					bindUserRole="";
-				}
-			}
-			else{
-				bindUserName=userService.selectByPrimaryKey(bindUserId).getUsername();
-				bindUserRole=roleService.selectByPrimaryKey(bindRoleId).getRoleName();
-				
-			}
-			
-			accountItem.put("bindUserName", bindUserName);
-			accountItem.put("bindUserRole", bindUserRole);
-			accountItem.put("accountItem", accountList.get(i));
-						
-			accountCompanyList.add(accountItem);
-			
-		}
+		List<Map<String,Object>> accountCompanyList=addFeeBelongCompany(accountList);
 		
 		return accountCompanyList;
 	}
@@ -1008,6 +888,12 @@ public class SearchFeeController {
 		List<AccountPersonal> accountList=accountPersonalService.getItemsByOrderAndBindUser(orderId, itemTypeList,userId,roleIdList);
 		
 		//根据帐薄条目查询费用归属
+		List<Map<String,Object>> accountCompanyList=addFeeBelongPersonal(accountList);
+		
+		return accountCompanyList;
+	}
+	
+	private List<Map<String,Object>> addFeeBelongPersonal(List<AccountPersonal> accountList){
 		List<Map<String,Object>> accountCompanyList=new ArrayList<Map<String,Object>>();
 		for(int i=0;i<accountList.size();i++){
 			Map<String,Object> accountItem=new HashMap<String,Object>();
@@ -1039,7 +925,5 @@ public class SearchFeeController {
 		itemTypeList.add(AccountItemType.MARKET_FEE);  		//市场费
 		return itemTypeList;
 	}
-	
-	
 
 }
