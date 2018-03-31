@@ -527,6 +527,9 @@ public class SearchFeeController {
 		if(userId!=0 && roleId!=0){ //特定角色
 			roleIdList.add(roleId);
 		}
+		else{
+			userId=-1;  //置userId条件无效.
+		}
 		
 		//确定用户的查询范围(代理商范围)
 		List<Map<String,Object>> agentIdList=getSearchScope(userId,roleId);
@@ -630,10 +633,8 @@ public class SearchFeeController {
 		List<Integer> itemTypeList=new ArrayList<Integer>();		
 		itemTypeList.add(AccountItemType.MARKET_FEE);  		
 
-		/*List<Long> roleIdList=new ArrayList<Long>();  	//角色列表		
-		if(userId!=0 && roleId!=0){ //特定角色
-			roleIdList.add(roleId);
-		}*/
+		List<Long> roleIdList=null;  	//角色列表列表为空:此条件无效		
+		
 		
 		//确定用户的查询范围(代理商范围)
 		List<Map<String,Object>> agentIdList=getSearchScope(userId,roleId);
@@ -649,8 +650,8 @@ public class SearchFeeController {
 																provinceName,cityName,countyName,
 																agentIdList,														
 																itemTypeList,
-																0,
-																null);
+																userId,
+																roleIdList);
 		//PageInfo<Map<String,Object>> pageInfo = new PageInfo<Map<String,Object>>(orderList);// (使用了拦截器或是AOP进行查询的再次处理) 查询分页:结束
 		
 		//根据帐薄条目查询费用归属
@@ -850,7 +851,6 @@ public class SearchFeeController {
 		}
 		
 		//(2)查询公司帐薄
-		//List<AccountCompany> accountList=accountCompanyService.getItemsByOrder(orderId, orderNo, itemTypeList);
 		List<AccountCompany> accountList=accountCompanyService.getItemsByOrderAndBindUser(orderId, itemTypeList,userId,roleIdList);
 		
 		//根据帐薄条目查询费用归属
@@ -888,14 +888,23 @@ public class SearchFeeController {
 		return accountCompanyList;
 	}
 	
+	/** 
+		* @Title: searchOrderMarketFeeCompany 
+		* @Description: 查询非直接绑定/公司内部 费用 
+		* @param @param orderId
+		* @param @param orderNo
+		* @param @param userId
+		* @param @param roleId
+		* @param @return     
+		* @return List<Map<String,Object>>    返回类型 
+		* @throws 
+	*/
 	private List<Map<String,Object>> searchOrderMarketFeeCompany(long orderId,String orderNo,long userId,long roleId){
 		//(1)准备查询条件
-		//费用类型列表
-		List<Integer> itemTypeList=new ArrayList<Integer>();		
-		itemTypeList.add(AccountItemType.MARKET_FEE);  		//市场费
+		List<Integer> itemTypeList=getItemTypeList();  //费用类型列表:四项费用,市场费用
 		
 		//(2)查询公司帐薄
-		List<AccountCompany> accountList=accountCompanyService.getItemsByOrder(orderId, orderNo, itemTypeList);
+		List<AccountCompany> accountList=accountCompanyService.getItemsByOrderAndBindUser(orderId, itemTypeList, userId, null);
 		
 		//根据帐薄条目查询费用归属
 		List<Map<String,Object>> accountCompanyList=new ArrayList<Map<String,Object>>();

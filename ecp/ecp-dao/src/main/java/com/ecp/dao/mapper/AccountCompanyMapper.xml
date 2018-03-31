@@ -49,17 +49,15 @@
   <select id="getItemsByOrderAndBindUser" resultMap="BaseResultMap">
   	select * from account_company 
   	<where>
-  		order_id=#{orderId}  		   		
+  		order_id=#{orderId} AND
+  		bind_user_id=#{userId}  		   		
   		<if test="itemTypeList!=null and itemTypeList.size&gt;0">
   			AND
   			type in 	
   			<foreach close=")" collection="itemTypeList" index="index" item="itemType" open="(" separator=",">  
             	#{itemType}  
         	</foreach>  		
-  		</if>
-  		<if test="userId!=0">
-  			AND bind_user_id=#{userId}
-  		</if>
+  		</if>  		
   		<if test="roleIdList!=null and roleIdList.size&gt;0">
   			AND role_id in
   			<foreach close=")" collection="roleIdList" index="index" item="item" open="(" separator=",">  
@@ -127,7 +125,7 @@
 				</foreach>  		
 			</if>
 			
-			<if test="userId!=0">
+			<if test="userId!==-1">
 				AND ac.bind_user_id=#{userId}
 			</if>
 			<if test="roleIdList!=null and roleIdList.size&gt;0">

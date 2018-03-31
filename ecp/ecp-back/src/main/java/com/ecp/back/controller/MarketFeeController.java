@@ -178,6 +178,7 @@ public class MarketFeeController {
 	public Object addFeeItem(long orderId,String orderNo,int itemType,BigDecimal amount,String comment, Model model){
 		
 		//TODO 根据订单的account_state来判定是否为公司内部费用.
+		
 		int row1=keepAccountCompany( orderId, orderNo, itemType, amount, comment);  //记公司帐薄
 		int row2=keepAccountPersonal( orderId, orderNo, itemType, amount, comment);	//记个人帐薄
 		
@@ -209,8 +210,12 @@ public class MarketFeeController {
 		accountItem.setComment(comment);
 		accountItem.setCreateTime(new Date());
 		
-		long agentId=searchAgentByOrder(orderId);
-		accountItem.setCustId(agentId);  //代理商ID
+		long agentId=searchAgentByOrder(orderId); //代理商ID
+		accountItem.setCustId(agentId);  
+		
+		//绑定用户/角色: 0/0
+		accountItem.setBindUserId((long)0);
+		accountItem.setRoleId((long)0);
 		
 		//操作员信息
 		UserBean user=getLoginUser();
