@@ -138,7 +138,7 @@ public class SearchFeeController {
 		model.addAttribute("searchTypeValue", searchTypeValue);  	//查询字段值
 		model.addAttribute("condValue", condValue);  				//查询条件值
 		
-		List<Map<String,Object>> agentIdList=getSearchScope(userId,roleId);		
+		List<Map<String,Object>> agentIdList=getSearchScope(userId,roleId);  //确认登录用户所查询的代理商范围
 		// 分页:Start		
 		PageHelper.startPage(pageNum, pageSize); // PageHelper
 		
@@ -219,7 +219,7 @@ public class SearchFeeController {
 	//
 	/** 
 		* @Title: getUserRoles 
-		* @Description: 查询当前登录用户可以管理的用户及角色.
+		* @Description: 查询当前登录用户:可以查询的用户及角色.
 		* 				如果是OS/IS登录,则只是自己的角色及用户名称(可能有多个,如某人可能即是OS也是IS);
 		* 				如果是经理级别则显示所有的OS/IS用户名及角色名 
 		* @param @return     
@@ -365,11 +365,12 @@ public class SearchFeeController {
 								long userId,
 								long roleId,
 								String perspectiveType,
-								int perspectiveValue,  Model model){
+								int perspectiveValue, 
+								Model model){
 		
 		if(perspectiveValue==PERSPECTIVE_VALUE_COMPANY){  //公司视角
 			
-			List<Map<String,Object>> accountCompanyList=searchOrderFeeCompany(orderId,orderNo,userId,roleId);
+			List<Map<String,Object>> accountCompanyList=searchOrderBindFeeCompany(orderId,orderNo,userId,roleId);  //查询绑定的费用
 			model.addAttribute("accountItemList",accountCompanyList);
 			
 			if(userId!=0 && roleId!=0){ //特定用户角色				
@@ -633,7 +634,7 @@ public class SearchFeeController {
 		List<Integer> itemTypeList=getItemTypeList();		
 
 		List<Long> roleIdList=null;  	//角色列表列表为空:此条件无效
-		long unbindUserId=-1;
+		long unbindUserId=0;
 		
 		
 		//确定用户的查询范围(代理商范围)
@@ -826,7 +827,7 @@ public class SearchFeeController {
 	
 	/** 
 	* @Title: searchOrderFourFee 
-	* @Description: 查询订单费用
+	* @Description: 查询订单绑定的费用
 	* 				当是个人查询费用时,只查询自己的费用(可能多个角色)
 					当是系统管理员/经理查询时, 查询所有的用户 
 	* @param @param orderId 订单ID(自增)
@@ -835,17 +836,33 @@ public class SearchFeeController {
 	* @return List<Map<String,Object>>    返回类型 
 	* @throws 
 	*/
-	private List<Map<String,Object>> searchOrderFeeCompany(long orderId,String orderNo,long userId,long roleId){
+	private List<Map<String,Object>> searchOrderBindFeeCompany(long orderId,String orderNo,long userId,long roleId){
 		//(1)准备查询条件
 		List<Integer> itemTypeList=getItemTypeList();  //费用类型列表:四项费用,市场费用
 
-		List<Long> roleIdList=new ArrayList<Long>();  		//角色列表		
-		if(userId!=0 && roleId!=0){ //特定角色
+		//登录角色判定:系统管理员
+		List<Long> roleIdList=new ArrayList<Long>();  
+		//确定所查询(用户-角色范围)
+		if(userId==0 && roleId==0){ //对某订单查询全部(用户-角色)
+			/*boolean searchAll=needSearchAll();
+			if(!searchAll){  //如果登录的不是admin,且查询的是此用户的角色全部.
+				userId=getLoginUserId();
+				List<Map<String,Object>> userRoleList=getUserRoles();
+				for(int i=0;i<userRoleList.size();i++){
+					roleIdList.add((Long)userRoleList.get(i).get("role_id"));
+				}
+			}
+			else{
+				userId=-1;  //对于系统管理员:user条件置为无效.
+			}*/
+			userId=-1;  //此时用户条件无效,角色条件无效.只有order及费用类型列表有效.
+		}
+		else{  //对某订单查询指定的用户-角色(条件全部有效.只查询了此订单下的绑定费用)
 			roleIdList.add(roleId);
 		}
-		else{
-			userId=-1;  //userId条件无效.
-		}
+		
+		
+		
 		
 		//(2)查询公司帐薄
 		List<AccountCompany> accountList=accountCompanyService.getItemsByOrderAndBindUser(orderId, itemTypeList,userId,roleIdList);
@@ -865,7 +882,11 @@ public class SearchFeeController {
 			if(bindUserId==null || bindUserId==0){
 				if(accountList.get(i).getCompanyFeeFlag()==1){  //如果是计公司内部费用时
 					bindUserName="公司内部";
-					bindUserRole="";
+					bindUserRole="不计OS/IS费用";
+				}
+				else{
+					bindUserName="双计";
+					bindUserRole="计OS/IS费用";		
 				}
 			}
 			else{
@@ -898,9 +919,12 @@ public class SearchFeeController {
 	*/
 	private List<Map<String,Object>> searchOrderUnbindFeeCompany(long orderId,String orderNo,long userId,long roleId){
 		//(1)准备查询条件
-		List<Integer> itemTypeList=getItemTypeList();  //费用类型列表:四项费用,市场费用
+		List<Integer> itemTypeList=getItemTypeList();  	//费用类型列表:四项费用,市场费用
 		
-		List<Long> roleIdList=null;  		//角色列表条件无效
+		//登录角色:系统管理员
+		List<Long> roleIdList=new ArrayList<Long>();  //查询登录用户的角色列表(此条件无效)
+		userId=0;  //查询非绑定费用(此条件有效,所有非绑定费用userId==0)
+		
 		
 		//(2)查询公司帐薄
 		List<AccountCompany> accountList=accountCompanyService.getItemsByOrderAndBindUser(orderId, itemTypeList, userId, roleIdList);
@@ -960,9 +984,14 @@ public class SearchFeeController {
 		//(1)准备查询条件
 		List<Integer> itemTypeList=getItemTypeList();  //费用类型列表:四项费用,市场费用
 
+		//登录用户:系统管理员,OS/IS个人帐号
+		//admin:个人视角:查询全部			---userid条件无效,角色列表条件无效
+		//admin:个人视角:查询特定用户-角色	---userid条件有效,角色列表条件有效
+		//OS/IS:个人视角:查询全部			---userid条件有效(来自于登录用户ID),角色列表条件有效(此登录用户的所有角色-可用于查询的)
+		//OS/IS:个人视角:查询特定用户-角色	---userid条件有效,角色列表条件有效
 		List<Long> roleIdList=new ArrayList<Long>();  //查询登录用户的角色列表		
 		if(userId==0 && roleId==0){ //查询全部
-			boolean searchAll=needSearchAll();
+			boolean searchAll=needSearchAll();//查询登录用户是否是admin
 			if(!searchAll){  //如果登录的不是admin
 				userId=getLoginUserId();
 				List<Map<String,Object>> userRoleList=getUserRoles();
