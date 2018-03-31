@@ -177,8 +177,7 @@ public class MarketFeeController {
 	@ResponseBody
 	public Object addFeeItem(long orderId,String orderNo,int itemType,BigDecimal amount,String comment, Model model){
 		
-		
-		
+		//TODO 根据订单的account_state来判定是否为公司内部费用.
 		int row1=keepAccountCompany( orderId, orderNo, itemType, amount, comment);  //记公司帐薄
 		int row2=keepAccountPersonal( orderId, orderNo, itemType, amount, comment);	//记个人帐薄
 		

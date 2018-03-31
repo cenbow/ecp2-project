@@ -306,16 +306,30 @@ public class FourFeeController {
 		* @throws 
 	*/
 	private int keepAccountCompany(String parms){
+		final byte COMPANY_FEE_FLAG_TRUE=1;
+		final byte COMPANY_FEE_FLAG_FALSE=0;
 		//参数:long orderId,String orderNo,int itemType,BigDecimal amount,String comment,long bindUserId,long roleId
 		AccountCompany accountItem =new AccountCompany();
 		JSONObject parm=JSON.parseObject(parms);
 		accountItem.setOrderId(parm.getLongValue("orderId"));
 		accountItem.setOrderNo(parm.getString("orderNo"));
-		accountItem.setType(parm.getIntValue("itemType"));
+		
+		accountItem.setType(parm.getIntValue("itemType"));  //费用类型
+		
 		accountItem.setAmount(parm.getBigDecimal("amount"));
 		accountItem.setComment(parm.getString("comment"));
+		
+		long bindUserId=parm.getLongValue("bindUserId");
+		long roleId=parm.getLongValue("roleId");
+		
 		accountItem.setBindUserId(parm.getLongValue("bindUserId"));
 		accountItem.setRoleId(parm.getLongValue("roleId"));
+		
+		//记公司帐户时:置为公司内部费用.
+		if(bindUserId==0 && roleId==0){
+			accountItem.setCompanyFeeFlag(COMPANY_FEE_FLAG_TRUE);			
+		}
+		
 		
 		
 		long agentId=searchAgentByOrder(parm.getLongValue("orderId"));
