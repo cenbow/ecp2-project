@@ -286,15 +286,27 @@ public class FourFeeController {
 	public Object addFeeItem(@RequestBody String parms, Model model){
 		
 		//记入帐薄
-		int row1 =keepAccountCompany(parms);  	//公司帐薄
-		int row2=keepAccountPersonal(parms);	//个人帐薄
+		JSONObject parm=JSON.parseObject(parms);
+		long bindUserId=parm.getLongValue("bindUserId");
+		long roleId=parm.getLongValue("roleId");
 		
-		if (row1>0 && row2>0){
-			return RequestResultUtil.getResultAddSuccess();
+		if(bindUserId==0 && roleId==0) {  //内部费用,只记公司帐薄
+			int row1 =keepAccountCompany(parms);  	//记公司帐薄
+			if (row1>0){
+				return RequestResultUtil.getResultAddSuccess();
+			}
+			else
+				return RequestResultUtil.getResultAddWarn();
 		}
-		else
-			return RequestResultUtil.getResultAddWarn();
-		
+		else{
+			int row1 =keepAccountCompany(parms);  	//记公司帐薄
+			int row2=keepAccountPersonal(parms);	//记个人帐薄
+			if (row1>0 && row2>0){
+				return RequestResultUtil.getResultAddSuccess();
+			}
+			else
+				return RequestResultUtil.getResultAddWarn();
+		}
 	}
 	
 	/** 
