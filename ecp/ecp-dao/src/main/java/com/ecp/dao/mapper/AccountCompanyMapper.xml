@@ -128,7 +128,7 @@
 				</foreach>  		
 			</if>
 			
-			<if test="userId!==-1">
+			<if test="userId!=-1">
 				AND ac.bind_user_id=#{userId}
 			</if>
 			<if test="roleIdList!=null and roleIdList.size&gt;0">

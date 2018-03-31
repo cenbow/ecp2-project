@@ -368,14 +368,14 @@ public class SearchFeeController {
 								int perspectiveValue,  Model model){
 		
 		if(perspectiveValue==PERSPECTIVE_VALUE_COMPANY){  //公司视角
+			
 			List<Map<String,Object>> accountCompanyList=searchOrderFeeCompany(orderId,orderNo,userId,roleId);
 			model.addAttribute("accountItemList",accountCompanyList);
 			
-			if(userId!=0 && roleId!=0){				
+			if(userId!=0 && roleId!=0){ //特定用户角色				
 				List<Map<String,Object>> accountCompanyMarketList=searchOrderUnbindFeeCompany(orderId,orderNo,userId,roleId);
 				model.addAttribute("marketFeeList", accountCompanyMarketList);
 			}
-			
 			
 		}
 		else{  //个人视角
@@ -448,8 +448,8 @@ public class SearchFeeController {
 					   roleId);
 			model.addAttribute("accountItemList", accountCompanyList);
 
-			if (userId != 0 && roleId != 0) {  
-				List<Map<String, Object>> accountCompanyMarketList = searchScopeMarketFeeCompany( orderTimeCond,
+			if (userId != 0 && roleId != 0) {  //特定用户
+				List<Map<String, Object>> accountCompanyMarketList = searchScopeUnbindFeeCompany( orderTimeCond,
 						   dealStateCond,
 						   pageNum, 
 						   pageSize,
@@ -608,7 +608,7 @@ public class SearchFeeController {
 		* @return List<Map<String,Object>>    返回类型 
 		* @throws 
 	*/
-	private List<Map<String,Object>> searchScopeMarketFeeCompany(int orderTimeCond,
+	private List<Map<String,Object>> searchScopeUnbindFeeCompany(int orderTimeCond,
 																  int dealStateCond,
 																  int pageNum, 
 																  int pageSize,
@@ -630,10 +630,10 @@ public class SearchFeeController {
 		}
 		
 		//(1)准备查询条件  费用类型列表:市场费用
-		List<Integer> itemTypeList=new ArrayList<Integer>();		
-		itemTypeList.add(AccountItemType.MARKET_FEE);  		
+		List<Integer> itemTypeList=getItemTypeList();		
 
-		List<Long> roleIdList=null;  	//角色列表列表为空:此条件无效		
+		List<Long> roleIdList=null;  	//角色列表列表为空:此条件无效
+		long unbindUserId=-1;
 		
 		
 		//确定用户的查询范围(代理商范围)
@@ -650,7 +650,7 @@ public class SearchFeeController {
 																provinceName,cityName,countyName,
 																agentIdList,														
 																itemTypeList,
-																userId,
+																unbindUserId,
 																roleIdList);
 		//PageInfo<Map<String,Object>> pageInfo = new PageInfo<Map<String,Object>>(orderList);// (使用了拦截器或是AOP进行查询的再次处理) 查询分页:结束
 		
@@ -733,14 +733,8 @@ public class SearchFeeController {
 			condStr=condValue;
 		}
 		
-		//(1)准备查询条件
-		//费用类型列表:四项费用,市场费用
-		List<Integer> itemTypeList=new ArrayList<Integer>();		
-		itemTypeList.add(AccountItemType.COMMUNICATION_FEE);
-		itemTypeList.add(AccountItemType.ENTERTAINMENT_FEE);
-		itemTypeList.add(AccountItemType.TRANSPORTATION_FEE);
-		itemTypeList.add(AccountItemType.TRAVEL_EXPENSE_FEE);
-		itemTypeList.add(AccountItemType.MARKET_FEE);  		
+		//(1)准备查询条件 费用类型列表:四项费用,市场费用
+		List<Integer> itemTypeList=getItemTypeList();		
 
 		Long bindedUserId=userId;		
 		List<Long> roleIdList=new ArrayList<Long>();  //查询登录用户的角色列表		
