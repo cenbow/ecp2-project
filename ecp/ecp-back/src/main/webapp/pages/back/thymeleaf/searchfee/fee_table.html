@@ -9,8 +9,9 @@
 		<thead>
 			<tr>
 				<th class="col-md-1 column">ID</th>
+				<th class="col-md-1 column">订单号</th>				
 				<th class="col-md-1 column">金额</th>
-				<th class="col-md-2 column">费用类型</th>
+				<th class="col-md-1 column">费用类型</th>
 				<th class="col-md-2 column">归属</th>
 				<th class="col-md-2 column">备注</th>
 				<th class="col-md-2 column">日期</th>
@@ -20,6 +21,7 @@
 		<tbody>
 			<tr th:each="item: ${accountItemList}">
 				<td th:text="${item.accountItem.id}">条目ID</td>
+				<td th:text="${item.accountItem.orderNo}">订单号</td>
 				<td th:text="${item.accountItem.amount}">金额</td>
 				<td><span th:switch="${item.accountItem.type}" th:remove="tag">
 						<span th:case=1 th:remove="tag"> <span>交通费</span>

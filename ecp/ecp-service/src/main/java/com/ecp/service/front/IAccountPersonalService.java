@@ -1,9 +1,11 @@
 package com.ecp.service.front;
 
 import java.util.List;
+import java.util.Map;
 
 import org.apache.ibatis.annotations.Param;
 
+import com.ecp.entity.AccountCompany;
 import com.ecp.entity.AccountPersonal;
 import com.ecp.service.IBaseService;
 
@@ -36,6 +38,36 @@ public interface IAccountPersonalService extends IBaseService<AccountPersonal, L
 			    List<Integer> itemTypeList, 
 			    long userId,
 			    List<Long> roleIdList);
+	
+	
+	/** 
+	* @Title: selectItems 
+	* @Description: 查询费用 
+	* @param @param orderTimeCond
+	* @param @param dealStateCond
+	* @param @param searchTypeValue
+	* @param @param condValue
+	* @param @param provinceName
+	* @param @param cityName
+	* @param @param countyName
+	* @param @param agentIdList
+	* @param @param itemTypeList
+	* @param @param bindedUserId
+	* @param @param roleIdList
+	* @param @return     
+	* @return List<Map<String,Object>>    返回类型 
+	* @throws 
+*/
+public List<AccountPersonal> selectItems(
+		 int orderTimeCond,
+		 int dealStateCond,
+		 int searchTypeValue,String condValue,
+		 String provinceName,String cityName,String countyName,
+		 List<Map<String,Object>> agentIdList,
+		 List<Integer>itemTypeList,
+		 long bindedUserId,
+		 List<Long> roleIdList
+		 );
 	
 	
 	
