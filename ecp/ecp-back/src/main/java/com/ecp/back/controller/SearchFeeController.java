@@ -372,7 +372,7 @@ public class SearchFeeController {
 			model.addAttribute("accountItemList",accountCompanyList);
 			
 			if(userId!=0 && roleId!=0){				
-				List<Map<String,Object>> accountCompanyMarketList=searchOrderMarketFeeCompany(orderId,orderNo,userId,roleId);
+				List<Map<String,Object>> accountCompanyMarketList=searchOrderUnbindFeeCompany(orderId,orderNo,userId,roleId);
 				model.addAttribute("marketFeeList", accountCompanyMarketList);
 			}
 			
@@ -849,6 +849,9 @@ public class SearchFeeController {
 		if(userId!=0 && roleId!=0){ //特定角色
 			roleIdList.add(roleId);
 		}
+		else{
+			userId=-1;  //userId条件无效.
+		}
 		
 		//(2)查询公司帐薄
 		List<AccountCompany> accountList=accountCompanyService.getItemsByOrderAndBindUser(orderId, itemTypeList,userId,roleIdList);
@@ -899,12 +902,14 @@ public class SearchFeeController {
 		* @return List<Map<String,Object>>    返回类型 
 		* @throws 
 	*/
-	private List<Map<String,Object>> searchOrderMarketFeeCompany(long orderId,String orderNo,long userId,long roleId){
+	private List<Map<String,Object>> searchOrderUnbindFeeCompany(long orderId,String orderNo,long userId,long roleId){
 		//(1)准备查询条件
 		List<Integer> itemTypeList=getItemTypeList();  //费用类型列表:四项费用,市场费用
 		
+		List<Long> roleIdList=null;  		//角色列表条件无效
+		
 		//(2)查询公司帐薄
-		List<AccountCompany> accountList=accountCompanyService.getItemsByOrderAndBindUser(orderId, itemTypeList, userId, null);
+		List<AccountCompany> accountList=accountCompanyService.getItemsByOrderAndBindUser(orderId, itemTypeList, userId, roleIdList);
 		
 		//根据帐薄条目查询费用归属
 		List<Map<String,Object>> accountCompanyList=new ArrayList<Map<String,Object>>();
