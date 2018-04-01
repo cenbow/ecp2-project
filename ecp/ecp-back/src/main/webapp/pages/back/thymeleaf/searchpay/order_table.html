@@ -1,0 +1,463 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>订单管理-订单列表</title>
+
+<style>
+
+	a{text-decoration:none;color:black;}
+	a:visited{text-decoration:none;}
+	a:hover { text-decoration:none; }
+	.container a:hover { 
+		text-decoration:none;
+		color:blue; 
+		}
+	.extra-l  a{color:black;}
+	
+	tr:hover{
+		background-color:#CCFFCC;
+	}
+	
+	i{
+		color:darkblue;
+	}
+	a i{
+		cursor:pointer;
+	}
+	
+
+	/* 横向“处理状态”菜单   */
+	.extra-l li{
+		float:left;
+		margin:auto 10px;
+		cursor:pointer;		
+	}
+	
+	.extra-l li a:hover{
+		padding-bottom:5px;		
+		border-bottom: 1px solid gray;
+		
+	}
+	
+	.extra-l li a.curr{
+		padding-bottom:5px;		
+		border-bottom: 2px solid blue;
+		font-weight:bold;
+	}
+	
+	.extra-l li a.curr:hover{
+		padding-bottom:5px;		
+		border-bottom: 2px solid blue;
+		font-weight:bold;
+	}
+	
+	/* 纵向菜单：时间条件 */
+	
+	.ordertime-cont{		
+		margin-bottom: 0;
+		display:inline-block;			
+	}	
+	
+	.time-list{
+		display:none;
+		background-color: rgba(65,65,65,.8);		
+		border:2px solid #1296db;
+		position:absolute;		
+	}
+	
+	.time-list ul{		
+		padding:10px 10px 0px 20px;		
+	}
+	
+	.time-list li{
+		list-style-type:none;		
+	}
+	
+	.time-list li.curr{
+		margin-left:-10px;
+		/* background:   一般用图片进行模拟 ，比较好控制 */		
+	}
+		
+	.time-list a{
+		color:#dcdcdc;
+	}
+	
+	.time-list i{
+		color:white;
+	}
+	
+	
+	/* 纵向菜单：搜索条件 */
+	
+	.search-cont{		
+		margin-bottom: 0;
+		display:inline-block;			
+	}	
+	
+	.search-list{
+		display:none;
+		background-color: rgba(65,65,65,.8);		
+		border:2px solid #1296db;
+		position:absolute;		
+	}
+	
+	.search-list ul{		
+		padding:10px 10px 0px 20px;		
+	}
+	
+	.search-list li{
+		list-style-type:none;		
+	}
+	
+	.search-list li.curr{
+		margin-left:-10px;
+		/* background:   一般用图片进行模拟 ，比较好控制 */		
+	}
+		
+	.search-list a{
+		color:#dcdcdc;
+	}
+	
+	.search-list i{
+		color:white;
+	}
+	
+	/* 纵向菜单：处理状态列表 */
+	
+	.deal-state-cont{
+		margin-bottom: 0;
+		display:inline-block;			
+	}	
+	
+	.state-list{
+		display:none;
+		background-color: rgba(65,65,65,.8);		
+		border:2px solid #1296db;
+		position:absolute;
+	}
+	
+	.state-list ul{
+		padding:10px 10px 0px 20px;		
+	}
+	
+	.state-list i{
+		color:white;
+	}
+	
+	.state-list li{
+		list-style-type:none
+	}
+	
+	
+	.state-list li.curr{
+		margin-left:-10px;
+		/* list-style-type:square; */
+		/* background:   一般用图片进行模拟 ，比较好控制 */
+	}
+		
+	.state-list a{
+		color:#dcdcdc;
+	}
+	
+	
+	
+	/* 时间条件 MOUSE形状 */
+	.time-txt{
+		cursor:pointer;
+	}
+	
+	/* 合同处理状态条件 MOUSE形状 */
+	.state-txt{
+		cursor:pointer;
+	}
+	
+	
+</style>
+
+</head>
+<body>
+	<!-- 对话框 -->
+	<!-- <div th:replace="thymeleaf/common/_dispatch_account_dialog::dialog" class="header"></div> -->
+	
+	<!-- 订单列表 -->
+	<div class="row clearfix">
+		<div class="col-md-12 column">
+			<h5>订单列表</h5>
+			<br />
+			
+			<!-- 区域查询条件 -->
+			<div class="search-box" style="display:inline-block;margin-left:50px;">
+				<!-- 增加地区查询条件 -->
+				<label for="distpicker">区域:</label>
+				<div data-toggle="distpicker" id="distpicker" style="display:inline-block; vertical-align:middle;">
+					
+					<div class="col-md-4 column" style="padding-right:5px;">
+          					<select class="form-control" id="province" ><option  value="" data-code="">—— 省 ——</option></select>
+          					<!-- 省份编码、名称-隐藏字段 -->
+          					<input type="hidden"  id="provinceCode" name="provinceCode">
+          					<input type="hidden"  id="provinceName" name="province" th:value="${provinceName}">
+					</div>
+					<div class="col-md-4 column" style="padding:0px 0px 0px 0px;">
+          					<select class="form-control" id="city" ><option value="" data-code="">—— 市 ——</option></select>
+          					<!-- 市级编码、名称-隐藏字段 -->
+          					<input type="hidden" id="cityCode" name="cityCode">
+          					<input type="hidden" id="cityName" name="city" th:value="${cityName}">
+					</div>
+					<div class="col-md-4 column" style="padding-left:5px">
+				          <select class="form-control" id="district" ><option value="" data-code="">—— 区 ——</option></select>
+				          <!-- 县级编码、名称-隐藏字段 -->
+				          <input type="hidden"  id="countyCode" name="countyCode">
+				          <input type="hidden"  id="countyName" name="county" th:value="${countyName}">
+					</div>
+				</div>
+			</div>
+			
+			<!-- 在此列表登录用户的角色 -->
+			<div style="display:inline-block;  margin-left:150px;" >
+				<label for="select-user-role" >角色:</label>
+				<select id="select-user-role" >
+					<!-- 全部角色 -->
+					<option  		th:attr="data-bind-roleid='0',data-bind-userid='0'" 
+									th:value ="0" 
+									th:text="'全部角色'">用户-角色</option>
+					<span th:if="${not #lists.isEmpty(userRoleList)}" th:remove="tag">
+						<span  th:each="user:${userRoleList}"  th:remove="tag">
+							<span th:switch="${user.role_code}" th:remove="tag">
+								<option th:case="'OS'" 
+									th:attr="data-bind-roleid=${user.role_id},data-bind-userid=${user.id}" 
+									th:value ="${user.id}" 
+									th:text="${user.username}+'(外部销售)' ">姓名</option>
+								<option th:case="'IS'" 
+									th:attr="data-bind-roleid=${user.role_id},data-bind-userid=${user.id}" 
+									th:value ="${user.id}" 
+									th:text="${user.username}+'(内部销售)' ">姓名</option>
+							</span>
+						</span>
+					</span>										
+				</select>				
+			</div>
+			
+			<hr style="height:1px;border:none;border-top:1px solid lightgray;">
+			
+			<!-- 横向菜单 -->
+			<div class="row clearfix" style="display:inline-block">
+				<div class="col-md-12 column">
+					<ul class="extra-l" style="list-style: none;">
+						<li value="0"><a href="javascript:void(0);"	class="txt curr">全部订单</a></li>
+						<li value="1"><a href="javascript:void(0);"	class="txt">未建合同</a></li>
+						<li value="2"><a href="javascript:void(0);"	class="txt">己建合同</a></li>
+						<li value="4"><a href="javascript:void(0);"	class="txt"	>甲方己确认</a></li>
+						<li value="3"><a href="javascript:void(0);"	class="txt"	>乙方己确认</a></li>
+						<li value="5"><a href="javascript:void(0);"	class="txt"	>执行中..</a></li>
+						<li value="6"><a href="javascript:void(0);"	class="txt"	>执行完毕</a></li>
+					</ul>
+				</div>
+			</div>
+			<div class="search-box" style="display:inline-block;margin-left:100px;">
+				<div class="search-cont">
+					<div class="search-txt" >
+						<span class="text" id="search-cond" value="0">选择查询条件</span>
+						<i class="icon-angle-down icon-large" style="color:black"></i>							
+					</div>
+					<div class="search-list" >
+						<ul>
+							<li class="curr" value="0"><i class="icon-ok"></i><a href="javascript:void(0);" >选择查询条件</a></li>
+							<li class="" 	 value="1"><i class="icon-ok"></i><a href="javascript:void(0);" >订单号</a></li>
+							<li class="" 	 value="2"><i class="icon-ok"></i><a href="javascript:void(0);" >合同号</a></li>
+							<li class="" 	 value="3"><i class="icon-ok"></i><a href="javascript:void(0);" >收货人姓名</a></li>
+							<li class="" 	 value="4"><i class="icon-ok"></i><a href="javascript:void(0);" >收货人电话</a></li>
+							<li class="" 	 value="5"><i class="icon-ok"></i><a href="javascript:void(0);" >公司名称</a></li>
+							<li class="" 	 value="6"><i class="icon-ok"></i><a href="javascript:void(0);" >负责人姓名</a></li>
+							<li class="" 	 value="7"><i class="icon-ok"></i><a href="javascript:void(0);" >公司电话</a></li>
+							
+						</ul>
+					</div>						
+				</div>
+				<div class="cond-box" style="display:inline">
+					<input type="text" value="" id="searchCond" name="searchCond" />
+					<a class="start-search" href="javascript:void(0);"><i class="icon-search icon-large "></i></a>
+				</div>
+			</div>
+			<a id="refresh-item"
+						th:href="@{/back/fee/show}" title="刷新列表"	style="float: right; margin-right: 20px">
+						<i class="icon-refresh icon-large"></i>
+			</a>
+			
+			<hr style="height:1px;border:none;border-top:1px solid blue;">
+			
+			
+			<!-- 订单列表 -->			
+			<table class="table">
+				<thead>
+					<tr>
+						<th>订单号</th>
+						<th>合同号</th>
+						<th>
+							<!-- 订单时间：查询条件 -->
+							<div class="ordertime-cont">
+								<div class="time-txt" >
+									<span class="text" id="ordertime-cond" value="1">近一个月订单 </span>
+									<i class="icon-angle-down icon-large" style="color:black"></i>
+								</div>
+								<div class="time-list">
+									<ul>
+										<li class="curr" value="1"><i class="icon-ok"></i><a href="javascript:void(0);" >近一个月订单</a></li>
+										<li class="" 	 value="2"><i class="icon-ok"></i><a href="javascript:void(0);" >近两个月订单</a></li>
+										<li class="" 	 value="3"><i class="icon-ok"></i><a href="javascript:void(0);" >近三个月订单</a></li>
+										<li class="" 	 value="6"><i class="icon-ok"></i><a href="javascript:void(0);" >近六个月订单</a></li>			
+										<li class="" 	 value="12"><i class="icon-ok"></i><a href="javascript:void(0);" >今年内订单</a></li>
+									</ul>
+								</div>
+							</div>
+						</th>
+						<th>订单金额</th>
+						<th>收货人</th>
+						<th>
+							<!-- 状态：查询条件 -->
+							<div class="deal-state-cont" id="orderState">
+								<div class="state-txt">
+									<span class="text" id="dealstate-cond" value="100">全部状态</span>
+									<i class="icon-angle-down icon-large " style="color:black"></i>
+								</div>
+								<div class="state-list" style="z-index:100;">
+									<ul>											
+										<li value="0" class="curr"><i class="icon-ok"></i><a href="javascript:void(0)">全部状态</a></li>
+										<li value="1"	class=""><i class="icon-ok"></i><a href="javascript:void(0)">未建合同</a></li>
+										<li value="2"   class=""><i class="icon-ok"></i><a href="javascript:void(0)">己建合同</a></li>
+										<li value="4"	class=""><i class="icon-ok"></i><a href="javascript:void(0)">甲方己确认</a></li>
+										<li value="3"   class=""><i class="icon-ok"></i><a href="javascript:void(0)">乙方己确认</a></li>
+										<li value="5"	class=""><i class="icon-ok"></i><a href="javascript:void(0)">执行中..</a></li>
+										<li value="6"	class=""><i class="icon-ok"></i><a href="javascript:void(0)">执行完毕</a></li>
+									</ul>
+								</div>
+							</div>
+						</th>
+						<th>公司名称</th>
+						<th>操作</th>
+					</tr>
+				</thead>
+				<tbody>
+					<tr th:each="order:${orderList}">
+						<td><a th:href="@{/back/order/detail(id=${order.id})}" target="_blank" title="订单详情"><span th:text="${order.order_id}" th:remove="tag">订单号</span></a></td>
+						<td>
+							<span th:if="${order.contract_id}" th:remove="tag">								
+								 <a th:href="@{/back/order/contractdetail(id=${order.contract_id})}" target="_blank" title="合同详情">
+									<span th:text="${order.contract_no}" th:remove="tag">合同号</span>				
+								</a>
+								<a th:href="@{/back/contract/open(id=${order.contract_id})}" target="_blank" title="打开合同">
+									<i class="icon-folder-close-alt icon-large" style="color:darkblue;" ></i> 
+								</a>    
+							</span>							
+							
+						</td>
+						<td	th:text="${#calendars.format(order.order_time,'yyyy-MM-dd HH:mm:ss')}">订单时间</td>
+						<td th:text="${order.total_price}">优惠前金额</td>
+						<td th:text="${order.name}">收货人</td>
+						<!-- 状态显示 -->
+						<td>
+							<!-- 取消状态 -->
+							<span th:switch="${order.yn}"  th:remove="tag">
+								<span th:case='2' th:remove="tag"><span class="order-status"> 已取消 </span> <br></span>
+							</span>
+							
+							<!-- 其它状态 -->
+							<span th:switch="${order.contract_state}"  th:remove="tag">
+								<span th:case='1' th:remove="tag"><span class="order-status"> 未建合同 </span> <br></span>
+								<span th:case='2' th:remove="tag"><span class="order-status"> 己建合同 </span> <br></span>
+								<span th:case='4' th:remove="tag"><span class="order-status"> 甲方已确认 </span> <br></span>
+								<span th:case='3' th:remove="tag"><span class="order-status"> 乙方已确认 </span> <br></span>
+								<span th:case='5' th:remove="tag"><span class="order-status"> 执行中 </span> <br></span>
+								<span th:case='6' th:remove="tag"><span class="order-status"> 执行完毕 </span> <br></span>										
+							</span>
+						</td>
+						<td th:text="${order.company_name}">公司名称</td>
+						<td>
+							<!-- <a type="button" th:href="@{/back/order/detail(id=${order.id})}" class="btn btn-primary show-detail" target="_blank">详情</a> -->
+							<a type="button" th:attr="data-id=${order.id},
+													data-orderid=${order.order_id},
+													data-contractState=${order.contract_state},
+													data-contract-id=${order.contract_id}" 
+												class="show-order-fee" 
+												title="订单回款">												
+								<i class=" icon-money icon-large" style="color:darkblue"></i>
+							</a>
+							<!-- <a type="button" th:attr="data-id=${order.id},
+													data-orderid=${order.order_id},
+													data-contractState=${order.contract_state}" 
+											class="edit-market-fee" 
+											title="市场回款管理">
+								<i class=" icon-coffee icon-large" style="color:darkblue"></i>
+							</a> -->
+						</td>
+
+					</tr>
+					<tr>						
+						<td colspan="8">
+							<!-- <a type="button" id="btn-user-role-fee-list" class="btn btn-primary" style="float:right;margin-left:10px;">人员回款列表</a>
+							<a type="button" id="btn-order-fee-list" class="btn btn-primary" style="float:right;margin-left:10px;">订单回款列表</a> -->
+							<a type="button" id="btn-all-fee-list" class="btn btn-primary" style="float:right;margin-left:10px;">回款列表</a>
+							
+						</td>
+					</tr>
+
+				</tbody>
+			</table>
+			<hr style="height:1px;border:none;border-top:1px solid blue;">
+			<!-- 加入 分页 -->
+			<div th:include="/back/thymeleaf/common/_pager::pager" class="pagerx" style="float: right; margin-right: 100px;"></div>
+
+		</div>
+	</div>
+	
+	<!-- 订单选择条件  -->
+	<script th:inline="javascript">  
+		/*<![CDATA[*/
+			
+		var g_ordertime_cond = [[${orderTimeCond}]];  	 //回传的时间条件 
+		
+		var g_dealstate_cond=[[${dealStateCond}]];    	 //回传的合同处理状态条件
+		var g_searchTypeValue = [[${searchTypeValue}]];  //查询类型值
+		var g_condValue=[[${condValue}]]; 				 //查询条件值
+		
+		var ret_provinceName=[[${provinceName}]];  		 //回传的区域条件
+		var ret_cityName=[[${cityName}]];
+		var ret_countyName=[[${countyName}]];
+		
+		var ret_userId=[[${userId}]];					 //回传的角色条件
+		var ret_roleId=[[${roleId}]];
+		
+		/*]]>*/  
+	</script>
+	
+	
+	<script th:inline="javascript">  
+		/*<![CDATA[*/
+			
+		var g_searchTypeValue = [[${searchTypeValue}]];  //查询类型值
+		var g_condValue=[[${condValue}]]; //查询条件值
+		
+		
+		
+		/*]]>*/
+	</script>
+	
+	<!-- footer -->
+	<!-- <div th:include="/thymeleaf/common/_footer::footer" class="footer"></div> -->
+
+	<!-- 当用户点击查询条件时，采用些隐藏表单提交 -->
+	<form method="post" id="searchform">
+		<!-- 保存页号与页大小 -->
+		<input type="hidden" name="pageNum" id="pageNum" th:value="${pageInfo.pageNum}"> 
+		<input type="hidden" name="pageSize" id="pageSize" th:value="${pageInfo.pageSize}">
+	</form>
+	
+	<!-- 地区选择 -->
+	<script type="text/javascript" th:src="@{/static/js/distpicker/distpicker.data.js}"></script>
+	<script type="text/javascript" th:src="@{/static/js/distpicker/distpicker.js}"></script>
+	
+	
+	<script type="text/javascript"	th:src="@{/static/js/searchpay/searchpay.js}"></script>
+
+</body>
+</html>
