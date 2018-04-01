@@ -185,6 +185,10 @@ public class PaymentController {
 		long agentId=searchAgentByOrder(orderId);
 		accountCompanyItem.setCustId(agentId);  //代理商ID
 		
+		//加入userid与roleId均为0;
+		accountCompanyItem.setBindUserId((long)0);
+		accountCompanyItem.setRoleId((long)0);
+		
 		//操作员信息
 		UserBean user=getLoginUser();
 		accountCompanyItem.setOperatorId(user.getId());
