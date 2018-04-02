@@ -67,6 +67,7 @@
     <result column="extend_id" jdbcType="BIGINT" property="extendId" />
     <result column="contract_state" jdbcType="TINYINT" property="contractState" />
     <result column="account_state" jdbcType="TINYINT" property="accountState" />
+    <result column="total_pay_flag" jdbcType="TINYINT" property="totalPayFlag" />
   </resultMap>
   <sql id="Base_Column_List">
     <!--
@@ -80,7 +81,7 @@
     order_jfs_key, order_time, order_type, paid, parent_order_id, pay_period, payment_method, 
     payment_price, payment_time, payment_type, phone, promo_code, province_id, refund, 
     refund_time, seller_evaluate, shipment_type, state, total_discount, total_price, 
-    update_time, yn, contract_no, contract_id, contract_state, account_state,extend_id
+    update_time, yn, contract_no, contract_id, contract_state, account_state,extend_id,totalPayFlag
   </sql>
   
   <select id="selectOrderByOrderTimeAndDealState" resultMap="BaseResultMap">
