@@ -45,7 +45,18 @@ public class Orders {
     @Column(name = "extend_id")
     private Long extendId;
     
+    @Column(name = "total_pay_Flag")
+    private Byte totalPayFlag;
     
+    
+
+	public Byte getTotalPayFlag() {
+		return totalPayFlag;
+	}
+
+	public void setTotalPayFlag(Byte totalPayFlag) {
+		this.totalPayFlag = totalPayFlag;
+	}
 
 	public Long getExtendId() {
 		return extendId;
