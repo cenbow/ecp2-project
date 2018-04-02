@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>Insert title here</title>
+</head>
+<body>
+	<table th:if="${not #lists.isEmpty(marketFeeList)}" class="table">
+		<thead>
+			<tr>
+				<th class="col-md-1 column">ID</th>
+				<th class="col-md-1 column">订单号</th>
+				<th class="col-md-1 column">金额</th>
+				<th class="col-md-1 column">费用类型</th>
+				<th class="col-md-2 column">归属</th>
+				<th class="col-md-2 column">备注</th>
+				<th class="col-md-2 column">日期</th>
+				<th class="col-md-2 column">操作</th>
+			</tr>
+		</thead>
+		<tbody>
+			<tr th:each="item1: ${marketFeeList}">
+				<td th:text="${item1.accountItem.id}">条目ID</td>
+				<td th:text="${item1.accountItem.orderNo}">订单号</td>
+				<td th:text="${item1.accountItem.amount}">金额</td>
+				<td><span th:switch="${item1.accountItem.type}" th:remove="tag">
+						<span th:case=1 th:remove="tag"> <span>交通费</span>
+					</span> <span th:case=2 th:remove="tag"> <span>通讯费</span>
+					</span> <span th:case=3 th:remove="tag"> <span>招待费</span>
+					</span> <span th:case=4 th:remove="tag"> <span>差旅费</span>
+					</span> <span th:case=5 th:remove="tag"> <span>市场费</span>
+					</span> <span th:case="*" th:remove="tag"> <span>其它费用</span>
+					</span>
+				</span></td>
+
+				<td th:text="${item1.bindUserName}+'('+${item1.bindUserRole} +')'"></td>
+				<!-- 备注 -->
+				<td th:text="${item1.accountItem.comment}">备注</td>
+				<td
+					th:text="${#dates.format(item1.accountItem.createTime,'yyyy-MM-dd HH:mm:ss')}">日期</td>
+				<td>
+					<!-- <a type="button" class="modi-four-fee" th:attr="bind-id=${item.accountItem.id}"><i class=" icon-edit icon-large" style="color:darkblue"></i></a>
+					<a type="button" class="del-four-fee" th:attr="bind-id=${item.accountItem.id}"><i class=" icon-remove-circle icon-large" style="color:darkblue"></i></a> -->
+				</td>
+			</tr>
+
+		</tbody>
+	</table>
+
+</body>
+</html>

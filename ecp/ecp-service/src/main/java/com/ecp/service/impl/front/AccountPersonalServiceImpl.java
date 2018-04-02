@@ -29,16 +29,44 @@ public class AccountPersonalServiceImpl extends AbstractBaseService<AccountPerso
 
 
 	@Override
-	public List<AccountCompany> getItemsByOrder(long orderId, String orderNo, List<Integer> itemTypeList) {
-		
+	public List<AccountPersonal> getItemsByOrder(long orderId,List<Integer> itemTypeList) {
+		//TODO 
 		return null;
 	}
 
 
 	@Override
-	public int addAccountItem(long orderId, String orderNo, int itemType, BigDecimal amount) {
-		// TODO Auto-generated method stub
-		return 0;
+	public int addAccountItem(AccountPersonal accountItem) {
+		return accountPersonalMapper.insertSelective(accountItem);
+	}
+
+
+	@Override
+	public List<AccountPersonal> getItemsByOrderAndBindUser(long orderId, List<Integer> itemTypeList, long userId,
+			List<Long> roleIdList) {
+		return accountPersonalMapper.getItemsByOrderAndBindUser(orderId, itemTypeList, userId, roleIdList);
+	}
+
+
+	@Override
+	public List<AccountPersonal> selectItems(int orderTimeCond, int dealStateCond, int searchTypeValue,
+			String condValue, String provinceName, String cityName, String countyName,
+			List<Map<String, Object>> agentIdList, List<Integer> itemTypeList, long bindedUserId,
+			List<Long> roleIdList) {
+		
+		return accountPersonalMapper.selectItems(
+				-orderTimeCond, 
+				dealStateCond, 
+				searchTypeValue,
+				condValue,  
+				provinceName,  
+				cityName,  
+				countyName,
+				agentIdList,				
+				itemTypeList, 
+				bindedUserId,
+				roleIdList
+				);
 	}
 
 

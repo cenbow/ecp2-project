@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>Insert title here</title>
+</head>
+<body>
+<div class="container-fluid">
+	<div class="row clearfix">
+		<div class="col-md-12 column">
+			<h4>
+				回款查询
+			</h4>
+		</div>		
+	</div>
+	
+	<!-- dialog  -->
+		
+	<div class="row clearfix">
+		<div class="col-md-12 column">
+			<div class="row clearfix">
+				<div class="col-md-12 column">
+					 <h5>订单回款列表</h5>
+				</div>
+			</div>
+			<hr  style="height:1px;border:none;border-top:1px solid #555555;">
+			<div class="row clearfix">
+				<!-- 回款列表 -->
+				<div class="col-md-12 column" id="fee-table">
+					<span th:include="/back/thymeleaf/searchpay/fee_table" th:remove="tag"></span>					
+				</div>				
+			</div>
+			
+			<hr  style="height:1px;border:none;border-top:1px solid #555555;">
+			<div class="row clearfix">
+				<div class="col-md-12 column">
+					 <button type="button"  id="btn-close" class="btn btn-primary" style="float:right;margin-right:100px;">返回</button>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>
+
+<script th:inline="javascript">
+/*<![CDATA[*/
+    
+    var curr_orderId = [[${orderId}]];
+    var curr_orderNo=[[${orderNo}]];
+    
+/*]]>*/
+</script>
+
+<script type="text/javascript">
+	$(function(){	
+		
+		$("#btn-close").on('click',function(){
+			resetTab();
+		});
+		
+		
+	});
+
+</script>
+
+</body>
+</html>

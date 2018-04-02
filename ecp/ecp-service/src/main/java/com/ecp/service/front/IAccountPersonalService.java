@@ -1,10 +1,8 @@
 package com.ecp.service.front;
 
-import java.math.BigDecimal;
 import java.util.List;
 import java.util.Map;
 
-import com.ecp.entity.AccountCompany;
 import com.ecp.entity.AccountPersonal;
 import com.ecp.service.IBaseService;
 
@@ -24,26 +22,62 @@ public interface IAccountPersonalService extends IBaseService<AccountPersonal, L
 	* @Title: getItemsByOrder 
 	* @Description: 根据订单及帐薄条目类型 查询 
 	* @param @param orderId	订单自增ID
-	* @param @param orderNo	订单No
 	* @param @param itemTypeList 帐薄条目类型列表.
 	* @param @return    设定文件 
-	* @return List<AccountCompany>    公司帐薄条目 
+	* @return List<AccountPersonal>    个人帐薄条目 
 	* @throws 
 	*/
-	public List<AccountCompany> getItemsByOrder(long orderId,String orderNo,List<Integer> itemTypeList);
+	public List<AccountPersonal> getItemsByOrder(long orderId,List<Integer> itemTypeList);
+	
+	
+	
+	public List<AccountPersonal> getItemsByOrderAndBindUser( long orderId, 
+			    List<Integer> itemTypeList, 
+			    long userId,
+			    List<Long> roleIdList);
+	
 	
 	/** 
-	* @Title: addAccountItem 
-	* @Description: 增加帐薄条目 
-	* @param @param orderId  订单自增ID
-	* @param @param orderNo  订单No
-	* @param @param itemType 帐薄条目类型
-	* @param @param amount	 金额
+	* @Title: selectItems 
+	* @Description: 查询费用 
+	* @param @param orderTimeCond
+	* @param @param dealStateCond
+	* @param @param searchTypeValue
+	* @param @param condValue
+	* @param @param provinceName
+	* @param @param cityName
+	* @param @param countyName
+	* @param @param agentIdList
+	* @param @param itemTypeList
+	* @param @param bindedUserId
+	* @param @param roleIdList
 	* @param @return     
-	* @return int    返回类型 
+	* @return List<Map<String,Object>>    返回类型 
 	* @throws 
+*/
+public List<AccountPersonal> selectItems(
+		 int orderTimeCond,
+		 int dealStateCond,
+		 int searchTypeValue,String condValue,
+		 String provinceName,String cityName,String countyName,
+		 List<Map<String,Object>> agentIdList,
+		 List<Integer>itemTypeList,
+		 long bindedUserId,
+		 List<Long> roleIdList
+		 );
+	
+	
+	
+	
+	/** 
+		* @Title: addAccountItem 
+		* @Description: TODO(这里用一句话描述这个方法的作用) 
+		* @param @param accountItem
+		* @param @return     
+		* @return int    返回类型 
+		* @throws 
 	*/
-	public int addAccountItem(long orderId,String orderNo, int itemType,BigDecimal amount); 
+	public int addAccountItem(AccountPersonal accountItem); 
 	
 	/**
 	 * 查询业绩

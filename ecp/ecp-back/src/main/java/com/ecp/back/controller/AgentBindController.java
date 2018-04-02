@@ -17,6 +17,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
+import com.ecp.back.commons.RoleCodeConstants;
 import com.ecp.common.util.RequestResultUtil;
 import com.ecp.entity.UserExtends;
 import com.ecp.service.back.IUserService;
@@ -42,10 +43,6 @@ public class AgentBindController {
 	private static final  String RESPONSE_JSP = "jsps/front/";
 
 	private static final int PAGE_SIZE = 8;
-	
-	private static final String OUTSIDE_ROLE="Outside Sales";
-	private static final String INSIDE_ROLE="Inside Sales";
-
 	
 
 	@Autowired
@@ -79,20 +76,20 @@ public class AgentBindController {
 	@RequestMapping(value = "/showbindedusers")
 	public String showBindedUsers(long agentId,Model model) {
 		//查询签约客户所绑定的OS/IS
-		List<Map<String,Object>> agentBindedOS= agentBindService.getSalesByAgentId(agentId,OUTSIDE_ROLE);
-		List<Map<String,Object>> agentBindedIS= agentBindService.getSalesByAgentId(agentId,INSIDE_ROLE);
+		List<Map<String,Object>> agentBindedOS= agentBindService.getSalesByAgentId(agentId,RoleCodeConstants.OS);
+		List<Map<String,Object>> agentBindedIS= agentBindService.getSalesByAgentId(agentId,RoleCodeConstants.IS);
 		//组装成前台需要的格式
 		List<Map<String,Object>> agentBindList=new ArrayList<Map<String,Object>>();
 		for(int i=0;i<agentBindedOS.size();i++){
 			Map<String,Object> map=new HashMap<String,Object>();
 			map.put("user", agentBindedOS.get(i));
-			map.put("type", OUTSIDE_ROLE);
+			map.put("type", "外部销售");
 			agentBindList.add(map);
 		}
 		for(int i=0;i<agentBindedIS.size();i++){
 			Map<String,Object> map=new HashMap<String,Object>();
 			map.put("user", agentBindedIS.get(i));
-			map.put("type", INSIDE_ROLE);
+			map.put("type", "内部销售");
 			agentBindList.add(map);
 		}		
 		
@@ -186,7 +183,7 @@ public class AgentBindController {
 	 * @return 返回签约代理商OS姓名,如果有多个,以逗号进行分隔
 	 */
 	private List<Map<String,Object>> getAgentOs(long agentId){
-		return agentBindService.getSalesByAgentId(agentId,OUTSIDE_ROLE);
+		return agentBindService.getSalesByAgentId(agentId,RoleCodeConstants.OS);
 		
 	}
 	
@@ -195,7 +192,7 @@ public class AgentBindController {
 	 * @return 返回签约代理商IS姓名,如果有多个,以逗号进行分隔
 	 */
 	private List<Map<String,Object>> getAgentIS(long agentId){
-		return agentBindService.getSalesByAgentId(agentId, INSIDE_ROLE);		
+		return agentBindService.getSalesByAgentId(agentId, RoleCodeConstants.IS);		
 	}
 	
 	
@@ -262,9 +259,14 @@ public class AgentBindController {
 	public String showAgentBind(@PathVariable("id") long extendId, Model model) {
 		
 		//查询所有OS角色用户
-		List<Map<String,Object>> outsideSales=agentBindService.getSales(OUTSIDE_ROLE);
+		List<String> parms=new ArrayList<String>();
+		parms.add(RoleCodeConstants.OS);
+		List<Map<String,Object>> outsideSales=agentBindService.getUsersByRoleCode(parms);
+		
 		//查询所有IS角色用户
-		List<Map<String,Object>> insideSales=agentBindService.getSales(INSIDE_ROLE);
+		parms.clear();
+		parms.add(RoleCodeConstants.IS);
+		List<Map<String,Object>> insideSales=agentBindService.getUsersByRoleCode(parms);
 		
 		model.addAttribute("outsideSales",outsideSales);
 		model.addAttribute("insideSales",insideSales);	

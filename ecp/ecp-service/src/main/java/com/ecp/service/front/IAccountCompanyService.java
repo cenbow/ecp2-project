@@ -2,6 +2,7 @@ package com.ecp.service.front;
 
 import java.math.BigDecimal;
 import java.util.List;
+import java.util.Map;
 
 import com.ecp.entity.AccountCompany;
 import com.ecp.service.IBaseService;
@@ -31,6 +32,51 @@ public interface IAccountCompanyService extends IBaseService<AccountCompany, Lon
 	* @throws 
 	*/
 	public List<AccountCompany> getItemsByOrder(long orderId,String orderNo,List<Integer> itemTypeList);
+	
+	
+	/** 
+		* @Title: getItemsByOrderAndBindUser 
+		* @Description: TODO(这里用一句话描述这个方法的作用) 
+		* @param @param orderId
+		* @param @param itemTypeList
+		* @param @param userId    如果uerId=0,则为查询所有.按订单来查询
+		* 						    如果userId!=0,则按user来查询
+		* @param @param roleIdList
+		* @param @return     
+		* @return List<AccountCompany>    返回类型 
+		* @throws 
+	*/
+	public List<AccountCompany> getItemsByOrderAndBindUser(long orderId,List<Integer> itemTypeList,long userId,List<Long> roleIdList);
+	
+	
+	/** 
+		* @Title: selectItems 
+		* @Description: 查询费用 
+		* @param @param orderTimeCond
+		* @param @param dealStateCond
+		* @param @param searchTypeValue
+		* @param @param condValue
+		* @param @param provinceName
+		* @param @param cityName
+		* @param @param countyName
+		* @param @param agentIdList
+		* @param @param itemTypeList
+		* @param @param bindedUserId
+		* @param @param roleIdList
+		* @param @return     
+		* @return List<Map<String,Object>>    返回类型 
+		* @throws 
+	*/
+	public List<AccountCompany> selectItems(
+			 int orderTimeCond,
+			 int dealStateCond,
+			 int searchTypeValue,String condValue,
+			 String provinceName,String cityName,String countyName,
+			 List<Map<String,Object>> agentIdList,
+			 List<Integer>itemTypeList,
+			 long bindedUserId,
+			 List<Long> roleIdList
+			 );
 	
 	/** 
 	* @Title: addAccountItem 
