@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<div th:include="/back/thymeleaf/common/_head2::headx('业绩列表')"	th:remove="tag"></div>
+</head>
+<body>
+	<div class="container-fluid" style="margin-top: 20px;">
+		<!-- 对话框 -->
+		<!-- <div th:replace="back/thymeleaf/common/_discount_dialog::dialog" ></div> -->
+		<div class="row clearfix">
+			<div class="col-md-12 column">
+				<div class="panel panel-success">
+					<div class="panel-heading">
+						<h3 class="panel-title" style="display:inline">合同商品列表</h3>
+						<span th:text="'合同号:'" style="margin-left:50px;"></span>
+						
+					</div>
+					<div class="panel-body">
+						<table class="table">
+							<thead>
+								<!-- <tr>
+									<th>编号</th>
+									<th>名称</th>
+									<th>品牌</th>
+									<th>型号</th>
+									<th>基本参数</th>
+									<th>网示单价</th>
+									<th>折减金额</th>
+									<th>成交单价</th>
+									<th>数量</th>
+									<th>合计</th>
+									<th>操作</th>
+								</tr> -->
+								<th>序号</th>
+								<th>订单ID</th>
+								<th>订单编号</th>								
+								<th>合同ID</th>
+								<th>合同编号</th>
+								<th>金额</th>
+								<th>类型</th>
+								<th>创建时间</th>
+								<th>用户</th>
+								<th>角色</th>
+							</thead>
+							<tbody>
+								<tr th:each="item,iterState:${performanceList}">
+									<td th:text="${iterState.count}">序号</td>
+									<td th:text="${item.order_id}">订单ID</td>
+									<td th:text="${item.order_no}">订单编号</td>
+									<td th:text="${item.contract_id}">合同ID</td>
+									<td th:text="${item.contract_no}">合同编号</td>
+									<td th:text="'￥'+${item.amount}">金额</td>
+									<td th:text="${item.type}">类型</td>
+									<td th:text="${item.create_time}">创建时间</td>
+									<td th:text="${item.nickname}">用户</td>
+									<td th:text="${item.role_name}">角色</td>									
+								</tr>								
+								<tr>
+									<td>总计</td>
+									<td colspan="5"></td>
+									<td><strong>￥</strong><strong style="font-size:18px;color:red" id="sumAmount">总计</strong></td>
+									<td></td>
+								</tr>
+								</hr>					
+							</tbody>
+						</table>
+					</div>
+					<!-- <div class="panel-footer">Panel footer</div> -->
+				</div>
+				<br>
+				
+			</div>
+		</div>
+	</div>
+	
+	
+	<!-- 获取用户已经选商品列表  -->
+	<script th:inline="javascript"> 
+		/*<![CDATA[*/  
+     
+		
+     
+		/*]]>*/  
+	</script>  
+	
+	<script th:src="@{/static/js/common/dateutil.js}"></script>
+	<script th:src="@{/static/calendar/WdatePicker.js}"></script>
+	
+	
+</body>
+</html>
