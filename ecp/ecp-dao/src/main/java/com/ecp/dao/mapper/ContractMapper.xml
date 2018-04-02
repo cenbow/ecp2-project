@@ -65,7 +65,31 @@
 
 	</select>
 
-
+	<!-- 查询合同列表，用于提成的计算 -->
+	<select id="selectContract" resultType="map">
+		SELECT
+			c.*, e.*
+		FROM
+			contract c
+		LEFT JOIN trade_orders o ON c.order_id = o.id
+		LEFT JOIN user_extends e ON o.extend_id = e.extend_id
+		WHERE
+			o.contract_state = 6 
+			<if test="agent_id_list!=null and agent_id_list.size()>0">
+				and e.extend_id IN 
+				<!-- e.extend_id IN (42) -->
+				<foreach collection="agent_id_list" index="index" item="item" open="(" separator="," close=")">
+					#{item}
+				</foreach>
+			</if>
+			<if test="start_time!=null and start_time!=''">
+				and o.create_time &gt;= #{start_time}
+			</if>
+			<if test="end_time!=null and end_time!=''">
+				and o.create_time &lt;= #{end_time}
+			</if>
+		 
+	</select>
 
 
 </mapper>

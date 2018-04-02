@@ -1,0 +1,170 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<div th:include="/back/thymeleaf/common/_head2::headx('进度列表')"	th:remove="tag"></div>
+<link th:href="@{/static/jquery/progressbar/css/jquery-ui.css}" rel="stylesheet" />
+<script th:src="@{/static/jquery/progressbar/js/jquery-ui.js}"></script>
+  <!-- <link rel="stylesheet" href="https://code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
+  <script src="http://code.jquery.com/ui/1.11.0/jquery-ui.js"></script> -->
+  <style>
+  .ui-progressbar {
+    position: relative;
+  }
+  .progress-label {
+    position: absolute;
+    left: 30%;
+    top: 4px;
+    font-weight: bold;
+    text-shadow: 1px 1px 0 #fff;
+  }
+  </style>
+</head>
+<body>
+	<div class="container-fluid" style="margin-top: 20px;">
+		<!-- 对话框 -->
+		<!-- <div th:replace="back/thymeleaf/common/_discount_dialog::dialog" ></div> -->
+		<div class="row clearfix">
+			<div class="col-md-12 column">
+				<div class="panel panel-success">
+					<div class="panel-heading">
+						<h3 class="panel-title" style="display:inline">合同商品列表</h3>
+						<span th:text="'合同号:'" style="margin-left:50px;"></span>
+						
+					</div>
+					<div class="panel-body">
+						<table class="table">
+							<thead>
+								<!-- <tr>
+									<th>编号</th>
+									<th>名称</th>
+									<th>品牌</th>
+									<th>型号</th>
+									<th>基本参数</th>
+									<th>网示单价</th>
+									<th>折减金额</th>
+									<th>成交单价</th>
+									<th>数量</th>
+									<th>合计</th>
+									<th>操作</th>
+								</tr> -->
+								<th>序号</th>
+								<th>用户昵称</th>
+								<th>用户角色</th>
+								<th>周期名称</th>								
+								<th>额度</th>
+								<th>已完成</th>
+								<th>进度</th>
+								<th>操作</th>
+							</thead>
+							<tbody>
+								<tr th:each="progress,iterState:${salesProgressList}">
+									<td th:text="${iterState.count}">序号</td>
+									<td th:text="${progress.nickname}">用户昵称</td>
+									<td th:text="${progress.role_name}">用户角色</td>
+									<td th:text="${progress.year_name}+' - '+${progress.cycle_name}">周期名称</td>
+									<td th:text="'￥'+${progress.target_amount}+'万'">额度</td>
+									<td th:text="'￥'+${progress.total_price}+'万'">已完成</td>
+									<td>
+										<div class="progressbar" th:attr="data-target-amount=${progress.target_amount}, data-total-price=${progress.total_price}"><div class="progress-label">加载...</div></div>
+									</td>
+									<td>
+										<button type="button" class="btn btn-default btn-primary">业绩列表</button>
+										<button type="button" class="btn btn-default btn-primary pushmoney-btn" id="" th:attr="data-user-id=${progress.user_id}, data-role-id=${progress.role_id}, data-start-time=${progress.start_date}, data-end-time=${progress.end_date}, data-completion-rate=(${progress.total_price/progress.target_amount})*100">提成</button>
+									</td>
+								</tr>								
+								<tr>
+									<td>总计</td>
+									<td colspan="5"></td>
+									<td><strong>￥</strong><strong style="font-size:18px;color:red" id="sumAmount">总计</strong></td>
+									<td></td>
+								</tr>
+								</hr>					
+							</tbody>
+						</table>
+					</div>
+					<!-- <div class="panel-footer">Panel footer</div> -->
+				</div>
+				<br>
+				
+			</div>
+		</div>
+	</div>
+	
+	
+	<!-- 获取用户已经选商品列表  -->
+	<script th:inline="javascript"> 
+		/*<![CDATA[*/  
+     
+		
+     
+		/*]]>*/  
+	</script>  
+	
+	<script th:src="@{/static/js/common/dateutil.js}"></script>
+	<script th:src="@{/static/calendar/WdatePicker.js}"></script>
+	
+	<script type="text/javascript">
+	
+		$(function() {
+			/**
+			 * 进度条初始化
+			 */
+			$(".table .progressbar").each(function() {
+				var target_amount = $(this).attr("data-target-amount");
+				var total_price = $(this).attr("data-total-price");
+				if (target_amount != null && target_amount != '' && total_price != null && total_price != '') {
+					var progress = Number(total_price) / Number(target_amount) * 100;
+					/* if (progress >= 100) {
+						progress = 100;
+					} */
+					var progressbar = $(this), 
+					progressLabel = $(this).find(".progress-label");
+					
+					progressbar.progressbar({
+						value : false,
+						change : function() {
+							progressLabel.text(progressbar.progressbar("value") + "%");
+						},
+						complete : function() {
+							//progressLabel.text("完成！");
+							progressLabel.text(progress + "%");
+						}
+					});
+					console.log("progress:"+progress);
+					var val = progressbar.progressbar("value") || 0;
+					progressbar.progressbar("value", progress);
+
+					/* var progressbarValue = progressbar.find(".ui-progressbar-value");
+					progressbarValue.css({
+						"background" : "#009900"
+					}); */
+					
+					$(this).attr("title", progress+"%");
+				}
+			});
+		});
+		
+		/**
+		 * 提成按钮点击事件
+		 */
+		$(".pushmoney-btn").on("click", function(e){
+			var userId = $(this).attr("data-user-id");
+			var roleId = $(this).attr("data-role-id");
+			var startTime = $(this).attr("data-start-time");
+			var endTime = $(this).attr("data-end-time");
+			var completionRate = $(this).attr("data-completion-rate");
+			var url = BASE_CONTEXT_PATH + "/back/performance/get-pushmoney"; // 需要提交的 url
+			//var fullYear = getFullYear();
+			var params = {"userId":userId, "roleId":roleId, "startTime":startTime, "endTime":endTime, "completionRate":completionRate};
+			//loadTablePage(url, params);
+			$("#edit-body").load(url, params, function(){
+				$("#edit-tab").removeClass("hide");
+				$("#edit-tab-title").text("提成列表");
+				$('#tabs-14933 a[href="#panel-602679"]').tab('show');
+			});
+		})
+	</script>
+	
+</body>
+</html>

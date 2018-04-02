@@ -70,6 +70,11 @@ public class ContractServiceImpl extends AbstractBaseService<Contract, Long> imp
 		
 		return contractMapper.selectContractByCond(-timeCond,dealStateCond,searchTypeValue,condValue);
 	}
+
+	@Override
+	public List<Map<String, Object>> selectContract(Map<String, Object> params) {
+		return contractMapper.selectContract(params);
+	}
 	
 	
 	

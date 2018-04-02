@@ -65,5 +65,7 @@ public interface IOrderService extends IBaseService<Orders, Long> {
 	 */
 	public List<Map<String,Object>> selectOrder(int orderTimeCond,int dealStateCond,int searchTypeValue,String condValue);
 	
+	public List<Map<String,Object>> selectOrders(List<Long> agentIdList, int orderTimeCond,int dealStateCond,int searchTypeValue,String condValue);
+	
 	
 }

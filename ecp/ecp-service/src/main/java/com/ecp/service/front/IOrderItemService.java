@@ -39,6 +39,4 @@ public interface IOrderItemService extends IBaseService<OrderItems, Long> {
 	 */
 	public List<Map<String,String>>  selectItemsByOrderId(String orderId);
 	
-	
-	
 }

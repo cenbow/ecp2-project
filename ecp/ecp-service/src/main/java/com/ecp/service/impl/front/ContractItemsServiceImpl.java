@@ -1,5 +1,6 @@
 package com.ecp.service.impl.front;
 
+import java.math.BigDecimal;
 import java.util.List;
 import java.util.Map;
 
@@ -28,6 +29,15 @@ public class ContractItemsServiceImpl extends AbstractBaseService<ContractItems,
 	public List<Map<String,Object>> selectItemsByContractNo(String contractNo) {
 		return contractItemsMapper.selectItemsByContractNo(contractNo);
 	}
-	
+
+	@Override
+	public BigDecimal selectContractPayPriceTotal(Map<String, Object> params) {
+		return contractItemsMapper.selectContractPayPriceTotal(params);
+	}
+
+	@Override
+	public List<Map<String, Object>> selectContractItems(Map<String, Object> params) {
+		return contractItemsMapper.selectContractItems(params);
+	}
 
 }

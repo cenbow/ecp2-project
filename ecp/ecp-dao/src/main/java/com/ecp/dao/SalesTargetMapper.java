@@ -18,4 +18,11 @@ public interface SalesTargetMapper extends Mapper<SalesTarget> {
 	 */
 	public List<Map<String, Object>> getListMap(Map<String, Object> params);
 	
+	/**
+	 * 查询销售指标
+	 * @param params
+	 * @return
+	 */
+	public List<Map<String, Object>> selectSalesTargetMap(Map<String, Object> params);
+	
 }

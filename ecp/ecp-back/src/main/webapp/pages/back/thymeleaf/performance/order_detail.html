@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<div th:include="/back/thymeleaf/common/_head2::headx('订单详情')"	th:remove="tag"></div>
+<style>
+	a:hover {
+		text-decoration: none;
+	}
+</style>
+
+</head>
+<body>
+  	<!-- header -->
+	<div class="row clearfix">
+		<div id="header" class="col-md-12 column"></div>
+	</div>
+	<!-- content -->
+	<div class="container" id="container"></div>
+	<!-- footer -->
+	<div class="row clearfix">
+		<div id="footer" class="col-md-12 column"></div>
+	</div>
+	<!-- <script type="text/javascript" th:src="@{/static/js/loadHeaderFooter.js}"></script> -->
+	
+	<!-- 订单id(pk)  -->
+	<script th:inline="javascript">  
+		/*<![CDATA[*/
+			
+		var g_orderId = [[${orderId}]];  //订单id(pk) 
+		
+		/*]]>*/  
+	</script>	
+	
+
+	<script>
+		/**
+			功能:加载页面
+			parameters:
+				orderId:订单id(pk)
+		*/
+		function loadOrderDetail(orderId) {
+			var url = "/back/performance/detailtable";
+			/* var parms = null; */
+			
+			//向页面传递的参数
+			var parms=new Object();
+			parms.id=orderId;
+					
+			
+			var callbackFunc = null;
+			var containerId = "#container";
+			loadPage(containerId, url, parms, callbackFunc);
+		}
+		$(function() {
+			loadOrderDetail(g_orderId);
+		})
+	</script>
+</body>
+</html>

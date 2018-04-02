@@ -54,6 +54,51 @@
 	where  o.contract_no=#{contractNo}  GROUP BY o.sku_id
   </select>
   
+  <!-- 查询合同支付总金额 -->
+  <select id="selectContractPayPriceTotal" resultType="java.math.BigDecimal">
+	SELECT
+		IFNULL(SUM(ci.pay_price_total),0)
+	FROM
+		contract_items ci
+	LEFT JOIN trade_orders o ON ci.order_id = o.order_id
+	WHERE
+		o.contract_state = 6
+		<if test="order_no!=null and order_no!=''">
+  			and o.order_id = #{order_no}	
+  		</if>
+  		<if test="start_time!=null and start_time!=''">
+			and o.create_time &gt;= #{start_time}
+		</if>
+		<if test="end_time!=null and end_time!=''">
+			and o.create_time &lt;= #{end_time}
+		</if>
+  	 
+  </select>
   
+  <!-- 查询合同商品列表，用于提成的计算 -->
+  <select id="selectContractItems" resultType="map">
+	SELECT
+		ci.*, e.*
+	FROM
+		contract_items ci
+	LEFT JOIN trade_orders o ON ci.order_id = o.order_id
+	LEFT JOIN user_extends e ON o.extend_id = e.extend_id
+	WHERE
+		o.contract_state = 6 
+		<if test="agent_id_list!=null and agent_id_list.size()>0">
+			and e.extend_id IN 
+			<!-- r.role_code IN (42) -->
+			<foreach collection="agent_id_list" index="index" item="item" open="(" separator="," close=")">
+				#{item}
+			</foreach>
+		</if>
+		<if test="start_time!=null and start_time!=''">
+			and o.create_time &gt;= #{start_time}
+		</if>
+		<if test="end_time!=null and end_time!=''">
+			and o.create_time &lt;= #{end_time}
+		</if>
+  	 
+  </select>
   
 </mapper>

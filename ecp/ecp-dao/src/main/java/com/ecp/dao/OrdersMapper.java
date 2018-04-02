@@ -58,4 +58,19 @@ public interface OrdersMapper extends Mapper<Orders> {
 													   @Param("searchTypeValue") int searchTypeValue,
 													   @Param("condValue")	String condValue);
 	
+	/**
+	 * @Description 以订单所关联的代理商表字段为查询条件
+	 * @param orderTimeCond  订单时间条件值
+	 * @param dealStateCond  合同处理状态条件值
+	 * @param searchTypeValue  查询条件类型
+	 * @param condValue  查询条件值
+	 * @return
+	 * 注:现在只作为后台查询订单生成合同时使用
+	 */
+	public List<Map<String,Object>> selectOrders(@Param("agentIdList") List<Long> agentIdList, 
+													@Param("orderTimeCond") int orderTimeCond, 
+													   @Param("dealStateCond") int dealStateCond, 
+													   @Param("searchTypeValue") int searchTypeValue,
+													   @Param("condValue")	String condValue);
+	
 }

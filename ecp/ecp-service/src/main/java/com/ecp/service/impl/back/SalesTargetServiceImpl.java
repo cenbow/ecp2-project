@@ -55,4 +55,9 @@ public class SalesTargetServiceImpl extends AbstractBaseService<SalesTarget, Lon
 		return list;
 	}
 
+	@Override
+	public List<Map<String, Object>> selectSalesTargetMap(Map<String, Object> params) {
+		return salesTargetMapper.selectSalesTargetMap(params);
+	}
+
 }

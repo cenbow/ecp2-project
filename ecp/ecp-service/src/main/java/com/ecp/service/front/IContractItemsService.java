@@ -1,5 +1,6 @@
 package com.ecp.service.front;
 
+import java.math.BigDecimal;
 import java.util.List;
 import java.util.Map;
 
@@ -22,4 +23,19 @@ public interface IContractItemsService extends IBaseService<ContractItems, Long>
 	 * @return
 	 */
 	public List<Map<String,Object>> selectItemsByContractNo(String contractNo);
+	
+	/**
+	 * 根据条件查询合同支付总价
+	 * @param params
+	 * @return
+	 */
+	public BigDecimal selectContractPayPriceTotal(Map<String, Object> params);
+	
+	/**
+	 * 查询合同商品列表，用于提成的计算
+	 * @param params
+	 * @return
+	 */
+	public List<Map<String, Object>> selectContractItems(Map<String, Object> params);
+	
 }

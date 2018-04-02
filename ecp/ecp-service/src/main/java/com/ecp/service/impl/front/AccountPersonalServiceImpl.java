@@ -1,7 +1,9 @@
 package com.ecp.service.impl.front;
 
 import java.math.BigDecimal;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.springframework.stereotype.Service;
 
@@ -37,6 +39,12 @@ public class AccountPersonalServiceImpl extends AbstractBaseService<AccountPerso
 	public int addAccountItem(long orderId, String orderNo, int itemType, BigDecimal amount) {
 		// TODO Auto-generated method stub
 		return 0;
+	}
+
+
+	@Override
+	public List<Map<String, Object>> selectPerformanceMap(Map<String, Object> params) {
+		return accountPersonalMapper.selectPerformanceMap(params);
 	}
 	
 	

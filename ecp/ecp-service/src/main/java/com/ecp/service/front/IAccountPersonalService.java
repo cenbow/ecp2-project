@@ -2,6 +2,7 @@ package com.ecp.service.front;
 
 import java.math.BigDecimal;
 import java.util.List;
+import java.util.Map;
 
 import com.ecp.entity.AccountCompany;
 import com.ecp.entity.AccountPersonal;
@@ -44,5 +45,12 @@ public interface IAccountPersonalService extends IBaseService<AccountPersonal, L
 	*/
 	public int addAccountItem(long orderId,String orderNo, int itemType,BigDecimal amount); 
 	
+	/**
+	 * 查询业绩
+	 * @param order_id
+	 * @param role_code_list
+	 * @return
+	 */
+	public List<Map<String, Object>> selectPerformanceMap(Map<String, Object> params);
 	
 }

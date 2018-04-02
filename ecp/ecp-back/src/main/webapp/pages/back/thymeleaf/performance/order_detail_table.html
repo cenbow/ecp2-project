@@ -1,0 +1,179 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<!-- <div th:include="/thymeleaf/common/_head2::headx('我的订单')"	th:remove="tag"></div> -->
+<title>订单详情模块（用于order_detail）</title>
+</head>
+<body>
+	<div class="row clearfix">
+		<div class="col-md-12 column">
+			<h3>订单详情</h3>
+			<div class="row clearfix">
+				<div class="col-md-6 column">
+					<div class="panel panel-default">
+						<div class="panel-heading">
+							<h3 class="panel-title">
+								<span  th:text="'订单号:'+${order.orderId}"></span>
+								<span th:text="'下单时间:'+${#calendars.format(order.createTime,'yyyy-MM-dd HH:MM:SS')}" style="margin-left:50px;"></span>   
+							</h3>
+						</div>
+						<div class="panel-body">
+							<table class="table">
+								<thead>
+									<tr>
+										<th style="width:100px;"></th>
+										<th></th>
+									</tr>
+								</thead>
+								<tbody>
+									<tr>
+										<td>状态</td>
+										<td><span th:switch="${order.contractState}"
+											th:remove="tag"> <span th:case='1' th:remove="tag"><span
+													class="order-status"> 未建合同 </span> <br></span> <span
+												th:case='2' th:remove="tag"><span
+													class="order-status"> 己建合同 </span> <br></span> <span
+												th:case='3' th:remove="tag"><span
+													class="order-status"> 乙方已确认 </span> <br></span> <span
+												th:case='4' th:remove="tag"><span
+													class="order-status"> 甲方己确认 </span> <br></span> <span
+												th:case='5' th:remove="tag"><span
+													class="order-status"> 执行中 </span> <br></span> <span
+												th:case='6' th:remove="tag"><span
+													class="order-status"> 执行完毕 </span> <br></span>
+										</span></td>
+
+									</tr>
+									<tr>
+										<td>收货人姓名</td>
+										<td th:text="${order.Name}"></td>
+
+									</tr>
+									<tr>
+										<td>收货人电话</td>
+										<td th:text="${order.Mobile}"></td>
+									</tr>
+									<tr>
+										<td>收货地址</td>
+										<td style="word-break:break-all; word-wrap:break-word;" th:text="${order.fullAddress}"></td>
+									</tr>
+									<tr>
+										<td>订单金额</td>
+										<td th:text="'￥'+${order.totalPrice}">100.00</td>
+									</tr>
+								</tbody>
+							</table>
+						</div>
+					</div>
+				</div>
+				<div class="col-md-6 column">
+					<div class="panel panel-default">
+						<div class="panel-heading">
+							<h3 class="panel-title">代理商 <span style="margin-left:50px;" th:if="${order.contractNo}" th:text="'合同号:'+${order.contractNo}"></span></h3>
+						</div>
+						<div class="panel-body">
+							<table class="table">
+								<thead>
+									<tr>
+										<th style="width:100px;"></th>
+										<th></th>
+									</tr>
+								</thead>
+								<tbody>
+									<tr>
+										<td>公司名称</td>
+										<td style="word-break:break-all; word-wrap:break-word;" th:text="${agent.companyName}"></td>
+
+									</tr>
+									<tr>
+										<td>法人名称</td>
+										<td th:text="${agent.artificialPersonName}"></td>
+
+									</tr>
+									<tr>
+										<td>联系电话</td>
+										<td th:text="${agent.contactPhone}">TB - Monthly</td>
+									</tr>
+									<tr>
+										<td>联系地址</td>
+										<td  th:text="${agent.contactAddress}" style="word-break:break-all; word-wrap:break-word;" >XXXXXXXXXXXXXXX</td>
+									</tr>
+									<tr>
+										<td>EMail</td>
+										<td th:text="${agent.contactEmail}"></td>
+									</tr>
+								</tbody>
+							</table>
+						</div>
+					</div>
+				</div>
+			</div>
+			<div class="panel panel-default">
+				<div class="panel-heading">
+					<h3 class="panel-title">订单条目</h3>
+				</div>
+				<div class="panel-body">
+					<table class="table">
+						<thead>
+							<tr>
+								<th>编号</th>
+								<th>图片</th>
+								<th>名称</th>
+								<th>价格</th>
+								<th>数量</th>
+								<th>金额</th>
+							</tr>
+						</thead>
+						<tbody>
+							<tr th:each="orderItem,iterStat:${orderItems}">
+								<td th:text="${iterStat.count}">序号</td>
+								<td>
+									<img class=""
+											th:src="${orderItem.picture_url}"
+											th:title="${orderItem.sku_name}"											
+											data-lazy-img="done" height="60" width="60">
+											
+									<!-- <a th:href="@{/front/product/detail/{itemId}/{skuId}(itemId=${orderItem.item_id},skuId=${orderItem.sku_id})}"
+											target="_blank">
+											 
+											<img class=""
+											th:src="${orderItem.picture_url}"
+											th:title="${orderItem.sku_name}"											
+											data-lazy-img="done" height="60" width="60">
+
+										</a> -->
+								</td>
+								<td th:text="${orderItem.sku_name}">名称</td>
+								<td th:text="'￥'+${orderItem.primitive_price}">价格</td>
+								<td th:text="${orderItem.num}">数量</td>
+								<td th:text="'￥'+${orderItem.num}*${orderItem.primitive_price}">金额</td>
+							</tr>
+							<tr>
+								<td></td>
+								<td></td>
+								<td></td>
+								<td></td>
+								<td></td>
+								<td><b th:text="'总金额:'+'￥'+${order.totalPrice}"></b></td>
+							</tr>
+						</tbody>
+					</table>
+				</div>
+			</div>
+			
+			<!-- 后台增加订单备注功能 -->
+			<div class="panel panel-default">
+				<div class="panel-heading">
+					<h3 class="panel-title">订单备注</h3>
+				</div>
+				<div class="panel-body" style="text-align:center;">
+					<textarea id="memo"  rows="5" cols="175" readonly="readonly" th:text="${order.memo}" ></textarea>
+				</div>
+			</div>
+			
+			
+		</div>
+	</div>
+</body>
+</html>

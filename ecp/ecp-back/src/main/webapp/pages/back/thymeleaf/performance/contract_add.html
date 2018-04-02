@@ -1,0 +1,315 @@
+<!DOCTYPE html>
+<html>
+<head>
+<head th:include="/back/thymeleaf/common/_head2::headx('创建合同')">
+<meta charset="UTF-8">
+</head>
+<body>
+	<div class="container-fluid" style="margin-top: 20px;">
+		<!-- 对话框 -->
+		<div th:replace="back/thymeleaf/common/_discount_dialog::dialog" ></div>
+		<div class="row clearfix">
+			<div class="col-md-12 column">
+				<div class="panel panel-success">
+					<div class="panel-heading">
+						<h3 class="panel-title" style="display:inline">商品列表</h3>
+						<span th:text="'订单号:'+${order.orderId}" style="margin-left:50px;"></span>
+					</div>
+					<div class="panel-body">
+						<table class="table">
+							<thead>
+								<!-- <tr>
+									<th>编号</th>
+									<th>名称</th>
+									<th>品牌</th>
+									<th>型号</th>
+									<th>基本参数</th>
+									<th>网示单价</th>
+									<th>折减金额</th>
+									<th>成交单价</th>
+									<th>数量</th>
+									<th>合计</th>
+									<th>操作</th>
+								</tr> -->
+								
+								<th>序号</th>
+								<th>名称</th>								
+								<th>网示单价</th>
+								<th>折减金额</th>
+								<th>成交单价</th>
+								<th>数量</th>
+								<th>合计</th>
+								<th>操作</th>
+							</thead>
+							<tbody>
+								<tr th:each="orderItem,iterState:${orderItemList}">
+									<td th:text="${iterState.count}">序号</td>
+									<td th:text="${orderItem.sku_name}" th:attr="id='sku_name_'+${orderItem.id}">产品名称</td>
+									<td th:text="'￥'+${orderItem.primitive_price}" th:attr="id='primitive_price_'+${orderItem.id}">网示单价</td>
+									<td th:attr="id='discount_price_'+${orderItem.id}">￥0.00</td>
+									<td th:text="'￥'+${orderItem.primitive_price}" th:attr="id='pay_price_'+${orderItem.id}" >成交单价</td>
+									<td th:text="${orderItem.num}" th:attr="id='num_'+${orderItem.id}" >数量</td>
+									<td th:text="'￥'+${orderItem.pay_price_total}" th:attr="id='amount_'+${orderItem.id}">小计</td>									
+									<td><button type="button" class="btn btn-sm btn-primary" th:attr="data-bind=${orderItem.id}"  onclick="displayDiscountDialog(this);" >折减</button></td>
+								</tr>								
+								<tr>
+									<td>总计</td>
+									<td colspan="5"></td>
+									<td><strong>￥</strong><strong style="font-size:18px;color:red" id="sumAmount">总计</strong></td>
+									<td></td>
+								</tr>
+								</hr>					
+							</tbody>
+						</table>
+					</div>
+					<!-- <div class="panel-footer">Panel footer</div> -->
+				</div>
+				<div class="panel panel-info">
+					<div class="panel-heading">
+						<h3 class="panel-title" style="display:inline">合同细则</h3>
+						<span th:text="'公司:'+${agent.companyName}" style="margin-left:50px;"></span>
+						<span th:text="'负责人:'+${agent.artificialPersonName}" style="margin-left:50px;"></span>
+						<span th:text="'电话:'+${agent.contactPhone}" style="margin-left:50px;"></span>
+					</div>
+					<div class="panel-body">
+						<form class="form-horizontal" role="form">
+							<div class="form-group">
+								<label  class="col-sm-3 control-label">质保期</label>
+								<div class="col-sm-6">
+									<label for="guarantee_period_1"><input type="checkbox" name="guarantee_period"	id="guarantee_period_1" value="1" /> 原厂标准质保</label> 
+									<label for="guarantee_period_2"><input type="checkbox" name="guarantee_period" id="guarantee_period_2" value="2" /> 用户特殊质保</label>
+								</div>
+							</div>
+							<!-- 增加用户质保条款 -->
+							<span id="group_user_guarantee_item">
+								<div class="form-group">
+									<label  class="col-sm-3 control-label">用户质保条款</label>
+									<div class="col-sm-6">
+										<textarea id="user_guarantee_item" name="user_guarantee_item" rows="5" cols="80" placeholder="请输入用户质保条款"></textarea>
+									</div>
+								</div>
+							</span>
+							
+							<div class="form-group">
+								<label for="delivery_time" class="col-sm-3 control-label">交货时间</label>
+								<div class="col-sm-6">
+									<!-- 交货时间,用户输入  -->
+									<!-- <input class="datetimepicker datetime  form-control" 
+											readonly="readonly" 
+											id="delivery_time" 
+											name="delivery_time" 
+											type="text"
+											onClick="WdatePicker({dateFmt:'yyyy-MM-dd'});" 
+											/> -->
+									<input class="form-control"											 
+											id="delivery_time" 	name="delivery_time" 
+											type="text"											 
+											/>
+								</div>
+							</div>
+							
+							<div class="form-group">
+								<label for="delivery_address" class="col-sm-3 control-label">交货地址</label>
+								<div class="col-sm-6">
+									<input class="form-control"  id="delivery_address" name="delivery_address" type="text" th:value="${order.fullAddress}" />
+								</div>
+							</div>
+							
+							<div class="form-group">
+								<label for="transport_charge" class="col-sm-3 control-label">运输方式及费用负担</label>
+								<div class="col-sm-6">
+									<input class="form-control" id="transport_charge" name="transport_charge" type="text" />
+								</div>
+							</div>
+							
+
+							<!-- 付款方式1 -->
+							<div class="form-group">
+								<label for="pay_type_1" class="col-sm-3 control-label">付款方式1</label>
+								<div class="col-sm-1">
+									<input id="pay_type_1" name="pay_type"	type="checkbox" value="1" />
+								</div>
+							</div>
+							
+							<span id="group_pay_type_1">
+								<div class="form-group" >
+									<label for="payment_percent_signed" class="col-sm-offset-2 col-sm-3 control-label">合同签定后甲方支付合同百分比</label>
+									<div class="col-sm-4" >
+										<input class="form-control" id="payment_percent_signed" name="payment_percent_signed"
+											type="text" title="输入百分比数据值后自动计算金额" />
+									</div>
+									<label for="payment_percent_signed" class="control-label" style="vertical-aline:middle">%</label>
+								</div>
+								<div class="form-group">
+									<label for="payment_amount_signed" class="col-sm-offset-2 col-sm-3 control-label">合同签定后甲方支付金额</label>
+									<div class="col-sm-4">
+										<input class="form-control" id="payment_amount_signed" name="payment_amount_signed"
+											type="text" />
+									</div>
+									<label for="payment_amount_signed" class="control-label" style="vertical-aline:middle">元</label>
+								</div>
+								
+								<div class="form-group">
+									<label for="payment_percent_delivery" class="col-sm-offset-2 col-sm-3 control-label">发货前甲方支付合同百分比</label>
+									<div class="col-sm-4">
+										<input class="form-control" id="payment_percent_delivery" name="payment_percent_delivery"
+											type="text" title="输入百分比数据值后自动计算金额"/>
+									</div>
+									<label for="payment_percent_delivery" class="control-label" style="vertical-aline:middle">%</label>
+								</div>
+								
+								<div class="form-group">
+									<label for="payment_amount_delivery" class="col-sm-offset-2 col-sm-3 control-label">发货前甲方支付合同金额</label>
+									<div class="col-sm-4">
+										<input class="form-control" id="payment_amount_delivery" name="payment_amount_delivery"
+											type="text" />
+									</div>
+									<label for="payment_amount_delivery" class="control-label" style="vertical-aline:middle">元</label>
+								</div>
+								<!-- 余款 -->
+								<div class="form-group">
+									<label for="balance_amount" class="col-sm-offset-2 col-sm-3 control-label">余款</label>
+									<div class="col-sm-4">
+										<input class="form-control" id="balance_amount" name="balance_amount" readonly="readonly"
+											type="text" />
+									</div>
+									<label for="balance_amount" class="control-label" style="vertical-aline:middle">元</label>
+								</div>
+								
+								<!-- 余款日期 -->
+								<div class="form-group">
+									<label for="balance_date" class="col-sm-offset-2 col-sm-3 control-label">余款付清条件</label>
+									<div class="col-sm-4">
+										<!-- 余额结算时间由用户自行输入 -->
+										<!-- <input class="datetimepicker datetime form-control" 
+											id="balance_date" name="balance_date"										 
+											readonly="readonly" 
+											onClick="WdatePicker({dateFmt:'yyyy-MM-dd'});"
+											type="text" /> -->
+										<input class="form-control" 
+											id="balance_date" name="balance_date"				 
+											type="text" />
+									</div>
+								</div>
+							</span>						
+							
+							
+							<!-- 付款方式2 -->
+							<div class="form-group">
+								<label for="pay_type_2" class="col-sm-3 control-label">付款方式2</label>
+								<div class="col-sm-1">
+									<input id="pay_type_2" name="pay_type" type="checkbox" value="2" style="vertical-aline:middle"/>
+								</div>
+							</div>
+							
+							<!-- 付款方式2-可变项 -->
+							<div class="" id="group_pay_type_2"  >
+								<div class="form-group">
+									<label for="days_signed" class="col-sm-offset-2 col-sm-3 control-label">签定后多少日付全部货款</label>
+									<div class="col-sm-4">
+										<input class="form-control" id="days_signed" name="days_signed"
+											type="text" title="输入天数后自动按当天计算日期"/>
+									</div>
+									<label for="days_signed" class="control-label" style="vertical-aline:middle">天</label>
+								</div>
+								
+								<!-- 签定后于日期前付全部货款 -->
+								<div class="form-group">
+									<label for="date_signed" class="col-sm-offset-2 col-sm-3 control-label">签定后于日期前付全部货款</label>
+									<div class="col-sm-4">
+										<input class="datetimepicker datetime form-control" 
+											id="date_signed" name="date_signed"										 
+											readonly="readonly" 
+											onClick="WdatePicker({dateFmt:'yyyy-MM-dd'});"
+											type="text" />
+									</div>
+								</div>
+								
+								<!-- 欠款资金占用费率 -->
+								<div class="form-group">
+									<label for="fee_rate" class="col-sm-offset-2 col-sm-3 control-label">欠款延期资金日占用费率</label>
+									<div class="col-sm-4">
+										<input class="form-control" id="fee_rate" name="fee_rate" type="text" placeholder="双击选择费率" list="ratelist" />
+										<datalist id="ratelist">
+    									<option>万分之五</option>
+    									<option>万分之四</option>
+    									<option>万分之三</option>
+									</datalist>	
+									</div>
+								</div>							
+							</div>
+
+							<div class="form-group">
+								<label for="voucher" class="col-sm-3 control-label">全款到帐后乙方开据</label>
+								<div class="col-sm-6">
+									<input class="form-control" id="voucher" name="voucher"  type="text" list="itemlist" placeholder="双击选择单据类型" />
+									<datalist id="itemlist">
+    									<option>等额增值税发票</option>
+    									<option>等额普通发票</option>
+    									<option>等额收据</option>
+									</datalist>									
+								</div>
+							</div>
+							
+							<!-- <input class="datetimepicker datetime  form-control" 
+											readonly="readonly" 
+											id="delivery_time" 
+											name="delivery_time" 
+											type="text"
+											onClick="WdatePicker({dateFmt:'yyyy-MM-dd'});" 
+							/> -->
+							
+							<div class="form-group ">
+								<label for="voucher" class="col-sm-3 control-label">合同签定日期</label>
+								<div class="col-sm-6">
+									<input class="form-control datetimepicker datetime"
+										readonly="readonly" 
+										id="contract_signed_date" name="contract_signed_date"  
+										type="text"  placeholder="选择合同签定日期"
+										onClick="WdatePicker({dateFmt:'yyyy-MM-dd'});" 
+										/>
+								</div>
+							</div>
+
+							<!-- <div class="form-group">
+								<div class="col-sm-offset-2 col-sm-10">
+									<button type="submit" class="btn btn-default">Sign in</button>
+								</div>
+							</div> -->
+						</form>
+
+
+					</div>
+					<!-- <div class="panel-footer">Panel footer</div> -->
+				</div>
+				<div class="row clearfix">
+					<div class="col-md-12 column">
+						<button type="button" class="btn btn-primary btn-create"  style="float:right;margin-right:50px" >合同确认</button>
+						<a  class="btn btn-primary btn-preview" style="float:right;margin-right:10px" target="_blank">合同预览</a>
+					</div>
+				</div>
+				<br>
+				
+			</div>
+		</div>
+	</div>
+	
+	
+	<!-- 获取用户已经选商品列表  -->
+	<script th:inline="javascript"> 
+		/*<![CDATA[*/  
+     
+		var g_orderItemList = [[${orderItemList}]];  //订单中商品行项目
+		var g_contractAttrList=[[${contractAttrList}]];  //合同属性列表
+		//console.log("订单中商品数量:"+g_orderItemList.length);
+		
+     
+		/*]]>*/  
+	</script>  
+	
+	<script th:src="@{/static/js/common/dateutil.js}"></script>
+	<script th:src="@{/static/js/performance/contract_add.js}"></script>
+	<script th:src="@{/static/calendar/WdatePicker.js}"></script>
+	
+</body>
+</html>

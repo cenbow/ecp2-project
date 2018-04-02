@@ -1,5 +1,6 @@
 package com.ecp.entity;
 
+import java.math.BigDecimal;
 import java.util.Date;
 import javax.persistence.*;
 
@@ -28,7 +29,7 @@ public class SalesTarget {
      * 指标金额
      */
     @Column(name = "target_amount")
-    private String targetAmount;
+    private BigDecimal targetAmount;
 
     /**
      * 考核周期ID
@@ -125,7 +126,7 @@ public class SalesTarget {
      *
      * @return target_amount - 指标金额
      */
-    public String getTargetAmount() {
+    public BigDecimal getTargetAmount() {
         return targetAmount;
     }
 
@@ -134,8 +135,8 @@ public class SalesTarget {
      *
      * @param targetAmount 指标金额
      */
-    public void setTargetAmount(String targetAmount) {
-        this.targetAmount = targetAmount == null ? null : targetAmount.trim();
+    public void setTargetAmount(BigDecimal targetAmount) {
+        this.targetAmount = targetAmount;
     }
 
     public Long getCheckCycleId() {

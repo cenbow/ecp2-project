@@ -133,4 +133,9 @@ public class RoleServiceImpl extends AbstractBaseService<Role, Long> implements 
 		return roleMapper.selectByExample(example);
 	}
 
+	@Override
+	public List<Role> getByUserId(Long userId) {
+		return roleMapper.getByUserId(userId);
+	}
+
 }

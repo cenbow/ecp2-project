@@ -8,7 +8,7 @@
     <id column="id" property="id" jdbcType="BIGINT" />
     <result column="user_id" property="userId" jdbcType="BIGINT" />
     <result column="target_rate" property="targetRate" jdbcType="VARCHAR" />
-    <result column="target_amount" property="targetAmount" jdbcType="VARCHAR" />
+    <result column="target_amount" property="targetAmount" jdbcType="DECIMAL" />
     <result column="check_cycle_id" property="checkCycleId" jdbcType="BIGINT" />
     <result column="cycle_name" property="cycleName" jdbcType="VARCHAR" />
     <result column="year_name" property="yearName" jdbcType="VARCHAR" />
@@ -34,5 +34,33 @@
 		WHERE
 			u.deleted = 1
 		AND u.type = 1
+	</select>
+	
+	<select id="selectSalesTargetMap" resultType="map">
+	  	SELECT
+			st.*, u.username,
+			u.nickname,
+			r.role_code,
+			r.role_name
+		FROM
+			sales_target st
+		LEFT JOIN `user` u ON st.user_id = u.id
+		LEFT JOIN role r ON st.role_id = r.role_id
+		WHERE
+			1=1
+			<if test="role_id_list!=null and role_id_list.size()>0">
+				and st.role_id IN 
+				<!-- r.role_id IN (16, 17) -->
+				<foreach collection="role_id_list" index="index" item="item" open="(" separator="," close=")">
+					#{item}
+				</foreach>
+			</if>
+			<if test="user_id!=null">
+				and st.user_id = #{user_id}
+			</if>
+			<if test="year_name!=null and year_name!=''">
+				and st.year_name = #{year_name}
+			</if>
+			
 	</select>
 </mapper>

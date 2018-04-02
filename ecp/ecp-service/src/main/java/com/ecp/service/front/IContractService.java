@@ -32,4 +32,11 @@ public interface IContractService extends IBaseService<Contract, Long> {
 	 */
 	public List<Map<String,Object>> selectContract(int timeCond,int dealStateCond,int searchTypeValue,String condValue);
 	
+	/**
+	 * 查询合同，用于提成的计算
+	 * @param params
+	 * @return
+	 */
+	public List<Map<String, Object>> selectContract(Map<String, Object> params);
+	
 }

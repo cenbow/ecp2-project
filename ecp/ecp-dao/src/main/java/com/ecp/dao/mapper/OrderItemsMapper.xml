@@ -50,7 +50,5 @@
   	 on(o.sku_id=p.sku_id) 
 	where p.deleted=1 and o.order_id=#{orderId} GROUP BY o.sku_id
   </select>
-    
-  
   
 </mapper>

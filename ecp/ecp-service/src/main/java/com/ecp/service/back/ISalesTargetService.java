@@ -22,4 +22,11 @@ public interface ISalesTargetService extends IBaseService<SalesTarget, Long> {
 	 */
 	public List<Map<String, Object>> getList(Map<String, Object> map);
 	
+	/**
+	 * 查询销售指标
+	 * @param params
+	 * @return
+	 */
+	public List<Map<String, Object>> selectSalesTargetMap(Map<String, Object> params);
+	
 }

@@ -96,4 +96,10 @@ public class OrderServiceImpl extends AbstractBaseService<Orders, Long> implemen
 		return resultList;
 	}
 
+	@Override
+	public List<Map<String, Object>> selectOrders(List<Long> agentIdList, int orderTimeCond, int dealStateCond,
+			int searchTypeValue, String condValue) {
+		return ordersMapper.selectOrders(agentIdList, orderTimeCond, dealStateCond, searchTypeValue, condValue);
+	}
+
 }

@@ -16,4 +16,12 @@ public interface ContractMapper extends Mapper<Contract> {
 														@Param("dealStateCond") int dealStateCond,
 														@Param("searchTypeValue") int searchTypeValue,
 														@Param("condValue") String condValue);
+	
+	/**
+	 * 查询合同，用于提成的计算
+	 * @param params
+	 * @return
+	 */
+	public List<Map<String, Object>> selectContract(Map<String, Object> params);
+	
 }

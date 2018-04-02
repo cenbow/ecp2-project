@@ -103,13 +103,5 @@ public class OrderItemServiceImpl extends AbstractBaseService<OrderItems, Long> 
 		}
 		
 	}
-	
-	
-
-	
-
-	
-	
-	
 
 }

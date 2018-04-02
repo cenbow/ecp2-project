@@ -176,4 +176,18 @@ public class RoleController {
 		return RequestResultUtil.getResultDeleteWarn();
 	}
 	
+	@RequestMapping("/selectByUserId")
+	@ResponseBody
+	public Map<String, Object> selectByUserId(HttpServletRequest request, HttpServletResponse response, Long userId) {
+		try {
+			List<Role> roleList = roleService.getByUserId(userId);
+			Map<String, Object> respM = RequestResultUtil.getResultSelectSuccess();
+			respM.put("roleList", roleList);
+			return respM;
+		} catch (Exception e) {
+			log.error("查询异常", e);
+			return RequestResultUtil.getResultSelectWarn();
+		}
+	}
+	
 }
