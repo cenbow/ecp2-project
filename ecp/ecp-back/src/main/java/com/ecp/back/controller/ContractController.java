@@ -970,27 +970,33 @@ public class ContractController {
 			contractItems.setContractNo(contractNo);
 			List<ContractItems> contractItemsList = contractItemsService.select(contractItems);
 			if(contractItemsList!=null && !contractItemsList.isEmpty()){
-				BigDecimal amount = null;
-				for(ContractItems temp : contractItemsList){
-					switch (type) {
-					case AccountItemType.PERFORMANCE_FEE://业绩
-						amount = temp.getPayPriceTotal();
-						break;
-					case AccountItemType.PRICE_DIFFERENCE_FEE://差价
-						//支付总价-最低限价*商品数量
-						BigDecimal total1 = temp.getLowestPrice().multiply(new BigDecimal(temp.getNum().toString()));
-						amount = temp.getPayPriceTotal().subtract(total1);
-						break;
-					case AccountItemType.NET_PROFIT_FEE://纯利润
-						//支付总价-硬成本价格*商品数量
-						BigDecimal total2 = temp.getHardCostPrice().multiply(new BigDecimal(temp.getNum().toString()));
-						amount = temp.getPayPriceTotal().subtract(total2);
-						break;
-
-					default:
-						System.out.println("type为null	type:"+type);
-						break;
+				BigDecimal amount = new BigDecimal("0.00");
+				switch (type) {
+				case AccountItemType.PERFORMANCE_FEE://业绩
+					for(ContractItems temp : contractItemsList){
+						amount = amount.add(temp.getPayPriceTotal());
 					}
+					break;
+				case AccountItemType.PRICE_DIFFERENCE_FEE://差价
+					for(ContractItems temp : contractItemsList){
+						//支付总价-最低限价*商品数量
+						BigDecimal price = temp.getLowestPrice().multiply(new BigDecimal(temp.getNum().toString()));
+						price = temp.getPayPriceTotal().subtract(price);
+						amount = amount.add(price);
+					}
+					break;
+				case AccountItemType.NET_PROFIT_FEE://纯利润
+					for(ContractItems temp : contractItemsList){
+						//支付总价-硬成本价格*商品数量
+						BigDecimal price = temp.getHardCostPrice().multiply(new BigDecimal(temp.getNum().toString()));
+						price = temp.getPayPriceTotal().subtract(price);
+						amount = amount.add(price);
+					}
+					break;
+
+				default:
+					System.out.println("type为null	type:"+type);
+					break;
 				}
 				return amount;
 			}
