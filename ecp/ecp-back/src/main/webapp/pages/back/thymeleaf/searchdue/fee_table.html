@@ -22,7 +22,7 @@
 				<td th:text="${item.orderNo}">订单号</td>
 				<td th:text="${item.amount}">金额</td>
 				<td><span th:switch="${item.type}" th:remove="tag">
-						<span th:case=1 th:remove="tag"> <span>交通费</span>
+					<span th:case=1 th:remove="tag"> <span>交通费</span>
 					</span> <span th:case=2 th:remove="tag"> <span>通讯费</span>
 					</span> <span th:case=3 th:remove="tag"> <span>招待费</span>
 					</span> <span th:case=4 th:remove="tag"> <span>差旅费</span>
