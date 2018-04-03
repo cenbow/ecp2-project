@@ -26,6 +26,7 @@ import com.ecp.bean.ContractOrderItemBean;
 import com.ecp.bean.ContractOrderItemDisplayBean;
 import com.ecp.bean.ContractStateType;
 import com.ecp.bean.UserBean;
+import com.ecp.common.util.EntityToMap;
 import com.ecp.common.util.NumberToCN;
 import com.ecp.common.util.RequestResultUtil;
 import com.ecp.entity.AccountCompany;
@@ -276,7 +277,8 @@ public class ContractController {
 		List<ContractOrderItemBean> contractOrderItemBeanList=getEntity2(orderItems);
 		
 		//(3)获取合同商品条目的品牌,型号,基本参数
-		List<ContractOrderItemDisplayBean> contractOrderItemDispList=new ArrayList<ContractOrderItemDisplayBean>();
+		//List<ContractOrderItemDisplayBean> contractOrderItemDispList=new ArrayList<ContractOrderItemDisplayBean>();
+		List<Map<String,Object>> contractOrderItemDispList=new ArrayList<Map<String,Object>>();
 		for(ContractOrderItemBean contractItem:contractOrderItemBeanList){
 			ContractOrderItemDisplayBean dispBean=new ContractOrderItemDisplayBean();
 			//(1)加入contractOrderBean
@@ -317,7 +319,7 @@ public class ContractController {
 			
 			
 			//(5)加入列表
-			contractOrderItemDispList.add(dispBean);
+			contractOrderItemDispList.add(EntityToMap.ConvertObjToMap(dispBean));  //此处将对象转换成map
 		}
 		
 		
