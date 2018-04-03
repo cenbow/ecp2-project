@@ -1,5 +1,6 @@
 package com.ecp.service.impl.front;
 
+import java.math.BigDecimal;
 import java.util.List;
 import java.util.Map;
 
@@ -59,6 +60,35 @@ public class AccountCompanyServiceImpl extends AbstractBaseService<AccountCompan
 			List<Long> roleIdList) {
 		
 		return accountCompanyMapper.selectItems(
+				-orderTimeCond, 
+				dealStateCond, 
+				searchTypeValue,
+				condValue,  
+				provinceName,  
+				cityName,  
+				countyName,
+				agentIdList,				
+				itemTypeList, 
+				bindedUserId,
+				roleIdList
+				);
+	}
+
+
+	@Override
+	public BigDecimal getAmountByOrderId(long orderId, int accountItemType) {
+		// TODO Auto-generated method stub
+		return accountCompanyMapper.getAmountByOrderId(orderId,accountItemType);
+	}
+
+
+	@Override
+	public BigDecimal searchAccountItemAmount(int orderTimeCond, int dealStateCond, int searchTypeValue,
+			String condValue, String provinceName, String cityName, String countyName,
+			List<Map<String, Object>> agentIdList, List<Integer> itemTypeList, long bindedUserId,
+			List<Long> roleIdList) {
+		
+		return accountCompanyMapper.searchAccountItemAmount(
 				-orderTimeCond, 
 				dealStateCond, 
 				searchTypeValue,

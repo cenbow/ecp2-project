@@ -1,5 +1,6 @@
 package com.ecp.dao;
 
+import java.math.BigDecimal;
 import java.util.List;
 import java.util.Map;
 
@@ -82,5 +83,26 @@ public interface OrdersMapper extends Mapper<Orders> {
 												 @Param("cityName") 	String cityName, 
 												 @Param("countyName")	String countyName,
 												 @Param("agentIdList") List<Map<String, Object>> agentIdList);
+	
+	public List<Map<String, Object>> selectOrderDue(@Param("orderTimeCond") int orderTimeCond, 
+				 @Param("dealStateCond") int dealStateCond, 
+				 @Param("searchTypeValue") int searchTypeValue,
+				 @Param("condValue")	String condValue, 
+			 @Param("provinceName") String provinceName, 
+			 @Param("cityName") 	String cityName, 
+			 @Param("countyName")	String countyName,
+			 @Param("agentIdList") List<Map<String, Object>> agentIdList,
+			 @Param("totalPayFlag")	int totalPayFlag
+			 );
+	
+	public BigDecimal getOrderAmount(@Param("orderTimeCond") int orderTimeCond, 
+			 @Param("dealStateCond") int dealStateCond, 
+			 @Param("searchTypeValue") int searchTypeValue,
+			 @Param("condValue")	String condValue, 
+		 @Param("provinceName") String provinceName, 
+		 @Param("cityName") 	String cityName, 
+		 @Param("countyName")	String countyName,
+		 @Param("agentIdList") List<Map<String, Object>> agentIdList,
+		 @Param("totalPayFlag")	int totalPayFlag);
 	
 }

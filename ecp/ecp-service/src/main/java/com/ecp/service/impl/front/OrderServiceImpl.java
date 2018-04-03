@@ -1,5 +1,6 @@
 package com.ecp.service.impl.front;
 
+import java.math.BigDecimal;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
@@ -107,6 +108,20 @@ public class OrderServiceImpl extends AbstractBaseService<Orders, Long> implemen
 			List<Map<String, Object>> agentIdList) {
 		return ordersMapper.selectOrder(-orderTimeCond, dealStateCond, searchTypeValue,condValue,provinceName,cityName,countyName,agentIdList);
 		
+	}
+
+	@Override
+	public List<Map<String, Object>> selectOrder(int orderTimeCond, int dealStateCond, int searchTypeValue,
+			String condValue, String provinceName, String cityName, String countyName,
+			List<Map<String, Object>> agentIdList, int totalPayFlag) {
+		return ordersMapper.selectOrderDue(-orderTimeCond, dealStateCond, searchTypeValue,condValue,provinceName,cityName,countyName,agentIdList,totalPayFlag);
+	}
+
+	@Override
+	public BigDecimal getOrderAmount(int orderTimeCond, int dealStateCond, Integer searchTypeValue, String condValue,
+			String provinceName, String cityName, String countyName, List<Map<String, Object>> agentIdList,
+			int totalPayFlag) {
+		return ordersMapper.getOrderAmount(-orderTimeCond, dealStateCond, searchTypeValue,condValue,provinceName,cityName,countyName,agentIdList,totalPayFlag);
 	}
 
 }

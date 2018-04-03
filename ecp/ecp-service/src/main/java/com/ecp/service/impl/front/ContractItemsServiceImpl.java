@@ -40,4 +40,16 @@ public class ContractItemsServiceImpl extends AbstractBaseService<ContractItems,
 		return contractItemsMapper.selectContractItems(params);
 	}
 
+	@Override
+	public BigDecimal getContractAmountByNo(String contractNo) {
+		return contractItemsMapper.getContractAmountByNo(contractNo);
+	}
+
+	@Override
+	public BigDecimal searchContractAmount(int orderTimeCond, int dealStateCond, int searchTypeValue, String condValue,
+			String provinceName, String cityName, String countyName, List<Map<String, Object>> agentIdList) {
+		return contractItemsMapper.searchContractAmount( -orderTimeCond,  dealStateCond,  searchTypeValue,  condValue,
+				 provinceName,  cityName,  countyName, agentIdList);
+	}
+
 }

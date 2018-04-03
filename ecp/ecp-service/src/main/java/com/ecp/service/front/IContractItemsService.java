@@ -38,4 +38,40 @@ public interface IContractItemsService extends IBaseService<ContractItems, Long>
 	 */
 	public List<Map<String, Object>> selectContractItems(Map<String, Object> params);
 	
+	
+	/** 
+		* @Title: getContractAmountByNo 
+		* @Description: 根据合同号查询合同额 
+		* @param @param contractNo
+		* @param @return     
+		* @return BigDecimal    返回类型 
+		* @throws 
+	*/
+	public BigDecimal getContractAmountByNo(String contractNo);
+	
+	/** 
+		* @Title: searchContractAmount 
+		* @Description: 查询范围内合同总金额 
+		* @param @param orderTimeCond
+		* @param @param dealStateCond
+		* @param @param searchTypeValue
+		* @param @param condValue
+		* @param @param provinceName
+		* @param @param cityName
+		* @param @param countyName
+		* @param @param agentIdList
+		* @param @param itemTypeList
+		* @param @param bindedUserId
+		* @param @param roleIdList
+		* @param @return     
+		* @return BigDecimal    返回类型 
+		* @throws 
+	*/
+	public BigDecimal searchContractAmount(
+			 int orderTimeCond,
+			 int dealStateCond,
+			 int searchTypeValue,String condValue,
+			 String provinceName,String cityName,String countyName,
+			 List<Map<String,Object>> agentIdList);
+	
 }

@@ -77,8 +77,8 @@
 						LEFT JOIN user_extends a  on(o.extend_id=a.extend_id)				  
 					   
 		<where>
-			ac.cust_id is not NULL
-			AND
+			o.deleted=1 AND o.yn=1 and o.extend_id is not NULL AND
+			ac.cust_id is not NULL 	AND
 			o.create_time&gt;=DATE_ADD(now(),INTERVAL #{orderTimeCond} MONTH)
 			<if test="dealStateCond!=null and dealStateCond!='' and dealStateCond!='0'.toString()">
 				AND 
@@ -157,7 +157,103 @@
   	 	order by o.create_time DESC  	 
   	</select>
   
+    <!-- 查询指定订单及分录类型的和 -->
+  <select id="getAmountByOrderId" resultType="java.math.BigDecimal">
+	SELECT
+		IFNULL(SUM(ac.amount),0)
+	FROM
+		account_company ac	
+	WHERE
+		ac.order_id = #{orderId} and
+		ac.type=#{accountItemType}		  	 
+  </select>
   
+  <!-- 查询范围内指定分录的总金额 -->
+  <select id="searchAccountItemAmount" resultType="java.math.BigDecimal">
+		select IFNULL(SUM(ac.amount),0) from account_company ac 
+						LEFT JOIN trade_orders o  on(o.id=ac.order_id) 
+						LEFT JOIN user_extends a  on(o.extend_id=a.extend_id)				  
+					   
+		<where>
+			o.deleted=1 AND o.yn=1 and o.extend_id is not NULL AND
+			ac.cust_id is not NULL	AND
+			o.create_time&gt;=DATE_ADD(now(),INTERVAL #{orderTimeCond} MONTH)
+			<if test="dealStateCond!=null and dealStateCond!='' and dealStateCond!='0'.toString()">
+				AND 
+				o.contract_state=#{dealStateCond}	
+			</if>
+			<if test="condValue!=null and condValue!=''">
+				<choose>  			
+					<when test="searchTypeValue==1">  					
+						AND o.order_id LIKE concat(concat('%',#{condValue}),'%') 
+					</when>
+					<when test="searchTypeValue==2">
+						AND o.contract_no LIKE concat(concat('%',#{condValue}),'%') 
+					</when>
+					<when test="searchTypeValue==3">
+						AND o.name LIKE concat(concat('%',#{condValue}),'%') 
+					</when>
+					<when test="searchTypeValue==4">
+						AND o.mobile LIKE concat(concat('%',#{condValue}),'%') 
+					</when>
+					<when test="searchTypeValue==5">
+						AND a.company_name LIKE concat(concat('%',#{condValue}),'%') 
+					</when>
+					<when test="searchTypeValue==6">
+						AND a.artificial_person_name LIKE concat(concat('%',#{condValue}),'%') 
+					</when>
+					<when test="searchTypeValue==7">
+						AND a.contact_phone LIKE concat(concat('%',#{condValue}),'%') 
+					</when>  			
+				</choose>  						
+			</if>
+  		
+			<if test="provinceName!=null and provinceName!=''">
+				AND a.province=#{provinceName} 
+			</if>  		
+			<if test="cityName!=null and cityName!=''">
+				AND a.city=#{cityName} 
+			</if>
+			<if test="countyName!=null and countyName!=''">
+				AND a.county=#{countyName} 
+			</if>
+			
+			<if test="itemTypeList!=null and itemTypeList.size&gt;0">
+				AND
+				type in 	
+				<foreach close=")" collection="itemTypeList" index="index" item="itemType" open="(" separator=",">  
+					#{itemType}  
+				</foreach>  		
+			</if>
+			
+			<if test="userId!=-1">
+				AND ac.bind_user_id=#{userId}
+			</if>
+			<if test="roleIdList!=null and roleIdList.size&gt;0">
+				AND ac.role_id in
+				<foreach close=")" collection="roleIdList" index="index" item="item" open="(" separator=",">  
+					#{item}  
+				</foreach>
+			</if>
+			
+			<!-- 数据范围 -->  		
+			<if test="agentIdList!=null and agentIdList.size&gt;=0">
+				<if test="agentIdList.size&gt;0">
+					AND a.extend_id in
+					<foreach close=")" collection="agentIdList" index="index" item="item" open="(" separator=",">
+						#{item.cust_id}
+					</foreach>
+				</if>
+				
+				<if test="agentIdList.size==0">
+					and (0&gt;1)
+				</if>
+							 
+			</if>  		
+			
+		 </where>  	 
+  	 	order by o.create_time DESC  	 
+  	</select>
   
   
   

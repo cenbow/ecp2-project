@@ -1,5 +1,6 @@
 package com.ecp.service.front;
 
+import java.math.BigDecimal;
 import java.util.List;
 import java.util.Map;
 
@@ -73,6 +74,37 @@ public interface IOrderService extends IBaseService<Orders, Long> {
 			 int searchTypeValue,String condValue,
 			 String provinceName,String cityName,String countyName,
 			 List<Map<String,Object>> agentIdList);
+	
+	public List<Map<String,Object>> selectOrder(int orderTimeCond,
+			 int dealStateCond,
+			 int searchTypeValue,String condValue,
+			 String provinceName,String cityName,String countyName,
+			 List<Map<String,Object>> agentIdList,int totalPayFlag);
+	
+	/** 
+		* @Title: getOrderAmount 
+		* @Description: 获取指定范围内的订单总金额 
+		* @param @param orderTimeCond
+		* @param @param dealStateCond
+		* @param @param searchTypeValue
+		* @param @param condValue
+		* @param @param provinceName
+		* @param @param cityName
+		* @param @param countyName
+		* @param @param agentIdList
+		* @param @param totalPayFlag
+		* @param @return     
+		* @return BigDecimal    返回类型 
+		* @throws 
+	*/
+	public BigDecimal getOrderAmount(
+			  int orderTimeCond,
+			  int dealStateCond,
+			  Integer searchTypeValue,
+			  String condValue,							  
+			  String provinceName, String cityName, String countyName,
+			  List<Map<String,Object>> agentIdList,
+			  int totalPayFlag);
 	
 	
 }

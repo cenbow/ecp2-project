@@ -1,5 +1,6 @@
 package com.ecp.back.controller;
 
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -17,7 +18,6 @@ import com.ecp.back.commons.RoleCodeConstants;
 import com.ecp.bean.AccountItemType;
 import com.ecp.bean.UserBean;
 import com.ecp.entity.AccountCompany;
-import com.ecp.entity.AccountPersonal;
 import com.ecp.entity.Orders;
 import com.ecp.entity.Role;
 import com.ecp.entity.UserExtends;
@@ -26,6 +26,8 @@ import com.ecp.service.back.IUserService;
 import com.ecp.service.front.IAccountCompanyService;
 import com.ecp.service.front.IAccountPersonalService;
 import com.ecp.service.front.IAgentBindService;
+import com.ecp.service.front.IContractItemsService;
+import com.ecp.service.front.IContractService;
 import com.ecp.service.front.IOrderItemService;
 import com.ecp.service.front.IOrderService;
 import com.ecp.service.front.IUserAgentService;
@@ -70,6 +72,10 @@ public class SearchDueController {
 	IUserService userService;  //用户服务
 	@Autowired
 	IRoleService roleService;  //角色服务
+	@Autowired
+	IContractService contractService;  //合同服务
+	@Autowired
+	IContractItemsService contractItemsService;  //合同服务
 	
 
 	/**
@@ -115,6 +121,7 @@ public class SearchDueController {
 							  String countyName,
 							  long userId,
 							  long roleId,
+							  int totalPayFlag,
 							  Model model) {
 		if(pageNum==null || pageNum==0)
 		{
@@ -145,14 +152,18 @@ public class SearchDueController {
 											 orderTimeCond,dealStateCond,
 											 searchTypeValue,condValue,
 											 provinceName,cityName,countyName,
-											 agentIdList);  //查询订单
+											 agentIdList,totalPayFlag);  //查询订单
 		PageInfo<Map<String,Object>> pageInfo = new PageInfo<Map<String,Object>>(orderList);// (使用了拦截器或是AOP进行查询的再次处理)
 		
 		List<Map<String,Object>> userRoleList=getUserRoles();
 		model.addAttribute("userRoleList", userRoleList);  //查询用户角色列表
 		
-		model.addAttribute("pageInfo", pageInfo);  //分页		
-		model.addAttribute("orderList", orderList); //列表
+		model.addAttribute("pageInfo", pageInfo);  //分页
+		
+		
+		List<Map<String,Object>> addedList=getContractAndPayAmount(orderList);
+		
+		model.addAttribute("orderList", addedList); //列表
 		
 		//回传区域条件及用户/角色
 		model.addAttribute("provinceName", provinceName);
@@ -161,8 +172,97 @@ public class SearchDueController {
 		model.addAttribute("userId", userId);
 		model.addAttribute("roleId", roleId);
 		
+		model.addAttribute("totalPayFlag", totalPayFlag);  //回传是否欠款条件
+		
+		//获取合同总金额,回款总金额
+		Map<String,Object> amountMap=getScopeAmount(orderTimeCond,
+				   dealStateCond,				   
+				   searchTypeValue, condValue,							  
+				   provinceName, cityName, countyName,
+				   userId, roleId);	
+		
+		model.addAttribute("contractAmount", amountMap.get("contractAmount"));
+		model.addAttribute("payAmount", amountMap.get("payAmount"));
+		
+		BigDecimal orderAmount=getOrderAmount(orderTimeCond,dealStateCond,
+				 searchTypeValue,condValue,
+				 provinceName,cityName,countyName,
+				 agentIdList,totalPayFlag);
+		model.addAttribute("orderAmount", orderAmount);	
+		
+		
 		return RESPONSE_THYMELEAF_BACK + "order_table";
 	}
+	
+	
+	/** 
+		* @Title: getOrderAmount 
+		* @Description: 获取范围内订单总金额. 
+		* @param @param orderTimeCond
+		* @param @param dealStateCond
+		* @param @param searchTypeValue
+		* @param @param condValue
+		* @param @param provinceName
+		* @param @param cityName
+		* @param @param countyName
+		* @param @param agentIdList
+		* @param @param totalPayFlag
+		* @param @return     
+		* @return BigDecimal    返回类型 
+		* @throws 
+	*/
+	private BigDecimal getOrderAmount(int orderTimeCond,
+			  int dealStateCond,
+			  Integer searchTypeValue,
+			  String condValue,							  
+			  String provinceName,
+			  String cityName,
+			  String countyName,
+			  List<Map<String,Object>> agentIdList,
+			  int totalPayFlag){
+		
+		return orderService.getOrderAmount(orderTimeCond,dealStateCond,
+				 searchTypeValue,condValue,
+				 provinceName,cityName,countyName,
+				 agentIdList,totalPayFlag);
+	}
+	
+	
+	
+	
+	/** 
+		* @Title: getContractAndPayAmount 
+		* @Description:  获取订单合同金额(应收款)及回款额
+		* @param @param orderList
+		* @param @return     
+		* @return List<Map<String,Object>>    返回类型 
+		* @throws 
+	*/
+	private List<Map<String,Object>> getContractAndPayAmount(List<Map<String,Object>> orderList){
+		List<Map<String,Object>> tmpList=new ArrayList<Map<String,Object>>();
+		for(int i=0;i<orderList.size();i++){
+			Map<String,Object> compositeObj=new HashMap<String,Object>();
+			
+			Map<String,Object> order=orderList.get(i);
+			compositeObj.put("order", order);
+			
+			//根据合同ID查询:合同金额(应收款)
+			BigDecimal contractAmount=new BigDecimal(0);  
+			if(order.get("contract_id")!=null){
+				contractAmount=contractItemsService.getContractAmountByNo((String) order.get("contract_no"));
+			}
+			compositeObj.put("contractAmount", contractAmount);
+			
+			//根据订单ID:查询收款合计
+			BigDecimal payAmount= accountCompanyService.getAmountByOrderId((long) order.get("id"),AccountItemType.PAYMENT);			
+			compositeObj.put("payAmount", payAmount);
+			
+			tmpList.add(compositeObj);
+		}
+		
+		return tmpList;
+	}
+	
 	
 	/** 
 		* @Title: getSearchScope 
@@ -338,12 +438,46 @@ public class SearchDueController {
 			
 		List<AccountCompany> accountCompanyList=searchOrderUnbindFeeCompany(orderId,orderNo,userId,roleId);  //查询回款(回款项属于非绑定项)
 		model.addAttribute("accountItemList",accountCompanyList);
-				
+		
+		Map<String,Object> amountMap= getOrderAmount(orderId);  //获取订单所对应合同的总金额及回款金额
+		
+		model.addAttribute("contractAmount", amountMap.get("contractAmount"));
+		model.addAttribute("payAmount", amountMap.get("payAmount"));
+		
+		
 		model.addAttribute("orderId", orderId);
 		model.addAttribute("orderNo",orderNo);
 		
 		return RESPONSE_THYMELEAF_BACK + "fee_show";
 	}
+	
+	/** 
+		* @Title: getOrderAmount 
+		* @Description: 查询订单的应收与己收 
+		* @param @param orderId 订单ID
+		* @param @return     
+		* @return List<Map<String,Object>>    返回类型 
+		* @throws 
+	*/
+	private  Map<String,Object>  getOrderAmount(long orderId){
+		Orders order=orderService.selectByPrimaryKey(orderId);
+		//查询订单合同金额, 回款合计, 总的欠款
+		//根据合同ID查询:合同金额(应收款)
+		Map<String,Object> compositeObj=new HashMap<String,Object>();
+		
+		BigDecimal contractAmount=new BigDecimal(0);  
+		if(order.getContractNo()!=null){
+			contractAmount=contractItemsService.getContractAmountByNo(order.getContractNo());
+		}
+		compositeObj.put("contractAmount", contractAmount);
+		
+		//根据订单ID:查询收款合计
+		BigDecimal payAmount= accountCompanyService.getAmountByOrderId(order.getId(),AccountItemType.PAYMENT);			
+		compositeObj.put("payAmount", payAmount);
+		
+		return compositeObj;
+	}
+	
 	
 	/** 
 		* @Title: showAllFeeUI 
@@ -380,7 +514,8 @@ public class SearchDueController {
 			condStr=condValue;
 		}
 		
-		List<AccountCompany> accountCompanyList = searchScopeUnbindFeeCompany( orderTimeCond,
+		//查询回款列表:范围
+		List<AccountCompany> accountCompanyList = searchScopeUnbindFeeCompany(orderTimeCond,
 				   dealStateCond,
 				   pageNum, pageSize,
 				   searchType, condStr,							  
@@ -389,8 +524,87 @@ public class SearchDueController {
 		
 		model.addAttribute("accountItemList", accountCompanyList);
 		
+		//获取合同总金额
+		Map<String,Object> amountMap=getScopeAmount(orderTimeCond,
+				   dealStateCond,				   
+				   searchType, condStr,							  
+				   provinceName, cityName, countyName,
+				   userId, roleId);	
+		
+		model.addAttribute("contractAmount", amountMap.get("contractAmount"));
+		model.addAttribute("payAmount", amountMap.get("payAmount"));
+		
+		
 		return RESPONSE_THYMELEAF_BACK + "fee_all_show";
 	}
+	
+	/** 
+		* @Title: getScopeAmount 
+		* @Description: 获取范围合同额,回款合计 
+		* @param @param orderTimeCond
+		* @param @param dealStateCond
+		* @param @param pageNum
+		* @param @param pageSize
+		* @param @param searchTypeValue
+		* @param @param condValue
+		* @param @param provinceName
+		* @param @param cityName
+		* @param @param countyName
+		* @param @param userId
+		* @param @param roleId
+		* @param @return     
+		* @return Map<String,Object>    返回类型 
+		* @throws 
+	*/
+	private Map<String,Object> getScopeAmount(int orderTimeCond, int dealStateCond,			  
+			  Integer searchTypeValue, String condValue,							  
+			  String provinceName, String cityName,String countyName,
+			  long userId, long roleId){
+		
+		int searchType=0;
+		String condStr="";
+		
+		//置默认值(搜索)
+		if(searchTypeValue!=null){
+			searchType=searchTypeValue;
+			condStr=condValue;
+		}
+		
+		//(1)准备查询条件  费用类型列表:市场费用
+		List<Integer> itemTypeList=getItemTypeList();		
+
+		List<Long> roleIdList=null;  	//角色列表列表为空:此条件无效
+		long searchUserId=0;		
+		
+		//(2)确定用户的查询范围(代理商范围)
+		List<Map<String,Object>> agentIdList=getSearchScope(userId,roleId);
+		
+		
+		//(3)查询公司帐薄
+		BigDecimal payAmount=accountCompanyService.searchAccountItemAmount(
+																orderTimeCond,dealStateCond,
+																searchType,	condStr,
+																provinceName,cityName,countyName,
+																agentIdList,														
+																itemTypeList,
+																searchUserId,roleIdList);
+		//(3)查询合同详情.
+		BigDecimal contractAmount=contractItemsService.searchContractAmount(
+																orderTimeCond,dealStateCond,
+																searchType,	condStr,
+																provinceName,cityName,countyName,
+																agentIdList);
+		
+		Map<String,Object> compositeObj=new HashMap<String,Object>();
+		compositeObj.put("payAmount", payAmount);
+		compositeObj.put("contractAmount", contractAmount);
+		
+		
+		return compositeObj;
+	}
+	
+	
+	
 	
 	/** 
 		* @Title: searchScopeMarketFeeCompany 
