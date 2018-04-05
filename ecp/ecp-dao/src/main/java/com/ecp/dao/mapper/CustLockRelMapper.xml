@@ -13,12 +13,13 @@
     <result column="item_cat_id" jdbcType="BIGINT" property="itemCatId" />
     <result column="bind_user_id" jdbcType="BIGINT" property="bindUserId" />
     <result column="role_id" jdbcType="BIGINT" property="roleId" />
+    <result column="deleted" jdbcType="INTEGER" property="deleted" />
   </resultMap>
   <sql id="Base_Column_List">
     <!--
       WARNING - @mbggenerated
     -->
-    id, cust_id, area, channel, master_slave_flag, item_cat_id, bind_user_id, role_id
+    id, cust_id, area, channel, master_slave_flag, item_cat_id, bind_user_id, role_id,deleted
   </sql>
   
   <select id="getUsersByRoleName" resultType="map">

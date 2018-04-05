@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>Insert title here</title>
+</head>
+<body>
+<table class="table">
+		<thead>
+			<tr>
+				<th>ID</th>
+				<th>登录名称</th>
+				<th>昵称</th>
+				<th>主帐号</th>							
+				<th>操作</th>
+			</tr>
+		</thead>
+		<tbody>
+			<tr th:each="item: ${userList}">
+				<td th:text="${item.id}">条目ID</td>
+				<td th:text="${item.username}">登录名称</td>
+				<td th:text="${item.nickname}">登录名称</td>
+				
+				<td>
+					<span th:if="${item.parent_id==null or item.parent.id==0}" th:remove="tag">
+						<span>主帐号</span> 
+					</span>
+				</td>
+
+				<!-- 操作 -->
+				<td>
+					<a type="button" class="modi-user" >
+						<i class=" icon-edit icon-large" style="color: darkblue" title="修改用户"></i>
+					</a> 
+					<a type="button" class="del-user">
+						<i	class=" icon-remove-circle icon-large" style="color: darkblue" title="删除用户"></i>
+					</a>
+					<a type="button" class="set-primary-user">
+						<i	class=" icon-tag icon-large" style="color: darkblue" title="设置主帐号"></i>
+					</a>
+					
+					<a type="button" class="reset-password" style="color: darkblue" title="重置密码"> 
+						<i	class="icon-retweet icon-large"></i>
+					</a>
+				</td>
+			</tr>
+		</tbody>
+	</table>
+	
+	<script th:inline="javascript">  
+		/*<![CDATA[*/
+		var curr_agentId = [[${agentId}]];  //回传的当前代理商ID
+		/*]]>*/
+	</script>
+
+
+	<script type="text/javascript">
+	
+		$(function(){
+			$('.modi-user').on('click', function() {
+				console.log("modify user");
+			})
+
+			$('.del-user').on('click', function() {
+				console.log("delete user");
+			})
+			$('.set-primary-user').on('click', function() {
+				console.log("set primary user");
+			})
+			
+		});
+		
+	</script>
+</body>
+</html>

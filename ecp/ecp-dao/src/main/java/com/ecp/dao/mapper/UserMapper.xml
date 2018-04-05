@@ -55,4 +55,17 @@
 		<!-- GROUP BY
 			u.id -->
 	</select>
+	
+	<!-- 根据parentId查询:本帐号,其下的直接子帐号 -->
+	<select id="getUsersByParentId"  resultType="map">
+		SELECT
+			u.*
+		FROM
+			`user` u		
+		WHERE
+			(u.id=#{pid} or u.parent_id=#{pid})			
+	</select>
+	
+	
+	
 </mapper>

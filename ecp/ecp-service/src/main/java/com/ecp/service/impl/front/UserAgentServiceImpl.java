@@ -1,5 +1,6 @@
 package com.ecp.service.impl.front;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -10,7 +11,7 @@ import org.springframework.stereotype.Service;
 import com.ecp.dao.UserExtendsMapper;
 import com.ecp.entity.User;
 import com.ecp.entity.UserExtends;
-import com.ecp.service.back.IUserService;
+import com.ecp.service.front.IAgentService;
 import com.ecp.service.front.IUserAgentService;
 import com.ecp.service.impl.AbstractBaseService;
 
@@ -24,7 +25,7 @@ public class UserAgentServiceImpl extends AbstractBaseService<UserExtends, Long>
 	UserExtendsMapper userExtendsMapper;
 	
 	@Autowired
-	IUserService userService;   //用户服务
+	IAgentService userService;   //用户服务
 
 	/**
 	 * @param userMapper the mapper to set
@@ -150,6 +151,17 @@ public class UserAgentServiceImpl extends AbstractBaseService<UserExtends, Long>
 		}
 		
 		return resultList;
+	}
+
+
+	@Override
+	public List<Map<String, Object>> getUsersByAgentId(long agentId) {	
+		UserExtends agent=userExtendsMapper.selectByPrimaryKey(agentId);
+		//根据主帐号进行查询
+		if(agent.getUserId()!=null && agent.getUserId()!=0){
+			return userService.getUsersByParentId(agent.getUserId());
+		}
+		return new ArrayList<Map<String,Object>>();
 	}
 	
 	

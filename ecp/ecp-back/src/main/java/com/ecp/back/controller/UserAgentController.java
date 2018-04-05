@@ -68,7 +68,7 @@ public class UserAgentController {
 	}
 	
 	/**
-	 * @Description 
+	 * @Description  显示签约代理商列表
 	 * @param pageNum 查询页号
 	 * @param pageSize 页大小
 	 * @param searchTypeValue 查询字段（以整形表示：0-选择查询条件；1：企业名称；2：负责人姓名；3：电话号码）
@@ -99,28 +99,46 @@ public class UserAgentController {
 		model.addAttribute("pageInfo", pageInfo);  					//分页信息
 		model.addAttribute("searchTypeValue", searchTypeValue);  	//查询字段值
 		model.addAttribute("condValue", condValue);  				//查询条件值
-		
-		//setPageInfo(model, pageInfo); // 向前台传递分页信息
-
-		model.addAttribute("userAgents", userAgents);
+		model.addAttribute("userAgents", userAgents);				//代理商列表
 
 		return RESPONSE_THYMELEAF_BACK + "user_agent_table";
 	}
 	
-
-	/*private void setPageInfo(Model model, PageInfo pageInfo) {
-		// 获得当前页
-		model.addAttribute("pageNum", pageInfo.getPageNum());
-		// 获得一页显示的条数
-		model.addAttribute("pageSize", pageInfo.getPageSize());
-		// 是否是第一页
-		model.addAttribute("isFirstPage", pageInfo.isIsFirstPage());
-		// 获得总页数
-		model.addAttribute("totalPages", pageInfo.getPages());
-		// 是否是最后一页
-		model.addAttribute("isLastPage", pageInfo.isIsLastPage());
-	}*/
-
+	/** 
+		* @Title: agent_userTable 
+		* @Description: 返回此代理商下的用户列表 
+		* @param @param agentId 代理商ID
+		* @param @param model
+		* @param @return     
+		* @return String    返回类型 
+		* @throws 
+	*/
+	@RequestMapping(value = "/usertable")
+	public String agent_userTable(long agentId,Model model) {
+		
+		getUsersByAgentId(agentId,model);
+		
+		return RESPONSE_THYMELEAF_BACK + "agent_usertable";
+	}
+	
+	
+	@RequestMapping(value = "/showusertable")
+	public String showAgentUserTable(long agentId,Model model) {
+		
+		getUsersByAgentId(agentId,model);
+		
+		model.addAttribute("agentId", agentId);   //回传参数
+		
+		return RESPONSE_THYMELEAF_BACK + "agent_usertable_show";
+	}
+	
+	private void getUsersByAgentId(long agentId,Model model){
+		List<Map<String,Object>> userList=userAgentService.getUsersByAgentId(agentId);
+		
+		model.addAttribute("userList", userList);
+	}
+	
+	
 	/**
 	 * @Description 增加签约客户 导航至增加签约客户界面
 	 * @param model

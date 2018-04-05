@@ -45,21 +45,7 @@ function search(){
 }
 
 
-// ===============分配帐户对话框 open/close==================
-/*
- * 显示分配帐户窗口
- */
-function displayWindow() {
-	$('#modal-container-273078').modal({
-		backdrop : 'static',
-		keyboard : false
-	});
-}
 
-/* 关闭分配帐户窗口 */
-function closeWindow() {
-	$("#modal-container-273078").modal("hide");
-}
 
 // ===================设置帐号状态====================
 function setAccountState(agentId, userId, accountState) {
@@ -89,36 +75,7 @@ function setAccountState(agentId, userId, accountState) {
 	});
 }
 
-//===================重置帐号口令====================
-/**
- * 
- * @param agentId  签约客户ID
- * @param userId 签约客户分配的用户ID
- * @returns 
- */
-function resetPassword(userId) {
-	var url = BASE_CONTEXT_PATH + "/back/agent/reset_password"; // 需要提交的 url
-	$.ajax({
-		type : "post", // 提交方式 get/post
-		url : url, // 需要提交的 url
-		// dataType: "application/json",
-		data : {			
-			'userId' : userId			
-		},
-		success : function(res) { // data 保存提交后返回的数据，一般为 json 数据
-			console.log(res);
-			if (res != null && res != "") {
-				var obj = $.parseJSON(res);
-				if (obj.result_code == "success") {
-					util.message(obj.result_msg);					
-				} else {
-					util.message(obj.result_err_msg);
-				}
-			}
-		}
 
-	});
-}
 
 /**
  * 设置当前订单时间名称及值
@@ -155,98 +112,81 @@ function updateUIOrderTime(orderTimeCond){
 
 
 
-/**
- * 判定用户帐号的有效性
- * @returns
- * 		0：正确; 		
- * 		2:字段为空
- */
-function validUserAccount(){
-	var loginName=$("#loginName").val();
-	var nickName = $("#nickName").val();//默认的昵称为手机号码
-	var password=$("#password").val();
-	if($.isBlank(loginName) || $.isBlank(nickName) || $.isBlank(password)){
-		return 2;
-	}
-	else{
-		return 0;
-	}
-}
 
-
-/**
- * 分配帐号
- * @returns
- */
-function dispatchAccount(){
-	var loginName=$("#loginName").val();
-	var nickName = $("#nickName").val();//默认的昵称为手机号码
-	var password=$("#password").val();
-	var agentId=$("#agentId").val();
-	var url = BASE_CONTEXT_PATH + "/back/agent/dispatch"; // 需要提交的 url
-	$.ajax({
-		type : "post", // 提交方式 get/post
-		url : url, // 需要提交的 url
-		// dataType: "application/json",
-		data : {
-			"loginName" : loginName,
-			"nickName" : nickName,
-			"password"	: password,
-			"agentId"	: agentId
-		},
-		success : function(res) { // data 保存提交后返回的数据，一般为 json 数据
-			console.log(res);
-			if (res != null && res != "") {
-				var obj = $.parseJSON(res);
-				if (obj.result_code == "success") {  
-					//生成帐号成功 重新加载页面
-					util.message("成功分配帐号！");
-					reloadPage();
-					
-				} else {  //此帐号不重复
-					util.message(obj.result_msg);
-				}
-			}
-		}
-
-	});
-}
-
-
-/**
- * 采用AJAX来判定是否登录用户重复
- * @returns
- */
-function hasSameLoginName(){
-	var loginName=$("#loginName").val();
-	var url = BASE_CONTEXT_PATH + "/back/agent/sameloginname"; // 需要提交的 url
-	$.ajax({
-		type : "post", // 提交方式 get/post
-		url : url, // 需要提交的 url
-		// dataType: "application/json",
-		data : {
-			'loginName' : loginName,
-		},
-		success : function(res) { // data 保存提交后返回的数据，一般为 json 数据
-			console.log(res);
-			if (res != null && res != "") {
-				var obj = $.parseJSON(res);
-				if (obj.result_code == "success") {  //有重复的帐号
-					util.message("有相同的帐号，请重新输入新登录名称！");
-				} else {  //此帐号不重复
-					//util.message(obj.result_msg);
-					closeWindow();  //关闭窗口
-					dispatchAccount();  //分配帐号
-				}
-			}
-		}
-
-	});
-}
 
 //==================PAGE LOADED READY===================
 $(function() {
 	updateUIOrderTime(g_searchTypeValue);
+	
+	
+	// ===================代理商:帐号管理======================
+	/**
+	 * 导航到代理商帐号列表界面.
+	 * 传递的参数主要有:代理商ID,代理商名称
+	 * 帐户管理,加载代理商帐户列表. account-management
+	 */
+	$(".account-management").on(
+			"click",
+			function(e) {
+				var agentId = $(this).attr("data-bind");
+				var companyName = $(this).attr("data-company-name");
+				
+				/*
+				var contactPhone = $(this).attr("data-contact-phone");
+				var artificialPersonName = $(this).attr("data-artificialPersonName");				
+				var userId=$(this).attr("data-user-id");*/
+				
+				$("#companyName").val(companyName);  //传递当前公司名称(agent_usertable_show.html)
+				
+				
+				//加载代理商用户列表.
+				var url = BASE_CONTEXT_PATH + "/back/agent/showusertable?agentId="+agentId;
+				$("#edit-body").load(url, function(){
+					//在新的选项卡中显示代理商用户列表.
+					$("#edit-tab").removeClass("hide");
+					$("#edit-tab-title").text("签约客户"+"帐号列表");
+					$('#tabs-14933 a[href="#panel-602679"]').tab('show');	
+					
+				});
+				
+	});
+	
+	// ===================设置帐号状态（有效、无效）======================
+	/* 设置帐号为有效 */
+	$(".set-valid").on("click", function(e) {
+		var agentId = $(this).attr("data-bind");
+		var userId = $(this).attr("data-user-id");
+		var accountState = $(this).attr("data-account-state");
+		if (userId == 0) {
+			util.message("尚未分配帐号！");
+		} else {
+			if (accountState == 1) {
+				util.message("此帐号己为有效！");
+			} else {
+				setAccountState(agentId, userId, 1);
+			}
+		}
+
+	});
+
+	/* 设置帐号为无效 */
+	$(".set-invalid").on("click", function(e) {
+		var agentId = $(this).attr("data-bind");
+		var userId = $(this).attr("data-user-id");
+		var accountState = $(this).attr("data-account-state");
+		if (userId == 0) {
+			util.message("尚未分配帐号！");
+		} else {
+			if (accountState == 2) {
+				util.message("此帐号己为无效！");
+			} else {
+				setAccountState(agentId, userId, 2);
+			}
+		}
+
+	});
+	
+	
 	
 	//================条件选择 与查询===================
 	//订单时间条件(下拉菜单)
@@ -295,109 +235,6 @@ $(function() {
 		}
 	});
 	
-	
-
-	// ====================分配帐户=====================
-	/* 【分配帐户】按钮-显示对话框 */
-	$(".dispatch-account").on(
-			"click",
-			function(e) {
-				var defaultPassword="123456";
-				
-				var agentId = $(this).attr("data-bind");
-				var companyName = $(this).attr("data-company-name");
-				var contactPhone = $(this).attr("data-contact-phone");
-				var artificialPersonName = $(this).attr("data-artificialPersonName");
-				
-				var userId=$(this).attr("data-user-id");
-				if(userId!=0){
-					util.message("已经分配帐户");
-				}
-				else{
-					displayWindow();
-					$("#agentId").val(agentId);
-					$("#myModalLabel").text("分配帐户(" + companyName + "_" + artificialPersonName	+ ")");
-					$("#loginName").val(contactPhone);//默认的帐户名称为手机号码
-					$("#nickName").val(contactPhone);//默认的昵称为手机号码
-					$("#password").val(defaultPassword);//默认的帐户密码是：123456
-				}
-				
-				
-	});
-	
-	/*分配帐户：确认按钮-click*/
-	$("#btnDispatch").on("click",function(){
-		//console.log("debug1");
-		var result=validUserAccount();
-		if (result==2){
-			util.message("字段不可以为空!");
-			return;
-		}
-		
-		hasSameLoginName();  //判定登录名称是否重复
-	});
-	
-	// ===================重置帐号密码====================
-	/* 设置帐号为有效 */
-	$(".reset-password").on("click", function(e) {
-		var agentId = $(this).attr("data-bind");
-		var userId = $(this).attr("data-user-id");
-		var accountState = $(this).attr("data-account-state");
-		if (userId == 0) {
-			util.message("尚未分配帐号！");
-		} else {
-			if (accountState == 2) {
-				util.message("此帐号己为无效,无需重置口令！");
-			} else {
-				//显示提示对话框(是否重置口令)
-				util.confirm("确认重置口令?",userId,"resetPassword","");
-				//resetPassword(agentId, userId);
-			}
-		}
-
-	});
-	
-	function doNothing(){
-		
-	}
-	
-	
-	
-	// ===================设置帐号状态（有效、无效）======================
-	/* 设置帐号为有效 */
-	$(".set-valid").on("click", function(e) {
-		var agentId = $(this).attr("data-bind");
-		var userId = $(this).attr("data-user-id");
-		var accountState = $(this).attr("data-account-state");
-		if (userId == 0) {
-			util.message("尚未分配帐号！");
-		} else {
-			if (accountState == 1) {
-				util.message("此帐号己为有效！");
-			} else {
-				setAccountState(agentId, userId, 1);
-			}
-		}
-
-	});
-
-	/* 设置帐号为无效 */
-	$(".set-invalid").on("click", function(e) {
-		var agentId = $(this).attr("data-bind");
-		var userId = $(this).attr("data-user-id");
-		var accountState = $(this).attr("data-account-state");
-		if (userId == 0) {
-			util.message("尚未分配帐号！");
-		} else {
-			if (accountState == 2) {
-				util.message("此帐号己为无效！");
-			} else {
-				setAccountState(agentId, userId, 2);
-			}
-		}
-
-	});
-
 	// ====================翻页=====================
 	/*
 	 * 【分页】导航： 当点击页号时读取需要导航到的页码及每页记录数（pageNum,pageSize）
