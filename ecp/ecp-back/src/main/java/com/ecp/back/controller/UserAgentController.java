@@ -165,6 +165,7 @@ public class UserAgentController {
 		long agentId=Long.parseLong(request.getParameter("agentId"));
 		
 		
+		//(1)生成user对象,并设置其属性
 		User user=new User();
 		user.setCreatedTime(new Date());
 		user.setUsername(loginName);
@@ -175,18 +176,65 @@ public class UserAgentController {
 		user.setType(UserType.AGENT);  //帐号类型
 		user.setDeleted(DeletedType.NO);//删除类型：1=未删除，2=已删除
 		
-		int row =userService.insertSelective(user);
-		if(row>0){
-			UserExtends agent=new UserExtends();
-			agent.setExtendId(agentId);
-			agent.setUserId(user.getId());
-			agent.setAccountState(AccountStatusType.VALID);
-			userAgentService.updateByPrimaryKeySelective(agent);
+		//(2)判定是否是第一个用户,如果是则为主帐号
+		UserExtends agent=userAgentService.selectByPrimaryKey(agentId);  //获取代理商对象
+		if(agent.getUserId()==null || agent.getUserId()==0){  //主帐号
+			
+			user.setParentId((long)0);  //设置主帐号的parentId为0,主帐号为root node
+			int row =userService.insertSelective(user);   //向user中增加记录
+			
+			if(row>0){
+				UserExtends tempAgent=new UserExtends();
+				tempAgent.setExtendId(agentId);
+				tempAgent.setUserId(user.getId());
+				tempAgent.setAccountState(AccountStatusType.VALID);
+				userAgentService.updateByPrimaryKeySelective(tempAgent);
+			}
+		}
+		else{  //子帐号
+			long primaryUserId=agent.getUserId();  //主帐号ID
+			user.setParentId(primaryUserId);
+			int row =userService.insertSelective(user);   //向user中增加记录
 		}
 		
 		return RequestResultUtil.getResultUpdateSuccess();
-		
 	}
+	
+	/**
+	 * @Description 分配帐号（帐号默认为有效状态）
+	 * @param request
+	 * @return
+	 */
+	@RequestMapping(value="/modiuser" ,method=RequestMethod.POST)
+	@ResponseBody
+	public Object modiAgentUser(HttpServletRequest request){
+		
+		String loginName=request.getParameter("loginName");
+		String nickName=request.getParameter("nickName");
+		String password=request.getParameter("password");
+		long agentId=Long.parseLong(request.getParameter("agentId"));
+		long userId=Long.parseLong(request.getParameter("userId"));
+		
+		
+		//(1)生成user对象,并设置其属性
+		User user=new User();
+		user.setId(userId);		
+		user.setUsername(loginName);
+		user.setNickname(nickName);
+		if(!(password==null || password.equals(""))){  //如果口令字段不为空时则置新的口令,否则不处理
+			String md5Pass=genMD5Password(loginName,password);
+			user.setPassword(md5Pass);
+		}
+		
+		int row=userService.updateByPrimaryKeySelective(user);  //更新用户
+		if (row>=1) 
+			return RequestResultUtil.getResultUpdateSuccess();
+		else
+			return RequestResultUtil.getResultUpdateWarn();
+	}
+	
+	
+	
 	
 	
 	/**
@@ -233,9 +281,6 @@ public class UserAgentController {
 		
 		return RequestResultUtil.getResultSelectWarn();
 	}
-	
-	
-	
 	
 	
 	/**

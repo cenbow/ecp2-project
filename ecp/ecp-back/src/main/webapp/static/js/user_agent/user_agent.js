@@ -44,9 +44,6 @@ function search(){
 	loadUserAgent(parms,null); // 加载页面
 }
 
-
-
-
 // ===================设置帐号状态====================
 function setAccountState(agentId, userId, accountState) {
 	var url = BASE_CONTEXT_PATH + "/back/agent/setstate"; // 需要提交的 url
