@@ -56,14 +56,15 @@
 			u.id -->
 	</select>
 	
-	<!-- 根据parentId查询:本帐号,其下的直接子帐号 -->
+	<!-- 根据parentId(主帐号)查询:本帐号,其下的直接子帐号 -->
 	<select id="getUsersByParentId"  resultType="map">
 		SELECT
 			u.*
 		FROM
 			`user` u		
 		WHERE
-			(u.id=#{pid} or u.parent_id=#{pid})			
+			u.deleted=1 AND
+			(u.id=#{pid} or u.parent_id=#{pid})	 		
 	</select>
 	
 	
