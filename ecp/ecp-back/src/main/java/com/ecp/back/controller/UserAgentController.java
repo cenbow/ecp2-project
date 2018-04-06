@@ -262,6 +262,7 @@ public class UserAgentController {
 			UserExtends tempAgent=new UserExtends();
 			tempAgent.setExtendId(agentId);
 			tempAgent.setUserId((long)0);
+			//tempAgent.setAccountState(AccountStatusType.INVALID);  //如果删除了主帐号,则代理商自动置为无效状态
 			userAgentService.updateByPrimaryKeySelective(tempAgent);
 			
 		}
@@ -273,11 +274,7 @@ public class UserAgentController {
 		}
 		
 		return RequestResultUtil.getResultUpdateSuccess();
-		
 	}
-	
-	
-	
 	
 	
 	/**
@@ -313,7 +310,7 @@ public class UserAgentController {
 	 */
 	@RequestMapping(value="/sameloginname" ,method=RequestMethod.POST)
 	@ResponseBody
-	public Object user_agent_same_loginname(String loginName,HttpServletRequest request){
+	public Object searchSameLoginName(String loginName,HttpServletRequest request){
 		User user=new User();
 		user.setUsername(loginName);
 		
@@ -340,29 +337,100 @@ public class UserAgentController {
 		return RESPONSE_THYMELEAF_BACK + "user_agent_detail";
 	}
 
-	/**
-	 * @Description 分配帐号（帐号默认为有效状态）
-	 * @param request
-	 * @return
-	 */
+	/** 
+		* @Title: setAgentState 
+		* @Description: 设置代理商状态:代理商是否有效. 
+		* @param @param agentId
+		* @param @param state
+		* @param @param request
+		* @param @return     
+		* @return Object    返回类型 
+		* @throws 
+	*/
 	@RequestMapping(value="/setstate" ,method=RequestMethod.POST)
 	@ResponseBody
-	public Object user_agent_set_state(long agentId,long userId,int accountState, HttpServletRequest request){
+	public Object setAgentState(long agentId,int state, HttpServletRequest request){
 		UserExtends agent=new UserExtends();
 		agent.setExtendId(agentId);
-		agent.setAccountState(accountState);
+		agent.setAccountState(state);
 		userAgentService.updateByPrimaryKeySelective(agent);
 		
-		User user=new User();
+		//设置主帐号为无效状态
+		/*User user=new User();
 		user.setId(userId);
 		user.setStatus(accountState);
+		userService.updateByPrimaryKeySelective(user);*/
+		
+		return RequestResultUtil.getResultUpdateSuccess(); 
+	}
+	
+	/** 
+		* @Title: setUserState 
+		* @Description: 设置用户的状态 
+		* @param @param userId
+		* @param @param status
+		* @param @return     
+		* @return Object    返回类型 
+		* @throws 
+	*/
+	@RequestMapping(value="/setuserstatus" ,method=RequestMethod.POST)
+	@ResponseBody
+	public Object setUserState(long userId,int status){
+		
+		//设置主帐号为无效状态
+		User user=new User();
+		user.setId(userId);
+		user.setStatus(status);
 		userService.updateByPrimaryKeySelective(user);
 		
 		return RequestResultUtil.getResultUpdateSuccess(); 
-		
-		
-		
 	}
+	
+	/** 
+		* @Title: setPrimaryUser 
+		* @Description: 设置指定的用户为主帐号 
+		* @param @param userId
+		* @param @param agentId
+		* @param @return     
+		* @return Object    返回类型 
+		* @throws 
+	*/
+	@RequestMapping(value="/setprimaryuser" ,method=RequestMethod.POST)
+	@ResponseBody
+	public Object setPrimaryUser(long userId,long agentId){
+		
+		User newPrimaryUser=userService.selectByPrimaryKey(userId);
+		
+		UserExtends agent=userAgentService.selectByPrimaryKey(agentId);
+		
+		long oldPrimaryUserId=agent.getUserId();
+		User oldPrimaryUser=userService.selectByPrimaryKey(oldPrimaryUserId);
+		
+		//(1)更新所有子帐号的parentId
+		User rec=new User();
+		rec.setParentId(oldPrimaryUserId);
+		List<User> subUserList=userService.select(rec);
+		for(User subUser:subUserList){
+			subUser.setParentId(userId);
+			userService.updateByPrimaryKeySelective(subUser);
+		}
+		
+		//(2)设置原来的主帐号为子帐号
+		oldPrimaryUser.setParentId(userId);
+		userService.updateByPrimaryKeySelective(oldPrimaryUser);
+		
+		//(3)设置新的主帐号
+		newPrimaryUser.setParentId((long)0);
+		userService.updateByPrimaryKeySelective(newPrimaryUser);
+		
+		//(4)设置代理商主帐号
+		agent.setUserId(userId);
+		userAgentService.updateByPrimaryKeySelective(agent);
+		
+		
+		return RequestResultUtil.getResultUpdateSuccess(); 
+	}
+	
 	
 	/**
 	 * @Description 插入签约客户
@@ -397,7 +465,7 @@ public class UserAgentController {
 	@RequestMapping(value = "/update", method = RequestMethod.POST)
 	@ResponseBody
 	public Object user_agent_update(UserExtends agent,HttpServletRequest request) {
-		System.out.println(agent.getBusinessLicencePicSrc());
+		//System.out.println(agent.getBusinessLicencePicSrc());
 		//处理上传文件
 		if (!this.processUploadFile(request, agent)) {
 			return RequestResultUtil.getResultUploadWarn();

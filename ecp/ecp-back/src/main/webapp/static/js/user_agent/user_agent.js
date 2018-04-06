@@ -9,7 +9,7 @@
 
 
 /*
-	重新加载页面
+	重新加载代理商页面
  */
 function reloadPage() {
 	//生成参数对象
@@ -44,17 +44,16 @@ function search(){
 	loadUserAgent(parms,null); // 加载页面
 }
 
-// ===================设置帐号状态====================
-function setAccountState(agentId, userId, accountState) {
+// ===================设置代理商:状态====================
+function setAgentState(agentId,  state) {
 	var url = BASE_CONTEXT_PATH + "/back/agent/setstate"; // 需要提交的 url
 	$.ajax({
 		type : "post", // 提交方式 get/post
 		url : url, // 需要提交的 url
 		// dataType: "application/json",
 		data : {
-			'agentId' : agentId,
-			'userId' : userId,
-			'accountState' : accountState
+			'agentId' : agentId,			
+			'state' : state
 		},
 		success : function(res) { // data 保存提交后返回的数据，一般为 json 数据
 			console.log(res);
@@ -148,37 +147,29 @@ $(function() {
 				
 	});
 	
-	// ===================设置帐号状态（有效、无效）======================
+	// ===================设置签约代理商状态:有效、无效===============
 	/* 设置帐号为有效 */
 	$(".set-valid").on("click", function(e) {
 		var agentId = $(this).attr("data-bind");
-		var userId = $(this).attr("data-user-id");
 		var accountState = $(this).attr("data-account-state");
-		if (userId == 0) {
-			util.message("尚未分配帐号！");
+		
+		if (accountState == 1) {
+			util.message("此帐号己为有效！");
 		} else {
-			if (accountState == 1) {
-				util.message("此帐号己为有效！");
-			} else {
-				setAccountState(agentId, userId, 1);
-			}
+			setAgentState(agentId, 1);
 		}
+		
 
 	});
 
 	/* 设置帐号为无效 */
 	$(".set-invalid").on("click", function(e) {
 		var agentId = $(this).attr("data-bind");
-		var userId = $(this).attr("data-user-id");
 		var accountState = $(this).attr("data-account-state");
-		if (userId == 0) {
-			util.message("尚未分配帐号！");
+		if (accountState == 2) {
+			util.message("此帐号己为无效！");
 		} else {
-			if (accountState == 2) {
-				util.message("此帐号己为无效！");
-			} else {
-				setAccountState(agentId, userId, 2);
-			}
+			setAgentState(agentId,2);
 		}
 
 	});

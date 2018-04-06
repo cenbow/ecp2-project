@@ -11,6 +11,8 @@
 				<th>ID</th>
 				<th>登录名称</th>
 				<th>昵称</th>
+				<th>状态</th>
+				<th>有效性</th>
 				<th>主帐号</th>
 				<th>操作</th>
 			</tr>
@@ -19,12 +21,24 @@
 			<tr th:each="item: ${userList}">
 				<td th:text="${item.id}">条目ID</td>
 				<td th:text="${item.username}">登录名称</td>
-				<td th:text="${item.nickname}">登录名称</td>
+				<td th:text="${item.nickname}">昵称</td>
+				<span th:switch="${item.status}" th:remove="tag">
+					<td th:case="'1'" style="color:green;">有效</td>
+					<td th:case="'2'" style="color:red;">无效</td>
+				</span>
+				
+				<td>
+					<button type="button" th:attr="data-bind-userid=${item.id},data-bind-userstatus=${item.status}" 
+						class="btn btn-success btn-sm set-user-valid" title="设置此帐号有效">有效</button>
+					<button type="button" th:attr="data-bind-userid=${item.id},data-bind-userstatus=${item.status}"
+						class="btn btn-warning btn-sm set-user-invalid" title="设置此帐号无效">无效</button>
+				</td>
+				
 
 				<td><span th:if="${item.parent_id==null or item.parent_id==0}"
 					th:remove="tag"> <span>主帐号</span>
 				</span></td>
-
+				
 				<!-- 操作 -->
 				<td>
 					<a type="button" class="modi-user" th:attr="data-bind-userid=${item.id},data-bind-username=${item.username},data-bind-nickname=${item.nickname}"> 
@@ -33,7 +47,7 @@
 					<a type="button" class="del-user" th:attr="data-bind-userid=${item.id},data-bind-username=${item.username},data-bind-nickname=${item.nickname}"> 
 						<i class=" icon-remove-circle icon-large" style="color: darkblue" title="删除用户"></i>
 					</a> 
-					<a type="button" class="set-primary-user" th:attr="data-bind-userid=${item.id},data-bind-username=${item.username},data-bind-nickname=${item.nickname}"> 
+					<a type="button" class="set-primary-user" th:attr="data-bind-userid=${item.id},data-bind-parentid=${item.parent_id}"> 
 						<i	class=" icon-tag icon-large" style="color: darkblue" title="设置主帐号"></i>
 					</a> 
 					<!-- <a type="button" class="reset-password" th:attr="data-bind-userid=item.id,data-bind-username=item.useranme,data-bind-nickname=item.nickname"> 
@@ -88,7 +102,7 @@
 		 * 删除指定的用户
 		 */
 		function deleteAgentUserById(id){
-			var url = "back/agent/deluser";
+			var url = BASE_CONTEXT_PATH+"/back/agent/deluser";
 			var agentId=curr_agentId;
 			
 			
@@ -103,7 +117,8 @@
 				if(res!=null && res!=""){
 					var obj = $.parseJSON(res);
 					if(obj.result_code=="success"){
-						reloadInfoFun();
+						reloadUserPage();  //重新加载用户列表
+						reloadPage();  //重新加载代理商当前页
 					}else{
 						util.message(obj.result_err_msg);
 					}
@@ -119,8 +134,45 @@
 			util.delConfirm("确认删除？", id, "deleteAgentUserById");
 		}
 		
-		//-------------------PAGE LOADED READY------------------------
 		
+		/*
+		 * set primary user
+		 */
+		function setPrimaryUser(id){
+			var url = BASE_CONTEXT_PATH+"/back/agent/setprimaryuser";
+			var agentId=curr_agentId;
+			
+			
+			var params = {
+					"userId":id,   //用户ID
+					"agentId":agentId  //代理商ID
+			};
+								
+			//util.loading();
+			$.post(url, params, function(res){
+				console.log(res);
+				if(res!=null && res!=""){
+					var obj = $.parseJSON(res);
+					if(obj.result_code=="success"){
+						reloadUserPage();  //重新加载用户列表
+						reloadPage();  //重新加载代理商当前页
+					}else{
+						util.message(obj.result_err_msg);
+					}
+				}
+				
+			});
+		}
+		
+		/*
+		* confirm:set primary user 
+		*/
+		function setPrimaryConfirm(id){
+			util.confirm("确认更新主帐号？",id,"setPrimaryUser",null);
+		}
+		
+		
+		//-------------------PAGE LOADED READY------------------------
 		$(function(){
 			//修改用户
 			$('.modi-user').on('click', function() {
@@ -157,13 +209,79 @@
 			$('.del-user').on('click', function() {
 				var userId=$(this).attr("data-bind-userid");
 				deleteAgentUserConfirm(userId);
-				
 			})
 			
 			//设置主帐号
 			$('.set-primary-user').on('click', function() {
-				console.log("set primary user");
+				var userId=$(this).attr("data-bind-userid");
+				var parentId=$(this).attr("data-bind-parentid");
+				if(parentId==null || parentId==0){
+					util.message("已经是主帐号!");
+				}
+				else{
+					setPrimaryConfirm(userId);	
+				}
+								
 			})
+			
+			/*
+			*设置代理商-用户状态
+			*/
+			function setUserState(userId,status) {
+				var url = BASE_CONTEXT_PATH + "/back/agent/setuserstatus"; // 需要提交的 url
+				$.ajax({
+					type : "post", // 提交方式 get/post
+					url : url, // 需要提交的 url
+					// dataType: "application/json",
+					data : {
+						'userId' : userId,			
+						'status' : status
+					},
+					success : function(res) { // data 保存提交后返回的数据，一般为 json 数据
+						console.log(res);
+						if (res != null && res != "") {
+							var obj = $.parseJSON(res);
+							if (obj.result_code == "success") {
+								util.message(obj.result_msg);
+								reloadUserPage();
+							} else {
+								util.message(obj.result_msg);
+							}
+						}
+					}
+			
+				});
+			}
+			
+			
+			// ===================设置签约代理商---帐号状态:有效、无效===============
+			/* 设置帐号为有效 */
+			$(".set-user-valid").on("click", function(e) {
+				var userId = $(this).attr("data-bind-userid");
+				var status = $(this).attr("data-bind-userstatus");
+				
+				if (status == 1) {
+					util.message("此帐号己为有效！");
+				} else {
+					setUserState(userId, 1);
+				}
+				
+		
+			});
+		
+			/* 设置帐号为无效 */
+			$(".set-user-invalid").on("click", function(e) {
+				var userId = $(this).attr("data-bind-userid");
+				var status = $(this).attr("data-bind-userstatus");
+				if (status == 2) {
+					util.message("此帐号己为无效！");
+				} else {
+					setUserState(userId, 2);
+				}
+		
+			});
+			
+			
 			
 			//重置帐号口令 
 			/* $(".reset-password").on("click", function(e) {
