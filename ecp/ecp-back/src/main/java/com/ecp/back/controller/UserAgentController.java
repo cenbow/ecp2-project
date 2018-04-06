@@ -115,27 +115,21 @@ public class UserAgentController {
 	*/
 	@RequestMapping(value = "/usertable")
 	public String agent_userTable(long agentId,Model model) {
-		
 		getUsersByAgentId(agentId,model);
-		
 		return RESPONSE_THYMELEAF_BACK + "agent_usertable";
 	}
 	
 	
 	@RequestMapping(value = "/showusertable")
 	public String showAgentUserTable(long agentId,Model model) {
-		
 		getUsersByAgentId(agentId,model);
-		
-		model.addAttribute("agentId", agentId);   //回传参数
-		
 		return RESPONSE_THYMELEAF_BACK + "agent_usertable_show";
 	}
 	
 	private void getUsersByAgentId(long agentId,Model model){
 		List<Map<String,Object>> userList=userAgentService.getUsersByAgentId(agentId);
-		
 		model.addAttribute("userList", userList);
+		model.addAttribute("agentId", agentId);   //回传参数
 	}
 	
 	
@@ -231,6 +225,55 @@ public class UserAgentController {
 			return RequestResultUtil.getResultUpdateSuccess();
 		else
 			return RequestResultUtil.getResultUpdateWarn();
+	}
+	
+	
+	/** 
+		* @Title: deleteAgentUser 
+		* @Description: 删除用户 
+		* @param @param request
+		* @param @return     
+		* @return Object    返回类型 
+		* @throws 
+	*/
+	@RequestMapping(value="/deluser" ,method=RequestMethod.POST)
+	@ResponseBody
+	public Object deleteAgentUser(HttpServletRequest request){
+		
+		long agentId=Long.parseLong(request.getParameter("agentId"));
+		long userId=Long.parseLong(request.getParameter("userId"));
+		
+		
+		UserExtends agent=userAgentService.selectByPrimaryKey(agentId);  //获取代理商对象
+		if(userId==agent.getUserId()){  //如果删除:主帐号
+			
+			//(1)更新主帐号为删除状态
+			User primaryUser=new User();
+			primaryUser.setId(userId);
+			primaryUser.setDeleted(DeletedType.YES);
+			userService.updateByPrimaryKeySelective(primaryUser);  
+			
+			//(2)更新子帐号为删除状态
+			User subUser=new User();
+			subUser.setParentId(userId);
+			userService.updateByPrimaryKeySelective(subUser);
+			
+			//(3)更新代理商中主帐号为空
+			UserExtends tempAgent=new UserExtends();
+			tempAgent.setExtendId(agentId);
+			tempAgent.setUserId((long)0);
+			userAgentService.updateByPrimaryKeySelective(tempAgent);
+			
+		}
+		else{  //删除子帐号
+			User user=new User();
+			user.setId(userId);
+			user.setDeleted(DeletedType.YES);
+			userService.updateByPrimaryKeySelective(user);  //更新用户
+		}
+		
+		return RequestResultUtil.getResultUpdateSuccess();
+		
 	}
 	
 	

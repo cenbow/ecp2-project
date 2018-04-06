@@ -86,8 +86,8 @@
 			var nickName = $("#nickName").val();
 			var password = $("#password").val();
 			
-			var agentId = curr_agentId;  //当前代理商ID
-			//console.log("agentId"+agentId);
+			var agentId = curr_agentId;  //当前代理商ID  
+			console.log("agentId"+agentId);
 			
 			
 			var url = BASE_CONTEXT_PATH + "/back/agent/dispatch"; // 需要提交的 url
@@ -273,7 +273,7 @@
 				var defaultPassword = "123456";
 
 				g_editMode=EDIT_MODE_ADD;  //设置编辑模式
-				$("#dispatch-form").reset();  //清空所有编辑框
+				document.getElementById("dispatch-form").reset(); //(表单reset)清空所有编辑框 
 				//设置对话框中显示的内容
 				var companyName=$("#curr-companyName").text();
 				$("#myModalLabel").text("公司名称:" + companyName+"(增加帐号)");

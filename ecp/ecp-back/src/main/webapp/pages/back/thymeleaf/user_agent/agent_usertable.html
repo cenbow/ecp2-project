@@ -83,7 +83,44 @@
 			});
 		} */
 		
-	
+		//-------------------DELETE USER----------------------
+		/*
+		 * 删除指定的用户
+		 */
+		function deleteAgentUserById(id){
+			var url = "back/agent/deluser";
+			var agentId=curr_agentId;
+			
+			
+			var params = {
+					"userId":id,   //用户ID
+					"agentId":agentId  //代理商ID
+			};
+								
+			//util.loading();
+			$.post(url, params, function(res){
+				console.log(res);
+				if(res!=null && res!=""){
+					var obj = $.parseJSON(res);
+					if(obj.result_code=="success"){
+						reloadInfoFun();
+					}else{
+						util.message(obj.result_err_msg);
+					}
+				}
+				
+			});
+		}
+
+		/*
+		 * 删除用户确认(显示确认对话框)
+		 */
+		function deleteAgentUserConfirm(id){
+			util.delConfirm("确认删除？", id, "deleteAgentUserById");
+		}
+		
+		//-------------------PAGE LOADED READY------------------------
+		
 		$(function(){
 			//修改用户
 			$('.modi-user').on('click', function() {
@@ -118,7 +155,9 @@
 	
 			//删除用户
 			$('.del-user').on('click', function() {
-				console.log("delete user");
+				var userId=$(this).attr("data-bind-userid");
+				deleteAgentUserConfirm(userId);
+				
 			})
 			
 			//设置主帐号
