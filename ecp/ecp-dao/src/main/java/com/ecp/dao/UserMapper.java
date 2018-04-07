@@ -15,4 +15,17 @@ public interface UserMapper extends Mapper<User> {
 	 */
 	public List<Map<String, Object>> getISAndOS();
 	
+	/**
+	 * 查询所有IS/OS，根据ID去重
+	 * @return
+	 */
+	public List<Map<String, Object>> getISAndOSUser();
+	
+	/**
+	 * 根据userId查询用户
+	 * @param userId
+	 * @return
+	 */
+	public Map<String, Object> getById(Long userId);
+	
 }

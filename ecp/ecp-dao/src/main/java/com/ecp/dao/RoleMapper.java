@@ -8,7 +8,7 @@ import tk.mybatis.mapper.common.Mapper;
 public interface RoleMapper extends Mapper<Role> {
 	
 	/**
-	 * 根据用户ID查询角色
+	 * 根据用户ID查询角色（只查询IS/OS角色）
 	 * 
 	 * @param userId
 	 * @return

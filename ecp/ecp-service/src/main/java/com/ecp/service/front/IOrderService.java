@@ -74,5 +74,6 @@ public interface IOrderService extends IBaseService<Orders, Long> {
 			 String provinceName,String cityName,String countyName,
 			 List<Map<String,Object>> agentIdList);
 	
+	public List<Map<String,Object>> selectOrdersMap(Map<String, Object> params);
 	
 }

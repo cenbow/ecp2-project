@@ -28,8 +28,7 @@
 			<div class="col-md-12 column">
 				<div class="panel panel-success">
 					<div class="panel-heading">
-						<h3 class="panel-title" style="display:inline">合同商品列表</h3>
-						<span th:text="'合同号:'" style="margin-left:50px;"></span>
+						<h3 class="panel-title" style="display:inline">进度列表</h3>
 						
 					</div>
 					<div class="panel-body">
@@ -69,7 +68,7 @@
 										<div class="progressbar" th:attr="data-target-amount=${progress.target_amount}, data-total-price=${progress.total_price}"><div class="progress-label">加载...</div></div>
 									</td>
 									<td>
-										<button type="button" class="btn btn-default btn-primary">业绩列表</button>
+										<button type="button" class="btn btn-default btn-primary" th:attr="data-user-id=${progress.user_id}, data-role-id=${progress.role_id}, data-start-time=${progress.start_date}, data-end-time=${progress.end_date}">业绩列表</button>
 										<button type="button" class="btn btn-default btn-primary pushmoney-btn" id="" th:attr="data-user-id=${progress.user_id}, data-role-id=${progress.role_id}, data-start-time=${progress.start_date}, data-end-time=${progress.end_date}, data-completion-rate=(${progress.total_price/progress.target_amount})*100">提成</button>
 									</td>
 								</tr>								
@@ -157,11 +156,25 @@
 			var url = BASE_CONTEXT_PATH + "/back/performance/get-pushmoney"; // 需要提交的 url
 			//var fullYear = getFullYear();
 			var params = {"userId":userId, "roleId":roleId, "startTime":startTime, "endTime":endTime, "completionRate":completionRate};
-			//loadTablePage(url, params);
-			$("#edit-body").load(url, params, function(){
-				$("#edit-tab").removeClass("hide");
-				$("#edit-tab-title").text("提成列表");
-				$('#tabs-14933 a[href="#panel-602679"]').tab('show');
+			$("#edit-body-pushmoney").load(url, params, function(){
+				$("#edit-tab-pushmoney").removeClass("hide");
+				$('#tabs-14933 a[href="#panel-6026793"]').tab('show');
+			});
+		})
+		/**
+		 * 业绩按钮点击事件
+		 */
+		$(".performance-btn").on("click", function(e){
+			var userId = $(this).attr("data-user-id");
+			var roleId = $(this).attr("data-role-id");
+			var startTime = $(this).attr("data-start-time");
+			var endTime = $(this).attr("data-end-time");
+			var url = BASE_CONTEXT_PATH + "/back/performance/get-performance"; // 需要提交的 url
+			//var fullYear = getFullYear();
+			var params = {"userId":userId, "roleId":roleId, "startTime":startTime, "endTime":endTime};
+			$("#edit-body-performance").load(url, params, function(){
+				$("#edit-tab-performance").removeClass("hide");
+				$('#tabs-14933 a[href="#panel-6026791"]').tab('show');
 			});
 		})
 	</script>

@@ -15,14 +15,8 @@
 					<li class="active" onclick="javascript:resetTab();">
 						 <a href="#panel-150383" data-toggle="tab">列表</a>
 					</li>
-					<li id="edit-tab-performance" class="hide">
-						 <a href="#panel-6026791" data-toggle="tab" id="">业绩列表</a>
-					</li>
-					<li id="edit-tab-progress" class="hide">
-						 <a href="#panel-6026792" data-toggle="tab" id="">进度列表</a>
-					</li>
-					<li id="edit-tab-pushmoney" class="hide">
-						 <a href="#panel-6026793" data-toggle="tab" id="">提成列表</a>
+					<li id="edit-tab-account-company" class="hide">
+						 <a href="#panel-6026791" data-toggle="tab" id="tab-account-company-title">业绩列表</a>
 					</li>
 				</ul>
 				<div class="tab-content">
@@ -45,13 +39,7 @@
 						</div>
 					</div>
 					<div class="tab-pane" id="panel-6026791">
-						<div id="edit-body-performance"></div>
-					</div>
-					<div class="tab-pane" id="panel-6026792">
-						<div id="edit-body-progress"></div>
-					</div>
-					<div class="tab-pane" id="panel-6026793">
-						<div id="edit-body-pushmoney"></div>
+						<div id="edit-body-account-company"></div>
 					</div>
 				</div>
 			</div>
@@ -73,7 +61,7 @@
 	<script>
 		/*function:加载页面 */
 		function loadOrder(parms, callback) {
-			var url = "/back/performance/ordertable";
+			var url = "/back/performance/company/ordertable";
 			var callbackFunc = callback;
 			var containerId = "#container";
 			loadPage(containerId, url, parms, callbackFunc);

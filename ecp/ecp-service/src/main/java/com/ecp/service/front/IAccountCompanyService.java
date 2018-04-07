@@ -92,5 +92,11 @@ public interface IAccountCompanyService extends IBaseService<AccountCompany, Lon
 	*/
 	public int addAccountItem(AccountCompany accountItem); 
 	
+	/**
+	 * 根据Map参数查询公司账本
+	 * @param params
+	 * @return
+	 */
+	public List<Map<String, Object>> selectAccountCompanyMap(Map<String, Object> params);
 	
 }

@@ -39,7 +39,7 @@ public interface IRoleService extends IBaseService<Role, Long> {
 	public List<Role> getByCode(String roleCode);
 	
 	/**
-	 * 根据用户ID查询角色
+	 * 根据用户ID查询角色（只查询IS/OS角色）
 	 * 
 	 * @param userId
 	 * @return

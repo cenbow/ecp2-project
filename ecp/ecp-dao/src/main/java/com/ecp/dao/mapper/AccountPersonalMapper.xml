@@ -38,6 +38,7 @@
 	FROM
 		account_personal p
 	LEFT JOIN trade_orders o ON p.order_id = o.id
+	LEFT JOIN user_extends ue ON o.extend_id = ue.extend_id
 	LEFT JOIN `user` u ON p.bind_user_id = u.id
 	LEFT JOIN role r ON p.role_id = r.role_id
 	WHERE 
@@ -61,6 +62,15 @@
 		<if test="end_time!=null and end_time!=''">
 			and o.create_time &lt;= #{end_time}
 		</if>
+		<if test="provinceName!=null and provinceName!=''">
+  			and ue.province=#{provinceName} 
+  		</if>  		
+  		<if test="cityName!=null and cityName!=''">
+  			and ue.city=#{cityName} 
+  		</if>
+  		<if test="countyName!=null and countyName!=''">
+  			and ue.county=#{countyName} 
+  		</if>
 		
   </select>
   

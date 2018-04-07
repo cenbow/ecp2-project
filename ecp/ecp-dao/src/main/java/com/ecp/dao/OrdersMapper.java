@@ -83,4 +83,11 @@ public interface OrdersMapper extends Mapper<Orders> {
 												 @Param("countyName")	String countyName,
 												 @Param("agentIdList") List<Map<String, Object>> agentIdList);
 	
+	/**
+	 * 根据条件查询订单
+	 * @param params
+	 * @return
+	 */
+	public List<Map<String, Object>> selectOrdersMap(Map<String, Object> params);
+	
 }

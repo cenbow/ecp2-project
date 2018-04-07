@@ -32,4 +32,11 @@ public interface AccountCompanyMapper extends Mapper<AccountCompany> {
 			@Param("userId") long userId,
 			@Param("roleIdList") List<Long> roleIdList);
 	
+	/**
+	 * 根据Map参数查询公司账本
+	 * @param params
+	 * @return
+	 */
+	public List<Map<String, Object>> selectAccountCompanyMap(Map<String, Object> params);
+	
 }

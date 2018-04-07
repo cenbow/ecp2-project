@@ -67,4 +67,17 @@ public interface IUserService extends IBaseService<User, Long> {
 	 * @return
 	 */
 	public List<Map<String, Object>> getISAndOS();
+	
+	/**
+	 * 查询所有IS/OS，根据ID去重
+	 * @return
+	 */
+	public List<Map<String, Object>> getISAndOSUser();
+	
+	/**
+	 * 根据userId查询用户
+	 * @param userId
+	 * @return
+	 */
+	public List<Map<String, Object>> getById(Long userId);
 }

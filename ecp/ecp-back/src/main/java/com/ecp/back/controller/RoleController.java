@@ -176,6 +176,13 @@ public class RoleController {
 		return RequestResultUtil.getResultDeleteWarn();
 	}
 	
+	/**
+	 * 根据用户ID查询角色（只查询IS/OS角色）
+	 * @param request
+	 * @param response
+	 * @param userId
+	 * @return
+	 */
 	@RequestMapping("/selectByUserId")
 	@ResponseBody
 	public Map<String, Object> selectByUserId(HttpServletRequest request, HttpServletResponse response, Long userId) {

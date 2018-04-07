@@ -35,7 +35,7 @@
     link_man, link_phone_num, mobile, nickname, oldpassword, parent_id, password, quick_type, 
     security_level, status, type, update_time, username
   </sql>
-  <!-- 查询OS和IS -->
+  	<!-- 查询OS和IS -->
 	<select id="getISAndOS" parameterType="map" resultType="map">
 		SELECT
 			u.*, r.role_code, r.role_name
@@ -54,5 +54,36 @@
 		)
 		<!-- GROUP BY
 			u.id -->
+	</select>
+	<!-- 查询所有IS/OS，根据ID去重 -->
+	<select id="getISAndOSUser" resultType="map">
+		SELECT
+			u.*
+		FROM
+			`user` u
+		LEFT JOIN user_role ur ON u.id = ur.user_id
+		LEFT JOIN role r ON ur.role_id = r.role_id
+		WHERE
+			u.deleted = 1
+		AND u.type = 1
+		AND ur.deleted = 1
+		AND r.deleted = 1
+		AND (
+			r.role_code = 'OS'
+			OR r.role_code = 'IS'
+		)
+		GROUP BY
+			u.id
+	</select>
+	<!-- 根据ID查询用户 -->
+	<select id="getById" parameterType="map" resultType="map">
+		SELECT
+			u.*, r.role_code, r.role_name
+		FROM
+			`user`
+		WHERE
+			deleted = 1
+		AND type = 1
+		AND id=#{userId}
 	</select>
 </mapper>

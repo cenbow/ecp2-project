@@ -281,4 +281,41 @@
   	 
   </select>
   
+  <select id="selectOrdersMap" resultType="map">
+  	<!-- SELECT
+		o.*
+	FROM
+		trade_orders o
+	LEFT JOIN user_extends ue ON o.extend_id = ue.extend_id -->
+	SELECT
+		c.*
+	FROM
+		trade_orders o
+	INNER JOIN contract c ON o.id = c.order_id
+	LEFT JOIN user_extends ue ON o.extend_id = ue.extend_id
+	WHERE 
+		o.deleted=1 AND o.yn=1 and o.extend_id is not NULL
+		<!-- AND
+  	 	o.create_time&gt;=DATE_ADD(now(),INTERVAL #{orderTimeCond} MONTH) -->
+		<if test="order_id!=null and order_id!=''">
+			and o.id = #{order_id}
+		</if>
+		<if test="start_time!=null and start_time!=''">
+			and o.create_time &gt;= #{start_time}
+		</if>
+		<if test="end_time!=null and end_time!=''">
+			and o.create_time &lt;= #{end_time}
+		</if>
+		<if test="provinceName!=null and provinceName!=''">
+  			and ue.province=#{provinceName} 
+  		</if>  		
+  		<if test="cityName!=null and cityName!=''">
+  			and ue.city=#{cityName} 
+  		</if>
+  		<if test="countyName!=null and countyName!=''">
+  			and ue.county=#{countyName} 
+  		</if>
+		
+  </select>
+  
 </mapper>

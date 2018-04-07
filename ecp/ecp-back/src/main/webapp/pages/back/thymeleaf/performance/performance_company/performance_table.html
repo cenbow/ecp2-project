@@ -1,0 +1,199 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<div th:include="/back/thymeleaf/common/_head2::headx('业绩列表')"	th:remove="tag"></div>
+</head>
+<body>
+<script> 
+console.log("orderList start");
+		/*<![CDATA[*/  
+    
+		
+     
+		/*]]>*/  
+		
+	</script> 
+	<div class="container-fluid" style="margin-top: 20px;">
+		<!-- 对话框 -->
+		<!-- <div th:replace="back/thymeleaf/common/_discount_dialog::dialog" ></div> -->
+		<div class="row clearfix">
+			<div class="col-md-12 column">
+				<div class="panel panel-success">
+					<div class="panel-heading">
+						<h3 class="panel-title" style="display:inline">
+							<span th:switch="${accountType}"  th:remove="tag">
+								<span th:case='7' th:remove="tag">
+									业绩列表
+								</span>
+								<span th:case='8' th:remove="tag">
+									最低限价利润列表
+								</span>
+								<span th:case='9' th:remove="tag">
+									硬成本价利润列表
+								</span>
+							</span>
+						</h3>
+						
+					</div>
+					<div class="panel-body">
+						<table class="table">
+							<thead>
+								<!-- <tr>
+									<th>编号</th>
+									<th>名称</th>
+									<th>品牌</th>
+									<th>型号</th>
+									<th>基本参数</th>
+									<th>网示单价</th>
+									<th>折减金额</th>
+									<th>成交单价</th>
+									<th>数量</th>
+									<th>合计</th>
+									<th>操作</th>
+								</tr> -->
+								<th>序号</th>
+								<!-- <th>订单ID</th> -->
+								<th>订单编号</th>								
+								<!-- <th>合同ID</th> -->
+								<th>合同编号</th>
+								<span th:switch="${accountType}"  th:remove="tag">
+									<span th:case='7' th:remove="tag">
+										<th th:text="业绩">业绩</td>
+									</span>
+									<span th:case='8' th:remove="tag">
+										<th>通讯费&nbsp;/&nbsp;招待费&nbsp;/&nbsp;交通费&nbsp;/&nbsp;差旅费&nbsp;/&nbsp;市场费</td>
+										<th>四项费用&nbsp;+&nbsp;市场费</td>
+										<th th:text="最低限价利润">最低限价利润</td>
+										<th th:text="最低限价净利润（利润-费用）">最低限价净利润（利润-费用）</td>
+									</span>
+									<span th:case='9' th:remove="tag">
+										<th>通讯费&nbsp;/&nbsp;招待费&nbsp;/&nbsp;交通费&nbsp;/&nbsp;差旅费&nbsp;/&nbsp;市场费</td>
+										<th>四项费用&nbsp;+&nbsp;市场费</td>
+										<th th:text="硬成本价利润">硬成本价利润</td>
+										<th th:text="硬成本价净利润（利润-费用）">硬成本价净利润（利润-费用）</td>
+									</span>
+								</span>
+								<th>创建时间</th>
+							</thead>
+							<tbody>
+								<tr th:each="contract,iterState:${orderList}">
+									<td th:text="${iterState.count}">序号</td>
+									<!-- <td th:text="${contract.order_id}">订单ID</td> -->
+									<td th:text="${contract.order_no}">订单编号</td>
+									<!-- <td th:text="${contract.id}">合同ID</td> -->
+									<td th:text="${contract.contract_no}">合同编号</td>
+									<span th:switch="${accountType}"  th:remove="tag">
+										<span th:case='7' th:remove="tag">
+											<td>
+												<table>
+													<tbody>
+														<span th:if="${#lists.isEmpty(contract.order_account_company_list) && #lists.size(contract.order_account_company_list)<=0}">
+															<tr>
+																<td th:text="￥0.00">业绩、最低限价利润、硬成本价利润</td>
+															</tr>
+														</span>
+														<span th:if="${not #lists.isEmpty(contract.order_account_company_list) && #lists.size(contract.order_account_company_list)>0}">
+															<tr th:each="accountCompany:${contract.order_account_company_list}">
+																<td th:text="${accountCompany.amount} ? '￥'+${accountCompany.amount} : '￥0.00'">业绩、最低限价利润、硬成本价利润</td>
+															</tr>
+														</span>
+													</tbody>
+												</table>
+											</td>
+										</span>
+										<span th:case='8' th:remove="tag">
+											<td th:text="'￥'+${contract.communication_fee}+'&nbsp;/&nbsp'+'￥'+${contract.entertainment_fee}+'&nbsp;/&nbsp'+'￥'+${contract.transportation_fee}+'&nbsp;/&nbsp'+'￥'+${contract.travel_expense_fee}+'&nbsp;/&nbsp'+'￥'+${contract.market_fee}">通讯费/招待费/交通费/差旅费/市场费</td>
+											<td th:text="'￥'+${contract.fee_total}">四项费用+市场费用</td>
+											<td>
+												<table>
+													<tbody>
+														<span th:if="${#lists.isEmpty(contract.order_account_company_list) && #lists.size(contract.order_account_company_list)<=0}">
+															<tr>
+																<td th:text="￥0.00">业绩、最低限价利润、硬成本价利润</td>
+															</tr>
+														</span>
+														<span th:if="${not #lists.isEmpty(contract.order_account_company_list) && #lists.size(contract.order_account_company_list)>0}">
+															<tr th:each="accountCompany:${contract.order_account_company_list}">
+																<td th:text="${accountCompany.amount} ? '￥'+${accountCompany.amount} : '￥0.00'">业绩、最低限价利润、硬成本价利润</td>
+															</tr>
+														</span>
+													</tbody>
+												</table>
+											</td>
+											<td th:text="${contract.profit_amount}">最低限价净利润（利润-费用）</td>
+										</span>
+										<span th:case='9' th:remove="tag">
+											<td th:text="'￥'+${contract.communication_fee}+'&nbsp;/&nbsp'+'￥'+${contract.entertainment_fee}+'&nbsp;/&nbsp'+'￥'+${contract.transportation_fee}+'&nbsp;/&nbsp'+'￥'+${contract.travel_expense_fee}+'&nbsp;/&nbsp'+'￥'+${contract.market_fee}">通讯费/招待费/交通费/差旅费/市场费</td>
+											<td th:text="'￥'+${contract.fee_total}">四项费用+市场费用</td>
+											<td>
+												<table>
+													<tbody>
+														<span th:if="${#lists.isEmpty(contract.order_account_company_list) && #lists.size(contract.order_account_company_list)<=0}">
+															<tr>
+																<td th:text="￥0.00">业绩、最低限价利润、硬成本价利润</td>
+															</tr>
+														</span>
+														<span th:if="${not #lists.isEmpty(contract.order_account_company_list) && #lists.size(contract.order_account_company_list)>0}">
+															<tr th:each="accountCompany:${contract.order_account_company_list}">
+																<td th:text="${accountCompany.amount} ? '￥'+${accountCompany.amount} : '￥0.00'">业绩、最低限价利润、硬成本价利润</td>
+															</tr>
+														</span>
+													</tbody>
+												</table>
+											</td>
+											<td th:text="'￥'+${contract.profit_amount}">硬成本价净利润（利润-费用）</td>
+										</span>
+									</span>
+									<td th:text="${contract.create_date}">创建时间</td>
+								</tr>
+								<tr>
+									<td></td>
+									<td></td>
+									<span th:switch="${accountType}"  th:remove="tag">
+										<span th:case='7' th:remove="tag">
+											<td><b>总计</b></td>
+											<td colspan="2"><b>￥</b><b style="font-size:18px;color:red" id="sumAmount" th:text="${total_amount}">业绩/最低限价利润/硬成本价利润总计</b></td>
+										</span>
+										<span th:case='8' th:remove="tag">
+											<td colspan="2"><b>总计</b></td>
+											<td><b>￥</b><b style="font-size:18px;color:red" id="sumAmount" th:text="${fee_total_amount}">费用总计</b></td>
+											<td><b>￥</b><b style="font-size:18px;color:red" id="sumAmount" th:text="${total_amount}">业绩/最低限价利润/硬成本价利润总计</b></td>
+											<td colspan="2"><b>￥</b><b style="font-size:18px;color:red" id="sumAmount" th:text="${profit_total_amount}">总利润</b></td>
+										</span>
+										<span th:case='9' th:remove="tag">
+											<td colspan="2"><b>总计</b></td>
+											<td><b>￥</b><b style="font-size:18px;color:red" id="sumAmount" th:text="${fee_total_amount}">费用总计</b></td>
+											<td><b>￥</b><b style="font-size:18px;color:red" id="sumAmount" th:text="${total_amount}">业绩/最低限价利润/硬成本价利润总计</b></td>
+											<td colspan="2"><b>￥</b><b style="font-size:18px;color:red" id="sumAmount" th:text="${profit_total_amount}">总利润</b></td>
+										</span>
+									</span>
+								</tr>
+								</hr>					
+							</tbody>
+						</table>
+					</div>
+					<!-- <div class="panel-footer">Panel footer</div> -->
+				</div>
+				<br>
+				
+			</div>
+		</div>
+	</div>
+	
+	
+	<!-- 获取用户已经选商品列表  -->
+	<script th:inline="javascript"> 
+		/*<![CDATA[*/  
+			var tempList = [[${orderList}]];
+			console.log("tempList:"+tempList);
+     
+		/*]]>*/  
+	</script>  
+	
+	<script th:src="@{/static/js/common/dateutil.js}"></script>
+	<script th:src="@{/static/calendar/WdatePicker.js}"></script>
+	
+	
+</body>
+</html>

@@ -226,5 +226,18 @@ public class UserServiceImpl extends AbstractBaseService<User, Long> implements 
 	public List<Map<String, Object>> getISAndOS() {
 		return userMapper.getISAndOS();
 	}
+
+	@Override
+	public List<Map<String, Object>> getISAndOSUser() {
+		return userMapper.getISAndOSUser();
+	}
 	
+	@Override
+	public List<Map<String, Object>> getById(Long userId) {
+		List<Map<String, Object>> userList = new ArrayList<>();
+		Map<String, Object> user = userMapper.getById(userId);
+		userList.add(user);
+		return userList;
+	}
+
 }

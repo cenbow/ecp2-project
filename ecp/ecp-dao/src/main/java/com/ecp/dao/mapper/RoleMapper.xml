@@ -17,6 +17,7 @@
     -->
     role_id, role_code, role_name, role_description, deleted
   </sql>
+  <!-- 根据用户ID查询角色（只查询IS/OS角色） -->
   <select id="getByUserId" resultMap="BaseResultMap">
   	SELECT
 		r.*
@@ -27,5 +28,6 @@
 		ur.user_id = #{userId}
 	AND r.deleted = 1
 	AND ur.deleted = 1
+	AND r.role_code IN ('IS', 'OS')
   </select>
 </mapper>

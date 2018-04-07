@@ -73,6 +73,10 @@ public class AccountCompanyServiceImpl extends AbstractBaseService<AccountCompan
 				);
 	}
 
-	
+
+	@Override
+	public List<Map<String, Object>> selectAccountCompanyMap(Map<String, Object> params) {
+		return accountCompanyMapper.selectAccountCompanyMap(params);
+	}
 
 }

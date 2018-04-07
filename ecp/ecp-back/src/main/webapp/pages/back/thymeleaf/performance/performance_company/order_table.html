@@ -236,8 +236,8 @@
 				
 					</div>
 					<select class="btn btn-default btn-primary" id="change-view" onchange="javascript:changeViewFunction();" style="float: right; margin-right: 20px">
-						<option value="1" selected="selected">个人视角</option>
-						<option value="2">公司视角</option>
+						<option value="1">个人视角</option>
+						<option value="2" selected="selected">公司视角</option>
 					</select> 
 					
 				</div>
@@ -320,7 +320,9 @@
 							</div>
 						</th>
 						<th>订单金额</th>
-						<th>业绩金额</th>
+						<th>业绩</th>
+						<th>最低限价净利润</th>
+						<th>硬成本价净利润</th>
 						<th>收货人</th>
 						<th>
 							<!-- 状态：查询条件 -->
@@ -361,7 +363,9 @@
 						</td>
 						<td	th:text="${#calendars.format(order.order_time,'yyyy-MM-dd HH:mm:ss')}">订单时间</td>
 						<td th:text="'￥'+${order.total_price}">优惠前金额</td>
-						<td th:text="'￥'+${order.order_total_amount}">业绩金额</td>
+						<td th:text="'￥'+${order.performance_amount}">业绩</td>
+						<td th:text="'￥'+${order.lowest_amount}">最低限价净利润</td>
+						<td th:text="'￥'+${order.hard_cost_amount}">硬成本价净利润</td>
 						<td th:text="${order.name}">收货人</td>
 						<!-- 状态显示 -->
 						<td>
@@ -390,14 +394,19 @@
 						<td><b>总计</b></td>
 						<td><b>￥</b><b style="font-size:18px;color:red" id="sumAmount" th:text="${orderTotalAmount}">订单总计</b></td>
 						<td><b>￥</b><b style="font-size:18px;color:red" id="sumAmount" th:text="${performanceTotalAmount}">业绩总计</b></td>
+						<td><b>￥</b><b style="font-size:18px;color:red" id="sumAmount" th:text="${lowestTotalAmount}">最低限价净利润总计</b></td>
+						<td><b>￥</b><b style="font-size:18px;color:red" id="sumAmount" th:text="${hardCostTotalAmount}">硬成本价净利润总计</b></td>
 						<td></td>
 						<td></td>
 						<td></td>
 					</tr>
 					<tr>
-						<td colspan="8">
-							<button id="sales-progress-btn" class="btn btn-default btn-primary" title="进度"	style="float: right; margin-right: 20px">
-								进度
+						<td colspan="10">
+							<button id="hard-cost-price-profit-btn" class="btn btn-default btn-primary" title="硬成本价格利润"	style="float: right; margin-right: 20px">
+								硬成本价利润
+							</button>
+							<button id="lowest-price-profit-btn" class="btn btn-default btn-primary" title="最低限价利润"	style="float: right; margin-right: 20px">
+								最低限价利润
 							</button>
 							<button id="this-year-performance-btn" class="btn btn-default btn-primary" title="今年业绩"	style="float: right; margin-right: 20px">
 								今年业绩
@@ -544,6 +553,7 @@ $("#district").on("change",function(){syncUpdateHiddenAreaCode();});
 			
 		});
  }
+ 
  /**
   * 切换视角	1：个人视角；2：公司视角
   */
@@ -562,7 +572,7 @@ $("#district").on("change",function(){syncUpdateHiddenAreaCode();});
  
 </script>
 
-<script type="text/javascript"	th:src="@{/static/js/performance/performance.js}"></script>
+<script type="text/javascript"	th:src="@{/static/js/performance/performance_company.js}"></script>
 
 </body>
 </html>

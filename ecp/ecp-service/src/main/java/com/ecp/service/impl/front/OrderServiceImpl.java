@@ -109,4 +109,9 @@ public class OrderServiceImpl extends AbstractBaseService<Orders, Long> implemen
 		
 	}
 
+	@Override
+	public List<Map<String, Object>> selectOrdersMap(Map<String, Object> params) {
+		return ordersMapper.selectOrdersMap(params);
+	}
+
 }
