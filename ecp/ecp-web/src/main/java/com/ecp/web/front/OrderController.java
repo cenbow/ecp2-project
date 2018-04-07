@@ -154,10 +154,24 @@ public class OrderController {
 		// 获取登录用户信息
 		HttpSession session = request.getSession();
 		User user = (User) session.getAttribute(SessionConstants.USER);
+		
+		//获取登录用户下的子帐户信息		
+		List<Long> subIdList=new ArrayList<>();
+		
+		User rec=new User();
+		rec.setParentId(user.getId());
+		List<User> subUserList=userService.select(rec);
+		for(User subUser:subUserList){
+			subIdList.add(subUser.getId());
+		}
+		
 
 		// 查询当前登录用户的订单
 		//List<Orders> orders = orderService.selectOrderByUserId(user.getId());
-		List<Orders> orders = orderService.selectOrderByOrderTimeAndDealState(user.getId(), orderTimeCond, dealStateCond);
+		//List<Orders> orders = orderService.selectOrderByOrderTimeAndDealState(user.getId(), orderTimeCond, dealStateCond);
+		
+		
+		List<Orders> orders = orderService.selectOrderByCondAndSubUser(user.getId(),subIdList, orderTimeCond, dealStateCond);
 		for (Orders order : orders) { // 迭代订单，查询订单条目
 
 			Map<String, Object> orderMap = new HashMap<String, Object>();

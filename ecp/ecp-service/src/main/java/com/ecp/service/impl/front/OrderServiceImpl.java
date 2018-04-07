@@ -124,4 +124,11 @@ public class OrderServiceImpl extends AbstractBaseService<Orders, Long> implemen
 		return ordersMapper.getOrderAmount(-orderTimeCond, dealStateCond, searchTypeValue,condValue,provinceName,cityName,countyName,agentIdList,totalPayFlag);
 	}
 
+	@Override
+	public List<Orders> selectOrderByCondAndSubUser(long buyerId, List<Long> subList, int orderTimeCond,
+			int dealStateCond) {
+		
+		return ordersMapper.selectOrderByCondAndSubUser(buyerId,subList,-orderTimeCond,dealStateCond);
+	}
+
 }

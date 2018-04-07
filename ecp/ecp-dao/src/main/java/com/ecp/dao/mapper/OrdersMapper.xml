@@ -101,6 +101,35 @@
   	ORDER BY create_time DESC
   </select>
   
+  <select id="selectOrderByCondAndSubUser" resultMap="BaseResultMap">
+  	SELECT * FROM trade_orders  <where>
+  		(
+  			buyer_id=#{buyerId} 
+  			<if test="subList!=null and subList.size>0">
+  				OR  buyer_id IN 
+  				<foreach collection="subList" index="index" item="item" open="(" separator="," close=")" >
+  					#{item}
+  				</foreach>
+  			</if>
+  		)
+  		
+  		AND 
+  		create_time&gt;=DATE_ADD(now(),INTERVAL #{orderTimeCond} MONTH) 
+  		AND
+  		deleted=1
+  		<!-- AND 
+  			contract_state=#{dealStateCond} -->
+  		<if test="dealStateCond!=null and dealStateCond!='' and dealStateCond!='0'.toString()">
+  			AND 
+  			contract_state=#{dealStateCond}	
+  		</if>
+  	</where>
+  	ORDER BY create_time DESC
+  </select>
+  
+  
+  
+  
   <select id="selectAllOrderByOrderTimeAndDealState" resultMap="BaseResultMap">
   	SELECT * FROM trade_orders <where>
   		deleted=1 

@@ -21,6 +21,22 @@ public interface OrdersMapper extends Mapper<Orders> {
 	public List<Orders> selectOrderByOrderTimeAndDealState(@Param("buyerId") long buyerId,
 														   @Param("orderTimeCond") int orderTimeCond,
 														   @Param("dealStateCond") int dealStateCond);
+	
+	/** 
+		* @Title: selectOrderByCondAndSubUser 
+		* @Description: 根据登录帐号及其下的子帐号进行查询 
+		* @param @param buyerId
+		* @param @param subList
+		* @param @param orderTimeCond
+		* @param @param dealStateCond
+		* @param @return     
+		* @return List<Orders>    返回类型 
+		* @throws 
+	*/
+	public List<Orders> selectOrderByCondAndSubUser(@Param("buyerId") long buyerId,
+													@Param("subList") List<Long> subList,
+													@Param("orderTimeCond") int orderTimeCond,
+													@Param("dealStateCond") int dealStateCond);
 	/**
 	 * @Description 根据订单时间及订单处理状态查询（所有用户）
 	 * @param orderTimeCond 订单时间条件值

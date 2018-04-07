@@ -40,6 +40,20 @@ public interface IOrderService extends IBaseService<Orders, Long> {
 	public List<Orders> selectOrderByOrderTimeAndDealState(long buyerId,int orderTimeCond,int dealStateCond);
 	
 	
+	/** 
+		* @Title: selectOrderByCondAndSubUser 
+		* @Description: 根据查询条件及 下单人,下单人的子帐号进行查询 
+		* @param @param buyerId
+		* @param @param subUser
+		* @param @param orderTimeCond
+		* @param @param dealStateCond
+		* @param @return     
+		* @return List<Orders>    返回类型 
+		* @throws 
+	*/
+	public List<Orders> selectOrderByCondAndSubUser(long buyerId,List<Long> subList,int orderTimeCond,int dealStateCond);
+	
+	
 	/**
 	 * @Description 根据订单时间及订单处理状态查询(所有用户-用于后台订单管理)
 	 * @param orderTimeCond 订单时间条件值
