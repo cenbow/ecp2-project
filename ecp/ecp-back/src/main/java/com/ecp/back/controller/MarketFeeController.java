@@ -15,6 +15,8 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 
+import com.alibaba.fastjson.JSON;
+import com.alibaba.fastjson.JSONArray;
 import com.ecp.back.commons.RoleCodeConstants;
 import com.ecp.bean.AccountItemType;
 import com.ecp.bean.UserBean;
@@ -206,20 +208,50 @@ public class MarketFeeController {
 		return RESPONSE_THYMELEAF_BACK + "marketfee_table";
 	}
 	
+	/** 
+		* @Title: addFeeItem 
+		* @Description: 增加市场费(Create)
+		* @param @param orderId
+		* @param @param orderNo
+		* @param @param itemType
+		* @param @param amount
+		* @param @param comment
+		* @param @param bindUserList 费用归属列表.(JSON格式)
+		* @param @param model
+		* @param @return     
+		* @return Object    返回类型 
+		* @throws 
+	*/
 	@RequestMapping(value="/add")
 	@ResponseBody
-	public Object addFeeItem(long orderId,String orderNo,int itemType,BigDecimal amount,String comment, Model model){
+	public Object addFeeItem(long orderId,
+							 String orderNo,
+							 int itemType,
+							 BigDecimal amount,
+							 String comment,
+							 String bindUserList,
+							 Model model){
 		
-		//TODO 根据订单的account_state来判定是否为公司内部费用.
+		log.info("bindUserList:"+bindUserList);
 		
-		int row1=keepAccountCompany( orderId, orderNo, itemType, amount, comment);  //记公司帐薄
-		int row2=keepAccountPersonal( orderId, orderNo, itemType, amount, comment);	//记个人帐薄
+		long companyItemId=keepAccountCompany( orderId, orderNo, itemType, amount, comment);  //记公司帐薄
 		
-		if (row1>0 && row2>0){
-			return RequestResultUtil.getResultAddSuccess();
+		//解析参数:获取所要绑定的用户ID 数组.
+		JSONArray userArr=JSON.parseArray(bindUserList);
+		for(int i=0;i<userArr.size();i++){
+			boolean selected=userArr.getJSONObject(i).getBooleanValue("selected");
+			if(selected){
+				long userId=userArr.getJSONObject(i).getLongValue("id");
+				long roleId=userArr.getJSONObject(i).getLongValue("role_id");
+				
+				int row=keepAccountPersonal( orderId, orderNo, itemType, amount, comment,userId,roleId,companyItemId);	//记个人帐薄
+			}
 		}
-		else
-			return RequestResultUtil.getResultAddWarn();
+		
+		
+		return RequestResultUtil.getResultAddSuccess();
+		
+		//return RequestResultUtil.getResultAddWarn();
 	}
 	
 	/** 
@@ -231,10 +263,10 @@ public class MarketFeeController {
 		* @param @param amount
 		* @param @param comment
 		* @param @return     
-		* @return int    返回类型 
+		* @return long    返回公司帐薄分录ID 
 		* @throws 
 	*/
-	private int keepAccountCompany(long orderId,String orderNo,int itemType,BigDecimal amount,String comment){
+	private long keepAccountCompany(long orderId,String orderNo,int itemType,BigDecimal amount,String comment){
 		AccountCompany accountItem=new AccountCompany();
 		accountItem.setOrderId(orderId);
 		accountItem.setOrderNo(orderNo);
@@ -257,7 +289,7 @@ public class MarketFeeController {
 		
 		//记入公司帐薄
 		int row =accountCompanyService.addAccountItem(accountItem);
-		return row;
+		return accountItem.getId();  
 	}
 	
 	/** 
@@ -272,7 +304,15 @@ public class MarketFeeController {
 		* @return int    返回类型 
 		* @throws 
 	*/
-	private int keepAccountPersonal(long orderId,String orderNo,int itemType,BigDecimal amount,String comment){
+	private int keepAccountPersonal(long orderId,
+									String orderNo,
+									int itemType,
+									BigDecimal amount,
+									String comment,
+									long userId,
+									long roleId,
+									long accountCompanyId
+									){
 		
 		//操作员信息
 		UserBean user=getLoginUser();
@@ -280,9 +320,37 @@ public class MarketFeeController {
 		//查询代理商
 		long agentId=searchAgentByOrder(orderId);
 		
+		//加入个人帐薄
+		AccountPersonal accountItem=new AccountPersonal();
+		accountItem.setOrderId(orderId);
+		accountItem.setOrderNo(orderNo);
+		accountItem.setType(itemType);
+		accountItem.setAmount(amount);
+		accountItem.setComment(comment);
+		accountItem.setCreateTime(new Date());
 		
+		//查询代理商
+		accountItem.setCustId(agentId);
+		
+		//写入操作员
+		accountItem.setOperatorId(user.getId());
+		accountItem.setOperatorName(user.getNickname());
+		
+		//写入绑定用户信息
+		accountItem.setBindUserId(userId);
+		accountItem.setRoleId(roleId);
+		
+		//加入公司帐薄分录ID
+		accountItem.setAccountCompanyId(accountCompanyId);
+		
+		//记入个人帐薄
+		int row =accountPersonalService.addAccountItem(accountItem);
+		
+		return row;
+		
+		
+		/*
 		//TODO 如果订单的account_state为特殊状态时的处理.不记入个人帐薄
-		
 		//查询与此代理商相绑定的OS/IS
 		//记入个人帐薄
 		int row=0;
@@ -316,8 +384,9 @@ public class MarketFeeController {
 			//记入个人帐薄
 			row =accountPersonalService.addAccountItem(accountItem);
 		}
+		*/
 		
-		return row;
+		
 		
 	}
 
