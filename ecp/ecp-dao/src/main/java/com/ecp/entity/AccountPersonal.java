@@ -75,6 +75,19 @@ public class AccountPersonal {
 	public void setAccountCompanyId(Long accountCompanyId) {
 		this.accountCompanyId = accountCompanyId;
 	}
+	
+	/** 
+		1:未删除; 2:删除状态 
+	*/
+	private Byte deleted;
+	
+	public Byte getDeleted() {
+		return deleted;
+	}
+	
+	public void setDeleted(Byte deleted) {
+		this.deleted = deleted;
+	}
 
 	/**
      * 金额

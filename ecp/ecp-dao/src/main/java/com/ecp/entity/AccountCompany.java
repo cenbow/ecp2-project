@@ -52,8 +52,21 @@ public class AccountCompany {
      * 类型（1、业绩；2、市场费；3、四项费用；4、销售滞纳金；5、价差；）
      */
     private Integer type;
+    
+    /** 
+    	1:未删除; 2:删除状态 
+    */
+    private Byte deleted;
 
-    /**
+    public Byte getDeleted() {
+		return deleted;
+	}
+
+	public void setDeleted(Byte deleted) {
+		this.deleted = deleted;
+	}
+
+	/**
      * 时间
      */
     @Column(name = "create_time")

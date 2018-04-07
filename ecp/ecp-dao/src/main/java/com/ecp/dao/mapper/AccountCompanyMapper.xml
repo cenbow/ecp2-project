@@ -20,13 +20,14 @@
     <result column="bind_user_id" jdbcType="BIGINT" property="bindUserId" />
     <result column="role_id" jdbcType="BIGINT" property="roleId" />
     <result column="company_fee_flag" jdbcType="TINYINT" property="companyFeeFlag" />
+    <result column="deleted" jdbcType="TINYINT" property="deleted" />
   </resultMap>
   <sql id="Base_Column_List">
     <!--
       WARNING - @mbggenerated
     -->
     id, cust_id, order_id, order_no, contract_id, contract_no, amount, type, create_time, 
-    operator_id, operator_name, comment, bind_user_id, role_id, company_fee_flag
+    operator_id, operator_name, comment, bind_user_id, role_id, company_fee_flag,deleted
   </sql>
   
   <select id="getItemsByOrder" resultMap="BaseResultMap">
