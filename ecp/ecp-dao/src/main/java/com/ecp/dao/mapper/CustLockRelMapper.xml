@@ -89,7 +89,7 @@
   
   
   <select id="getSalesByAgentIdAndRoleCodes" resultType="map">
-  	 SELECT user.id,user.username,user.nickname,cust_lock_rel.role_id,role.role_name,role.role_code from user 
+  	 SELECT user.id,user.username,user.nickname,cust_lock_rel.role_id, cust_lock_rel.id as rel_id, role.role_name,role.role_code from user 
   	 LEFT JOIN cust_lock_rel ON (user.id=cust_lock_rel.bind_user_id) 
   	 LEFT JOIN user_role on(user.id=user_role.user_id) 
   	 LEFT JOIN role ON(user_role.role_id=role.role_id AND cust_lock_rel.role_id=role.role_id)
