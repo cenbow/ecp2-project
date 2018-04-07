@@ -98,5 +98,45 @@ public interface IAccountCompanyService extends IBaseService<AccountCompany, Lon
 	 * @return
 	 */
 	public List<Map<String, Object>> selectAccountCompanyMap(Map<String, Object> params);
+	/** 
+		* @Title: getAmountByOrderId 
+		* @Description: 查询指定订单的某分录类型的SUM 
+		* @param @param orderId
+		* @param @param accountItemType
+		* @param @return     
+		* @return BigDecimal    返回类型 
+		* @throws 
+	*/
+	public BigDecimal getAmountByOrderId(long orderId,int accountItemType);
+	
+	
+	/** 
+		* @Title: searchAccountItemAmount 
+		* @Description: 查询范围内的指定分类类型的总金额 
+		* @param @param orderTimeCond
+		* @param @param dealStateCond
+		* @param @param searchTypeValue
+		* @param @param condValue
+		* @param @param provinceName
+		* @param @param cityName
+		* @param @param countyName
+		* @param @param agentIdList
+		* @param @param itemTypeList
+		* @param @param bindedUserId
+		* @param @param roleIdList
+		* @param @return     
+		* @return BigDecimal    返回类型 
+		* @throws 
+	*/
+	public BigDecimal searchAccountItemAmount(
+			 int orderTimeCond,
+			 int dealStateCond,
+			 int searchTypeValue,String condValue,
+			 String provinceName,String cityName,String countyName,
+			 List<Map<String,Object>> agentIdList,
+			 List<Integer>itemTypeList,
+			 long bindedUserId,
+			 List<Long> roleIdList
+			 );
 	
 }

@@ -8,6 +8,12 @@ package com.ecp.bean;
  * @version 1.0.0
  */
 public class AccountStatusType {
+	/** 
+		* @Fields VALID : 代理商(签约客户):有效 
+	*/
 	public static final int VALID=1;   //有效  
+	/** 
+		* @Fields INVALID : 代理商(签约客户):无效 
+	*/
 	public static final int INVALID=2; //无效
 }

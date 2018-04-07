@@ -1,6 +1,7 @@
 package com.ecp.service.impl.front;
 
 import java.util.List;
+import java.util.Map;
 
 import org.springframework.stereotype.Service;
 
@@ -76,5 +77,12 @@ public class AgentServiceImpl extends AbstractBaseService<User, Long> implements
 		
 		return false;
 	}
+
+	@Override
+	public List<Map<String, Object>> getUsersByParentId(long pid) {
+		return userMapper.getUsersByParentId(pid);
+	}
+
+	
 
 }

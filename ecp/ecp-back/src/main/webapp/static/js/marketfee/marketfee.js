@@ -6,7 +6,7 @@
  */
 function openAddmarketFeeDialog() {
 	//modal-container-306690
-	console.log("debug!");
+	//console.log("debug!");
 	$('#modal-container-306690').modal({
 		backdrop : 'static',
 		keyboard : false
@@ -31,6 +31,9 @@ function reloadmarketFeeTable(){
 	$("#marketfee-table").load(url,parms,null);
 	
 }
+
+//-------------------前端数据操作------------------
+
 
 //------------------业务操作----------------------
 /**
@@ -112,6 +115,25 @@ $(function(){
 	$('#btn-add-market-fee').on('click',function(){
 		//console.log("btn add market fee clicked!");
 		openAddmarketFeeDialog();
+		
+		//根据订单的记帐状态  全选/全不选 所绑定的用户.
+		if(curr_accountStatus==null  || curr_accountStatus==1){
+			$(".bind-user").prop("checked",true);
+			//置所有用户的选择状态			
+		}
+		else{  //accountStatus==2;
+			$(".bind-user").prop("checked",false);
+			//置所有用户的选择状态
+			
+		}
+	})
+	
+	//选定/取消选定用户
+	$(".bind-user").on("change",function(){
+		//console.log($(this).is(":checked"));
+		var bindUserRelId=$(this).attr("data-bind-id");
+		//console.log("bind user relid is:"+bindUserRelId);
+		//置绑定用户的选定状态.
 	})
 	
 	//保存费用条目button:click event

@@ -1,6 +1,7 @@
 package com.ecp.service.front;
 
 import java.util.List;
+import java.util.Map;
 
 import com.ecp.entity.User;
 import com.ecp.service.IBaseService;
@@ -43,6 +44,8 @@ public interface IAgentService extends IBaseService<User, Long> {
 	 * @return 有:true;没有:false;
 	 */
 	public boolean hasSameLoginName(String loginName);
+	
+	public List<Map<String,Object>> getUsersByParentId(long pid);
 	
 	
 }

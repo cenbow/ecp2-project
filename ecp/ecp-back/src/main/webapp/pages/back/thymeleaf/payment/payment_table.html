@@ -5,25 +5,23 @@
 <title>Insert title here</title>
 </head>
 <body>
-<table class="table">
-						<thead>
-							<tr>
-								<th>ID</th>								
-								<th>金额	</th>
-								<th>回款类型	</th>
-								<th>回款归属</th>
-								<th>备注</th>
-								<th>日期	</th>
-								<th>操作 </th>
-							</tr>
-						</thead>
-						<tbody>
-							<tr th:each="item: ${accountCompanyList}">
-								<td th:text="${item.id}">条目ID</td>
-								<td th:text="${item.amount}">金额</td>
-								<td>
-									<span th:switch="${item.type}" th:remove="tag">
-										<!-- <span th:case=1 th:remove="tag">
+	<table class="table">
+		<thead>
+			<tr>
+				<th>ID</th>
+				<th>金额</th>
+				<th>回款类型</th>
+				<th>回款归属</th>
+				<th>备注</th>
+				<th>日期</th>
+				<th>操作</th>
+			</tr>
+		</thead>
+		<tbody>
+			<tr th:each="item: ${accountCompanyList}">
+				<td th:text="${item.id}">条目ID</td>
+				<td th:text="${item.amount}">金额</td>
+				<td><span th:switch="${item.type}" th:remove="tag"> <!-- <span th:case=1 th:remove="tag">
 									  		<span>交通费</span>
 									  	</span>
 									  	<span th:case=2 th:remove="tag">
@@ -34,35 +32,43 @@
 									  	</span>
 									  	<span th:case=4 th:remove="tag">
 									  		<span>差旅费</span>
-									  	</span> -->
-									  	<span th:case=6 th:remove="tag">
-									  		<span>回款</span>
-									  	</span>
-									  	<span th:case="*" th:remove="tag">
-									  		<span>其它费用</span>
-									  	</span>
-									</span>									
-								</td>
-								
-								<td>人员/公司</td>
-								<td th:text="${item.comment}">备注</td>
-								<td th:text="${#dates.format(item.createTime,'yyyy-MM-dd HH:mm:ss')}">日期</td>								
-								<td>				
-									<a type="button" class="modi-payment" th:attr="bind-id=${item.id}"><i class=" icon-edit icon-large" style="color:darkblue"></i></a>
-									<a type="button" class="del-payment" th:attr="bind-id=${item.id}"><i class=" icon-remove-circle icon-large" style="color:darkblue"></i></a>	
-								</td>
-							</tr>
-							
-						</tbody>
-					</table>
-					
-					
+									  	</span> --> <span th:case=6 th:remove="tag"> <span>回款</span>
+					</span> <span th:case="*" th:remove="tag"> <span>其它费用</span>
+					</span>
+				</span></td>
+
+				<td>人员/公司</td>
+				<td th:text="${item.comment}">备注</td>
+				<td
+					th:text="${#dates.format(item.createTime,'yyyy-MM-dd HH:mm:ss')}">日期</td>
+				<td><a type="button" class="modi-payment"
+					th:attr="bind-id=${item.id}"><i class=" icon-edit icon-large"
+						style="color: darkblue"></i></a> <a type="button" class="del-payment"
+					th:attr="bind-id=${item.id}"><i
+						class=" icon-remove-circle icon-large" style="color: darkblue"></i></a>
+				</td>
+			</tr>
+
+			<!-- 订单回款统计 -->
+			<tr>
+				<td colspan="7">
+					<span style="float: right; margin-right: 50px;">
+						<span th:text="'合同额:'+${contractAmount}"style="margin-right: 10px;"></span> 
+						<span th:text="'回款额:'+${payAmount}" style="margin-right: 10px;"></span>
+						<span th:text="'欠款:'+${contractAmount-payAmount}"	style="margin-right: 10px;"></span>
+				</span></td>
+			</tr>
+
+		</tbody>
+	</table>
+
+
 	<script type="text/javascript">
-		$('.modi-payment').on('click',function(){
+		$('.modi-payment').on('click', function() {
 			console.log("modify payment");
 		})
-		
-		$('.del-payment').on('click',function(){
+
+		$('.del-payment').on('click', function() {
 			console.log("delete payment");
 		})
 	</script>

@@ -39,6 +39,16 @@ function setDialogTitle(title) {
 	$("#myModalLabel").text(title);
 }
 
+/**
+ * 设置价格限制信息
+ * @param orderItem
+ * @returns
+ */
+function setDialogPriceLimitInfo(orderItem){
+	//console.log('debug----------');
+	$("#price-limit-info").text('(最低限价:'+orderItem.lowest_price+'---'+'最高限价:'+orderItem.highest_price+')');
+}
+
 /* reset dialog */
 function resetDialog() {
 	$("#dialog-form")[0].reset();
@@ -58,13 +68,67 @@ function displayDiscountDialog(e) {
 	var orderItemId = $(e).attr("data-bind"); // get orderItem'id
 	setOrderItemId(orderItemId);
 
-	var sku_name = $("#sku_name_" + orderItemId).html(); // get sku_name and
-															// set dialog's
-															// title
+	var sku_name = $("#sku_name_" + orderItemId).html(); // get sku_name and set dialog's title
 	setDialogTitle("折减金额(" + sku_name + ")");
+	
+	var orderItem=getOrderItemById(orderItemId);   //当前订单条目
+	setDialogPriceLimitInfo(orderItem);
+	
+	
 
 	resetDialog();
 	showDialog();
+}
+
+/**
+ * 判定折减后的价格是否在[最低限价-最高限价]之间.
+ * @param orderItemId
+ * @param discountPrice
+ * @returns  如果在以上区间,则返回true,否则返回false;
+ */
+function validateDiscountPrice(orderItemId,discountPrice){
+	var orderItem=getOrderItemById(orderItemId);   //当前订单条目
+	var lowestPrice=0;
+	var highestPrice=0;
+	var primitivePrice=orderItem.primitive_price;
+	var payPrice=primitivePrice-discountPrice;
+	
+	
+	if(orderItem.lowest_price!=null){
+		lowestPrice=orderItem.lowest_price;
+	}
+	if(orderItem.highest_price!=null){
+		highestPrice=orderItem.highest_price;
+	}
+	
+	if(payPrice>=lowestPrice && payPrice<=highestPrice){
+		return true;
+	}
+	else{
+		return false;
+	}
+	
+	
+}
+
+/**
+ * 根据订单条目ID获取相应的条目
+ * @param id
+ * @returns  如果查询到则返回条目对象,否则返回null
+ */
+function getOrderItemById(id){
+	var orderItemList = getOrderItemList();
+	var index = -1;
+	for (var i = 0; i < orderItemList.length; i++) {
+		if (orderItemList[i].id == id) {
+			index = i;
+			break;
+		}
+	}
+	if(index!=-1)
+		return orderItemList[index];
+	else
+		return null
 }
 
 /*
@@ -79,6 +143,8 @@ function initOrderItemDiscount() {
 				* orderItemList[i].num;
 	}
 }
+
+
 
 /*
  * 计算订单条目小计 params: id:order item id discount:折减金额
@@ -377,6 +443,15 @@ $(function() {
 		if (isNaN(discount)) {
 			util.message("所输入的不是数字！");
 		} else {
+			
+			var valid=validateDiscountPrice(getOrderItemId(),discount);
+			var orderItem=getOrderItemById(getOrderItemId())
+			if(!valid){
+				util.message( "折减后价格必须在"+"["+orderItem.lowest_price+","+orderItem.highest_price+"]"+"区间!");
+				return;
+			}
+			
+			
 			calcAmount(getOrderItemId(), discount);
 			displayOrderTtem(getOrderItemId());
 			displaySumAmount(calcSumAmount());

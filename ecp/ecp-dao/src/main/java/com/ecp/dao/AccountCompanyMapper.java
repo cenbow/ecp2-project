@@ -1,5 +1,6 @@
 package com.ecp.dao;
 
+import java.math.BigDecimal;
 import java.util.List;
 import java.util.Map;
 
@@ -38,5 +39,21 @@ public interface AccountCompanyMapper extends Mapper<AccountCompany> {
 	 * @return
 	 */
 	public List<Map<String, Object>> selectAccountCompanyMap(Map<String, Object> params);
+
+	public BigDecimal getAmountByOrderId(@Param("orderId") long orderId,@Param("accountItemType") int accountItemType);
+	
+	
+	public BigDecimal searchAccountItemAmount(
+			@Param("orderTimeCond") int orderTimeCond, 
+			@Param("dealStateCond") int dealStateCond, 
+			@Param("searchTypeValue") int searchTypeValue,
+			@Param("condValue") String condValue, 
+			@Param("provinceName") String provinceName, 
+			@Param("cityName") String cityName, 
+			@Param("countyName") String countyName,
+			@Param("agentIdList") List<Map<String, Object>> agentIdList, 
+			@Param("itemTypeList") List<Integer> itemTypeList, 
+			@Param("userId") long userId,
+			@Param("roleIdList") List<Long> roleIdList);
 	
 }

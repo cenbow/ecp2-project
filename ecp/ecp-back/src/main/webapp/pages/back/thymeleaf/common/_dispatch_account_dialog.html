@@ -20,13 +20,15 @@
 							<div class="modal-header">
 								<button type="button" class="close" data-dismiss="modal"
 									aria-hidden="true">×</button>
-								<h4 class="modal-title" id="myModalLabel">分配帐户</h4>
+								<h5 class="modal-title" id="myModalLabel">分配/修改帐户</h5>
+								
+								<!-- 用于保存当前编辑的用户ID -->
+								<input type="hidden" id="modi-user-id">
+								
 							</div>
 							<div class="modal-body">
 							
 										<form class="form-horizontal" id="dispatch-form" role="form">
-											<input type="hidden" id="agentId" value="">
-											
 											<div class="form-group">
 												<label for="loginName" class="col-sm-3 column control-label">帐号(*)</label> 
 												<div class="col-sm-7 column">
@@ -34,7 +36,7 @@
 												</div>
 											</div>					
 											<div class="form-group">
-												<label for="loginName" class="col-sm-3 column control-label">昵称(*)</label> 
+												<label for="nickName" class="col-sm-3 column control-label">昵称(*)</label> 
 												<div class="col-sm-7 column">
 													<input type="text"	id="nickName" name="nickName" class="form-control" placeholder="昵称" required="required" />
 												</div>
@@ -45,7 +47,7 @@
 													<input type="password"	id="password" name="password" class="form-control" placeholder="请输入密码"  required="required" />
 												</div>
 											</div>											
-											注:默认帐号为手机号码,默认口令:123456
+											注:默认口令为:<span class="password-desc"></span>
 										</form>
 								
 							</div>

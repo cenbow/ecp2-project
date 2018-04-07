@@ -88,10 +88,8 @@
 			parms.userId=0;
 			parms.roleId=0;
 			
-			//视角条件,默认的视角条件为0(未选定视角)
-			parms.perspectiveType="";
-			parms.perspectiveValue=0;
-			
+			//是否付全款标志 0:未付全款; 1:已经付全款
+			parms.totalPayFlag=-1;			
 
 			loadOrder(parms,null);
 		}

@@ -1,7 +1,7 @@
 //===============变量定义=================
 var g_ContractItemId = 0;
 
-/* 设置orderItemId */
+/* 设置contractItemId */
 function setContractItemId(itemId) {
 	g_ContractItemId = itemId;
 }
@@ -39,6 +39,16 @@ function setDialogTitle(title) {
 	$("#myModalLabel").text(title);
 }
 
+/**
+ * 设置价格限制信息
+ * @param item 合同详情条目
+ * @returns
+ */
+function setDialogPriceLimitInfo(item){
+	//console.log('debug----------');
+	$("#price-limit-info").text('(最低限价:'+item.lowest_price+'---'+'最高限价:'+item.highest_price+')');
+}
+
 /* reset dialog */
 function resetDialog() {
 	$("#dialog-form")[0].reset();
@@ -63,8 +73,64 @@ function displayDiscountDialog(e) {
 															// title
 	setDialogTitle("折减金额(" + sku_name + ")");
 
+	var item=getContractItemById(itemId);   //当前合同条目限价信息
+	setDialogPriceLimitInfo(item);
+	
+	
 	resetDialog();
 	showDialog();
+}
+
+
+/**
+ * 判定折减后的价格是否在[最低限价-最高限价]之间.
+ * @param itemId
+ * @param discountPrice
+ * @returns  如果在以上区间,则返回true,否则返回false;
+ */
+function validateDiscountPrice(itemId,discountPrice){
+	var contractItem=getContractItemById(itemId);   //当前合同条目
+	var lowestPrice=0;
+	var highestPrice=0;
+	var primitivePrice=contractItem.primitive_price;
+	var payPrice=primitivePrice-discountPrice;
+	
+	
+	if(contractItem.lowest_price!=null){
+		lowestPrice=contractItem.lowest_price;
+	}
+	if(contractItem.highest_price!=null){
+		highestPrice=contractItem.highest_price;
+	}
+	
+	if(payPrice>=lowestPrice && payPrice<=highestPrice){
+		return true;
+	}
+	else{
+		return false;
+	}
+	
+	
+}
+
+/**
+ * 根据合同条目ID获取相应的条目
+ * @param id
+ * @returns  如果查询到则返回条目对象,否则返回null
+ */
+function getContractItemById(id){
+	var itemList = getContractItemList();
+	var index = -1;
+	for (var i = 0; i < itemList.length; i++) {
+		if (itemList[i].id == id) {
+			index = i;
+			break;
+		}
+	}
+	if(index!=-1)
+		return itemList[index];
+	else
+		return null
 }
 
 /*
@@ -369,6 +435,14 @@ $(function() {
 		if (isNaN(discount)) {
 			util.message("所输入的不是数字！");
 		} else {
+			
+			var valid=validateDiscountPrice(getContractItemId(),discount);
+			var contractItem=getContractItemById(getContractItemId())
+			if(!valid){
+				util.message( "折减后价格必须在"+"["+contractItem.lowest_price+","+contractItem.highest_price+"]"+"区间!");
+				return;
+			}
+			
 			calcAmount(getContractItemId(), discount);
 			displayContractItem(getContractItemId());
 			displaySumAmount(calcSumAmount());

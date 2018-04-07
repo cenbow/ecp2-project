@@ -86,4 +86,16 @@
 		AND type = 1
 		AND id=#{userId}
 	</select>
+	
+	<!-- 根据parentId(主帐号)查询:本帐号,其下的直接子帐号 -->
+	<select id="getUsersByParentId"  resultType="map">
+		SELECT
+			u.*
+		FROM
+			`user` u		
+		WHERE
+			u.deleted=1 AND
+			(u.id=#{pid} or u.parent_id=#{pid})	 		
+	</select>
+	
 </mapper>

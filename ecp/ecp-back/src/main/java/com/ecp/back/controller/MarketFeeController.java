@@ -138,9 +138,16 @@ public class MarketFeeController {
 	*/
 	@RequestMapping(value="/edit")
 	public String showMarketFeeEditUI(long orderId,String orderNo,Model model){
+		prepareMarketFee(orderId,orderNo,model);
+		model.addAttribute("orderId", orderId);
+		model.addAttribute("orderNo",orderNo);
 		
+		return RESPONSE_THYMELEAF_BACK + "marketfee_edit";
+	}
+	
+	private void prepareMarketFee(long orderId,String orderNo,Model model){
 		//费用类型
-		List<Integer> itemTypeList=new ArrayList<Integer>();		
+		List<Integer> itemTypeList=new ArrayList<>();		
 		itemTypeList.add(AccountItemType.MARKET_FEE);  //市场费
 		
 		//查询公司帐薄
@@ -148,21 +155,47 @@ public class MarketFeeController {
 		
 		//回传参数
 		model.addAttribute("accountCompanyList",accountCompanyList);		
-		model.addAttribute("orderId", orderId);
-		model.addAttribute("orderNo",orderNo);
+		//查询合同的记帐状态
+		Orders order=orderService.selectByPrimaryKey(orderId);
+		model.addAttribute("accountStatus", order.getAccountState());  //订单的记帐状态
 		
-		return RESPONSE_THYMELEAF_BACK + "marketfee_edit";
+		//查询与此订单相关的OS/IS
+		long agentId=searchAgentByOrder(orderId);
+		List<String> roleCodeList=new ArrayList<>();
+		roleCodeList.add(RoleCodeConstants.OS);
+		roleCodeList.add(RoleCodeConstants.IS);
+		List<Map<String,Object>> bindUserList=agentBindService.getSalesByAgentIdAndRoleCodes(agentId, roleCodeList);
+		
+		model.addAttribute("bindUserList", bindUserList);  //所绑定的用户
+	}
+	
+	/** 
+	* @Title: searchAgentByOrder 
+	* @Description: 根据订单查询下单代理商 
+	* @param @param orderId
+	* @param @return    设定文件 
+	* @return long      如果查询到代理商则返回代理商ID,否则返回0 
+	* @throws 
+	*/
+	private long searchAgentByOrder(long orderId){
+		//(1)先查询订单
+		Orders order=orderService.selectByPrimaryKey(orderId);
+		
+		//(3)根据主帐号可以查询所在的企业
+		UserExtends agent=userAgentService.getUserAgentByUserId(order.getBuyerId());
+		long agentId=0;
+		if(agent!=null)
+			agentId=agent.getExtendId();
+		
+		return agentId;
 	}
 	
 	
 	@RequestMapping(value="/table")
-	public String showMarketFeeTable(long orderId,String orderNo,Model model){
-		
+	public String showMarketFeeTable(long orderId,String orderNo,Model model){		
 		//费用类型
-		List<Integer> itemTypeList=new ArrayList<Integer>();
-		itemTypeList.add(AccountItemType.MARKET_FEE);  //市场费
-		
-		
+		List<Integer> itemTypeList=new ArrayList<>();
+		itemTypeList.add(AccountItemType.MARKET_FEE);  //市场费		
 		//查询公司帐薄
 		List<AccountCompany> accountCompanyList=accountCompanyService.getItemsByOrder(orderId, orderNo, itemTypeList);
 		
@@ -288,26 +321,7 @@ public class MarketFeeController {
 		
 	}
 
-	/** 
-	* @Title: searchAgentByOrder 
-	* @Description: 根据订单查询下单代理商 
-	* @param @param orderId
-	* @param @return    设定文件 
-	* @return long      如果查询到代理商则返回代理商ID,否则返回0 
-	* @throws 
-	*/
-	private long searchAgentByOrder(long orderId){
-		//(1)先查询订单
-		Orders order=orderService.selectByPrimaryKey(orderId);
-		
-		//(2)根据主帐号可以查询所在的企业
-		UserExtends agent=userAgentService.getUserAgentByUserId(order.getBuyerId());
-		long agentId=0;
-		if(agent!=null)
-			agentId=agent.getExtendId();
-		
-		return agentId;
-	}
+	
 	
 	/** 
 	* @Title: getLoginUserId 

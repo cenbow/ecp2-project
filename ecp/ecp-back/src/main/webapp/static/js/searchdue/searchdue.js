@@ -51,6 +51,12 @@ function search(){
 	parms.userId=userId;
 	parms.roleId=roleId;
 	
+	//欠款状态
+	var option1=$("#select-total-pay-flag option:selected");
+	var totalPayFlag=option1.val();
+	
+	parms.totalPayFlag=totalPayFlag;
+	
 	loadOrder(parms,null); //加载页面
 }
 
@@ -158,6 +164,12 @@ function showAllOrderFee(){
 	
 	parms.userId=userId;
 	parms.roleId=roleId;
+	
+	//欠款状态
+	var option1=$("#select-total-pay-flag option:selected");
+	var totalPayFlag=option1.val();
+	
+	parms.totalPayFlag=totalPayFlag;
 	
 	$("#edit-body").load(url,parms, function(){		
 		$("#edit-tab").removeClass("hide");
@@ -287,6 +299,27 @@ function updateUserRole(){
 	}	
 }
 
+/**
+ * 根据回传的值:置欠款状态下拉框当前选项
+ * @returns
+ */
+function updateTotalPayFlag(){
+	var totalPayFlag=ret_totalPayFlag;
+	
+	if(totalPayFlag==-1){
+		$("#select-total-pay-flag option").eq(0).attr("selected",true);
+	}
+	else{
+		$("#select-total-pay-flag option").each(function(){
+			if($(this).val()==totalPayFlag){
+				$(this).attr("selected",true);
+				return;
+			}
+			
+		});		
+	}	
+}
+
 //----------------设置数据及数据准备--------------------
 
 /**
@@ -400,6 +433,7 @@ $(function() {
 	
 	updateUIArea();
 	updateUserRole();
+	updateTotalPayFlag();
 	
 	updateUIDealState(g_dealstate_cond);
 	updateUIOrderTime(g_ordertime_cond);
@@ -471,6 +505,11 @@ $(function() {
 	
 	//当选择角色时,自动查询
 	$("#select-user-role").on("change",function(){
+		$(".start-search").trigger("click");
+	});
+	
+	//当选择欠款状态时,自动查询
+	$("#select-total-pay-flag").on("change",function(){
 		$(".start-search").trigger("click");
 	});
 	

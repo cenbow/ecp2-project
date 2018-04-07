@@ -63,8 +63,20 @@ public class AccountPersonal {
 
     @Column(name = "role_id")
     private Long roleId;
+    
+    @Column(name = "account_company_id")
+    private Long accountCompanyId;
+    
 
-    /**
+    public Long getAccountCompanyId() {
+		return accountCompanyId;
+	}
+
+	public void setAccountCompanyId(Long accountCompanyId) {
+		this.accountCompanyId = accountCompanyId;
+	}
+
+	/**
      * 金额
      */
     private BigDecimal amount;

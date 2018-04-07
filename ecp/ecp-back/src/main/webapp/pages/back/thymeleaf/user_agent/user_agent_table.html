@@ -61,9 +61,7 @@ tr:hover{
 </head>
 <body>
 	<div class="container-fluid" style="margin-top: 20px;">
-	<!-- 分配帐号对话框 -->
-	<div th:replace="/back/thymeleaf/common/_dispatch_account_dialog::dialog"
-		class="header"></div>
+	
 	<!-- 签约客户列表 -->
 	<div class="row clearfix">
 		<div class="col-md-12 column">
@@ -146,9 +144,9 @@ tr:hover{
 						</span>
 
 						<td>
-							<button type="button" th:attr="data-bind=${agent.extendId},data-user-id=${agent.userId},data-account-state=${agent.accountState}" 
+							<button type="button" th:attr="data-bind=${agent.extendId},data-account-state=${agent.accountState}" 
 								class="btn btn-success btn-sm set-valid" title="设置此帐号有效">有效</button>
-							<button type="button" th:attr="data-bind=${agent.extendId},data-user-id=${agent.userId},data-account-state=${agent.accountState}"
+							<button type="button" th:attr="data-bind=${agent.extendId},data-account-state=${agent.accountState}"
 								class="btn btn-warning btn-sm set-invalid" title="设置此帐号无效">无效</button>
 						</td>
 						<td>
@@ -159,20 +157,31 @@ tr:hover{
 								class="icon-edit icon-large"></i>
 						</a> -->
 						<a type="button"
-							th:attr="data-bind=${agent.extendId}, onclick='javascript:editAgent('+${agent.extendId}+');'"
-							class="show-detail" title="修改客户信息"> <i
-								class="icon-edit icon-large"></i>
+							th:attr="data-bind=${agent.extendId}, 
+									onclick='javascript:editAgent('+${agent.extendId}+');'"
+							class="show-detail" title="修改客户信息"> 
+							<i	class="icon-edit icon-large"></i>
 						</a> 
 						<a type="button"
-							th:attr="data-bind=${agent.extendId},data-company-name=${agent.companyName},data-contact-phone=${agent.contactPhone},data-artificialPersonName=${agent.artificialPersonName},data-user-id=${agent.userId}"
-							class="dispatch-account" title="分配帐号"> <i
-								class="icon-user icon-large"></i>
+							th:attr="data-bind=${agent.extendId},
+									data-company-name=${agent.companyName},
+									data-contact-phone=${agent.contactPhone},
+									data-artificialPersonName=${agent.artificialPersonName},
+									data-user-id=${agent.userId}"
+							class="account-management" 
+							title="帐号管理"> 
+							<i	class="icon-group icon-large"></i>
 						</a>
-						<a type="button"
-							th:attr="data-bind=${agent.extendId},data-company-name=${agent.companyName},data-contact-phone=${agent.contactPhone},data-artificialPersonName=${agent.artificialPersonName},data-user-id=${agent.userId},data-account-state=${agent.accountState}"
-							class="reset-password" title="重置密码"> <i
-								class="icon-retweet icon-large"></i>
-						</a>
+						
+						<!-- <a type="button"
+							th:attr="data-bind=${agent.extendId},
+									data-company-name=${agent.companyName},
+									data-contact-phone=${agent.contactPhone},
+									data-artificialPersonName=${agent.artificialPersonName},
+									data-user-id=${agent.userId},
+									data-account-state=${agent.accountState}"
+							class="reset-password" title="重置密码"> <i	class="icon-retweet icon-large"></i>
+						</a> -->
 						
 						</td>
 
@@ -211,7 +220,7 @@ tr:hover{
 		
 		/**
 		 * 点击添加按钮时执行
-		 *		函数功能：打开添加选项卡
+		 *		函数功能：打开添加代理商选项卡
 		 */
 		$("#add-btn").click(function(){
 			var url = BASE_CONTEXT_PATH + "/back/agent/add";

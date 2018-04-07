@@ -3,6 +3,8 @@ package com.ecp.dao;
 import java.util.List;
 import java.util.Map;
 
+import org.apache.ibatis.annotations.Param;
+
 import com.ecp.entity.User;
 
 import tk.mybatis.mapper.common.Mapper;
@@ -27,5 +29,6 @@ public interface UserMapper extends Mapper<User> {
 	 * @return
 	 */
 	public Map<String, Object> getById(Long userId);
+	public List<Map<String, Object>> getUsersByParentId(@Param("pid") long pid);
 	
 }

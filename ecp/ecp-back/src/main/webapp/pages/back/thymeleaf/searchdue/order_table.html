@@ -172,6 +172,13 @@
 		cursor:pointer;
 	}
 	
+	.total-pay-flag-no{
+		color:red;
+	}
+	
+	.total-pay-flag-yes{
+		color:green;
+	}
 	
 </style>
 
@@ -218,7 +225,7 @@
 				<label for="select-user-role" >角色:</label>
 				<select id="select-user-role" >
 					<!-- 全部角色 -->
-					<option  		th:attr="data-bind-roleid='0',data-bind-userid='0'" 
+					<option  th:attr="data-bind-roleid='0',data-bind-userid='0'" 
 									th:value ="0" 
 									th:text="'全部角色'">用户-角色</option>
 					<span th:if="${not #lists.isEmpty(userRoleList)}" th:remove="tag">
@@ -237,6 +244,18 @@
 					</span>										
 				</select>				
 			</div>
+			
+			<!-- 加入欠款查询条件 -->
+			<div style="display:inline-block;  margin-left:50px;" >
+				<label for="select-total-pay-flag" >回款状态</label>
+				<select id="select-total-pay-flag" >
+					<!-- 全部角色 -->
+					<option  th:value ="-1"	th:text="'全部状态'">全部状态</option>
+					<option  th:value ="0"	th:text="'尚有欠款'">尚有欠款</option>
+					<option  th:value ="1"	th:text="'已回全款'">己回全款</option>
+				</select>				
+			</div>
+			
 			
 			<hr style="height:1px;border:none;border-top:1px solid lightgray;">
 			
@@ -311,8 +330,12 @@
 								</div>
 							</div>
 						</th>
-						<th>订单金额</th>
-						<th>收货人</th>
+						<th>订单额</th>						
+						<th>合同额</th>
+						<th>回款额</th>
+						<th>欠款额</th>
+						<th>回款状态</th>
+						<!-- <th>回款人</th> -->
 						<th>
 							<!-- 状态：查询条件 -->
 							<div class="deal-state-cont" id="orderState">
@@ -339,30 +362,45 @@
 				</thead>
 				<tbody>
 					<tr th:each="order:${orderList}">
-						<td><a th:href="@{/back/order/detail(id=${order.id})}" target="_blank" title="订单详情"><span th:text="${order.order_id}" th:remove="tag">订单号</span></a></td>
+						<td><a th:href="@{/back/order/detail(id=${order.order.id})}" target="_blank" title="订单详情"><span th:text="${order.order.order_id}" th:remove="tag">订单号</span></a></td>
 						<td>
-							<span th:if="${order.contract_id}" th:remove="tag">								
-								 <a th:href="@{/back/order/contractdetail(id=${order.contract_id})}" target="_blank" title="合同详情">
-									<span th:text="${order.contract_no}" th:remove="tag">合同号</span>				
+							<span th:if="${order.order.contract_id}" th:remove="tag">								
+								 <a th:href="@{/back/order/contractdetail(id=${order.order.contract_id})}" target="_blank" title="合同详情">
+									<span th:text="${order.order.contract_no}" th:remove="tag">合同号</span>				
 								</a>
-								<a th:href="@{/back/contract/open(id=${order.contract_id})}" target="_blank" title="打开合同">
+								<a th:href="@{/back/contract/open(id=${order.order.contract_id})}" target="_blank" title="打开合同">
 									<i class="icon-folder-close-alt icon-large" style="color:darkblue;" ></i> 
 								</a>    
 							</span>							
 							
 						</td>
-						<td	th:text="${#calendars.format(order.order_time,'yyyy-MM-dd HH:mm:ss')}">订单时间</td>
-						<td th:text="${order.total_price}">优惠前金额</td>
-						<td th:text="${order.name}">收货人</td>
+						<td	th:text="${#calendars.format(order.order.order_time,'yyyy-MM-dd HH:mm:ss')}">订单时间</td>
+						
+						<!-- 订单状态 -->
+						<td th:text="${order.order.total_price}">优惠前金额</td>	
+											
+						<td th:text="${order.contractAmount}">优惠后金额</td>
+						<td th:text="${order.payAmount}">回款合计</td>
+						<td th:text="${order.contractAmount-order.payAmount}">欠款金额</td>
+						
+						<!-- 欠款状态 -->
+						<td>
+							<span th:switch="${order.order.total_pay_flag}" th:remove="tag">
+								<span th:case='0' th:remove="tag"><span class="total-pay-flag-no">有欠款</span></span>
+								<span th:case='1' th:remove="tag"><span class="total-pay-flag-yes">已全款</span></span>
+							</span>
+						</td>
+						
+						<!-- <td th:text="${order.name}">收货人</td> -->
 						<!-- 状态显示 -->
 						<td>
 							<!-- 取消状态 -->
-							<span th:switch="${order.yn}"  th:remove="tag">
+							<span th:switch="${order.order.yn}"  th:remove="tag">
 								<span th:case='2' th:remove="tag"><span class="order-status"> 已取消 </span> <br></span>
 							</span>
 							
 							<!-- 其它状态 -->
-							<span th:switch="${order.contract_state}"  th:remove="tag">
+							<span th:switch="${order.order.contract_state}"  th:remove="tag">
 								<span th:case='1' th:remove="tag"><span class="order-status"> 未建合同 </span> <br></span>
 								<span th:case='2' th:remove="tag"><span class="order-status"> 己建合同 </span> <br></span>
 								<span th:case='4' th:remove="tag"><span class="order-status"> 甲方已确认 </span> <br></span>
@@ -371,13 +409,13 @@
 								<span th:case='6' th:remove="tag"><span class="order-status"> 执行完毕 </span> <br></span>										
 							</span>
 						</td>
-						<td th:text="${order.company_name}">公司名称</td>
+						<td th:text="${order.order.company_name}">公司名称</td>
 						<td>
 							<!-- <a type="button" th:href="@{/back/order/detail(id=${order.id})}" class="btn btn-primary show-detail" target="_blank">详情</a> -->
-							<a type="button" th:attr="data-id=${order.id},
-													data-orderid=${order.order_id},
-													data-contractState=${order.contract_state},
-													data-contract-id=${order.contract_id}" 
+							<a type="button" th:attr="data-id=${order.order.id},
+													data-orderid=${order.order.order_id},
+													data-contractState=${order.order.contract_state},
+													data-contract-id=${order.order.contract_id}" 
 												class="show-order-fee" 
 												title="订单回款">												
 								<i class=" icon-money icon-large" style="color:darkblue"></i>
@@ -392,11 +430,21 @@
 						</td>
 
 					</tr>
+					
+					<tr>
+						<td colspan=3><span style="float:right;">合计</span></td>
+						<td th:text=${orderAmount}>订单额</td>
+						<td th:text=${contractAmount}>合同额</td>
+						<td th:text=${payAmount}>回款额</td>
+						<td th:text=${contractAmount-payAmount}>欠款</td>
+						<td colspan=4><span></span></td>
+					</tr>
+					
 					<tr>						
-						<td colspan="8">
+						<td colspan="11">
 							<!-- <a type="button" id="btn-user-role-fee-list" class="btn btn-primary" style="float:right;margin-left:10px;">人员欠款列表</a>
 							<a type="button" id="btn-order-fee-list" class="btn btn-primary" style="float:right;margin-left:10px;">订单欠款列表</a> -->
-							<a type="button" id="btn-all-fee-list" class="btn btn-primary" style="float:right;margin-left:10px;">欠款列表</a>
+							<a type="button" id="btn-all-fee-list" class="btn btn-primary" style="float:right;margin-left:10px;">回款列表</a>
 							
 						</td>
 					</tr>
@@ -426,6 +474,8 @@
 		
 		var ret_userId=[[${userId}]];					 //回传的角色条件
 		var ret_roleId=[[${roleId}]];
+		
+		var ret_totalPayFlag=[[${totalPayFlag}]];       //回传的欠款标志
 		
 		/*]]>*/  
 	</script>

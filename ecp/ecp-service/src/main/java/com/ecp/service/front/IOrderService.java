@@ -1,5 +1,6 @@
 package com.ecp.service.front;
 
+import java.math.BigDecimal;
 import java.util.List;
 import java.util.Map;
 
@@ -39,6 +40,20 @@ public interface IOrderService extends IBaseService<Orders, Long> {
 	public List<Orders> selectOrderByOrderTimeAndDealState(long buyerId,int orderTimeCond,int dealStateCond);
 	
 	
+	/** 
+		* @Title: selectOrderByCondAndSubUser 
+		* @Description: 根据查询条件及 下单人,下单人的子帐号进行查询 
+		* @param @param buyerId
+		* @param @param subUser
+		* @param @param orderTimeCond
+		* @param @param dealStateCond
+		* @param @return     
+		* @return List<Orders>    返回类型 
+		* @throws 
+	*/
+	public List<Orders> selectOrderByCondAndSubUser(long buyerId,List<Long> subList,int orderTimeCond,int dealStateCond);
+	
+	
 	/**
 	 * @Description 根据订单时间及订单处理状态查询(所有用户-用于后台订单管理)
 	 * @param orderTimeCond 订单时间条件值
@@ -75,5 +90,35 @@ public interface IOrderService extends IBaseService<Orders, Long> {
 			 List<Map<String,Object>> agentIdList);
 	
 	public List<Map<String,Object>> selectOrdersMap(Map<String, Object> params);
+	public List<Map<String,Object>> selectOrder(int orderTimeCond,
+			 int dealStateCond,
+			 int searchTypeValue,String condValue,
+			 String provinceName,String cityName,String countyName,
+			 List<Map<String,Object>> agentIdList,int totalPayFlag);
+	
+	/** 
+		* @Title: getOrderAmount 
+		* @Description: 获取指定范围内的订单总金额 
+		* @param @param orderTimeCond
+		* @param @param dealStateCond
+		* @param @param searchTypeValue
+		* @param @param condValue
+		* @param @param provinceName
+		* @param @param cityName
+		* @param @param countyName
+		* @param @param agentIdList
+		* @param @param totalPayFlag
+		* @param @return     
+		* @return BigDecimal    返回类型 
+		* @throws 
+	*/
+	public BigDecimal getOrderAmount(
+			  int orderTimeCond,
+			  int dealStateCond,
+			  Integer searchTypeValue,
+			  String condValue,							  
+			  String provinceName, String cityName, String countyName,
+			  List<Map<String,Object>> agentIdList,
+			  int totalPayFlag);
 	
 }

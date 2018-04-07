@@ -6,8 +6,6 @@ import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
-import javax.servlet.http.HttpServletRequest;
-
 import org.apache.log4j.Logger;
 import org.apache.shiro.SecurityUtils;
 import org.apache.shiro.subject.Subject;
@@ -25,6 +23,7 @@ import com.ecp.entity.Orders;
 import com.ecp.entity.UserExtends;
 import com.ecp.service.front.IAccountCompanyService;
 import com.ecp.service.front.IAccountPersonalService;
+import com.ecp.service.front.IContractItemsService;
 import com.ecp.service.front.IOrderItemService;
 import com.ecp.service.front.IOrderService;
 import com.ecp.service.front.IUserAgentService;
@@ -60,6 +59,8 @@ public class PaymentController {
 	IAccountCompanyService accountCompanyService; //公司帐户
 	@Autowired
 	IAccountPersonalService accountPersonalService;  //个人帐户
+	@Autowired
+	IContractItemsService contractItemsService;  //合同条目
 	
 
 	/**
@@ -107,11 +108,8 @@ public class PaymentController {
 		
 		// 查询 并分页		
 		PageHelper.startPage(pageNum, pageSize); // PageHelper			
-
 		//List<Map<String,Object>> orderList = orderService.selectAllOrderByOrderTimeAndDealState(orderTimeCond,dealStateCond);
-		
 		List<Map<String,Object>> orderList = orderService.selectOrder(orderTimeCond,dealStateCond,searchTypeValue,condValue);  //查询订单
-		
 		PageInfo<Map<String,Object>> pageInfo = new PageInfo<Map<String,Object>>(orderList);// (使用了拦截器或是AOP进行查询的再次处理)
 		
 		model.addAttribute("pageInfo", pageInfo);  //分页
@@ -142,9 +140,27 @@ public class PaymentController {
 		
 		//查询公司帐薄
 		List<AccountCompany> accountCompanyList=accountCompanyService.getItemsByOrder(orderId, orderNo, itemTypeList);
+		model.addAttribute("accountCompanyList",accountCompanyList);
+		
+		//回款金额
+		BigDecimal payAmount=accountCompanyService.getAmountByOrderId(orderId, AccountItemType.PAYMENT);  //计算此订单下的回款合计
+		model.addAttribute("payAmount",payAmount);
+		
+		
+		//查询订单合同金额, 回款合计, 订单欠款
+		//根据合同ID查询:合同金额(应收款)
+		//合同额
+		Orders order=orderService.selectByPrimaryKey(orderId);
+		BigDecimal contractAmount=new BigDecimal(0);  
+		if(order.getContractNo()!=null){
+			contractAmount=contractItemsService.getContractAmountByNo(order.getContractNo());
+		}
+		model.addAttribute("contractAmount", contractAmount);
+		
+		
 		
 		//回传参数
-		model.addAttribute("accountCompanyList",accountCompanyList);		
+				
 		model.addAttribute("orderId", orderId);
 		model.addAttribute("orderNo",orderNo);
 		
@@ -152,6 +168,16 @@ public class PaymentController {
 	}
 	
 	
+	/** 
+		* @Title: showPaymentTable 
+		* @Description: 加载订单回款列表 
+		* @param @param orderId  主键(自增)
+		* @param @param orderNo	 订单号
+		* @param @param model
+		* @param @return     
+		* @return String    返回类型 
+		* @throws 
+	*/
 	@RequestMapping(value="/table")
 	public String showPaymentTable(long orderId,String orderNo,Model model){
 		
@@ -162,9 +188,22 @@ public class PaymentController {
 		
 		//查询公司帐薄
 		List<AccountCompany> accountCompanyList=accountCompanyService.getItemsByOrder(orderId, orderNo, itemTypeList);
+		model.addAttribute("accountCompanyList",accountCompanyList);
+
+		//回款金额
+		BigDecimal payAmount=accountCompanyService.getAmountByOrderId(orderId, AccountItemType.PAYMENT);  //计算此订单下的回款合计
+		model.addAttribute("payAmount",payAmount);
 		
-		//回传参数
-		model.addAttribute("accountCompanyList",accountCompanyList);	
+		
+		//查询订单合同金额, 回款合计, 订单欠款
+		//根据合同ID查询:合同金额(应收款)
+		//合同额
+		Orders order=orderService.selectByPrimaryKey(orderId);
+		BigDecimal contractAmount=new BigDecimal(0);  
+		if(order.getContractNo()!=null){
+			contractAmount=contractItemsService.getContractAmountByNo(order.getContractNo());
+		}
+		model.addAttribute("contractAmount", contractAmount);
 		
 		
 		return RESPONSE_THYMELEAF_BACK + "payment_table";
@@ -197,13 +236,49 @@ public class PaymentController {
 		//记入公司帐薄
 		int row =accountCompanyService.addAccountItem(accountCompanyItem);
 		
-		//TODO 记入个人帐薄
-		
+		//回款不记个人帐薄
 		if (row>0){
+			
+			updateOrderTotalPayFlag(orderId,orderNo);  //更新订单付全款标志.
+			
 			return RequestResultUtil.getResultAddSuccess();
 		}
 		else
 			return RequestResultUtil.getResultAddWarn();
+	}
+	
+	
+	/** 
+		* @Title: updateOrderTotalPayFlag 
+		* @Description: 更新订单是否已经全款标志
+		* @param @param orderId
+		* @param @param orderNo     
+		* @return void    返回类型 
+		* @throws 
+	*/
+	private void updateOrderTotalPayFlag(long orderId,String orderNo){
+		final byte TOTAL_PAY_FLAG_YES=1;  //全款;
+		final byte TOTAL_PAY_FLAG_NO=0;	  //未全款
+		//计算此订单下的回款合计
+		BigDecimal payAmount=accountCompanyService.getAmountByOrderId(orderId, AccountItemType.PAYMENT);
+		
+		Orders order=orderService.selectByPrimaryKey(orderId);
+		BigDecimal contractAmount=new BigDecimal(0);  
+		if(order.getContractNo()!=null){
+			contractAmount=contractItemsService.getContractAmountByNo(order.getContractNo());
+		}
+		
+		//如果合同金额>0
+		if (contractAmount.compareTo(new BigDecimal(0))==1){
+			if(payAmount.compareTo(contractAmount)==0 || payAmount.compareTo(contractAmount)==1)
+			{
+				Orders rec=new Orders();
+				rec.setId(orderId);
+				rec.setTotalPayFlag(TOTAL_PAY_FLAG_YES);
+				orderService.updateByPrimaryKeySelective(rec);
+			}
+		}
+		
 	}
 	
 	/** 

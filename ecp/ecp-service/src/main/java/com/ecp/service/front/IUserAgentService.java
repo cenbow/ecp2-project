@@ -1,6 +1,7 @@
 package com.ecp.service.front;
 
 import java.util.List;
+import java.util.Map;
 
 import com.ecp.entity.User;
 import com.ecp.entity.UserExtends;
@@ -52,6 +53,16 @@ public interface IUserAgentService extends IBaseService<UserExtends, Long> {
 	 * @return
 	 */
 	public List<UserExtends> searchUserAgent(int searchTypeValue,String condValue,String provinceName,String cityName,String countyName);
+	
+	/** 
+		* @Title: getUsersByAgentId 
+		* @Description: 根据代理商ID查询此代理商下的所有用户 
+		* @param @param agentId
+		* @param @return     
+		* @return List<Map<String,Object>>    返回类型 
+		* @throws 
+	*/
+	public List<Map<String,Object>> getUsersByAgentId(long agentId);
 	
 	
 	

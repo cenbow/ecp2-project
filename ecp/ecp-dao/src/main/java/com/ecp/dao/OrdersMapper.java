@@ -1,5 +1,6 @@
 package com.ecp.dao;
 
+import java.math.BigDecimal;
 import java.util.List;
 import java.util.Map;
 
@@ -20,6 +21,22 @@ public interface OrdersMapper extends Mapper<Orders> {
 	public List<Orders> selectOrderByOrderTimeAndDealState(@Param("buyerId") long buyerId,
 														   @Param("orderTimeCond") int orderTimeCond,
 														   @Param("dealStateCond") int dealStateCond);
+	
+	/** 
+		* @Title: selectOrderByCondAndSubUser 
+		* @Description: 根据登录帐号及其下的子帐号进行查询 
+		* @param @param buyerId
+		* @param @param subList
+		* @param @param orderTimeCond
+		* @param @param dealStateCond
+		* @param @return     
+		* @return List<Orders>    返回类型 
+		* @throws 
+	*/
+	public List<Orders> selectOrderByCondAndSubUser(@Param("buyerId") long buyerId,
+													@Param("subList") List<Long> subList,
+													@Param("orderTimeCond") int orderTimeCond,
+													@Param("dealStateCond") int dealStateCond);
 	/**
 	 * @Description 根据订单时间及订单处理状态查询（所有用户）
 	 * @param orderTimeCond 订单时间条件值
@@ -89,5 +106,26 @@ public interface OrdersMapper extends Mapper<Orders> {
 	 * @return
 	 */
 	public List<Map<String, Object>> selectOrdersMap(Map<String, Object> params);
+
+	public List<Map<String, Object>> selectOrderDue(@Param("orderTimeCond") int orderTimeCond, 
+				 @Param("dealStateCond") int dealStateCond, 
+				 @Param("searchTypeValue") int searchTypeValue,
+				 @Param("condValue")	String condValue, 
+			 @Param("provinceName") String provinceName, 
+			 @Param("cityName") 	String cityName, 
+			 @Param("countyName")	String countyName,
+			 @Param("agentIdList") List<Map<String, Object>> agentIdList,
+			 @Param("totalPayFlag")	int totalPayFlag
+			 );
+	
+	public BigDecimal getOrderAmount(@Param("orderTimeCond") int orderTimeCond, 
+			 @Param("dealStateCond") int dealStateCond, 
+			 @Param("searchTypeValue") int searchTypeValue,
+			 @Param("condValue")	String condValue, 
+		 @Param("provinceName") String provinceName, 
+		 @Param("cityName") 	String cityName, 
+		 @Param("countyName")	String countyName,
+		 @Param("agentIdList") List<Map<String, Object>> agentIdList,
+		 @Param("totalPayFlag")	int totalPayFlag);
 	
 }
