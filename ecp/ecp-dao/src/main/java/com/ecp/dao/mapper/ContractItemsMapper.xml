@@ -57,12 +57,12 @@
   <!-- 查询合同支付总金额 -->
   <select id="selectContractPayPriceTotal" resultType="java.math.BigDecimal">
 	SELECT
-		IFNULL(SUM(ci.pay_price_total),0)
+		IFNULL(SUM(ci.pay_price_total), 0)
 	FROM
 		contract_items ci
 	LEFT JOIN trade_orders o ON ci.order_id = o.order_id
 	LEFT JOIN user_extends ue ON o.extend_id = ue.extend_id
-	LEFT JOIN role r ON o.buyer_id = r.user_id
+	LEFT JOIN cust_lock_rel l ON ue.extend_id = l.cust_id
 	WHERE
 		o.contract_state = 6
 		<if test="order_no!=null and order_no!=''">
@@ -84,10 +84,10 @@
   			and ue.county=#{countyName} 
   		</if>
   		<if test="user_id!=null">
-  			and o.buyer_id=#{user_id} 
+  			and l.bind_user_id=#{user_id} 
   		</if>
   		<if test="role_id!=null">
-			and r.role_id=#{role_id}
+			and l.role_id=#{role_id}
 		</if>
   </select>
   
@@ -111,7 +111,7 @@
 	FROM
 		contract_items ci
 	LEFT JOIN trade_orders o ON ci.order_id = o.order_id
-	LEFT JOIN user_extends ue ON o.extend_id = e.extend_id
+	LEFT JOIN user_extends ue ON o.extend_id = ue.extend_id
 	WHERE
 		o.contract_state = 6 
 		<if test="agent_id_list!=null and agent_id_list.size()>0">

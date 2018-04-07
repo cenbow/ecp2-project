@@ -62,22 +62,16 @@
 									<td th:text="${progress.nickname}">用户昵称</td>
 									<td th:text="${progress.role_name}">用户角色</td>
 									<td th:text="${progress.year_name}+' - '+${progress.cycle_name}">周期名称</td>
-									<td th:text="'￥'+${progress.target_amount}+'万'">额度</td>
-									<td th:text="'￥'+${progress.total_price}+'万'">已完成</td>
+									<td th:text="'￥'+${progress.target_amount}">额度</td>
+									<td th:text="'￥'+${progress.total_price}">已完成</td>
 									<td>
 										<div class="progressbar" th:attr="data-target-amount=${progress.target_amount}, data-total-price=${progress.total_price}"><div class="progress-label">加载...</div></div>
 									</td>
 									<td>
-										<button type="button" class="btn btn-default btn-primary" th:attr="data-user-id=${progress.user_id}, data-role-id=${progress.role_id}, data-start-time=${progress.start_date}, data-end-time=${progress.end_date}">业绩列表</button>
+										<button type="button" class="btn btn-default btn-primary performance-btn" th:attr="data-user-id=${progress.user_id}, data-role-id=${progress.role_id}, data-start-time=${progress.start_date}, data-end-time=${progress.end_date}">业绩列表</button>
 										<button type="button" class="btn btn-default btn-primary pushmoney-btn" id="" th:attr="data-user-id=${progress.user_id}, data-role-id=${progress.role_id}, data-start-time=${progress.start_date}, data-end-time=${progress.end_date}, data-completion-rate=(${progress.total_price/progress.target_amount})*100">提成</button>
 									</td>
 								</tr>								
-								<tr>
-									<td>总计</td>
-									<td colspan="5"></td>
-									<td><strong>￥</strong><strong style="font-size:18px;color:red" id="sumAmount">总计</strong></td>
-									<td></td>
-								</tr>
 								</hr>					
 							</tbody>
 						</table>
@@ -109,11 +103,18 @@
 			/**
 			 * 进度条初始化
 			 */
-			$(".table .progressbar").each(function() {
+			$(".table .progressbar").each(function(index) {
 				var target_amount = $(this).attr("data-target-amount");
 				var total_price = $(this).attr("data-total-price");
 				if (target_amount != null && target_amount != '' && total_price != null && total_price != '') {
 					var progress = Number(total_price) / Number(target_amount) * 100;
+					progress = progress.toFixed(2);
+					$(".pushmoney-btn").each(function(index1){
+						if(index==index1){
+							$(this).attr("data-completion-rate", progress);
+						}
+					});
+					
 					/* if (progress >= 100) {
 						progress = 100;
 					} */
@@ -123,7 +124,8 @@
 					progressbar.progressbar({
 						value : false,
 						change : function() {
-							progressLabel.text(progressbar.progressbar("value") + "%");
+							//progressLabel.text(progressbar.progressbar("value") + "%");
+							progressLabel.text(progress + "%");
 						},
 						complete : function() {
 							//progressLabel.text("完成！");
@@ -169,9 +171,17 @@
 			var roleId = $(this).attr("data-role-id");
 			var startTime = $(this).attr("data-start-time");
 			var endTime = $(this).attr("data-end-time");
+			
 			var url = BASE_CONTEXT_PATH + "/back/performance/get-performance"; // 需要提交的 url
-			//var fullYear = getFullYear();
-			var params = {"userId":userId, "roleId":roleId, "startTime":startTime, "endTime":endTime};
+			//区域条件
+			/* var provinceName=$("#provinceName").val();
+			var cityName=$("#cityName").val();
+			var countyName=$("#countyName").val(); */
+			//用户/角色条件
+			/* var userId=$("#select-user").val();
+			var roleId=$("#select-role").val(); */
+			
+			var params = {"userId":userId,"roleId":roleId, "startTime":startTime, "endTime":endTime};
 			$("#edit-body-performance").load(url, params, function(){
 				$("#edit-tab-performance").removeClass("hide");
 				$('#tabs-14933 a[href="#panel-6026791"]').tab('show');

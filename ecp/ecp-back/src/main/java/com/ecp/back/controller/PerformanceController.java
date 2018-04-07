@@ -287,7 +287,7 @@ public class PerformanceController {
 	 * @return
 	 */
 	@RequestMapping(value = "/get-performance")
-	public String getPerformance(Model model, HttpServletRequest request, Long orderId, String fullYear, Long userId, Long roleId, String provinceName, String cityName, String countyName) {
+	public String getPerformance(Model model, HttpServletRequest request, Long orderId, String fullYear, Long userId, Long roleId, String provinceName, String cityName, String countyName, String startTime, String endTime) {
 
 		Subject subject = SecurityUtils.getSubject();
 		UserBean user = (UserBean)subject.getPrincipal();
@@ -311,14 +311,18 @@ public class PerformanceController {
 			}
 		}
 		
-		String startTime = null;
-		String endTime = null;
-		if(StringUtils.isNotBlank(fullYear)){
-			int currYear = Integer.parseInt(fullYear);
-			startTime = this.getCurrYearFirst(currYear);
-			System.out.println("====================== "+fullYear+"年第一天日期第一秒："+startTime);
-			endTime = this.getCurrYearLast(currYear);
-			System.out.println("====================== "+fullYear+"年最后一天最后一秒："+endTime);
+		if(StringUtils.isBlank(startTime) || StringUtils.isBlank(endTime)){
+			if(StringUtils.isNotBlank(fullYear)){
+				int currYear = Integer.parseInt(fullYear);
+				if(StringUtils.isBlank(startTime)){
+					startTime = this.getCurrYearFirst(currYear);
+					System.out.println("====================== "+fullYear+"年第一天日期第一秒："+startTime);
+				}
+				if(StringUtils.isBlank(endTime)){
+					endTime = this.getCurrYearLast(currYear);
+					System.out.println("====================== "+fullYear+"年最后一天最后一秒："+endTime);
+				}
+			}
 		}
 		
 		Map<String, Object> params = new HashMap<>();
@@ -452,7 +456,7 @@ public class PerformanceController {
 		
 		Iterator<Map<String, Object>> it = salesProgressList.iterator();
 		while (it.hasNext()) {
-			Map<String, Object> map = (Map<String, Object>) it.next();
+			Map<String, Object> map = it.next();
 			String user_id = map.get("user_id").toString();
 			String role_id = map.get("role_id").toString();
 			String startTime = map.get("start_date").toString();
@@ -512,17 +516,27 @@ public class PerformanceController {
 		List<Map<String, Object>> contractItemsList = contractItemsService.selectContractItems(params);
 		model.addAttribute("contractItemsList", contractItemsList);
 		
+		BigDecimal pushmoneyTotalPrice = new BigDecimal("0.00");//提成总金额
+		
 		List<Map<String, Object>> contractList = contractService.selectContract(params);
 		Iterator<Map<String, Object>> it = contractList.iterator();
 		while (it.hasNext()) {
-			Map<String, Object> map = (Map<String, Object>) it.next();
+			Map<String, Object> map = it.next();
 			String orderId = map.get("order_id").toString();
 			String orderNo = map.get("order_no").toString();
+			String contractNo = map.get("contract_no").toString();
 			if(StringUtils.isNotBlank(orderId) && StringUtils.isNotBlank(orderNo)){
-				this.setAllFee(map, orderId, orderNo, roleId, completionRate);
+				if(StringUtils.isNotBlank(contractNo)){
+					BigDecimal contractTotalAmount = contractItemsService.getContractAmountByNo(contractNo);
+					map.put("contract_total_amount", contractTotalAmount);
+				}
+				BigDecimal pushmoneyPrice = this.setAllFee(map, orderId, orderNo, roleId, completionRate);
+				pushmoneyTotalPrice = pushmoneyTotalPrice.add(pushmoneyPrice);
 			}
 			
 		}
+		
+		model.addAttribute("pushmoney_total_price", pushmoneyTotalPrice);
 		model.addAttribute("contractList", contractList);
 		
 		return RESPONSE_THYMELEAF_BACK + "pushmoney_table";
@@ -536,7 +550,7 @@ public class PerformanceController {
 	 * @param roleId
 	 * @param completionRate
 	 */
-	private void setAllFee(Map<String, Object> map, String orderId, String orderNo, Long roleId, BigDecimal completionRate){
+	private BigDecimal setAllFee(Map<String, Object> map, String orderId, String orderNo, Long roleId, BigDecimal completionRate){
 		BigDecimal communication_fee = new BigDecimal("0.00");//通讯费
 		BigDecimal entertainment_fee = new BigDecimal("0.00");//招待费
 		BigDecimal transportation_fee = new BigDecimal("0.00");//交通费
@@ -635,7 +649,7 @@ public class PerformanceController {
 		pushmoneyPrice = pushmoneyPrice.setScale(2);//提成金额保留两位小数
 		
 		map.put("pushmoney_price", pushmoneyPrice);
-		
+		return pushmoneyPrice;
 	}
 	
 	/*==============================================================公司业绩==============================================================*/

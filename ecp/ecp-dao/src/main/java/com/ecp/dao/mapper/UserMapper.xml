@@ -38,7 +38,7 @@
   	<!-- 查询OS和IS -->
 	<select id="getISAndOS" parameterType="map" resultType="map">
 		SELECT
-			u.*, r.role_code, r.role_name
+			u.*, r.role_id, r.role_code, r.role_name
 		FROM
 			`user` u
 		LEFT JOIN user_role ur ON u.id = ur.user_id

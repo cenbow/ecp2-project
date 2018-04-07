@@ -38,6 +38,7 @@
 								<th>公司名称</th>
 								<th>合同号</th>
 								<th>合同电话</th>
+								<th>合同总金额</th>
 								<th>市场费</th>
 								<th>通讯费</th>
 								<th>交通费</th>
@@ -51,12 +52,13 @@
 									<td th:text="${contract.company_name}">公司名称</td>
 									<td th:text="${contract.contract_no}">合同号</td>
 									<td th:text="${contract.contact_phone}">合同电话</td>
-									<td th:text="${contract.market_fee}">市场费</td>
-									<td th:text="${contract.communication_fee}">通讯费</td>
-									<td th:text="${contract.transportation_fee}">交通费</td>
-									<td th:text="${contract.entertainment_fee}">招待费</td>
-									<td th:text="${contract.travel_expense_fee}">差旅费</td>
-									<td th:text="${contract.pushmoney_price}">
+									<td th:text="'￥'+${contract.contract_total_amount}">合同总金额</td>
+									<td th:text="'￥'+${contract.market_fee}">市场费</td>
+									<td th:text="'￥'+${contract.communication_fee}">通讯费</td>
+									<td th:text="'￥'+${contract.transportation_fee}">交通费</td>
+									<td th:text="'￥'+${contract.entertainment_fee}">招待费</td>
+									<td th:text="'￥'+${contract.travel_expense_fee}">差旅费</td>
+									<td th:text="'￥'+${contract.pushmoney_price}">
 										
 										<!-- SKU信息 -->
 										<!-- <table class="table">
@@ -90,10 +92,12 @@
 									</td>
 								</tr>								
 								<tr>
-									<td>提成</td>
+									<td><b>提成总金额</b></td>
 									<td colspan="6">（毛利=（合同支付总金额-市场费用-合同中商品最低限价总额）* （1-17%）；提成基数=销售毛利-四项费用）</td>
-									<td><strong>￥</strong><strong style="font-size:18px;color:red" id="pushmoney-amount">提成</strong></td>
 									<td></td>
+									<td></td>
+									<td></td>
+									<td><strong>￥</strong><strong style="font-size:18px;color:red" id="pushmoney-amount" th:text="${pushmoney_total_price}">提成总金额</strong></td>
 								</tr>
 								</hr>					
 							</tbody>

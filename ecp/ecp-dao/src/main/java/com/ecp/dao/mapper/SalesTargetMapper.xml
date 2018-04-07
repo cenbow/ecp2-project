@@ -7,6 +7,7 @@
     -->
     <id column="id" property="id" jdbcType="BIGINT" />
     <result column="user_id" property="userId" jdbcType="BIGINT" />
+    <result column="role_id" property="roleId" jdbcType="BIGINT" />
     <result column="target_rate" property="targetRate" jdbcType="VARCHAR" />
     <result column="target_amount" property="targetAmount" jdbcType="DECIMAL" />
     <result column="check_cycle_id" property="checkCycleId" jdbcType="BIGINT" />
@@ -61,6 +62,6 @@
 			<if test="year_name!=null and year_name!=''">
 				and st.year_name = #{year_name}
 			</if>
-			
+			ORDER BY u.id,st.cal_type DESC
 	</select>
 </mapper>
