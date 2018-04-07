@@ -291,17 +291,14 @@ public class FourFeeController {
 		long roleId=parm.getLongValue("roleId");
 		
 		if(bindUserId==0 && roleId==0) {  //内部费用,只记公司帐薄
-			int row1 =keepAccountCompany(parms);  	//记公司帐薄
-			if (row1>0){
-				return RequestResultUtil.getResultAddSuccess();
-			}
-			else
-				return RequestResultUtil.getResultAddWarn();
+			long accountItemId =keepAccountCompany(parms);  	//记公司帐薄			
+			return RequestResultUtil.getResultAddSuccess();			
+			//return RequestResultUtil.getResultAddWarn();
 		}
 		else{
-			int row1 =keepAccountCompany(parms);  	//记公司帐薄
-			int row2=keepAccountPersonal(parms);	//记个人帐薄
-			if (row1>0 && row2>0){
+			long companyItemId =keepAccountCompany(parms);  	//记公司帐薄
+			int row2=keepAccountPersonal(parms,companyItemId);	//记个人帐薄
+			if (row2>0){
 				return RequestResultUtil.getResultAddSuccess();
 			}
 			else
@@ -314,10 +311,10 @@ public class FourFeeController {
 		* @Description: 记入公司帐薄 
 		* @param @param parms
 		* @param @return     
-		* @return int    返回类型 
+		* @return long    返回类型 
 		* @throws 
 	*/
-	private int keepAccountCompany(String parms){
+	private long keepAccountCompany(String parms){
 		final byte COMPANY_FEE_FLAG_TRUE=1;
 		final byte COMPANY_FEE_FLAG_FALSE=0;
 		//参数:long orderId,String orderNo,int itemType,BigDecimal amount,String comment,long bindUserId,long roleId
@@ -358,18 +355,19 @@ public class FourFeeController {
 		//记入公司帐薄
 		int row =accountCompanyService.addAccountItem(accountItem);
 		
-		return row;
+		return accountItem.getId();
 	}
 	
 	/** 
 		* @Title: keepAccountPersonal 
-		* @Description: 记入个人帐薄 
+		* @Description: 记入个人帐薄
 		* @param @param parms
+		* @param @param accountCompanyId 公司帐薄分录引用
 		* @param @return     
 		* @return int    返回类型 
 		* @throws 
 	*/
-	private int keepAccountPersonal(String parms){
+	private int keepAccountPersonal(String parms,long accountCompanyId){
 		//参数:long orderId,String orderNo,int itemType,BigDecimal amount,String comment,long bindUserId,long roleId
 		AccountPersonal accountItem =new AccountPersonal();
 		JSONObject parm=JSON.parseObject(parms);
@@ -378,6 +376,8 @@ public class FourFeeController {
 		accountItem.setType(parm.getIntValue("itemType"));
 		accountItem.setAmount(parm.getBigDecimal("amount"));
 		accountItem.setComment(parm.getString("comment"));
+		
+		accountItem.setAccountCompanyId(accountCompanyId);
 		
 		accountItem.setBindUserId(parm.getLongValue("bindUserId"));
 		accountItem.setRoleId(parm.getLongValue("roleId"));

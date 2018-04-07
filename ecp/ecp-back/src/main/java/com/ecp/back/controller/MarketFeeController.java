@@ -231,22 +231,43 @@ public class MarketFeeController {
 							 String comment,
 							 String bindUserList,
 							 Model model){
+		final byte COMPANY_FEE_FLAG_TRUE=1;  //内部费用
+		final byte COMPANY_FEE_FLAG_FALSE=0; //双计费用
 		
 		log.info("bindUserList:"+bindUserList);
 		
-		long companyItemId=keepAccountCompany( orderId, orderNo, itemType, amount, comment);  //记公司帐薄
-		
-		//解析参数:获取所要绑定的用户ID 数组.
-		JSONArray userArr=JSON.parseArray(bindUserList);
+		boolean selectedFlag=false;
+		//查询是否选择了用户
+		JSONArray userArr=JSON.parseArray(bindUserList); //解析参数:获取所要绑定的用户ID 数组.
 		for(int i=0;i<userArr.size();i++){
 			boolean selected=userArr.getJSONObject(i).getBooleanValue("selected");
 			if(selected){
-				long userId=userArr.getJSONObject(i).getLongValue("id");
-				long roleId=userArr.getJSONObject(i).getLongValue("role_id");
-				
-				int row=keepAccountPersonal( orderId, orderNo, itemType, amount, comment,userId,roleId,companyItemId);	//记个人帐薄
+				selectedFlag=true;
+				break;
 			}
 		}
+		
+		byte companyFeeFlag=COMPANY_FEE_FLAG_TRUE;
+		if(selectedFlag){
+			companyFeeFlag=COMPANY_FEE_FLAG_FALSE;
+		}
+		
+		//记公司帐薄
+		long companyItemId=keepAccountCompany( orderId, orderNo, itemType, amount, comment,companyFeeFlag);  
+		
+		
+		if(selectedFlag){  //如果选择了绑定用户,则计个人帐薄
+			for(int i=0;i<userArr.size();i++){
+				boolean selected=userArr.getJSONObject(i).getBooleanValue("selected");
+				if(selected){
+					long userId=userArr.getJSONObject(i).getLongValue("id");
+					long roleId=userArr.getJSONObject(i).getLongValue("role_id");
+					
+					int row=keepAccountPersonal( orderId, orderNo, itemType, amount, comment,userId,roleId,companyItemId);	//记个人帐薄
+				}
+			}
+		}
+		
 		
 		
 		return RequestResultUtil.getResultAddSuccess();
@@ -266,7 +287,7 @@ public class MarketFeeController {
 		* @return long    返回公司帐薄分录ID 
 		* @throws 
 	*/
-	private long keepAccountCompany(long orderId,String orderNo,int itemType,BigDecimal amount,String comment){
+	private long keepAccountCompany(long orderId,String orderNo,int itemType,BigDecimal amount,String comment,byte companyFeeFlag){
 		AccountCompany accountItem=new AccountCompany();
 		accountItem.setOrderId(orderId);
 		accountItem.setOrderNo(orderNo);
@@ -277,6 +298,8 @@ public class MarketFeeController {
 		
 		long agentId=searchAgentByOrder(orderId); //代理商ID
 		accountItem.setCustId(agentId);  
+		
+		accountItem.setCompanyFeeFlag(companyFeeFlag);
 		
 		//绑定用户/角色: 0/0
 		accountItem.setBindUserId((long)0);
