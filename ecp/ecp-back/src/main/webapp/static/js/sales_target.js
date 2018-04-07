@@ -95,7 +95,9 @@ function selectDetails(id){
 				var target =resp.salesTarget;
 				$("#sales-target-id").val(target.id);//ID
 				$("#sales-target-check-cycle-id").val(target.checkCycleId);//考核周期ID
-				$("#sales-target-user-id").val(target.userId);//IS/OS
+				$("#sales-target-is-os").val(target.userId+"-"+target.roleId);//IS/OS
+				$("#user-id").val(target.userId);
+				$("#role-id").val(target.roleId);
 				$("#sales-target-rate").val(target.targetRate);//指标比例
 				$("#sales-target-amount").val(target.targetAmount);//指标金额
 				
@@ -242,9 +244,23 @@ function resetFun(){
 	 .removeAttr("checked")  
 	 .removeAttr("selected");
 	$("#sales-target-check-cycle-id").val("");//考核周期
-	$("#sales-target-user-id").val("");//IS/OS
+	$("#sales-target-is-os").val("");//IS/OS
 	$("#edit-sales-target-li").addClass("hide");
 }
+/**
+ * 绑定用户角色change事件
+ */
+$("#sales-target-is-os").on("change", function(){
+	var userIdRoleId = $(this).val();
+	console.log("value:"+userIdRoleId);
+	if(userIdRoleId!=null && userIdRoleId!=""){
+		var arr = userIdRoleId.split("-");// 在每个减号(-)处进行分解
+		var userId = arr[0];
+		var roleId = arr[1];
+		$("#user-id").val(userId);
+		$("#role-id").val(roleId);
+	}
+});
 
 /*
  * 日期转字符串格式函数

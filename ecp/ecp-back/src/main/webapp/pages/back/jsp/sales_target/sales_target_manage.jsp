@@ -81,10 +81,12 @@
 															<div class="col-sm-10">
 																<!-- <input type="text" id="sales-target-user-id" name="userId"
 																	class="form-control" placeholder="IS/OS" /> -->
-																<select class="form-control" id="sales-target-user-id" name="userId">
+																<input type="hidden" id="user-id" name="userId" value="" />
+																<input type="hidden" id="role-id" name="roleId" value="" />
+																<select class="form-control" id="sales-target-is-os">
 																	<option value="">请选择IS/OS</option>
 																	<c:forEach items="${userList}" var="user">
-																		<option value="${user.id}">${user.role_name}&nbsp;-&nbsp;${user.nickname}</option>
+																		<option value="${user.id}-${user.role_id}">${user.role_name}&nbsp;-&nbsp;${user.nickname}</option>
 																	</c:forEach>
 																</select>
 															</div>

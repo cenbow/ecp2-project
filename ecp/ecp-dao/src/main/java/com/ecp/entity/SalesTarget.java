@@ -18,6 +18,12 @@ public class SalesTarget {
      */
     @Column(name = "user_id")
     private Long userId;
+    
+    /**
+     * 角色ID
+     */
+    @Column(name = "role_id")
+    private Long roleId;
 
     /**
      * 指标比例
@@ -103,7 +109,15 @@ public class SalesTarget {
         this.userId = userId;
     }
 
-    /**
+    public Long getRoleId() {
+		return roleId;
+	}
+
+	public void setRoleId(Long roleId) {
+		this.roleId = roleId;
+	}
+
+	/**
      * 获取指标比例
      *
      * @return target_rate - 指标比例
