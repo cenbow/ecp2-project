@@ -361,7 +361,7 @@
 						</td>
 						<td	th:text="${#calendars.format(order.order_time,'yyyy-MM-dd HH:mm:ss')}">订单时间</td>
 						<td th:text="'￥'+${order.total_price}">优惠前金额</td>
-						<td th:text="'￥'+${order.order_total_amount}">业绩金额</td>
+						<td th:text="'￥'+${order.contract_amount}">合同金额</td>
 						<td th:text="${order.name}">收货人</td>
 						<!-- 状态显示 -->
 						<td>

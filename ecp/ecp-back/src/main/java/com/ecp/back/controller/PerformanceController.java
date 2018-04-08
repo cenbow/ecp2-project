@@ -240,8 +240,9 @@ public class PerformanceController {
 		for(Map<String, Object> order : orderList){
 			String orderId = order.get("id").toString();
 			String totalPrice = order.get("total_price").toString();
-			String contractState = order.get("contract_state").toString();
-			if(StringUtils.isNotBlank(orderId)){
+			//String contractState = order.get("contract_state").toString();
+			String contractNo = order.get("contract_no").toString();
+			/*if(StringUtils.isNotBlank(orderId)){
 				if(StringUtils.isNotBlank(contractState) && Integer.parseInt(contractState)==ContractStateType.FINISHED){
 					Map<String, Object> params = new HashMap<>();
 					params.put("order_id", orderId);
@@ -260,6 +261,12 @@ public class PerformanceController {
 				}else{
 					order.put("order_total_amount", "0.00");
 				}
+			}*/
+			if(StringUtils.isNotBlank(contractNo)){
+				BigDecimal contractAmount = contractItemsService.getContractAmountByNo(contractNo);
+				order.put("contract_amount", contractAmount);
+			}else{
+				order.put("contract_amount", "0.00");
 			}
 			
 			if(StringUtils.isNotBlank(totalPrice)){

@@ -10,6 +10,7 @@ import java.util.Map;
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
 
+import org.apache.commons.lang3.StringUtils;
 import org.apache.log4j.Logger;
 import org.apache.shiro.SecurityUtils;
 import org.apache.shiro.subject.Subject;
@@ -20,6 +21,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.alibaba.fastjson.JSONArray;
+import com.ecp.back.commons.RoleCodeConstants;
 import com.ecp.bean.AccountItemType;
 import com.ecp.bean.ContractAttrValueBean;
 import com.ecp.bean.ContractOrderItemBean;
@@ -520,7 +522,7 @@ public class ContractController {
 	 */
 	@RequestMapping(value="/setstatus")
 	@ResponseBody
-	public Object contract_set_setatus(long orderId,long contractId,byte status, Model model,HttpServletRequest request){
+	public Object contract_set_setatus(HttpServletRequest request, Model model, long orderId,long contractId,byte status, String bindUserJSON){
 		//HttpSession session = request.getSession();
 		//User user = (User) session.getAttribute(SessionConstants.USER);
 		Subject subject = SecurityUtils.getSubject();
@@ -531,10 +533,56 @@ public class ContractController {
 		//如果设置合同状态为执行完毕，则记录账本（公司账本和个人账本）
 		if(Integer.valueOf(status)==ContractStateType.FINISHED){
 			this.addAccountCompany(orderId, contractId);//记录公司账本
-			this.addAccountPersonal(orderId, contractId);//记录个人账本
+			this.addAccountPersonal(orderId, contractId, bindUserJSON);//记录个人账本
 		}
 		
 		return RequestResultUtil.getResultUpdateSuccess();
+	}
+	
+	/**
+	 * 查询订单绑定用户
+	 * @param orderId
+	 * @return
+	 */
+	@RequestMapping(value="/getBindUserList")
+	public String getBindUserList(Model model, Long orderId, Long contractId){
+		//查询与此订单相关的OS/IS
+		long agentId=searchAgentByOrder(orderId);
+		List<String> roleCodeList=new ArrayList<>();
+		roleCodeList.add(RoleCodeConstants.OS);
+		roleCodeList.add(RoleCodeConstants.IS);
+		List<Map<String,Object>> bindUserList=agentBindService.getSalesByAgentIdAndRoleCodes(agentId, roleCodeList);
+		
+		//查询合同的记帐状态
+		Orders order=orderService.selectByPrimaryKey(orderId);
+		model.addAttribute("accountStatus", order.getAccountState());  //订单的记帐状态
+		
+		model.addAttribute("bindUserList", bindUserList);
+		model.addAttribute("orderId", orderId);
+		model.addAttribute("contractId", contractId);
+		
+		return RESPONSE_THYMELEAF_BACK_CONTRACT + "choose_account_user_dialog";
+	}
+	
+	/** 
+	* @Title: searchAgentByOrder 
+	* @Description: 根据订单查询下单代理商 
+	* @param @param orderId
+	* @param @return    设定文件 
+	* @return long      如果查询到代理商则返回代理商ID,否则返回0 
+	* @throws 
+	*/
+	private long searchAgentByOrder(long orderId){
+		//(1)先查询订单
+		Orders order=orderService.selectByPrimaryKey(orderId);
+		
+		//(3)根据主帐号可以查询所在的企业
+		UserExtends agent=userAgentService.getUserAgentByUserId(order.getBuyerId());
+		long agentId=0;
+		if(agent!=null)
+			agentId=agent.getExtendId();
+		
+		return agentId;
 	}
 	
 	/**
@@ -1040,14 +1088,30 @@ public class ContractController {
 	 * @param orderId
 	 * @param contractId
 	 */
-	private void addAccountPersonal(long orderId,long contractId){
+	private void addAccountPersonal(long orderId, long contractId, String bindUserJSON){
 		Orders order = orderService.selectByPrimaryKey(orderId);
 		Contract contract = contractService.selectByPrimaryKey(contractId);
 		
 		int type = 0;//类型
 		Date createTime = new Date();
 		
-		long custId = this.getCustId(order.getBuyerId());
+		List<Map> bindUserList = JSONArray.parseArray(bindUserJSON, Map.class);
+		for(Map temp : bindUserList){
+			String userId = temp.get("userId").toString();
+			String roleId = temp.get("roleId").toString();
+			if(StringUtils.isNotBlank(userId) && StringUtils.isNotBlank(roleId)){
+				//在账本中增加业绩
+				type = AccountItemType.PERFORMANCE_FEE;//业绩
+				AccountPersonal accountPersonal = this.getAccountPersonalEntity(order, contract, this.getAmount(contract.getContractNo(), type), type, Long.parseLong(userId), Long.parseLong(roleId), createTime);
+				accountPersonalService.insertSelective(accountPersonal);
+				//在账本中增加差价
+				type = AccountItemType.PRICE_DIFFERENCE_FEE;//差价
+				accountPersonal = this.getAccountPersonalEntity(order, contract, this.getAmount(contract.getContractNo(), type), type, Long.parseLong(userId), Long.parseLong(roleId), createTime);
+				accountPersonalService.insertSelective(accountPersonal);
+			}
+		}
+		
+		/*long custId = this.getCustId(order.getBuyerId());
 		
 		//查询绑定关系列表
 		CustLockRel custLockRel = new CustLockRel();
@@ -1064,7 +1128,7 @@ public class ContractController {
 			type = AccountItemType.PRICE_DIFFERENCE_FEE;//差价
 			accountPersonal = this.getAccountPersonalEntity(order, contract, this.getAmount(contract.getContractNo(), type), type, bindUserId, roleId, createTime);
 			accountPersonalService.insertSelective(accountPersonal);
-		}
+		}*/
 	}
 	/**
 	 * 查询代理商信息ID
