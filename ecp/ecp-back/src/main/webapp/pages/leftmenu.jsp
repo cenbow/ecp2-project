@@ -5,8 +5,8 @@
 
 <!--左侧导航开始-->
 <div class="leftSide">
-        <div class="navbar-header">
-            <a class="navbar-brand" tittle="菱美电子商务" href="javascript:location.reload();">
+        <div class="navbar-header1">
+            <a class="navbar-brand1" tittle="菱美电子商务" href="javascript:location.reload();">
             	<img alt="菱美LOGO" src="static/images/lm.jpg">
             	<span>电子商务平台</span>
             </a>

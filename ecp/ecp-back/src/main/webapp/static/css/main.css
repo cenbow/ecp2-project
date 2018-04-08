@@ -14,15 +14,15 @@ html, body {
   float: left;
   background-color: #1C2B36;
 }
-.leftSide .navbar-header {
+.leftSide .navbar-header1 {
   float: initial;
 }
-.leftSide .navbar-brand {
+.leftSide .navbar-brand1 {
   color: white;
   width: 100%;
   padding: 5px 8px;
 }
-.leftSide .navbar-brand > img {
+.leftSide .navbar-brand1 > img {
   display: inline-block;
   /* width: 60px; */
   height: 40px;
