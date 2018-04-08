@@ -71,9 +71,10 @@ body {
 	<%@ include file="common/headJs.jsp"%>
 	<script src="//cdn.bootcss.com/jQuery-slimScroll/1.3.6/jquery.slimscroll.min.js"></script>
 	<script type="text/javascript">
+		var leftHeight = 0;
 		//固定菜单栏
 		$(document).ready(function () {
-			var leftHeight = $(window).height();
+			leftHeight = $(window).height();
 			console.log("height:"+leftHeight);
 			$(".leftSide .panel-group").css("height", leftHeight-50);
 			/* $("#J_iframe").css("height", leftHeight-50);
@@ -111,7 +112,7 @@ body {
 			console.log("setScroll");
 			$(".leftSide .panel-group").slimScroll({
 				width: 'auto', //可滚动区域宽度
-		        height: '100%', //可滚动区域高度
+		        height: leftHeight-50, //可滚动区域高度
 		        size: '10px', //组件宽度
 		        color: '#000', //滚动条颜色
 		        position: 'right', //组件位置：left/right
