@@ -34,13 +34,33 @@ function reloadmarketFeeTable(){
 
 //-------------------前端数据操作------------------
 
+/**
+ * 返回绑定用户列表(自服务器返回的参数)
+ */
+function getBindUserList(){
+	return curr_bindUserList;
+}
+
+
+/**
+ * 设定绑定用户列表的状态
+ * @param status  true/false;
+ * @returns
+ */
+function setBindUserCheckStatus(status){
+	var bindUserList=getBindUserList();
+
+	for(i=0;i<bindUserList.length;i++){
+		bindUserList[i].selected=status;
+	}
+}
 
 //------------------业务操作----------------------
 /**
  * 保存市场费用条目:增加
  * @returns
  */
-function addmarketFeeItem(){
+function addMarketFeeItem(){
 	var urlStr = BASE_CONTEXT_PATH + "/back/marketfee/add"; // 需要提交的url
 	
 	/*var params=new Object();  //生成参数对象.
@@ -66,7 +86,8 @@ function addmarketFeeItem(){
 			'orderNo':orderNo,
 			'itemType':itemType,
 			'amount':amount,
-			'comment':comment
+			'comment':comment,
+			'bindUserList':JSON.stringify(curr_bindUserList)
 		},
 		success : function(res) { // data 保存提交后返回的数据，一般为 json 数据
 			//console.log(res);
@@ -119,26 +140,37 @@ $(function(){
 		//根据订单的记帐状态  全选/全不选 所绑定的用户.
 		if(curr_accountStatus==null  || curr_accountStatus==1){
 			$(".bind-user").prop("checked",true);
-			//置所有用户的选择状态			
+			//置所有用户的选择状态
+			setBindUserCheckStatus(true);
 		}
 		else{  //accountStatus==2;
 			$(".bind-user").prop("checked",false);
 			//置所有用户的选择状态
-			
+			setBindUserCheckStatus(false);
 		}
 	})
 	
 	//选定/取消选定用户
 	$(".bind-user").on("change",function(){
-		//console.log($(this).is(":checked"));
-		var bindUserRelId=$(this).attr("data-bind-id");
+		var checkState=$(this).is(":checked");
+		
+		var currRelId=$(this).attr("data-bind-id");
 		//console.log("bind user relid is:"+bindUserRelId);
+		
 		//置绑定用户的选定状态.
+		var bindUserList=getBindUserList();  //获取绑定用户列表.
+		for(i=0;i<bindUserList.length;i++){
+			if(bindUserList[i].rel_id==currRelId){
+				bindUserList[i].selected=checkState;
+				return;
+			}
+		}
+		
 	})
 	
 	//保存费用条目button:click event
 	$('#btn-save-market-fee').on('click',function(){		
-		addmarketFeeItem();
+		addMarketFeeItem();
 		//closeAddmarketFeeDialog();
 	})
 	
