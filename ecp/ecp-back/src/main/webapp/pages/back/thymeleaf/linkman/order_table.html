@@ -185,6 +185,61 @@
 		<div class="col-md-12 column">
 			<h5>订单列表</h5>
 			<br />
+			
+			<!-- 区域查询条件 -->
+			<div class="search-box" style="display:inline-block;margin-left:50px;">
+				<!-- 增加地区查询条件 -->
+				<label for="distpicker">区域:</label>
+				<div data-toggle="distpicker" id="distpicker" style="display:inline-block; vertical-align:middle;">
+					
+					<div class="col-md-4 column" style="padding-right:5px;">
+          					<select class="form-control" id="province" ><option  value="" data-code="">—— 省 ——</option></select>
+          					<!-- 省份编码、名称-隐藏字段 -->
+          					<input type="hidden"  id="provinceCode" name="provinceCode">
+          					<input type="hidden"  id="provinceName" name="province" th:value="${provinceName}">
+					</div>
+					<div class="col-md-4 column" style="padding:0px 0px 0px 0px;">
+          					<select class="form-control" id="city" ><option value="" data-code="">—— 市 ——</option></select>
+          					<!-- 市级编码、名称-隐藏字段 -->
+          					<input type="hidden" id="cityCode" name="cityCode">
+          					<input type="hidden" id="cityName" name="city" th:value="${cityName}">
+					</div>
+					<div class="col-md-4 column" style="padding-left:5px">
+				          <select class="form-control" id="district" ><option value="" data-code="">—— 区 ——</option></select>
+				          <!-- 县级编码、名称-隐藏字段 -->
+				          <input type="hidden"  id="countyCode" name="countyCode">
+				          <input type="hidden"  id="countyName" name="county" th:value="${countyName}">
+					</div>
+				</div>
+			</div>
+			
+			<!-- 在此列表登录用户的角色 -->
+			<div style="display:inline-block;  margin-left:150px;" >
+				<label for="select-user-role" >角色:</label>
+				<select id="select-user-role" >
+					<!-- 全部角色 -->
+					<option  th:attr="data-bind-roleid='0',data-bind-userid='0'" 
+									th:value ="0" 
+									th:text="'全部角色'">用户-角色</option>
+					<span th:if="${not #lists.isEmpty(userRoleList)}" th:remove="tag">
+						<span  th:each="user:${userRoleList}"  th:remove="tag">
+							<span th:switch="${user.role_code}" th:remove="tag">
+								<option th:case="'OS'" 
+									th:attr="data-bind-roleid=${user.role_id},data-bind-userid=${user.id}" 
+									th:value ="${user.id}" 
+									th:text="${user.username}+'(外部销售)' ">姓名</option>
+								<option th:case="'IS'" 
+									th:attr="data-bind-roleid=${user.role_id},data-bind-userid=${user.id}" 
+									th:value ="${user.id}" 
+									th:text="${user.username}+'(内部销售)' ">姓名</option>
+							</span>
+						</span>
+					</span>										
+				</select>				
+			</div>			
+			
+			<hr style="height:1px;border:none;border-top:1px solid lightgray;">
+			
 			<!-- 横向菜单 -->
 			<div class="row clearfix" style="display:inline-block">
 				<div class="col-md-12 column">
@@ -225,7 +280,7 @@
 				</div>
 			</div>
 			<a id="refresh-item"
-						th:href="@{/back/order/show}" title="刷新列表"	style="float: right; margin-right: 20px">
+						th:href="@{/back/linkman/show}" title="刷新列表"	style="float: right; margin-right: 20px">
 						<i class="icon-refresh icon-large"></i>
 			</a>
 			<hr style="height:1px;border:none;border-top:1px solid blue;">
@@ -277,6 +332,7 @@
 								</div>
 							</div>
 						</th>
+						<th>公司名称</th>
 						<th>操作</th>
 					</tr>
 				</thead>
@@ -314,6 +370,7 @@
 								<span th:case='6' th:remove="tag"><span class="order-status"> 执行完毕 </span> <br></span>										
 							</span>
 						</td>
+						<td th:text="${order.company_name}">公司名称</td>
 						<td>
 							<!-- <a type="button" th:href="@{/back/order/detail(id=${order.id})}" class="btn btn-primary show-detail" target="_blank">详情</a> -->
 							<a type="button" th:attr="data-id=${order.id},
@@ -341,10 +398,17 @@
 	<script th:inline="javascript">  
 		/*<![CDATA[*/
 			
-		var g_ordertime_cond = [[${orderTimeCond}]];  //回传的时间条件 
-		var g_dealstate_cond=[[${dealStateCond}]];    //回传的合同处理状态条件
-		var g_searchTypeValue = [[${searchTypeValue}]];  //查询类型值
-		var g_condValue=[[${condValue}]]; //查询条件值
+		var g_ordertime_cond = [[${orderTimeCond}]];  		//回传的时间条件 
+		var g_dealstate_cond=[[${dealStateCond}]];    		//回传的合同处理状态条件
+		var g_searchTypeValue = [[${searchTypeValue}]];  	//查询类型值
+		var g_condValue=[[${condValue}]]; 					//查询条件值
+		
+		var ret_provinceName=[[${provinceName}]];  		 	//回传的区域条件
+		var ret_cityName=[[${cityName}]];
+		var ret_countyName=[[${countyName}]];
+		
+		var ret_userId=[[${userId}]];					 	//回传的角色条件
+		var ret_roleId=[[${roleId}]];
 		
 		
 		/*]]>*/  
@@ -358,6 +422,10 @@
 		<input type="hidden" name="pageNum" id="pageNum" th:value="${pageInfo.pageNum}"> 
 		<input type="hidden" name="pageSize" id="pageSize" th:value="${pageInfo.pageSize}">
 	</form>
+	
+	<!-- 地区选择 -->
+	<script type="text/javascript" th:src="@{/static/js/distpicker/distpicker.data.js}"></script>
+	<script type="text/javascript" th:src="@{/static/js/distpicker/distpicker.js}"></script>
 		
 	<script type="text/javascript"	th:src="@{/static/js/linkman/linkmanManagement.js}"></script>
 

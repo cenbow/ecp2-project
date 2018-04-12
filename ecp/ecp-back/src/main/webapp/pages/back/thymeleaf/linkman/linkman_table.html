@@ -76,7 +76,7 @@
 								<td th:text="${linkman.mobile}">移动电话</td>
 								<td th:text="${linkman.qqwechat}">QQ/微信</td>																
 								<td>				
-									<a type="button" class="modi-linkman" th:attr="bind-id=${linkman.id}"><i class=" icon-edit icon-large" style="color:darkblue"></i></a>
+									<a type="button" class="modi-linkman" th:attr="bind-id=${linkman.id},bind-order-id=${linkman.orderId}"><i class=" icon-edit icon-large" style="color:darkblue"></i></a>
 									<a type="button" class="del-linkman" th:attr="bind-id=${linkman.id}"><i class=" icon-remove-circle icon-large" style="color:darkblue"></i></a>	
 								</td>
 							</tr>
@@ -85,7 +85,7 @@
 					</table>
 					
 					
-	<script type="text/javascript">
+	<!-- <script type="text/javascript">
 		$('.modi-linkman').on('click',function(){
 			console.log("modify linkman");
 		})
@@ -93,6 +93,6 @@
 		$('.del-linkman').on('click',function(){
 			console.log("delete linkman");
 		})
-	</script>
+	</script> -->
 </body>
 </html>
