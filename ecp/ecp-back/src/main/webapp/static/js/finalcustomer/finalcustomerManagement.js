@@ -13,8 +13,8 @@
  * @returns
  */
 function search(){
-	parms=new Object(); //生成参数对象
-	//分页数据
+	var parms=new Object(); //生成参数对象
+	//分数据
 	parms.pageNum=$("#pageNum").val();
 	parms.pageSize=$("#pageSize").val();
 	
@@ -32,6 +32,23 @@ function search(){
 	parms.searchTypeValue=condType;
 	parms.condValue=condStr;
 	
+	//区域条件
+	var provinceName=$("#provinceName").val();
+	var cityName=$("#cityName").val();
+	var countyName=$("#countyName").val();
+	
+	parms.provinceName=provinceName;
+	parms.cityName=cityName;
+	parms.countyName=countyName;
+	
+	//用户/角色条件
+	var option=$("#select-user-role option:selected");
+	var userId=option.attr("data-bind-userid");
+	var roleId=option.attr("data-bind-roleid");
+	
+	parms.userId=userId;
+	parms.roleId=roleId;
+	
 	loadOrder(parms,null); // 加载页面
 }
 
@@ -39,6 +56,46 @@ function search_normal() {
 	search();
 }
 
+//--------------------区域操作-----------------------
+/**
+ * 复位地区列表
+ * @returns
+ */
+function resetDistPickerDeep(){
+	 var distpicker = $('#distpicker');
+	 distpicker.distpicker('reset', true);
+}
+
+/**
+ * 同步更新地区(省,市,县)编码、名称
+ * @returns
+ */
+function syncUpdateHiddenAreaCode(){
+	
+	//省级名称及编码
+	//console.log("debug");
+	var code= $("#province").find("option:selected").attr("data-code");  //省级编码、名称
+	var name= $("#province").find("option:selected").val();
+	//console.log("name:"+name);
+	$("#provinceCode").val(code);
+	$("#provinceName").val(name);	
+	//console.log("debug end");
+	
+	
+	//市级名称及编码
+	code= $("#city").find("option:selected").attr("data-code");  //市级编码、名称
+	name= $("#city").find("option:selected").val();
+	$("#cityCode").val(code);
+	$("#cityName").val(name);
+	
+	
+	//区县级名称及编码
+	code= $("#district").find("option:selected").attr("data-code");  //县区级编码、名称
+	name= $("#district").find("option:selected").val();
+	console.log("countyName:"+name);
+	$("#countyCode").val(code);
+	$("#countyName").val(name);
+}
 
 //------------------------界面交互-----------------------
 
@@ -141,6 +198,42 @@ function updateUISearchCond(condType){
 	});
 }
 
+/**
+ * 根据回传的"区域"数据更新区域选择界面 
+ * @returns
+ */
+function updateUIArea(){
+	$("#province").val(ret_provinceName);
+	$("#province").trigger("change");
+	
+	$("#city").val(ret_cityName);
+	$("#city").trigger("change");
+	
+	$("#district").val(ret_countyName);
+}
+
+/**
+ * 根据回传的值:置用户角色下拉框当前选项
+ * @returns
+ */
+function updateUserRole(){
+	var userId=ret_userId;
+	var roleId=ret_roleId;
+	
+	if(userId==0){
+		$("#select-user-role option").eq(0).attr("selected",true);
+	}
+	else{
+		$("#select-user-role option").each(function(){
+			if(($(this).attr("data-bind-userid")==userId) && ($(this).attr("data-bind-roleid")==roleId)){
+				$(this).attr("selected",true);
+				return;
+			}
+			
+		});		
+	}	
+}
+
 //-------------------数据交互----------------------
 
 /**
@@ -177,15 +270,20 @@ function setSearchCond(selectedTxt,value){
 }
 
 
-function sendRequest(){
+/*function sendRequest(){
 	var dealStateCond=$("#dealstate-cond").val();
 	var orderTimeCond=$("#ordertime-cond").val(); 
 	loadOrder(orderTimeCond,dealStateCond);
-}
+}*/
 
 
 //-------------------page loaded ready------------------------
 $(function() {
+	
+	resetDistPickerDeep(); 
+	
+	updateUIArea();
+	updateUserRole();
 	
 	//-----------INITIALIZE-----------
 	updateUIDealState(g_dealstate_cond);
@@ -193,8 +291,7 @@ $(function() {
 	updateUISearchCond(g_searchTypeValue);
 	
 
-	//----------click event binding------------
-
+	//----------打开最终用户列表------------
 	/*
 	 * 【最终用户】按钮
 	 */
@@ -203,25 +300,27 @@ $(function() {
 		
 		var orderId = $(this).attr("data-id");  //订单id(PK)
 		var orderNo = $(this).attr("data-orderid");  //订单号
-		var contractState=$(this).attr("data-contractState"); //合同状态
+		//var contractState=$(this).attr("data-contractState"); //合同状态
 		
 		editFinalCustomer(url, orderId, orderNo);  //显示最终用户编辑界面.
 		
 	});
 	
-	
+	//---------------触发查询------------------
 	/* 搜索按钮 -click */
 	$(".start-search").on("click",function(){
 		var condType=$("#search-cond").val();
 		var condStr=$("#searchCond").val();
 		
-		if(condType==0 || $.isBlank(condStr)){
+		/*if(condType==0 || $.isBlank(condStr)){
 			return;
 		}
 		else{
 			search_normal();
 			
-		}
+		}*/
+		
+		search_normal();
 		
 	});
 	
@@ -232,6 +331,28 @@ $(function() {
 			
 		}
 	});
+	
+	//当选择角色时,自动查询
+	$("#select-user-role").on("change",function(){
+		console.log("debug: start search!");
+		$(".start-search").trigger("click");
+	});
+	
+	//--------------地区选择---------------
+	/*
+	 * 省份:change  当“省份”变化时，将code赋值给value; 
+	 */
+	$("#province").on("change",function(){syncUpdateHiddenAreaCode();});
+	
+	/*
+	 *当“市级”变化时，将ode赋值给value; 
+	 */
+	$("#city").on("change",function(){syncUpdateHiddenAreaCode();});
+	
+	/*
+	 *当“县级”变化时，将code赋值给value; 
+	 */
+	$("#district").on("change",function(){syncUpdateHiddenAreaCode();});
 	
 	//======================分页（页码导航）==============
 

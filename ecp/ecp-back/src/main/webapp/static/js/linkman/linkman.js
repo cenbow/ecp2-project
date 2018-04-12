@@ -5,9 +5,6 @@
  * @returns
  */
 function openAddLinkmanDialog() {
-	//modal-container-306690	
-	//console.log("debug!");
-	
 	$("#orderId").val(curr_orderId);  //置当前orderId
 	
 	$('#modal-container-306690').modal({
@@ -188,26 +185,10 @@ function saveDetailLinkmanItem(){
 //--------------------page loaded ready-----------------------
 $(function(){	
 	
-	//---------------click event process binding------------------------
-	/*$('.modi-linkman').on('click',
-		function(){
-			var url=BASE_CONTEXT_PATH + "/back/linkman/loaddetaildialog";
-			console.log("test");
-			var curr_linkmanId=$(this).attr("bind-id");
-			
-			var parm=new Object();
-			parm.linkmanId=curr_linkmanId;
-			
-			$("#edit-dialog").load(url,parm,openDetailLinkmanDialog);			
-		}
-	);
-	
-	$('.del-linkman').on('click',function(){
-		console.log("delete linkman");
-	});*/
-	
+	//-------------initialize------------
 	reloadLinkmanTable();
 	
+	//---------------click event process binding--------------
 	//增加联系人button: click event
 	$('#btn-add-linkman').on('click',
 		function(){

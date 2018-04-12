@@ -412,7 +412,7 @@ public class LinkmanController {
 	@ResponseBody
 	public Object deleteLinkman(long linkmanId, Model model){
 		
-		//增加联系人
+		//删除联系人
 		Linkman linkman =new Linkman();
 		linkman.setId(linkmanId);
 		linkman.setDeleted((byte)DeletedType.YES);

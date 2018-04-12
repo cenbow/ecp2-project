@@ -71,6 +71,10 @@
 			parms.pageNum = null;
 			parms.pageSize = null;
 			
+			//查询类型，查询条件值
+			parms.searchTypeValue=0;
+			parms.condValue="";
+			
 			//区域条件
 			parms.provinceName="";
 			parms.cityName="";
@@ -79,10 +83,6 @@
 			//角色条件
 			parms.userId=0;
 			parms.roleId=0;
-			
-			//查询类型，查询条件值
-			parms.searchTypeValue=0;
-			parms.condValue="";
 
 			loadOrder(parms,null);
 		}

@@ -1,0 +1,282 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>Insert title here</title>
+</head>
+<body>
+
+<th:block th:fragment="dialog">
+
+<div class="row clearfix">
+		<div class="col-md-12 column">
+				
+			<!--  <a id="modal-306690" href="#modal-container-306690" role="button" class="btn" data-toggle="modal" type="hidden"></a> -->
+				<div class="modal fade" id="modal-container-306690" role="dialog"
+					aria-labelledby="myModalLabel" aria-hidden="true">
+					<div class="modal-dialog">
+						<div class="modal-content">
+							<div class="modal-header">
+								<button type="button" class="close" data-dismiss="modal"
+									aria-hidden="true">×</button>
+								<h4 class="modal-title" id="myModalLabel">订单-最终用户详情</h4>
+							</div>
+							<div class="modal-body">
+								<form class="form-horizontal" role="form" id="finalcustomer-form">
+								
+								
+								<!-- 
+									CREATE TABLE `final_customer` (
+									  `id` bigint(20) NOT NULL AUTO_INCREMENT COMMENT '最终客户表自增ID',
+									  `name` varchar(50) DEFAULT NULL COMMENT '客户姓名',
+									  `phone` varchar(20) DEFAULT NULL COMMENT '客户电话',
+									  `country` varchar(30) DEFAULT NULL COMMENT '所在国家',
+									  `province` varchar(30) DEFAULT NULL COMMENT '所在省份',
+									  `province_code` varchar(20) DEFAULT NULL COMMENT '省份编码',
+									  `city` varchar(30) DEFAULT NULL COMMENT '所在城市',
+									  `city_code` varchar(20) DEFAULT NULL COMMENT '城市编码',
+									  `county` varchar(30) DEFAULT NULL COMMENT '所在区县',
+									  `county_code` varchar(20) DEFAULT NULL COMMENT '县(区)编码',
+									  `added_area` varchar(100) DEFAULT NULL COMMENT '补充区县',
+									  `payment_address` varchar(200) DEFAULT NULL COMMENT '付款地址',
+									  `delivery_address` varchar(200) DEFAULT NULL COMMENT '送货地址',
+									  `install_address` varchar(200) DEFAULT NULL COMMENT '装机地址',
+									  `linkman_name` varchar(50) DEFAULT NULL COMMENT '联系人',
+									  `linkman_phone` varchar(20) DEFAULT NULL COMMENT '联系电话',
+									  `order_id` bigint(20) DEFAULT NULL COMMENT '相关订单ID',
+									  `deleted` tinyint(2) DEFAULT '1' COMMENT '是否删除（1-未删除，2-删除，默认1）',
+									  `create_time` datetime DEFAULT NULL COMMENT '记录创建时间',
+									  PRIMARY KEY (`id`)
+									) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='最终客户表';
+									
+									 -->
+								
+									<div class="form-group">
+										<label for="name" class="col-sm-2 control-label">姓名</label>
+										<div class="col-sm-10">
+											<input type="text" class="form-control" id="name" name="name" th:value="${finalCustomer.name}"/>
+										</div>
+									</div>
+									
+									<div class="form-group">
+										<label for="phone" class="col-sm-2 control-label">电话</label>
+										<div class="col-sm-10">
+											<input type="text" class="form-control" id="phone" name="phone" th:value="${finalCustomer.phone}"/>
+										</div>
+									</div>
+									
+									<div class="form-group">
+										<label for="country" class="col-sm-2 control-label">国家</label>
+										<div class="col-sm-10">
+											<input type="text" class="form-control" id="country" name="country" th:value="${finalCustomer.country}"/>
+										</div>
+									</div>
+									
+									<div class="form-group">
+										<label for="distpicker-modi" class="col-sm-2 control-label">所在地区（*）</label>
+										<div class="col-sm-10">									
+											<!-- 地区选择 -->
+											<div data-toggle="distpicker" id="distpicker-modi">
+												<div class="row clearfix">
+													<div class="col-md-12 column">
+														<div class="row clearfix">
+															<div class="col-md-4 column" style="padding-right:5px;">
+										          					<select class="form-control" id="province" ><option value="" data-code="">—— 省 ——</option></select>
+										          					<!-- 省份编码、名称-隐藏字段 -->
+										          					<input type="hidden" th:value="${finalCustomer.provinceCode}" id="provinceCode" name="provinceCode">
+										          					<input type="hidden" th:value="${finalCustomer.province}" id="provinceName" name="province">
+															</div>
+															<div class="col-md-4 column" style="padding:0px 0px 0px 0px;">
+										          					<select class="form-control" id="city" ><option value="" data-code="">—— 市 ——</option></select>
+										          					<!-- 市级编码、名称-隐藏字段 -->
+										          					<input type="hidden" th:value="${finalCustomer.cityCode}" id="cityCode" name="cityCode">
+										          					<input type="hidden" th:value="${finalCustomer.city}" id="cityName" name="city">
+															</div>
+															<div class="col-md-4 column" style="padding-left:5px">
+														          <select class="form-control" id="district" ><option value="" data-code="">—— 区 ——</option></select>
+														          <!-- 县级编码、名称-隐藏字段 -->
+														          <input type="hidden" th:value="${finalCustomer.countyCode}" id="countyCode" name="countyCode">
+														          <input type="hidden" th:value="${finalCustomer.county}" id="countyName" name="county">
+															</div>
+														</div>
+													</div>
+												</div>
+												
+											</div>
+										</div>
+									</div>
+								
+									<div class="form-group" >
+										<label for="addedArea" class="col-sm-2 control-label">补充区县</label>
+										<div class="col-sm-10">
+											<input class="form-control" id="addedArea" name="addedArea" type="text" th:value="${finalCustomer.addedArea}"/>
+										</div>
+									</div>
+									
+									<div class="form-group">
+										<label for="paymentAddress" class="col-sm-2 control-label">付款地址</label>
+										<div class="col-sm-10">
+											<input type="text" class="form-control" id="paymentAddress" name="paymentAddress" th:value="${finalCustomer.paymentAddress}"/>
+										</div>
+									</div>
+									
+									<div class="form-group">
+										<label for="deliveryAddress" class="col-sm-2 control-label">送货地址</label>
+										<div class="col-sm-10">
+											<input type="text" class="form-control" id="deliveryAddress" name="deliveryAddress" th:value="${finalCustomer.deliveryAddress}"/>
+										</div>
+									</div>
+									
+									<div class="form-group">
+										<label for="installAddress" class="col-sm-2 control-label">装机地址</label>
+										<div class="col-sm-10">
+											<input type="text" class="form-control" id="installAddress" name="installAddress" th:value="${finalCustomer.installAddress}"/>
+										</div>
+									</div>
+									
+									<!--
+									`linkman_name` varchar(50) DEFAULT NULL COMMENT '联系人',
+  									`linkman_phone` varchar(20) DEFAULT NULL COMMENT '联系电话', 
+									 -->
+									<div class="form-group">
+										<label for="linkmanName" class="col-sm-2 control-label">联系人</label>
+										<div class="col-sm-10">
+											<input type="text" class="form-control" id="linkmanName" name="linkmanName" th:value="${finalCustomer.linkmanName}"/>
+										</div>
+									</div>
+									
+									<div class="form-group">
+										<label for="linkmanPhone" class="col-sm-2 control-label">联系电话</label> 
+										<div class="col-sm-10">
+											<input type="text" class="form-control" id="linkmanPhone" name="linkmanPhone" th:value="${finalCustomer.linkmanPhone}"/>
+										</div>
+									</div>
+									
+									<!-- 保存订单Id -->
+									<div class="form-group">										
+										<div class="col-sm-10">
+											<input type="hidden" class="form-control" id="orderId" name="orderId" th:value="${finalCustomer.orderId}" />
+											<input type="hidden" class="form-control" id="id" name="id" th:value="${finalCustomer.id}"/>											
+										</div>
+									</div>
+
+								</form>
+							</div>
+							<div class="modal-footer">
+								<button type="button" class="btn btn-default"
+									data-dismiss="modal">关闭</button>
+								<button type="button" class="btn btn-primary"
+									id="btn-save-finalcustomer">保存</button>
+							</div>
+						</div>
+
+					</div>
+
+				</div>
+
+			</div>
+	</div>
+	
+	</th:block>
+	<script th:inline="javascript">
+	/*<![CDATA[*/  
+	  	                        
+	    var curr_finalCustomer = [[${finalCustomer}]];  
+	    console.log(curr_finalCustomer);  
+	  
+	/*]]>*/  
+	</script>
+	
+	<script type="text/javascript">
+	//---------------------------区域操作-----------------------------
+	/**
+	 * 复位地区列表
+	 * @returns
+	 */
+	function resetDistPickerDeep(){
+		 var $distpicker = $('#distpicker-modi');
+		 $distpicker.distpicker('reset', true);
+	}
+
+	/**
+	 * 同步更新地区编码、名称
+	 * @returns
+	 */
+	function syncUpdateHiddenAreaCode(){
+		console.log("debug");
+		var code= $("#distpicker-modi #province").find("option:selected").attr("data-code");  //省级编码、名称
+		var name= $("#distpicker-modi #province").find("option:selected").val();
+		console.log("name:"+name);
+		$("#distpicker-modi #provinceCode").val(code);
+		$("#distpicker-modi #provinceName").val(name);
+		
+		console.log("debug end");
+		
+		
+		code= $("#distpicker-modi #city").find("option:selected").attr("data-code");  //市级编码、名称
+		name= $("#distpicker-modi #city").find("option:selected").val();
+		$("#distpicker-modi #cityCode").val(code);
+		$("#distpicker-modi #cityName").val(name);
+		
+		
+		
+		code= $("#distpicker-modi #district").find("option:selected").attr("data-code");  //县区级编码、名称
+		name= $("#distpicker-modi #district").find("option:selected").val();
+		$("#distpicker-modi #countyCode").val(code);
+		$("#distpicker-modi #countyName").val(name);
+		
+		
+	}
+	
+	/*
+		根据回传的"区域"数据更新区域选择界面
+	*/
+	function updateUIArea(finalCustomer) {
+		//set distpicker
+		$("#distpicker-modi #province").val(finalCustomer.province);
+		$("#distpicker-modi #province").trigger("change");
+		$("#distpicker-modi #city").val(finalCustomer.city);
+		$("#distpicker-modi #city").trigger("change");
+		$("#distpicker-modi #district").val(finalCustomer.county);
+	}
+	
+	
+	$(function(){
+		//syncUpdateHiddenAreaCode();  //初始化三级地址编码及三级地址名称字段(hidden类型)
+		//updateUIArea();
+		
+		resetDistPickerDeep();
+		updateUIArea(curr_finalCustomer);
+		
+		//==================地区选择====================
+		/*
+		 *当“省份”变化时，将code赋值给value; 
+		 */
+		$("#distpicker-modi #province").on("change",function(){
+			syncUpdateHiddenAreaCode();
+		});
+		
+		/*
+		 *当“市级”变化时，将ode赋值给value; 
+		 */
+		$("#distpicker-modi #city").on("change",function(){
+			syncUpdateHiddenAreaCode();
+		});
+		
+		/*
+		 *当“县级”变化时，将code赋值给value; 
+		 */
+		$("#distpicker-modi #district").on("change",function(){
+			syncUpdateHiddenAreaCode();
+		});
+		
+	})
+	
+	
+	</script>
+	
+	
+	
+	
+</body>
+</html>

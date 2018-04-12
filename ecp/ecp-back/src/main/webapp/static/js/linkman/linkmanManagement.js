@@ -29,6 +29,9 @@ function search(){
 	var condType=$("#search-cond").val();
 	var condStr=$("#searchCond").val();
 	
+	parms.searchTypeValue=condType;
+	parms.condValue=condStr;
+	
 	//区域条件
 	var provinceName=$("#provinceName").val();
 	var cityName=$("#cityName").val();
@@ -46,8 +49,7 @@ function search(){
 	parms.userId=userId;
 	parms.roleId=roleId;
 	
-	parms.searchTypeValue=condType;
-	parms.condValue=condStr;
+	
 	
 	loadOrder(parms,null); // 加载页面
 }
