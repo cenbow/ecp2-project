@@ -171,6 +171,8 @@
 	.state-txt{
 		cursor:pointer;
 	}
+	.myTable { border-top:2px solid #000000; border-left:2px solid #000000; border-bottom:2px solid #000000;  border-right:2px solid #000000; padding:3px;}
+	.myTable td { border-top:0px solid #000000; border-left:1px solid #000000; border-bottom:0px solid #000000;  border-right:1px solid #000000; padding:3px;}  
 	
 	
 </style>
@@ -286,9 +288,8 @@
 			</a>
 			<hr style="height:1px;border:none;border-top:1px solid blue;">
 			
-			
 			<!-- 订单列表 -->			
-			<table class="table">
+			<table class="table myTable" >
 				<thead>
 					<tr>
 						<th>订单号</th>
@@ -390,7 +391,7 @@
 
 				</tbody>
 			</table>
-			<hr style="height:1px;border:none;border-top:1px solid blue;">
+			<!-- <hr style="height:1px;border:none;border-top:1px solid blue;"> -->
 			<!-- 加入 分页 -->
 			<div th:include="/back/thymeleaf/common/_pager::pager" class="pagerx" style="float: right; margin-right: 100px;"></div>
 
