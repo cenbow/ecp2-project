@@ -54,6 +54,15 @@
     <result column="is_headquarters" jdbcType="TINYINT" property="isHeadquarters" />
     <result column="company_website" jdbcType="VARCHAR" property="companyWebsite" />
     <result column="customer_intro" jdbcType="VARCHAR" property="customerIntro" />
+    <result column="audit_status" jdbcType="TINYINT" property="auditStatus" />
+    <result column="audit_comment" jdbcType="VARCHAR" property="auditComment" />
+    <result column="audit_date" jdbcType="TIMESTAMP" property="auditDate" />
+  </resultMap>
+  <resultMap extends="BaseResultMap" id="ResultMapWithBLOBs" type="com.ecp.entity.UserExtends">
+    <!--
+      WARNING - @mbggenerated
+    -->
+    <result column="audit_user" jdbcType="LONGVARBINARY" property="auditUser" />
   </resultMap>
   <sql id="Base_Column_List">
     <!--
@@ -67,6 +76,12 @@
     office_address, office_postcode, office_tel, office_email, register_name, register_fund, 
     register_address, register_postcode, register_date, customer_size, customer_number, 
     economic_type, investment_ways, company_number, is_listing, is_transnational, is_bloc, 
-    is_headquarters, company_website, customer_intro
+    is_headquarters, company_website, customer_intro, audit_status, audit_comment, audit_date
+  </sql>
+  <sql id="Blob_Column_List">
+    <!--
+      WARNING - @mbggenerated
+    -->
+    audit_user
   </sql>
 </mapper>
