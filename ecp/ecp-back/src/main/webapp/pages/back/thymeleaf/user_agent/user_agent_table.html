@@ -58,6 +58,9 @@ tr:hover {
 </head>
 <body>
 	<div class="container-fluid" style="margin-top: 20px;">
+	
+		<!-- 审核对话框 -->
+		<div id="div-audit-dialog" th:include="/back/thymeleaf/user_agent/audit_agent_dialog"></div>
 
 		<!-- 签约客户列表 -->
 		<div class="row clearfix">
@@ -190,6 +193,9 @@ tr:hover {
 							<th>帐号</th>
 							<th>状态</th>
 							<th>有效性</th>
+							<th>审核状态</th>
+							<th>审核结果</th>
+							<th>审核</th>
 							<th>操作</th>
 						</tr>
 					</thead>
@@ -215,6 +221,31 @@ tr:hover {
 									th:attr="data-bind=${agent.extendId},data-account-state=${agent.accountState}"
 									class="btn btn-warning btn-sm set-invalid" title="设置此帐号无效">无效</button>
 							</td>
+							
+							<!-- 审核相关 -->
+							<td>
+								<span th:switch="${agent.auditStatus}" th:remove="tag">
+									<span th:case="1" style="color: blue;">待审核</span>
+									<span th:case="2" style="color: red;">未通过</span>
+									<span th:case="3" style="color: green;">己通过</span>
+								</span>
+							</td>
+							
+							<td th:text="${agent.auditComment}">审核意见</td>
+							
+							<td>
+								<button type="button" th:attr="data-bind-id=${agent.extendId},
+														  data-bind-auditstatus=${agent.auditStatus},
+														  data-bind-companyname=${agent.companyName}, 
+														  onclick='javascript:auditAgent(this);'"	
+														  class="btn btn-primary btn-sm audit-agent" title="审核"> 
+									<!-- <i class="icon-edit icon-large"></i> -->
+									<span><i class="icon-edit icon-large" style="color:white"></i>审核</span>  
+								</button>
+							
+							</td>
+							
+							
 							<td>
 								<!-- <a type="button"
 							th:href="@{/back/agent/detail/{id}(id=${agent.extendId})}"

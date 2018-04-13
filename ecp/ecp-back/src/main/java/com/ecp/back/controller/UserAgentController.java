@@ -576,6 +576,20 @@ public class UserAgentController {
 		return RequestResultUtil.getResultUpdateSuccess(); 
 	}
 	
+	@RequestMapping(value="/audit" ,method=RequestMethod.POST)
+	@ResponseBody
+	public Object auditAgent(long agentId,byte auditStatus,String auditComment,  HttpServletRequest request){
+		UserExtends agent=new UserExtends();
+		agent.setExtendId(agentId);
+		agent.setAuditStatus(auditStatus);
+		agent.setAuditComment(auditComment);
+		agent.setUserId(getLoginUserId());
+		
+		userAgentService.updateByPrimaryKeySelective(agent);
+						
+		return RequestResultUtil.getResultUpdateSuccess(); 
+	}
+	
 	/** 
 		* @Title: setUserState 
 		* @Description: 设置用户的状态 
