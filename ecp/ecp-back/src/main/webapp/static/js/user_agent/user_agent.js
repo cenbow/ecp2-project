@@ -93,7 +93,7 @@ function setSearchParams(parms){
 
 // ===================设置代理商:状态====================
 function setAgentState(agentId,  state) {
-	var url = BASE_CONTEXT_PATH+"/back/myagent/setstate"; // 需要提交的 url
+	var url = BASE_CONTEXT_PATH+"/back/agent/setstate"; // 需要提交的 url
 	$.ajax({
 		type : "post", // 提交方式 get/post
 		url : url, // 需要提交的 url
@@ -292,7 +292,7 @@ $(function() {
 				
 				
 				//加载代理商用户列表.
-				var url = BASE_CONTEXT_PATH + "/back/myagent/showusertable?agentId="+agentId;
+				var url = BASE_CONTEXT_PATH + "/back/agent/showusertable?agentId="+agentId;
 				$("#edit-body").load(url, function(){
 					//在新的选项卡中显示代理商用户列表.
 					$("#edit-tab").removeClass("hide");

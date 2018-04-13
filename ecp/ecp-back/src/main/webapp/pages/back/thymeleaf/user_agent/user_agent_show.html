@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<div th:include="/back/thymeleaf/common/_head2::headx('签约客户维护')"
+	th:remove="tag"></div>
+<!-- local style -->
+<style>
+	a:hover {
+		text-decoration: none;
+	}
+	
+	i {
+		color: darkblue;
+	}
+	
+	.container a:hover {
+		color:blue;
+	}
+</style>
+
+</head>
+<body>
+	<!-- header -->
+	<!-- <div th:replace="thymeleaf/common/_header::header" class="header"></div> -->
+	<!-- content -->
+	<div class="container-fluid" style="margin-top: 20px;">
+	<div class="row clearfix">
+		<div class="col-md-12 column">
+			<div class="tabbable" id="tabs-14933">
+				<ul class="nav nav-tabs">
+					<li class="active" onclick="javascript:resetTab();">
+						 <a href="#panel-150383" data-toggle="tab">列表</a>
+					</li>
+					<li id="edit-tab" class="hide">
+						 <a href="#panel-602679" data-toggle="tab" id="edit-tab-title">编辑</a>
+						 <!-- 用于传递公司名称 -->
+						 <input type="hidden" id="companyName">
+					</li>
+				</ul>
+				<div class="tab-content">
+					<div class="tab-pane active" id="panel-150383">
+						<div class="container-fluid" style="margin-top: 20px;">
+							<div class="row clearfix">
+								<div class="col-md-12 column">
+									<div class="panel panel-default">
+										<div class="panel-heading">
+											<h3 class="panel-title">
+												签约客户列表
+											</h3>
+										</div>
+										<div class="panel-body" id="agent-item">
+											Panel content
+										</div>
+									</div>
+								</div>
+							</div>
+						</div>
+					</div>
+					<div class="tab-pane" id="panel-602679">
+						<div id="edit-body"></div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>
+	
+	<!-- footer -->
+	<!-- <div th:replace="/thymeleaf/common/_footer::footer" class="footer"></div> -->	
+
+	<script type="text/javascript">
+	
+		/*加载签约代理商列表*/
+		function loadUserAgent(parms,callback) {
+			var url ="/back/agent/agenttable";
+			var callbackFunc = callback;
+			var containerId = "#agent-item";
+			
+			loadPage(containerId, url, parms, callbackFunc);
+		}
+		
+		/*加载代理商列表:采用默认值*/
+		function defaultLoadUserAgent(){
+			var parms = new Object();
+			//分页数据
+			parms.pageNum=$("#pageNum").val();
+			parms.pageSize=$("#pageSize").val();
+			//查询类型，查询条件值
+			parms.searchTypeValue=0;
+			parms.condValue="";
+			
+			//区域条件
+			parms.provinceName="";
+			parms.cityName="";
+			parms.countyName="";
+			
+			//角色条件
+			parms.userId=0;
+			parms.roleId=0;
+			
+			//审核状态
+			parms.auditStatus=0;
+			
+			loadUserAgent(parms,null);
+		}
+		
+		$(function() {
+			defaultLoadUserAgent();
+		})
+	</script>
+
+
+</body>
+</html>

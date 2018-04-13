@@ -1,6 +1,7 @@
 package com.ecp.back.controller;
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
@@ -10,6 +11,8 @@ import javax.servlet.http.HttpServletRequest;
 import org.apache.commons.codec.digest.DigestUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.log4j.Logger;
+import org.apache.shiro.SecurityUtils;
+import org.apache.shiro.subject.Subject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -18,29 +21,36 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 
+import com.ecp.back.commons.RoleCodeConstants;
 import com.ecp.bean.AccountStatusType;
 import com.ecp.bean.DeletedType;
+import com.ecp.bean.UserBean;
 import com.ecp.bean.UserType;
 import com.ecp.common.util.FileUploadUtil;
 import com.ecp.common.util.RequestResultUtil;
+import com.ecp.entity.Role;
 import com.ecp.entity.User;
 import com.ecp.entity.UserExtends;
+import com.ecp.service.back.IRoleService;
 import com.ecp.service.back.IUserService;
+import com.ecp.service.front.IAgentBindService;
 import com.ecp.service.front.IAgentService;
 import com.ecp.service.front.IUserAgentService;
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
 
 /**
- * @ClassName UserAgentController
- * @Description 签约客户维护控制器
- * @author Administrator
- * @Date 2017年6月17日 上午11:37:13
- * @version 1.0.0
- */
-
+	* Copyright (c) 2017 by Hz
+	* @ClassName:     UserAgentController.java
+	* @Description:   签约客户维护控制器:admin端
+	* 
+	* @author:        lenovo
+	* @version:       V1.0  
+	* @Date:          2018年4月14日 上午12:56:10 
+*/
+@Controller
 @RequestMapping("/back/agent")
-public class UserAgentController_old {
+public class UserAgentController {
 	final String RESPONSE_THYMELEAF_BACK = "back/thymeleaf/user_agent/";
 	final String RESPONSE_JSP = "jsps/front/";
 	
@@ -51,14 +61,18 @@ public class UserAgentController_old {
 	private final Logger log = Logger.getLogger(getClass());
 
 	@Autowired
-	IUserAgentService userAgentService;
+	IUserAgentService userAgentService;  //代理商
 	@Autowired
-	IUserService userService;
+	IUserService userService;  //用户
 	@Autowired
-	IAgentService agentService; 
+	IAgentService agentService; //用户(代理商下所分配的帐号):
+	@Autowired
+	IAgentBindService agentBindService;  //客户绑定服务
+	@Autowired
+	IRoleService roleService;  //角色服务
 
 	/**
-	 * @Description 显示-签约客户列表
+	 * @Description 显示-签约客户外围框架
 	 * @param model
 	 * @return
 	 */
@@ -76,7 +90,17 @@ public class UserAgentController_old {
 	 * @return 
 	 */
 	@RequestMapping(value = "/agenttable")
-	public String user_agent_agenttable(Integer pageNum, Integer pageSize,Integer searchTypeValue,String condValue,Model model) {
+	public String user_agent_agenttable(Integer pageNum, 
+										Integer pageSize,
+										Integer searchTypeValue,
+										String condValue,
+										String provinceName,
+										String cityName,
+										String countyName,
+										long userId,
+										long roleId,
+										byte auditStatus,
+										Model model) {
 		if(pageNum==null || pageNum==0)
 		{
 			pageNum=1;
@@ -88,21 +112,209 @@ public class UserAgentController_old {
 			condValue="";
 		}
 		
+		List<Map<String,Object>> agentIdList=getSearchScope(userId,roleId);  //确认登录用户所查询的代理商范围
+		
 		// 查询 并分页		
 		PageHelper.startPage(pageNum, pageSize); // PageHelper
-			
-		//TODO 根据查询类型、条件值进行查询
+		//根据查询类型、条件值进行查询
 		//List<UserExtends> userAgents = userAgentService.getAllUserAgent();
-		List<UserExtends> userAgents = userAgentService.searchUserAgent(searchTypeValue, "%"+condValue+"%");
+		//List<UserExtends> userAgents = userAgentService.searchUserAgent(searchTypeValue, "%"+condValue+"%");
+		List<UserExtends> userAgents = userAgentService.searchUserAgent(searchTypeValue, 
+																		condValue,
+																		provinceName,
+																		cityName,
+																		countyName,
+																		agentIdList,
+																		auditStatus);
+		
 		PageInfo<UserExtends> pageInfo = new PageInfo<>(userAgents);// (使用了拦截器或是AOP进行查询的再次处理)
+		
+		
+		List<Map<String,Object>> userRoleList=getUserRoles();		//查询用户角色列表
+		model.addAttribute("userRoleList", userRoleList);  
+		
 		
 		model.addAttribute("pageInfo", pageInfo);  					//分页信息
 		model.addAttribute("searchTypeValue", searchTypeValue);  	//查询字段值
 		model.addAttribute("condValue", condValue);  				//查询条件值
 		model.addAttribute("userAgents", userAgents);				//代理商列表
+		
+		//回传区域条件
+		model.addAttribute("provinceName", provinceName);
+		model.addAttribute("cityName", cityName);
+		model.addAttribute("countyName", countyName);
+		
+		//用户/角色条件
+		model.addAttribute("userId", userId);
+		model.addAttribute("roleId", roleId);
+		
+		//审核条件
+		model.addAttribute("auditStatus",auditStatus);
+		
+		
 
 		return RESPONSE_THYMELEAF_BACK + "user_agent_table";
 	}
+	
+	
+	/** 
+	* @Title: getSearchScope 
+	* @Description: 获取指定用户的查询范围 
+	* @param @param userId
+	* @param @param roleId
+	* @param @return  如果返回null,则为查询所有   
+	* @return List<Map<String,Object>>    返回类型 
+	* @throws 
+	*/
+	private List<Map<String,Object>> getSearchScope(long userId,long roleId){
+		//确定用户的查询范围(代理商范围)
+		List<Map<String,Object>> agentIdList=null;
+		if(userId!=0 && roleId!=0)  //选择了某个用户
+			agentIdList=agentBindService.getAgentIdListByBindedUser(userId,roleId);
+		else{
+			//(1)根据登录用户的角色判定是否查询所有.如果是ADMIN/经理,则查询所有
+			boolean searchAll=needSearchAll();
+			if(!searchAll){  //非admin用户
+				long loginUserId=getLoginUserId();
+				agentIdList=agentBindService.getAgentIdListByBindedUser(loginUserId);
+			}			
+		}
+		return agentIdList;
+	}
+	
+	/** 
+	* @Title: getLoginUserId 
+	* @Description: 获取登录用户的ID 
+	* @param @return     
+	* @return long    返回类型 
+	* @throws 
+	*/
+	private long getLoginUserId(){
+		//取得当前用户角色列表
+		Subject subject = SecurityUtils.getSubject();
+		UserBean user = (UserBean)subject.getPrincipal();
+		return user.getId();
+	}
+
+
+	/** 
+	* @Title: needSearchAll 
+	* @Description: 根据登录用户的角色:是否可查询所有代理商订单
+	* @param @return
+	* 				如果是经理级别,则可查询所有;
+	* 				如果OS/IS则只可查询与自己所绑定代理商范围内的     
+	* @return boolean    返回类型 
+	* @throws 
+	*/
+	private boolean needSearchAll(){
+	//取得当前用户角色列表
+	Subject subject = SecurityUtils.getSubject();
+	UserBean user = (UserBean)subject.getPrincipal();
+	List<Role> roleList=user.getRoleList();
+	
+	//查询是否为经理级别
+	for(int i=0;i<roleList.size();i++){
+		Role role=roleList.get(i);
+		if(role.getRoleCode()==null || role.getRoleCode().equals("")){
+			continue;
+		}
+		switch(role.getRoleCode()){
+		case RoleCodeConstants.ADMIN:
+		case RoleCodeConstants.MANAGER:
+		case RoleCodeConstants.BUSSMAN:
+		case RoleCodeConstants.SALEMAN:				
+			return true;
+		default:
+			break;				
+		}
+	}
+	
+	//查询是否为OS/IS级别
+	//查询是否为经理级别
+	for(int i=0;i<roleList.size();i++){
+		Role role=roleList.get(i);
+		if(role.getRoleCode()==null || role.getRoleCode().equals("")){
+			continue;
+		}
+		
+		switch(role.getRoleCode()){
+		case RoleCodeConstants.OS:
+		case RoleCodeConstants.IS:
+		{
+			return false;
+		}
+		default:
+			break;
+		}
+	}
+	
+	return false;	
+	
+	}
+
+
+	//
+	/** 
+		* @Title: getUserRoles 
+		* @Description: 查询当前登录用户所有角色.
+		* 				如果是OS/IS登录,则只是自己的角色及用户名称(可能有多个,如某人可能即是OS也是IS);
+		* 				如果是经理级别则显示所有的OS/IS用户名及角色名 
+		* @param @return     
+		* @return List<Map<String,Object>>    返回类型 
+		* @throws 
+	*/
+	private List<Map<String,Object>>  getUserRoles(){
+		//取得当前用户角色列表
+		Subject subject = SecurityUtils.getSubject();
+		UserBean user = (UserBean)subject.getPrincipal();
+		List<Role> roleList=user.getRoleList();
+		
+		//查询是否为经理级别
+		for(int i=0;i<roleList.size();i++){
+			Role role=roleList.get(i);
+			if(role.getRoleCode()==null || role.getRoleCode().equals("")){
+				continue;
+			}
+			switch(role.getRoleCode()){
+			case RoleCodeConstants.ADMIN:case RoleCodeConstants.MANAGER:
+			case RoleCodeConstants.BUSSMAN:	case RoleCodeConstants.SALEMAN:	
+				//查询所有的OS/IS列表
+				List<String> parms= new ArrayList<String>();
+				parms.add(RoleCodeConstants.OS);
+				parms.add(RoleCodeConstants.IS);
+				return agentBindService.getUsersByRoleCode(parms);
+			default:
+				break;				
+			}
+		}
+		
+		//查询是否为OS/IS级别
+		//查询是否为经理级别
+		for(int i=0;i<roleList.size();i++){
+			Role role=roleList.get(i);
+			if(role.getRoleCode()==null || role.getRoleCode().equals("")){
+				continue;
+			}
+			
+			switch(role.getRoleCode()){
+			case RoleCodeConstants.OS:case RoleCodeConstants.IS:
+			{
+				//查询此用户所对应的OS/IS角色				
+				List<String> parms= new ArrayList<String>();
+				parms.add(RoleCodeConstants.OS);
+				parms.add(RoleCodeConstants.IS);
+				return agentBindService.getUsersByUserIdAndRoleCode(user.getId(), parms);
+			}
+			default:
+				break;
+			}
+		}
+		
+		return new ArrayList<Map<String,Object>>();
+		
+	}
+	
+	
 	
 	/** 
 		* @Title: agent_userTable 
