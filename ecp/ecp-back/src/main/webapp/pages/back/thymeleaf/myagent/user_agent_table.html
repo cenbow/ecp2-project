@@ -189,7 +189,8 @@ tr:hover {
 							<th>手机号码</th>
 							<th>帐号</th>
 							<th>状态</th>
-							<th>有效性</th>
+							<th>审核状态</th>
+							<th>审核结果</th>
 							<th>操作</th>
 						</tr>
 					</thead>
@@ -207,14 +208,29 @@ tr:hover {
 								<td th:case="'2'" style="color: red;">无效</td>
 							</span>
 
-							<td>
+							<!-- <td>
 								<button type="button"
 									th:attr="data-bind=${agent.extendId},data-account-state=${agent.accountState}"
 									class="btn btn-success btn-sm set-valid" title="设置此帐号有效">有效</button>
 								<button type="button"
 									th:attr="data-bind=${agent.extendId},data-account-state=${agent.accountState}"
 									class="btn btn-warning btn-sm set-invalid" title="设置此帐号无效">无效</button>
+							</td> -->
+							
+							<!-- 审核相关 -->
+							<td>
+								<span th:switch="${agent.auditStatus}" th:remove="tag">
+									<span th:case="1" style="color: blue;">待审核</span>
+									<span th:case="2" style="color: red;">未通过</span>
+									<span th:case="3" style="color: green;">己通过</span>
+								</span>
 							</td>
+							
+							<td th:text="${agent.auditComment}">审核意见</td>
+							
+							
+							
+							
 							<td>
 								<!-- <a type="button"
 							th:href="@{/back/agent/detail/{id}(id=${agent.extendId})}"
@@ -226,7 +242,7 @@ tr:hover {
 									onclick='javascript:editAgent('+${agent.extendId}+');'"
 								class="show-detail" title="修改客户信息"> <i
 									class="icon-edit icon-large"></i>
-							</a> <a type="button"
+							</a> <!-- <a type="button"
 								th:attr="data-bind=${agent.extendId},
 									data-company-name=${agent.companyName},
 									data-contact-phone=${agent.contactPhone},
@@ -234,7 +250,7 @@ tr:hover {
 									data-user-id=${agent.userId}"
 								class="account-management" title="帐号管理"> <i
 									class="icon-group icon-large"></i>
-							</a> <!-- <a type="button"
+							</a> --> <!-- <a type="button"
 							th:attr="data-bind=${agent.extendId},
 									data-company-name=${agent.companyName},
 									data-contact-phone=${agent.contactPhone},
