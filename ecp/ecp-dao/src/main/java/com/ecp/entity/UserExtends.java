@@ -2,12 +2,7 @@ package com.ecp.entity;
 
 import java.math.BigDecimal;
 import java.util.Date;
-
-import javax.persistence.Column;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
-import javax.persistence.Table;
+import javax.persistence.*;
 
 import org.springframework.format.annotation.DateTimeFormat;
 
@@ -282,16 +277,16 @@ public class UserExtends {
     private String auditComment;
 
     /**
+     * 审核人用户 id
+     */
+    @Column(name = "audit_user")
+    private Long auditUser;
+
+    /**
      * 审核日期
      */
     @Column(name = "audit_date")
     private Date auditDate;
-
-    /**
-     * 审核人用户 id
-     */
-    @Column(name = "audit_user")
-    private byte[] auditUser;
 
     /**
      * @return extend_id
@@ -1164,6 +1159,24 @@ public class UserExtends {
     }
 
     /**
+     * 获取审核人用户 id
+     *
+     * @return audit_user - 审核人用户 id
+     */
+    public Long getAuditUser() {
+        return auditUser;
+    }
+
+    /**
+     * 设置审核人用户 id
+     *
+     * @param auditUser 审核人用户 id
+     */
+    public void setAuditUser(Long auditUser) {
+        this.auditUser = auditUser;
+    }
+
+    /**
      * 获取审核日期
      *
      * @return audit_date - 审核日期
@@ -1179,24 +1192,6 @@ public class UserExtends {
      */
     public void setAuditDate(Date auditDate) {
         this.auditDate = auditDate;
-    }
-
-    /**
-     * 获取审核人用户 id
-     *
-     * @return audit_user - 审核人用户 id
-     */
-    public byte[] getAuditUser() {
-        return auditUser;
-    }
-
-    /**
-     * 设置审核人用户 id
-     *
-     * @param auditUser 审核人用户 id
-     */
-    public void setAuditUser(byte[] auditUser) {
-        this.auditUser = auditUser;
     }
 
     @Override
@@ -1256,8 +1251,8 @@ public class UserExtends {
         sb.append(", customerIntro=").append(customerIntro);
         sb.append(", auditStatus=").append(auditStatus);
         sb.append(", auditComment=").append(auditComment);
-        sb.append(", auditDate=").append(auditDate);
         sb.append(", auditUser=").append(auditUser);
+        sb.append(", auditDate=").append(auditDate);
         sb.append("]");
         return sb.toString();
     }

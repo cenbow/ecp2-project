@@ -163,6 +163,15 @@ public class UserAgentServiceImpl extends AbstractBaseService<UserExtends, Long>
 		}
 		return new ArrayList<Map<String,Object>>();
 	}
+
+
+	@Override
+	public List<UserExtends> searchUserAgent(int searchTypeValue, String condValue, String provinceName,
+			String cityName, String countyName, List<Map<String, Object>> agentIdList,byte auditStatus) {
+		return userExtendsMapper.searchUserAgent( searchTypeValue,  condValue,  provinceName,
+				 cityName,  countyName,  agentIdList,auditStatus);
+		
+	}
 	
 	
 	

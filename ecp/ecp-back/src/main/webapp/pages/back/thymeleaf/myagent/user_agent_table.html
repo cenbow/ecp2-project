@@ -1,0 +1,343 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>Insert title here</title>
+
+<style>
+a {
+	text-decoration: none;
+	cursor: pointer;
+}
+
+a:visited {
+	text-decoration: none;
+}
+
+tr:hover {
+	background-color: #CCFFCC;
+}
+
+/* 纵向菜单：时间条件 */
+.ordertime-cont {
+	margin-bottom: 0;
+	display: inline-block;
+	margin-left: 350px;
+}
+
+.time-list {
+	display: none;
+	background-color: rgba(65, 65, 65, .8);
+	border: 2px solid #1296db;
+	position: absolute;
+}
+
+.time-list ul {
+	padding: 10px 10px 0px 20px;
+}
+
+.time-list li {
+	list-style-type: none;
+}
+
+.time-list li.curr {
+	margin-left: -10px;
+	/* background:   一般用图片进行模拟 ，比较好控制 */
+}
+
+.time-list a {
+	color: #dcdcdc;
+}
+
+.time-list i {
+	color: white;
+}
+</style>
+
+
+</head>
+<body>
+	<div class="container-fluid" style="margin-top: 20px;">
+
+		<!-- 签约客户列表 -->
+		<div class="row clearfix">
+			<div class="col-md-12 column">
+				<!-- 工具栏 -->
+				<h4>
+					<i class="icon-user" style="color: green"></i>签约客户维护
+				</h4>
+
+
+				<!-- 区域查询条件 -->
+				<div class="search-box"
+					style="display: inline-block; margin-left: 50px;">
+					<!-- 增加地区查询条件 -->
+					<label for="distpicker-search">区域:</label>
+					<div data-toggle="distpicker" id="distpicker-search"
+						style="display: inline-block; vertical-align: middle;">
+
+						<div class="col-md-4 column" style="padding-right: 5px;">
+							<select class="form-control" id="province"><option
+									value="" data-code="">—— 省 ——</option></select>
+							<!-- 省份编码、名称-隐藏字段 -->
+							<input type="hidden" id="provinceCode" name="provinceCode">
+							<input type="hidden" id="provinceName" name="province"
+								th:value="${provinceName}">
+						</div>
+						<div class="col-md-4 column" style="padding: 0px 0px 0px 0px;">
+							<select class="form-control" id="city"><option
+									value="" data-code="">—— 市 ——</option></select>
+							<!-- 市级编码、名称-隐藏字段 -->
+							<input type="hidden" id="cityCode" name="cityCode"> <input
+								type="hidden" id="cityName" name="city"
+								th:value="${cityName}">
+						</div>
+						<div class="col-md-4 column" style="padding-left: 5px">
+							<select class="form-control" id="district"><option
+									value="" data-code="">—— 区 ——</option></select>
+							<!-- 县级编码、名称-隐藏字段 -->
+							<input type="hidden" id="countyCode" name="countyCode">
+							<input type="hidden" id="countyName" name="county"
+								th:value="${countyName}">
+						</div>
+					</div>
+				</div>
+
+				<!-- 在此列表登录用户的角色 -->
+				<div style="display: inline-block; margin-left: 60px;">
+					<label for="select-user-role">角色:</label> <select
+						id="select-user-role">
+						<!-- 全部角色 -->
+						<option th:attr="data-bind-roleid='0',data-bind-userid='0'"
+							th:value="0" th:text="'全部角色'">用户-角色</option>
+						<span th:if="${not #lists.isEmpty(userRoleList)}"
+						th:remove="tag"> <span th:each="user:${userRoleList}"
+							th:remove="tag"> <span th:switch="${user.role_code}"
+								th:remove="tag">
+									<option th:case="'OS'"
+										th:attr="data-bind-roleid=${user.role_id},data-bind-userid=${user.id}"
+										th:value="${user.id}" th:text="${user.username}+'(外部销售)' ">姓名</option>
+									<option th:case="'IS'"
+										th:attr="data-bind-roleid=${user.role_id},data-bind-userid=${user.id}"
+										th:value="${user.id}" th:text="${user.username}+'(内部销售)' ">姓名</option>
+							</span>
+						</span>
+					</span>
+					</select>
+				</div>
+
+				<!-- 加入欠款查询条件 -->
+				<div style="display: inline-block; margin-left: 50px;">
+					<label for="select-audit-status">审核状态</label> <select
+						id="select-audit-status">
+						<!-- 全部状态 -->
+						<option th:value="0" th:text="'全部状态'">全部状态</option>
+						<option th:value="1" th:text="'待审核'">待审核</option>
+						<option th:value="2" th:text="'未通过'">未通过</option>
+						<option th:value="3" th:text="'己通过'">己通过</option>
+					</select>
+				</div>
+
+				<hr>
+
+				<!-- 查询 -->
+				<div class="search-box"
+					style="display: inline; margin-left: 200px;">
+					<div class="ordertime-cont">
+						<div class="time-txt">
+							<span class="text" id="ordertime-cond" value="0">选择查询条件</span>
+							<i class="icon-angle-down icon-large" style="color: black"></i>
+						</div>
+						<div class="time-list">
+							<ul>
+								<li class="curr" value="0"><i class="icon-ok"></i><a
+									href="javascript:void(0);">选择查询条件</a></li>
+								<li class="" value="1"><i class="icon-ok"></i><a
+									href="javascript:void(0);">企业名称</a></li>
+								<li class="" value="2"><i class="icon-ok"></i><a
+									href="javascript:void(0);">负责人姓名</a></li>
+								<li class="" value="3"><i class="icon-ok"></i><a
+									href="javascript:void(0);">手机号码</a></li>
+							</ul>
+						</div>
+					</div>
+					<div class="cond-box" style="display: inline">
+						<input type="text" value="" id="searchCond" name="searchCond"
+							placeholder="请输入查询关键字" /> <a class="start-search"
+							href="javascript:void(0);"><i
+							class="icon-search icon-large "></i></a>
+					</div>
+				</div>
+				<!-- <a th:href="@{/back/agent/add}" id="add-btn" title="增加签约客户" target="_blank" style="float: right; margin-right: 60px;">
+								<i	class="icon-plus-sign icon-large"></i>
+							</a> -->
+				<a id="add-btn" title="增加签约客户" target="_blank"
+					style="float: right; margin-right: 60px;"> <i
+					class="icon-plus-sign icon-large"></i>
+				</a> <a th:href="@{/back/myagent/show}" title="刷新列表"
+					style="float: right; margin-right: 10px"> <i
+					class="icon-refresh icon-large"></i>
+				</a>
+
+				<hr>
+
+				<table class="table">
+					<thead>
+						<tr>
+							<th>企业名称</th>
+							<th>企业负责人</th>
+							<th>手机号码</th>
+							<th>帐号</th>
+							<th>状态</th>
+							<th>有效性</th>
+							<th>操作</th>
+						</tr>
+					</thead>
+					<tbody>
+						<tr th:each="agent:${userAgents}">
+							<td th:text="${agent.companyName}" style="width: 400px;">北京XXX科技有限责任公司</td>
+							<td th:text="${agent.artificialPersonName}">张XX</td>
+							<td th:text="${agent.contactPhone}">138xxxxxxxx</td>
+							<span th:switch="${agent.userId}" th:remove="tag">
+								<td th:case="0"><i class="icon-magic"></i>未分配</td>
+								<td th:case="*"><i class="icon-user"></i>已分配</td>
+							</span>
+							<span th:switch="${agent.accountState}" th:remove="tag">
+								<td th:case="'1'" style="color: green;">有效</td>
+								<td th:case="'2'" style="color: red;">无效</td>
+							</span>
+
+							<td>
+								<button type="button"
+									th:attr="data-bind=${agent.extendId},data-account-state=${agent.accountState}"
+									class="btn btn-success btn-sm set-valid" title="设置此帐号有效">有效</button>
+								<button type="button"
+									th:attr="data-bind=${agent.extendId},data-account-state=${agent.accountState}"
+									class="btn btn-warning btn-sm set-invalid" title="设置此帐号无效">无效</button>
+							</td>
+							<td>
+								<!-- <a type="button"
+							th:href="@{/back/agent/detail/{id}(id=${agent.extendId})}"
+							target="_blank" th:attr="data-bind=${agent.extendId}"
+							class="show-detail" title="修改客户信息"> <i
+								class="icon-edit icon-large"></i>
+						</a> --> <a type="button"
+								th:attr="data-bind=${agent.extendId}, 
+									onclick='javascript:editAgent('+${agent.extendId}+');'"
+								class="show-detail" title="修改客户信息"> <i
+									class="icon-edit icon-large"></i>
+							</a> <a type="button"
+								th:attr="data-bind=${agent.extendId},
+									data-company-name=${agent.companyName},
+									data-contact-phone=${agent.contactPhone},
+									data-artificialPersonName=${agent.artificialPersonName},
+									data-user-id=${agent.userId}"
+								class="account-management" title="帐号管理"> <i
+									class="icon-group icon-large"></i>
+							</a> <!-- <a type="button"
+							th:attr="data-bind=${agent.extendId},
+									data-company-name=${agent.companyName},
+									data-contact-phone=${agent.contactPhone},
+									data-artificialPersonName=${agent.artificialPersonName},
+									data-user-id=${agent.userId},
+									data-account-state=${agent.accountState}"
+							class="reset-password" title="重置密码"> <i	class="icon-retweet icon-large"></i>
+						</a> -->
+
+							</td>
+
+						</tr>
+
+					</tbody>
+				</table>
+				<!-- 加入 分页 -->
+				<div class="row clearfix">
+					<div th:include="/back/thymeleaf/common/_pager::pager"
+						class="pagerx" style="float: right; margin-right: 100px;"></div>
+				</div>
+
+			</div>
+		</div>
+	</div>
+	<!-- 当用户点击查询条件时，采用些隐藏表单提交 -->
+	<form  method="post" id="searchform">
+		<!-- 保存页号与页大小 -->
+		<input type="hidden" name="pageNum" id="pageNum"
+			th:value="${pageInfo.pageNum}"> 
+		<input type="hidden"
+			name="pageSize" id="pageSize" th:value="${pageInfo.pageSize}">
+
+		<!-- 用户选择的条件列表 -->
+		<!-- <input type="hidden" name="searchCond" id="searchCond"	th:value="${searchCond}"> -->
+	</form>
+
+
+	<!-- 查询条件  -->
+	<script th:inline="javascript">  
+		/*<![CDATA[*/
+			
+		var g_searchTypeValue = [[${searchTypeValue}]];  //查询类型值
+		var g_condValue=[[${condValue}]]; //查询条件值
+		
+		var ret_provinceName=[[${provinceName}]];  		 	//回传的区域条件
+		var ret_cityName=[[${cityName}]];
+		var ret_countyName=[[${countyName}]];
+		
+		var ret_userId=[[${userId}]];					 	//回传的角色条件
+		var ret_roleId=[[${roleId}]];
+		
+		var ret_auditStatus=[[${auditStatus}]];				//回传的审核状态
+		
+		/*]]>*/  
+		
+		/**
+		 * 点击添加按钮时执行
+		 *		函数功能：打开添加代理商选项卡
+		 */
+		$("#add-btn").click(function(){
+			var url = BASE_CONTEXT_PATH + "/back/myagent/add";
+			$("#edit-body").load(url, function(){
+				//TODO
+				$("#edit-tab").removeClass("hide");
+				$("#edit-tab-title").text("增加签约客户信息");
+				$('#tabs-14933 a[href="#panel-602679"]').tab('show');
+			});
+		});
+		
+		/**
+		 * 点击编辑按钮时执行
+		 *		函数功能：打开编辑选项卡
+		 */
+		function editAgent(id){
+			var url = BASE_CONTEXT_PATH + "/back/myagent/detail/"+id;
+			$("#edit-body").load(url, function(){
+				//TODO
+				$("#edit-tab").removeClass("hide");
+				$("#edit-tab-title").text("签约客户信息-详情");
+				$('#tabs-14933 a[href="#panel-602679"]').tab('show');
+			});
+		}
+		
+		/**
+		 * 重置选项卡
+		 */
+		function resetTab(){
+			$('#tabs-14933 a[href="#panel-150383"]').tab('show');
+			$("#edit-body").empty();
+			$("#edit-tab").addClass("hide");
+		}
+		
+	</script>
+
+	<!-- 地区选择 -->
+	<script type="text/javascript"
+		th:src="@{/static/js/distpicker/distpicker.data.js}"></script>
+	<script type="text/javascript"
+		th:src="@{/static/js/distpicker/distpicker.js}"></script>
+
+	<script type="text/javascript"
+		th:src="@{/static/js/myagent/user_agent.js}"></script>
+
+
+</body>
+</html>

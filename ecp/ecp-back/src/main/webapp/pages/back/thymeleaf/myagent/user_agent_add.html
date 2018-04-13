@@ -133,10 +133,10 @@
 							
 							<!-- 地区选择 -->
 							<div class="form-group">
-								<label for="distpicker" class="col-sm-2 control-label">所在地区（*）</label>
+								<label for="distpicker-add" class="col-sm-2 control-label">所在地区（*）</label>
 								<div class="col-sm-10">									
 									<!-- 地区选择 -->
-									<div data-toggle="distpicker" id="distpicker">
+									<div data-toggle="distpicker" id="distpicker-add">
 										<div class="row clearfix">
 											<div class="col-md-12 column">
 												<div class="row clearfix">
@@ -428,13 +428,15 @@
 	</div>
 
 	<!-- 地区选择 -->
-	<script type="text/javascript" th:src="@{/static/js/distpicker/distpicker.data.js}"></script>
 	<script type="text/javascript" th:src="@{/static/js/distpicker/distpicker.js}"></script>
-	<!-- <script type="text/javascript" th:src="@{/static/js/distpicker/main.js}"></script> -->
+	<script type="text/javascript" th:src="@{/static/js/distpicker/distpicker.data.js}"></script>
+	
+	
 	<!-- 日期组件 -->
 	<script type="text/javascript" th:src="@{/static/calendar/WdatePicker.js}"></script>
+	
 	<!-- 业务处理  -->
-	<script type="text/javascript" th:src="@{/static/js/user_agent/user_agent_add.js}"></script>
+	<script type="text/javascript" th:src="@{/static/js/myagent/user_agent_add.js}"></script>
 
 </body>
 </html>
