@@ -98,7 +98,7 @@ $("#save-submit-btn").click(function(){
  */
 function saveFun(){
 	var url = null;
-	var id = $("#level-id").val();
+	var id = $("#config-id").val();
 	if(id==null || id==""){
 		url = "back/pushmoney-config/insert";
 	}else{
