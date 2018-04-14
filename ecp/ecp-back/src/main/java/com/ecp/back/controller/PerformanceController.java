@@ -236,7 +236,7 @@ public class PerformanceController {
 		orderList = pageInfo.getList();
 		
 		BigDecimal orderTotalAmount = new BigDecimal("0.00");//订单总金额
-		BigDecimal performanceTotalAmount = new BigDecimal("0.00");//业绩总金额
+		BigDecimal contractTotalAmount = new BigDecimal("0.00");//合同总金额
 		for(Map<String, Object> order : orderList){
 			String orderId = order.get("id").toString();
 			String totalPrice = order.get("total_price").toString();
@@ -269,6 +269,7 @@ public class PerformanceController {
 			if(StringUtils.isNotBlank(contractNo)){
 				BigDecimal contractAmount = contractItemsService.getContractAmountByNo(contractNo);
 				order.put("contract_amount", contractAmount);
+				contractTotalAmount = contractTotalAmount.add(contractAmount);
 			}else{
 				order.put("contract_amount", "0.00");
 			}
@@ -280,7 +281,7 @@ public class PerformanceController {
 		}
 
 		model.addAttribute("orderTotalAmount", orderTotalAmount); //订单统计
-		model.addAttribute("performanceTotalAmount", performanceTotalAmount); //业绩统计
+		model.addAttribute("contractTotalAmount", contractTotalAmount); //业绩统计
 
 		model.addAttribute("pageInfo", pageInfo); // 分页
 		model.addAttribute("orderList", orderList); // 列表
@@ -657,7 +658,7 @@ public class PerformanceController {
 		}
 		
 		BigDecimal pushmoneyPrice = pushmoney.multiply(BigDecimal.valueOf(pushmoneyRate));//提成金额
-		pushmoneyPrice = pushmoneyPrice.setScale(2);//提成金额保留两位小数
+		pushmoneyPrice = pushmoneyPrice.setScale(2,BigDecimal.ROUND_HALF_UP);//提成金额保留两位小数
 		
 		map.put("pushmoney_price", pushmoneyPrice);
 		return pushmoneyPrice;
@@ -1144,23 +1145,15 @@ public class PerformanceController {
 	}
 	
 	public static void main(String[] args) {
-		for(int i=0; i<5; i++){
-			switch (i) {
-			case 0:
-			case 1:
-			case 2:
-				System.out.println(i);
-				break;
-			case 3:
-			case 4:
-				System.out.println(i);
-				break;
-			default:
-				break;
-			}
-		}
-		
-		
-	}
+        BigDecimal decimal = new BigDecimal("1.12345");
+        System.out.println(decimal);
+        BigDecimal setScale = decimal.setScale(4,BigDecimal.ROUND_HALF_DOWN);
+        System.out.println(setScale);
+        
+        BigDecimal setScale1 = decimal.setScale(4,BigDecimal.ROUND_HALF_UP);
+        System.out.println(setScale1);
+        BigDecimal setScale2 = decimal.setScale(2,BigDecimal.ROUND_HALF_UP);
+        System.out.println(setScale2);
+    }
 	
 }

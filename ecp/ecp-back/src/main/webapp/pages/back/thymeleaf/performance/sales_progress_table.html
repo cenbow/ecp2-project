@@ -53,7 +53,7 @@
 								<th>周期名称</th>								
 								<th>额度</th>
 								<th>已完成</th>
-								<th>进度</th>
+								<th style="width:20%;">进度</th>
 								<th>操作</th>
 							</thead>
 							<tbody>
@@ -115,9 +115,6 @@
 						}
 					});
 					
-					/* if (progress >= 100) {
-						progress = 100;
-					} */
 					var progressbar = $(this), 
 					progressLabel = $(this).find(".progress-label");
 					
@@ -133,8 +130,14 @@
 						}
 					});
 					console.log("progress:"+progress);
-					var val = progressbar.progressbar("value") || 0;
-					progressbar.progressbar("value", progress);
+					//var val = progressbar.progressbar("value") || 0;
+					var tempProgress = 0;
+					if (progress >= 100) {
+						tempProgress = 100;
+					}else{
+						tempProgress = progress;
+					}
+					progressbar.progressbar("value", tempProgress);
 
 					/* var progressbarValue = progressbar.find(".ui-progressbar-value");
 					progressbarValue.css({
