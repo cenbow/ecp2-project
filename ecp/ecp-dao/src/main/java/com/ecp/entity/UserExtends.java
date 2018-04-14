@@ -2,12 +2,7 @@ package com.ecp.entity;
 
 import java.math.BigDecimal;
 import java.util.Date;
-
-import javax.persistence.Column;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
-import javax.persistence.Table;
+import javax.persistence.*;
 
 import org.springframework.format.annotation.DateTimeFormat;
 
@@ -268,6 +263,30 @@ public class UserExtends {
      */
     @Column(name = "customer_intro")
     private String customerIntro;
+
+    /**
+     * 审核状态(1:待审核 2:未通过; 3:通过)
+     */
+    @Column(name = "audit_status")
+    private Byte auditStatus;
+
+    /**
+     * 审核意见
+     */
+    @Column(name = "audit_comment")
+    private String auditComment;
+
+    /**
+     * 审核人用户 id
+     */
+    @Column(name = "audit_user")
+    private Long auditUser;
+
+    /**
+     * 审核日期
+     */
+    @Column(name = "audit_date")
+    private Date auditDate;
 
     /**
      * @return extend_id
@@ -1103,6 +1122,78 @@ public class UserExtends {
         this.customerIntro = customerIntro == null ? null : customerIntro.trim();
     }
 
+    /**
+     * 获取审核状态(1:待审核 2:未通过; 3:通过)
+     *
+     * @return audit_status - 审核状态(1:待审核 2:未通过; 3:通过)
+     */
+    public Byte getAuditStatus() {
+        return auditStatus;
+    }
+
+    /**
+     * 设置审核状态(1:待审核 2:未通过; 3:通过)
+     *
+     * @param auditStatus 审核状态(1:待审核 2:未通过; 3:通过)
+     */
+    public void setAuditStatus(Byte auditStatus) {
+        this.auditStatus = auditStatus;
+    }
+
+    /**
+     * 获取审核意见
+     *
+     * @return audit_comment - 审核意见
+     */
+    public String getAuditComment() {
+        return auditComment;
+    }
+
+    /**
+     * 设置审核意见
+     *
+     * @param auditComment 审核意见
+     */
+    public void setAuditComment(String auditComment) {
+        this.auditComment = auditComment == null ? null : auditComment.trim();
+    }
+
+    /**
+     * 获取审核人用户 id
+     *
+     * @return audit_user - 审核人用户 id
+     */
+    public Long getAuditUser() {
+        return auditUser;
+    }
+
+    /**
+     * 设置审核人用户 id
+     *
+     * @param auditUser 审核人用户 id
+     */
+    public void setAuditUser(Long auditUser) {
+        this.auditUser = auditUser;
+    }
+
+    /**
+     * 获取审核日期
+     *
+     * @return audit_date - 审核日期
+     */
+    public Date getAuditDate() {
+        return auditDate;
+    }
+
+    /**
+     * 设置审核日期
+     *
+     * @param auditDate 审核日期
+     */
+    public void setAuditDate(Date auditDate) {
+        this.auditDate = auditDate;
+    }
+
     @Override
     public String toString() {
         StringBuilder sb = new StringBuilder();
@@ -1158,6 +1249,10 @@ public class UserExtends {
         sb.append(", isHeadquarters=").append(isHeadquarters);
         sb.append(", companyWebsite=").append(companyWebsite);
         sb.append(", customerIntro=").append(customerIntro);
+        sb.append(", auditStatus=").append(auditStatus);
+        sb.append(", auditComment=").append(auditComment);
+        sb.append(", auditUser=").append(auditUser);
+        sb.append(", auditDate=").append(auditDate);
         sb.append("]");
         return sb.toString();
     }

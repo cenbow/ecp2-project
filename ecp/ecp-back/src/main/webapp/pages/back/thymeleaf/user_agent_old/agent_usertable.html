@@ -1,0 +1,311 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>Insert title here</title>
+</head>
+<body>
+	<table class="table">
+		<thead>
+			<tr>
+				<th>ID</th>
+				<th>登录名称</th>
+				<th>昵称</th>
+				<th>状态</th>
+				<th>有效性</th>
+				<th>主帐号</th>
+				<th>操作</th>
+			</tr>
+		</thead>
+		<tbody>
+			<tr th:each="item: ${userList}">
+				<td th:text="${item.id}">条目ID</td>
+				<td th:text="${item.username}">登录名称</td>
+				<td th:text="${item.nickname}">昵称</td>
+				<span th:switch="${item.status}" th:remove="tag">
+					<td th:case="'1'" style="color:green;">有效</td>
+					<td th:case="'2'" style="color:red;">无效</td>
+				</span>
+				
+				<td>
+					<button type="button" th:attr="data-bind-userid=${item.id},data-bind-userstatus=${item.status}" 
+						class="btn btn-success btn-sm set-user-valid" title="设置此帐号有效">有效</button>
+					<button type="button" th:attr="data-bind-userid=${item.id},data-bind-userstatus=${item.status}"
+						class="btn btn-warning btn-sm set-user-invalid" title="设置此帐号无效">无效</button>
+				</td>
+				
+
+				<td><span th:if="${item.parent_id==null or item.parent_id==0}"
+					th:remove="tag"> <span>主帐号</span>
+				</span></td>
+				
+				<!-- 操作 -->
+				<td>
+					<a type="button" class="modi-user" th:attr="data-bind-userid=${item.id},data-bind-username=${item.username},data-bind-nickname=${item.nickname}"> 
+						<i	class=" icon-edit icon-large" style="color: darkblue" title="修改用户"></i>
+					</a> 
+					<a type="button" class="del-user" th:attr="data-bind-userid=${item.id},data-bind-username=${item.username},data-bind-nickname=${item.nickname}"> 
+						<i class=" icon-remove-circle icon-large" style="color: darkblue" title="删除用户"></i>
+					</a> 
+					<a type="button" class="set-primary-user" th:attr="data-bind-userid=${item.id},data-bind-parentid=${item.parent_id}"> 
+						<i	class=" icon-tag icon-large" style="color: darkblue" title="设置主帐号"></i>
+					</a> 
+					<!-- <a type="button" class="reset-password" th:attr="data-bind-userid=item.id,data-bind-username=item.useranme,data-bind-nickname=item.nickname"> 
+						<i class="icon-retweet icon-large" style="color: darkblue"	title="重置密码"></i>
+					</a> -->
+				</td>
+			</tr>
+		</tbody>
+	</table>
+
+	<script th:inline="javascript">  
+		/*<![CDATA[*/
+		var curr_agentId = [[${agentId}]];  //回传的当前代理商ID
+		/*]]>*/
+	</script>
+
+
+	<script type="text/javascript">
+		
+		/**
+		 *				         重置帐号口令 
+		 * @param agentId  签约客户ID
+		 * @param userId 签约客户分配的用户ID
+		 * @returns 
+		 */
+		/* function resetPassword(userId) {
+			var url = BASE_CONTEXT_PATH + "/back/agent/reset_password"; // 需要提交的 url
+			$.ajax({
+				type : "post", // 提交方式 get/post
+				url : url, // 需要提交的 url
+				// dataType: "application/json",
+				data : {
+					'userId' : userId
+				},
+				success : function(res) { // data 保存提交后返回的数据，一般为 json 数据
+					console.log(res);
+					if (res != null && res != "") {
+						var obj = $.parseJSON(res);
+						if (obj.result_code == "success") {
+							util.message(obj.result_msg);
+						} else {
+							util.message(obj.result_err_msg);
+						}
+					}
+				}
+	
+			});
+		} */
+		
+		//-------------------DELETE USER----------------------
+		/*
+		 * 删除指定的用户
+		 */
+		function deleteAgentUserById(id){
+			var url = BASE_CONTEXT_PATH+"/back/agent/deluser";
+			var agentId=curr_agentId;
+			
+			
+			var params = {
+					"userId":id,   //用户ID
+					"agentId":agentId  //代理商ID
+			};
+								
+			//util.loading();
+			$.post(url, params, function(res){
+				console.log(res);
+				if(res!=null && res!=""){
+					var obj = $.parseJSON(res);
+					if(obj.result_code=="success"){
+						reloadUserPage();  //重新加载用户列表
+						reloadPage();  //重新加载代理商当前页
+					}else{
+						util.message(obj.result_err_msg);
+					}
+				}
+				
+			});
+		}
+
+		/*
+		 * 删除用户确认(显示确认对话框)
+		 */
+		function deleteAgentUserConfirm(id){
+			util.delConfirm("确认删除？", id, "deleteAgentUserById");
+		}
+		
+		
+		/*
+		 * set primary user
+		 */
+		function setPrimaryUser(id){
+			var url = BASE_CONTEXT_PATH+"/back/agent/setprimaryuser";
+			var agentId=curr_agentId;
+			
+			
+			var params = {
+					"userId":id,   //用户ID
+					"agentId":agentId  //代理商ID
+			};
+								
+			//util.loading();
+			$.post(url, params, function(res){
+				console.log(res);
+				if(res!=null && res!=""){
+					var obj = $.parseJSON(res);
+					if(obj.result_code=="success"){
+						reloadUserPage();  //重新加载用户列表
+						reloadPage();  //重新加载代理商当前页
+					}else{
+						util.message(obj.result_err_msg);
+					}
+				}
+				
+			});
+		}
+		
+		/*
+		* confirm:set primary user 
+		*/
+		function setPrimaryConfirm(id){
+			util.confirm("确认更新主帐号？",id,"setPrimaryUser",null);
+		}
+		
+		
+		//-------------------PAGE LOADED READY------------------------
+		$(function(){
+			//修改用户
+			$('.modi-user').on('click', function() {
+				var defaultPassword = "123456";
+
+				g_editMode=EDIT_MODE_MODI;  	//设置编辑模式
+				
+				//$("#dispatch-form").reset;  	//清空所有编辑框
+				document.getElementById("dispatch-form").reset(); 
+				
+				//设置对话框中显示的内容
+				var companyName=$("#curr-companyName").text();
+				$("#myModalLabel").text("公司名称:" + companyName+"(修改帐号)");
+				
+				//$("#password").val(defaultPassword);//默认的帐户密码是：123456
+				$(".password-desc").text(defaultPassword);  //显示:默认的口令说明
+				
+				//读取当前用户的信息
+				var userId=$(this).attr("data-bind-userid");
+				var userName=$(this).attr("data-bind-username");
+				var nickName=$(this).attr("data-bind-nickname");
+				//将当前用户的信息置于对话框中.
+				$("#loginName").val(userName);
+				$("#loginName").attr("readonly","readonly");  //设置登录帐号为只读属性.
+				$("#nickName").val(nickName);
+				//设置当前编辑的用户ID.对话框中隐藏字段
+				$("#modi-user-id").val(userId);
+				
+				//显示编辑帐号对话框
+				displayWindow();
+			})
+	
+			//删除用户
+			$('.del-user').on('click', function() {
+				var userId=$(this).attr("data-bind-userid");
+				deleteAgentUserConfirm(userId);
+			})
+			
+			//设置主帐号
+			$('.set-primary-user').on('click', function() {
+				var userId=$(this).attr("data-bind-userid");
+				var parentId=$(this).attr("data-bind-parentid");
+				if(parentId==null || parentId==0){
+					util.message("已经是主帐号!");
+				}
+				else{
+					setPrimaryConfirm(userId);	
+				}
+								
+			})
+			
+			/*
+			*设置代理商-用户状态
+			*/
+			function setUserState(userId,status) {
+				var url = BASE_CONTEXT_PATH + "/back/agent/setuserstatus"; // 需要提交的 url
+				$.ajax({
+					type : "post", // 提交方式 get/post
+					url : url, // 需要提交的 url
+					// dataType: "application/json",
+					data : {
+						'userId' : userId,			
+						'status' : status
+					},
+					success : function(res) { // data 保存提交后返回的数据，一般为 json 数据
+						console.log(res);
+						if (res != null && res != "") {
+							var obj = $.parseJSON(res);
+							if (obj.result_code == "success") {
+								util.message(obj.result_msg);
+								reloadUserPage();
+							} else {
+								util.message(obj.result_msg);
+							}
+						}
+					}
+			
+				});
+			}
+			
+			
+			// ===================设置签约代理商---帐号状态:有效、无效===============
+			/* 设置帐号为有效 */
+			$(".set-user-valid").on("click", function(e) {
+				var userId = $(this).attr("data-bind-userid");
+				var status = $(this).attr("data-bind-userstatus");
+				
+				if (status == 1) {
+					util.message("此帐号己为有效！");
+				} else {
+					setUserState(userId, 1);
+				}
+				
+		
+			});
+		
+			/* 设置帐号为无效 */
+			$(".set-user-invalid").on("click", function(e) {
+				var userId = $(this).attr("data-bind-userid");
+				var status = $(this).attr("data-bind-userstatus");
+				if (status == 2) {
+					util.message("此帐号己为无效！");
+				} else {
+					setUserState(userId, 2);
+				}
+		
+			});
+			
+			
+			
+			//重置帐号口令 
+			/* $(".reset-password").on("click", function(e) {
+				var agentId = $(this).attr("data-bind");
+				var userId = $(this).attr("data-user-id");
+				var accountState = $(this).attr("data-account-state");
+				if (userId == 0) {
+					util.message("尚未分配帐号！");
+				} else {
+					if (accountState == 2) {
+						util.message("此帐号己为无效,无需重置口令！");
+					} else {
+						//显示提示对话框(是否重置口令)
+						util.confirm("确认重置口令?", userId, "resetPassword", "");
+						//resetPassword(agentId, userId);
+					}
+				}
+	
+			}); */
+	
+			
+			
+		});
+		
+	</script>
+</body>
+</html>

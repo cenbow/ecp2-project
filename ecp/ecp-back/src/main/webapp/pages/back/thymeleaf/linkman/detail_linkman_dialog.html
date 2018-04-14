@@ -19,52 +19,52 @@
 							<div class="modal-header">
 								<button type="button" class="close" data-dismiss="modal"
 									aria-hidden="true">×</button>
-								<h4 class="modal-title" id="myModalLabel">增加联系人</h4>
+								<h4 class="modal-title" id="myModalLabel">修改订单联系人</h4>
 							</div>
 							<div class="modal-body">
 								<form class="form-horizontal" role="form" id="linkman-form">
 								
 								
 								<!-- 
-`id` bigint(20) NOT NULL AUTO_INCREMENT COMMENT '联系人表自增ID',
-  `name` varchar(255) DEFAULT NULL COMMENT '姓名',
-  `sex` tinyint(2) DEFAULT NULL COMMENT '性别(1:男;2:女)',
-  `birthday` datetime DEFAULT NULL COMMENT '出生日期',
-  `department` varchar(255) DEFAULT NULL COMMENT '部门',
-  `department_desc` varchar(255) DEFAULT NULL COMMENT '部门描述',
-  `position` varchar(255) DEFAULT NULL COMMENT '职位',
-  `edu_level` varchar(255) DEFAULT NULL COMMENT '文化程度',
-  `rel_level` varchar(255) DEFAULT NULL COMMENT '关系程度',
-  `attitude` varchar(255) DEFAULT NULL COMMENT '态度',
-  `schooltag` varchar(255) DEFAULT NULL COMMENT '毕业学校',
-  `work_address` varchar(255) DEFAULT NULL COMMENT '工作地址',
-  `work_postcode` varchar(255) DEFAULT NULL COMMENT '工作邮编',
-  `work_tel` varchar(255) DEFAULT NULL COMMENT '工作电话',
-  `work_fax` varchar(255) DEFAULT NULL COMMENT '工作传真',
-  `email` varchar(255) DEFAULT NULL COMMENT '电子邮箱',
-  `address` varchar(255) DEFAULT NULL COMMENT '家庭住址',
-  `postcode` varchar(255) DEFAULT NULL COMMENT '家庭邮编',
-  `tel` varchar(255) DEFAULT NULL COMMENT '家庭电话',
-  `mobile` varchar(255) DEFAULT NULL COMMENT '移动电话',
-  `tendency` varchar(255) DEFAULT NULL COMMENT '倾向品牌',
-  `qqwechat` varchar(255) DEFAULT NULL,
-  `order_id` bigint(20) DEFAULT NULL COMMENT '订单ID',
-  `deleted` tinyint(2) DEFAULT '1' COMMENT '是否删除（1-未删除，2-删除，默认1）',
-  `create_time` datetime DEFAULT NULL COMMENT '记录创建时间',
-
- -->
+									`id` bigint(20) NOT NULL AUTO_INCREMENT COMMENT '联系人表自增ID',
+									  `name` varchar(255) DEFAULT NULL COMMENT '姓名',
+									  `sex` tinyint(2) DEFAULT NULL COMMENT '性别(1:男;2:女)',
+									  `birthday` datetime DEFAULT NULL COMMENT '出生日期',
+									  `department` varchar(255) DEFAULT NULL COMMENT '部门',
+									  `department_desc` varchar(255) DEFAULT NULL COMMENT '部门描述',
+									  `position` varchar(255) DEFAULT NULL COMMENT '职位',
+									  `edu_level` varchar(255) DEFAULT NULL COMMENT '文化程度',
+									  `rel_level` varchar(255) DEFAULT NULL COMMENT '关系程度',
+									  `attitude` varchar(255) DEFAULT NULL COMMENT '态度',
+									  `schooltag` varchar(255) DEFAULT NULL COMMENT '毕业学校',
+									  `work_address` varchar(255) DEFAULT NULL COMMENT '工作地址',
+									  `work_postcode` varchar(255) DEFAULT NULL COMMENT '工作邮编',
+									  `work_tel` varchar(255) DEFAULT NULL COMMENT '工作电话',
+									  `work_fax` varchar(255) DEFAULT NULL COMMENT '工作传真',
+									  `email` varchar(255) DEFAULT NULL COMMENT '电子邮箱',
+									  `address` varchar(255) DEFAULT NULL COMMENT '家庭住址',
+									  `postcode` varchar(255) DEFAULT NULL COMMENT '家庭邮编',
+									  `tel` varchar(255) DEFAULT NULL COMMENT '家庭电话',
+									  `mobile` varchar(255) DEFAULT NULL COMMENT '移动电话',
+									  `tendency` varchar(255) DEFAULT NULL COMMENT '倾向品牌',
+									  `qqwechat` varchar(255) DEFAULT NULL,
+									  `order_id` bigint(20) DEFAULT NULL COMMENT '订单ID',
+									  `deleted` tinyint(2) DEFAULT '1' COMMENT '是否删除（1-未删除，2-删除，默认1）',
+									  `create_time` datetime DEFAULT NULL COMMENT '记录创建时间',
+									
+									 -->
 								
 									<div class="form-group">
 										<label for="name" class="col-sm-2 control-label">姓名</label>
 										<div class="col-sm-10">
-											<input type="text" class="form-control" id="name" name="name" />
+											<input type="text" class="form-control" id="name" name="name" th:value="${linkman.name}" />
 										</div>
 									</div>
 
 									<div class="form-group">
 										<label for="sex" class="col-sm-2 control-label">性别</label>
 										<div class="col-sm-10">
-											<select class="form-control" id="sex"	name="sex">
+											<select class="form-control" id="sex" name="sex" th:value="${linkman.sex}">
 												<option value="1">男</option>
 												<option value="2">女</option>												
 											</select>
@@ -78,6 +78,10 @@
 													readonly="readonly" 
 													id="birthday" 
 													name="birthday" 
+													
+													th:value="${#dates.format(linkman.birthday,'yyyy-MM-dd')}"
+													
+													
 													type="text"											
 													onClick="WdatePicker({dateFmt:'yyyy-MM-dd'});" />
 										</div>
@@ -87,7 +91,7 @@
 									<div class="form-group">
 										<label for="department" class="col-sm-2 control-label">部门</label>
 										<div class="col-sm-10">
-											<input type="text" class="form-control" id="department" name="department" />
+											<input type="text" class="form-control" id="department" name="department" th:value="${linkman.department}"/>
 										</div>
 									</div>
 									
@@ -95,7 +99,7 @@
 									<div class="form-group">
 										<label for="departmentDesc" class="col-sm-2 control-label">部门描述</label>
 										<div class="col-sm-10">
-											<input type="text" class="form-control" id="departmentDesc" name="departmentDesc" />
+											<input type="text" class="form-control" id="departmentDesc" name="departmentDesc" th:value="${linkman.departmentDesc}"/>
 										</div>
 									</div>
 									
@@ -103,7 +107,7 @@
 									<div class="form-group">
 										<label for="position" class="col-sm-2 control-label">职位</label>
 										<div class="col-sm-10">
-											<input type="text" class="form-control" id="position" name="position" />
+											<input type="text" class="form-control" id="position" name="position" th:value="${linkman.position}"/>
 										</div>
 									</div>
 									
@@ -112,7 +116,7 @@
 									<div class="form-group">
 										<label for="eduLevel" class="col-sm-2 control-label">文化程度</label>
 										<div class="col-sm-10">
-											<select class="form-control" id="eduLevel"	name="eduLevel">
+											<select class="form-control" id="eduLevel"	name="eduLevel" th:value="${linkman.eduLevel}">
 												<option value="大学本科">大学本科</option>
 												<option value="大学专科">大学专科</option>
 												<option value="硕士">硕士</option>
@@ -127,7 +131,7 @@
 									<div class="form-group">
 										<label for="relLevel" class="col-sm-2 control-label">关系程度</label>
 										<div class="col-sm-10">
-											<select class="form-control" id="relLevel"	name="relLevel">
+											<select class="form-control" id="relLevel"	name="relLevel" th:value="${linkman.relLevel}">
 												<option value="1级">1级</option>
 												<option value="2级">1级</option>
 												<option value="3级">3级</option>
@@ -141,7 +145,7 @@
 									<div class="form-group">
 										<label for="attitude" class="col-sm-2 control-label">态度</label>
 										<div class="col-sm-10">
-											<select class="form-control" id="attitude"	name="attitude">
+											<select class="form-control" id="attitude"	name="attitude" th:value="${linkman.attitude}">
 												<option value="1级">1级</option>
 												<option value="2级">2级</option>
 												<option value="3级">3级</option>
@@ -155,7 +159,7 @@
 									<div class="form-group">
 										<label for="schooltag" class="col-sm-2 control-label">毕业学校</label>
 										<div class="col-sm-10">
-											<input type="text" class="form-control" id="schooltag" name="schooltag" />
+											<input type="text" class="form-control" id="schooltag" name="schooltag"  th:value="${linkman.schooltag}"/>
 										</div>
 									</div>
 									
@@ -163,7 +167,7 @@
 									<div class="form-group">
 										<label for="workAddress" class="col-sm-2 control-label">工作地址</label>
 										<div class="col-sm-10">
-											<input type="text" class="form-control" id="workAddress" name="workAddress" />
+											<input type="text" class="form-control" id="workAddress" name="workAddress" th:value="${linkman.workAddress}"/>
 										</div>
 									</div>
 									
@@ -171,7 +175,7 @@
 									<div class="form-group">
 										<label for="workPostcode" class="col-sm-2 control-label">工作邮编</label>
 										<div class="col-sm-10">
-											<input type="text" class="form-control" id="workPostcode" name="workPostcode" />
+											<input type="text" class="form-control" id="workPostcode" name="workPostcode" th:value="${linkman.workPostcode}"/>
 										</div>
 									</div>
 									
@@ -179,7 +183,7 @@
 									<div class="form-group">
 										<label for="workTel" class="col-sm-2 control-label">工作电话</label>
 										<div class="col-sm-10">
-											<input type="text" class="form-control" id="workTel" name="workTel" />
+											<input type="text" class="form-control" id="workTel" name="workTel" th:value="${linkman.workTel}"/>
 										</div>
 									</div>
 									
@@ -187,7 +191,7 @@
 									<div class="form-group">
 										<label for="workFax" class="col-sm-2 control-label">工作传真</label>
 										<div class="col-sm-10">
-											<input type="text" class="form-control" id="workFax" name="workFax" />
+											<input type="text" class="form-control" id="workFax" name="workFax" th:value="${linkman.workFax}"/>
 										</div>
 									</div>
 									
@@ -195,7 +199,7 @@
 									<div class="form-group">
 										<label for="email" class="col-sm-2 control-label">电子邮箱</label>
 										<div class="col-sm-10">
-											<input type="text" class="form-control" id="email" name="email" />
+											<input type="text" class="form-control" id="email" name="email" th:value="${linkman.email}"/>
 										</div>
 									</div>
 									
@@ -204,7 +208,7 @@
 									<div class="form-group">
 										<label for="address" class="col-sm-2 control-label">家庭住址</label>
 										<div class="col-sm-10">
-											<input type="text" class="form-control" id="address" name="address" />
+											<input type="text" class="form-control" id="address" name="address" th:value="${linkman.address}"/>
 										</div>
 									</div>
 									
@@ -212,7 +216,7 @@
 									<div class="form-group">
 										<label for="postcode" class="col-sm-2 control-label">家庭邮编</label>
 										<div class="col-sm-10">
-											<input type="text" class="form-control" id="postcode" name="postcode" />
+											<input type="text" class="form-control" id="postcode" name="postcode" th:value="${linkman.postcode}"/>
 										</div>
 									</div>
 									
@@ -220,7 +224,7 @@
 									<div class="form-group">
 										<label for="tel" class="col-sm-2 control-label">家庭电话</label>
 										<div class="col-sm-10">
-											<input type="text" class="form-control" id="tel" name="tel" />
+											<input type="text" class="form-control" id="tel" name="tel" th:value="${linkman.tel}"/>
 										</div>
 									</div>
 									
@@ -228,7 +232,7 @@
 									<div class="form-group">
 										<label for="mobile" class="col-sm-2 control-label">移动电话</label>
 										<div class="col-sm-10">
-											<input type="text" class="form-control" id="mobile" name="mobile" />
+											<input type="text" class="form-control" id="mobile" name="mobile" th:value="${linkman.mobile}"/>
 										</div>
 									</div>
 									
@@ -236,14 +240,14 @@
 									<div class="form-group">
 										<label for="tendency" class="col-sm-2 control-label">倾向品牌</label>
 										<div class="col-sm-10">
-											<input type="text" class="form-control" id="tendency" name="tendency" />
+											<input type="text" class="form-control" id="tendency" name="tendency" th:value="${linkman.tendency}"/>
 										</div>
 									</div>
 									
 									<div class="form-group">
 										<label for="qqwechat" class="col-sm-2 control-label">QQ/微信</label>
 										<div class="col-sm-10">
-											<input type="text" class="form-control" id="qqwechat" name="qqwechat" />
+											<input type="text" class="form-control" id="qqwechat" name="qqwechat" th:value="${linkman.qqwechat}"/>
 											
 										</div>
 									</div>
@@ -251,7 +255,8 @@
 									
 									<div class="form-group">										
 										<div class="col-sm-10">
-											<input type="hidden" class="form-control" id="orderId" name="orderId" />																						
+											<input type="hidden" class="form-control" id="orderId" name="orderId" th:value="${linkman.orderId}"/>
+											<input type="hidden" class="form-control" id="id" name="id" th:value="${linkman.id}"/>											
 										</div>
 									</div>
 

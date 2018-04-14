@@ -73,16 +73,14 @@
 	
 		/*加载签约代理商列表*/
 		function loadUserAgent(parms,callback) {
-			//console.log("test");
-			var url = "/back/agent/agenttable";
-			
+			var url ="/back/agent/agenttable";
 			var callbackFunc = callback;
 			var containerId = "#agent-item";
 			
 			loadPage(containerId, url, parms, callbackFunc);
 		}
 		
-		/**/
+		/*加载代理商列表:采用默认值*/
 		function defaultLoadUserAgent(){
 			var parms = new Object();
 			//分页数据
@@ -91,6 +89,18 @@
 			//查询类型，查询条件值
 			parms.searchTypeValue=0;
 			parms.condValue="";
+			
+			//区域条件
+			parms.provinceName="";
+			parms.cityName="";
+			parms.countyName="";
+			
+			//角色条件
+			parms.userId=0;
+			parms.roleId=0;
+			
+			//审核状态
+			parms.auditStatus=0;
 			
 			loadUserAgent(parms,null);
 		}

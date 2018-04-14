@@ -5,6 +5,7 @@ import java.util.List;
 
 import org.springframework.stereotype.Service;
 
+import com.ecp.bean.DeletedType;
 import com.ecp.dao.LinkmanMapper;
 import com.ecp.entity.Linkman;
 import com.ecp.service.front.ILinkmanService;
@@ -29,6 +30,7 @@ public class LinkmanServiceImpl extends AbstractBaseService<Linkman, Long> imple
 	@Override
 	public List<Linkman> getLinkmanByOrder(long orderId) {
 		Linkman rec=new Linkman();
+		rec.setDeleted((byte)DeletedType.NO);
 		rec.setOrderId(orderId);
 		
 		return linkmanMapper.select(rec);

@@ -2,12 +2,29 @@
 <html>
 <head>
 <meta charset="UTF-8">
-<div th:include="/back/thymeleaf/common/_head2::headx('订单管理')"
+<div th:include="/back/thymeleaf/common/_head2::headx('签约客户维护')"
 	th:remove="tag"></div>
+<!-- local style -->
+<style>
+	a:hover {
+		text-decoration: none;
+	}
+	
+	i {
+		color: darkblue;
+	}
+	
+	.container a:hover {
+		color:blue;
+	}
+</style>
+
 </head>
 <body>
-
-<div class="container-fluid" style="margin-top: 20px;">
+	<!-- header -->
+	<!-- <div th:replace="thymeleaf/common/_header::header" class="header"></div> -->
+	<!-- content -->
+	<div class="container-fluid" style="margin-top: 20px;">
 	<div class="row clearfix">
 		<div class="col-md-12 column">
 			<div class="tabbable" id="tabs-14933">
@@ -17,6 +34,8 @@
 					</li>
 					<li id="edit-tab" class="hide">
 						 <a href="#panel-602679" data-toggle="tab" id="edit-tab-title">编辑</a>
+						 <!-- 用于传递公司名称 -->
+						 <input type="hidden" id="companyName">
 					</li>
 				</ul>
 				<div class="tab-content">
@@ -27,11 +46,11 @@
 									<div class="panel panel-default">
 										<div class="panel-heading">
 											<h3 class="panel-title">
-												联系人管理
+												签约客户列表
 											</h3>
 										</div>
-										<div class="panel-body" id="container">
-											<!-- content -->
+										<div class="panel-body" id="agent-item">
+											Panel content
 										</div>
 									</div>
 								</div>
@@ -46,31 +65,27 @@
 		</div>
 	</div>
 </div>
+	
+	<!-- footer -->
+	<!-- <div th:replace="/thymeleaf/common/_footer::footer" class="footer"></div> -->	
 
-
-	<script>
-		/*function:加载页面 */
-		function loadOrder(parms, callback) {
-			var url = "/back/linkman/ordertable";
+	<script type="text/javascript">
+	
+		/*加载签约代理商列表*/
+		function loadUserAgent(parms,callback) {
+			var url ="/back/myagent/agenttable";
 			var callbackFunc = callback;
-			var containerId = "#container";
+			var containerId = "#agent-item";
+			
 			loadPage(containerId, url, parms, callbackFunc);
 		}
-
-		/**
-			function:加载页面
-			parameters:
-				orderTimeCond:订单时间条件值
-				dealStateCond:处理状态条件值
-		 */
-		function defaultLoadOrder(orderTimeCond, dealStateCond) {
-			var parms = new Object(); //参数
-			parms.orderTimeCond = orderTimeCond; //时间段条件：近三个月订单
-			parms.dealStateCond = dealStateCond; //订单处理状态条件：全部状态
-			//分页
-			parms.pageNum = null;
-			parms.pageSize = null;
-			
+		
+		/*加载代理商列表:采用默认值*/
+		function defaultLoadUserAgent(){
+			var parms = new Object();
+			//分页数据
+			parms.pageNum=$("#pageNum").val();
+			parms.pageSize=$("#pageSize").val();
 			//查询类型，查询条件值
 			parms.searchTypeValue=0;
 			parms.condValue="";
@@ -83,23 +98,16 @@
 			//角色条件
 			parms.userId=0;
 			parms.roleId=0;
-
-			loadOrder(parms,null);
+			
+			//审核状态
+			parms.auditStatus=0;
+			
+			loadUserAgent(parms,null);
 		}
+		
 		$(function() {
-			defaultLoadOrder(1, 0);
+			defaultLoadUserAgent();
 		})
-
-		
-		/**
-		 * 重置选项卡
-		 */
-		function resetTab(){
-			$('#tabs-14933 a[href="#panel-150383"]').tab('show');
-			$("#edit-body").empty();
-			$("#edit-tab").addClass("hide");
-		}
-		
 	</script>
 
 

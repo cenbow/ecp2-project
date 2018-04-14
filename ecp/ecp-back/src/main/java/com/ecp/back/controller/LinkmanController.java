@@ -5,14 +5,23 @@ import java.util.List;
 import java.util.Map;
 
 import org.apache.log4j.Logger;
+import org.apache.shiro.SecurityUtils;
+import org.apache.shiro.subject.Subject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 
+import com.ecp.back.commons.RoleCodeConstants;
+import com.ecp.bean.DeletedType;
+import com.ecp.bean.UserBean;
 import com.ecp.common.util.RequestResultUtil;
 import com.ecp.entity.Linkman;
+import com.ecp.entity.Role;
+import com.ecp.service.back.IRoleService;
+import com.ecp.service.back.IUserService;
+import com.ecp.service.front.IAgentBindService;
 import com.ecp.service.front.ILinkmanService;
 import com.ecp.service.front.IOrderItemService;
 import com.ecp.service.front.IOrderService;
@@ -48,6 +57,13 @@ public class LinkmanController {
 	@Autowired
 	ILinkmanService linkmanService; //联系人
 	
+	@Autowired
+	IAgentBindService agentBindService;  //客户绑定服务
+	@Autowired
+	IUserService userService;  //用户服务
+	@Autowired
+	IRoleService roleService;  //角色服务
+	
 
 	/**
 	 * @Description 显示-订单列表
@@ -77,6 +93,11 @@ public class LinkmanController {
 								Integer pageSize,
 								Integer searchTypeValue,
 								String condValue,
+								String provinceName,
+								String cityName,
+								String countyName,
+								long userId,
+								long roleId,
 								Model model) {
 		if(pageNum==null || pageNum==0)
 		{
@@ -98,21 +119,198 @@ public class LinkmanController {
 		model.addAttribute("searchTypeValue", searchTypeValue);  	//查询字段值
 		model.addAttribute("condValue", condValue);  				//查询条件值
 		
+		List<Map<String,Object>> agentIdList=getSearchScope(userId,roleId);  //确认登录用户所查询的代理商范围
+		
 		// 查询 并分页		
 		PageHelper.startPage(pageNum, pageSize); // PageHelper			
 
 		//List<Map<String,Object>> orderList = orderService.selectAllOrderByOrderTimeAndDealState(orderTimeCond,dealStateCond);
+		//List<Map<String,Object>> orderList = orderService.selectOrder(orderTimeCond,dealStateCond,searchTypeValue,condValue);  //查询订单
+		List<Map<String,Object>> orderList = orderService.selectOrder(
+				 orderTimeCond,dealStateCond,
+				 searchTypeValue,condValue,
+				 provinceName,cityName,countyName,
+				 agentIdList);  //查询订单
 		
-		List<Map<String,Object>> orderList = orderService.selectOrder(orderTimeCond,dealStateCond,searchTypeValue,condValue);  //查询订单
 		
 		PageInfo<Map<String,Object>> pageInfo = new PageInfo<Map<String,Object>>(orderList);// (使用了拦截器或是AOP进行查询的再次处理)
+		
+		List<Map<String,Object>> userRoleList=getUserRoles();
+		model.addAttribute("userRoleList", userRoleList);  //查询用户角色列表
 		
 		model.addAttribute("pageInfo", pageInfo);  //分页
 		model.addAttribute("orderList", orderList); //列表
 		
+		//回传区域条件及用户/角色
+		model.addAttribute("provinceName", provinceName);
+		model.addAttribute("cityName", cityName);
+		model.addAttribute("countyName", countyName);
+		model.addAttribute("userId", userId);
+		model.addAttribute("roleId", roleId);
+		
 		
 		return RESPONSE_THYMELEAF_BACK + "order_table";
 	}
+	
+	
+	/** 
+	* @Title: getSearchScope 
+	* @Description: 获取指定用户的查询范围 
+	* @param @param userId
+	* @param @param roleId
+	* @param @return  如果返回null,则为查询所有   
+	* @return List<Map<String,Object>>    返回类型 
+	* @throws 
+	*/
+	private List<Map<String,Object>> getSearchScope(long userId,long roleId){
+		//确定用户的查询范围(代理商范围)
+		List<Map<String,Object>> agentIdList=null;
+		if(userId!=0 && roleId!=0)  //选择了某个用户
+			agentIdList=agentBindService.getAgentIdListByBindedUser(userId,roleId);
+		else{
+			//(1)根据登录用户的角色判定是否查询所有.如果是ADMIN/经理,则查询所有
+			boolean searchAll=needSearchAll();
+			if(!searchAll){  //非admin用户
+				long loginUserId=getLoginUserId();
+				agentIdList=agentBindService.getAgentIdListByBindedUser(loginUserId);
+			}			
+		}
+		return agentIdList;
+	}
+	
+	/** 
+	* @Title: getLoginUserId 
+	* @Description: 获取登录用户的ID 
+	* @param @return     
+	* @return long    返回类型 
+	* @throws 
+	*/
+	private long getLoginUserId(){
+		//取得当前用户角色列表
+		Subject subject = SecurityUtils.getSubject();
+		UserBean user = (UserBean)subject.getPrincipal();
+		return user.getId();
+	}
+
+
+	/** 
+	* @Title: needSearchAll 
+	* @Description: 根据登录用户的角色:是否可查询所有代理商订单
+	* @param @return
+	* 				如果是经理级别,则可查询所有;
+	* 				如果OS/IS则只可查询与自己所绑定代理商范围内的     
+	* @return boolean    返回类型 
+	* @throws 
+	*/
+	private boolean needSearchAll(){
+	//取得当前用户角色列表
+	Subject subject = SecurityUtils.getSubject();
+	UserBean user = (UserBean)subject.getPrincipal();
+	List<Role> roleList=user.getRoleList();
+	
+	//查询是否为经理级别
+	for(int i=0;i<roleList.size();i++){
+		Role role=roleList.get(i);
+		if(role.getRoleCode()==null || role.getRoleCode().equals("")){
+			continue;
+		}
+		switch(role.getRoleCode()){
+		case RoleCodeConstants.ADMIN:
+		case RoleCodeConstants.MANAGER:
+		case RoleCodeConstants.BUSSMAN:
+		case RoleCodeConstants.SALEMAN:				
+			return true;
+		default:
+			break;				
+		}
+	}
+	
+	//查询是否为OS/IS级别
+	//查询是否为经理级别
+	for(int i=0;i<roleList.size();i++){
+		Role role=roleList.get(i);
+		if(role.getRoleCode()==null || role.getRoleCode().equals("")){
+			continue;
+		}
+		
+		switch(role.getRoleCode()){
+		case RoleCodeConstants.OS:
+		case RoleCodeConstants.IS:
+		{
+			return false;
+		}
+		default:
+			break;
+		}
+	}
+	
+	return false;	
+	
+	}
+
+
+	//
+	/** 
+		* @Title: getUserRoles 
+		* @Description: 查询当前登录用户所有角色.
+		* 				如果是OS/IS登录,则只是自己的角色及用户名称(可能有多个,如某人可能即是OS也是IS);
+		* 				如果是经理级别则显示所有的OS/IS用户名及角色名 
+		* @param @return     
+		* @return List<Map<String,Object>>    返回类型 
+		* @throws 
+	*/
+	private List<Map<String,Object>>  getUserRoles(){
+		//取得当前用户角色列表
+		Subject subject = SecurityUtils.getSubject();
+		UserBean user = (UserBean)subject.getPrincipal();
+		List<Role> roleList=user.getRoleList();
+		
+		//查询是否为经理级别
+		for(int i=0;i<roleList.size();i++){
+			Role role=roleList.get(i);
+			if(role.getRoleCode()==null || role.getRoleCode().equals("")){
+				continue;
+			}
+			switch(role.getRoleCode()){
+			case RoleCodeConstants.ADMIN:case RoleCodeConstants.MANAGER:
+			case RoleCodeConstants.BUSSMAN:	case RoleCodeConstants.SALEMAN:	
+				//查询所有的OS/IS列表
+				List<String> parms= new ArrayList<String>();
+				parms.add(RoleCodeConstants.OS);
+				parms.add(RoleCodeConstants.IS);
+				return agentBindService.getUsersByRoleCode(parms);
+			default:
+				break;				
+			}
+		}
+		
+		//查询是否为OS/IS级别
+		//查询是否为经理级别
+		for(int i=0;i<roleList.size();i++){
+			Role role=roleList.get(i);
+			if(role.getRoleCode()==null || role.getRoleCode().equals("")){
+				continue;
+			}
+			
+			switch(role.getRoleCode()){
+			case RoleCodeConstants.OS:case RoleCodeConstants.IS:
+			{
+				//查询此用户所对应的OS/IS角色				
+				List<String> parms= new ArrayList<String>();
+				parms.add(RoleCodeConstants.OS);
+				parms.add(RoleCodeConstants.IS);
+				return agentBindService.getUsersByUserIdAndRoleCode(user.getId(), parms);
+			}
+			default:
+				break;
+			}
+		}
+		
+		return new ArrayList<Map<String,Object>>();
+		
+	}
+	
+	
 	
 	/** 
 	* @Title: showLinkmanEditUI 
@@ -134,11 +332,52 @@ public class LinkmanController {
 	}
 	
 	
+	/** 
+		* @Title: showLinkmanTable 
+		* @Description: 显示订单联系人列表. 
+		* @param @param orderId
+		* @param @param orderNo
+		* @param @param model
+		* @param @return     
+		* @return String    返回类型 
+		* @throws 
+	*/
 	@RequestMapping(value="/table")
 	public String showLinkmanTable(long orderId,String orderNo,Model model){
 		setLinkmanListToModel(orderId,model);	
 		return RESPONSE_THYMELEAF_BACK + "linkman_table";
 	}
+	
+	/** 
+		* @Title: loadAddDialog 
+		* @Description: 加载:ADD联系人DIALOG 
+		* @param @param model
+		* @param @return     
+		* @return String    返回类型 
+		* @throws 
+	*/
+	@RequestMapping(value="/loadadddialog")
+	public String loadAddDialog(Model model){			
+		return RESPONSE_THYMELEAF_BACK + "add_linkman_dialog";
+	}
+	
+	/** 
+		* @Title: loadDetailDialog 
+		* @Description: 加载:修改联系人DIALOG 
+		* @param @param linkmanId
+		* @param @param model
+		* @param @return     
+		* @return String    返回类型 
+		* @throws 
+	*/
+	@RequestMapping(value="/loaddetaildialog")
+	public String loadDetailDialog(long linkmanId, Model model){
+		//读取当前需要编辑的联系人信息,并返回数据
+		Linkman linkman=linkmanService.selectByPrimaryKey(linkmanId);
+		model.addAttribute("linkman", linkman);
+		return RESPONSE_THYMELEAF_BACK + "detail_linkman_dialog";
+	}
+	
 	
 	private void setLinkmanListToModel(long orderId,Model model){
 		List<Linkman> linkmanList=linkmanService.getLinkmanByOrder(orderId); //查询此订单下的联系人
@@ -146,6 +385,15 @@ public class LinkmanController {
 	}
 	
 	
+	/** 
+		* @Title: addLinkman 
+		* @Description: 保存:新建联系人 
+		* @param @param linkman
+		* @param @param model
+		* @param @return     
+		* @return Object    返回类型 
+		* @throws 
+	*/
 	@RequestMapping(value="/add")
 	@ResponseBody
 	public Object addLinkman(Linkman linkman, Model model){
@@ -158,6 +406,45 @@ public class LinkmanController {
 		}
 		else
 			return RequestResultUtil.getResultAddWarn();
+	}
+	
+	@RequestMapping(value="/del")
+	@ResponseBody
+	public Object deleteLinkman(long linkmanId, Model model){
+		
+		//删除联系人
+		Linkman linkman =new Linkman();
+		linkman.setId(linkmanId);
+		linkman.setDeleted((byte)DeletedType.YES);
+		int row=linkmanService.updateByPrimaryKeySelective(linkman);
+		
+		if (row>0){
+			return RequestResultUtil.getResultUpdateSuccess();
+		}
+		else
+			return RequestResultUtil.getResultUpdateWarn();
+	}
+	
+	
+	/** 
+		* @Title: saveDetailLinkman 
+		* @Description: 保存:修改联系人 
+		* @param @param linkman
+		* @param @param model
+		* @param @return     
+		* @return Object    返回类型 
+		* @throws 
+	*/
+	@RequestMapping(value="/savedetail")
+	@ResponseBody
+	public Object saveDetailLinkman(Linkman linkman, Model model){
+		//修改联系人
+		int row =linkmanService.updateByPrimaryKeySelective(linkman);
+		if (row>0){
+			return RequestResultUtil.getResultUpdateSuccess();
+		}
+		else
+			return RequestResultUtil.getResultUpdateWarn();
 	}
 	
 

@@ -15,7 +15,7 @@ function preview(file) {
 function saveFun() {
 	var url = null;
 
-	url = BASE_CONTEXT_PATH + "/back/agent/insert";
+	url = BASE_CONTEXT_PATH + "/back/myagent/insert";
 
 	// util.loading();
 	$("#user-agent-form").ajaxSubmit({

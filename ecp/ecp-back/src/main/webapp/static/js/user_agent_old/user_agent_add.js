@@ -52,45 +52,45 @@ function saveFun() {
  * 复位地区列表
  * @returns
  */
-function resetDistPickerDeep_add(){
-	 var distpicker = $('#distpicker-add');
-	 distpicker.distpicker('reset', true);
+function resetDistPickerDeep(){
+	 var $distpicker = $('#distpicker');
+	 $distpicker.distpicker('reset', true);
 }
 
 /**
  * 同步更新地区编码、名称
  * @returns
  */
-function syncUpdateHiddenAreaCode_add(){
-	console.log("debug_add");
-	var code= $("#distpicker-add #province").find("option:selected").attr("data-code");  //省级编码、名称
-	var name= $("#distpicker-add #province").find("option:selected").val();
+function syncUpdateHiddenAreaCode(){
+	console.log("debug");
+	var code= $("#province").find("option:selected").attr("data-code");  //省级编码、名称
+	var name= $("#province").find("option:selected").val();
 	console.log("name:"+name);
-	$("#distpicker-add #provinceCode").val(code);
-	$("#distpicker-add #provinceName").val(name);
+	$("#provinceCode").val(code);
+	$("#provinceName").val(name);
 	
-	console.log("debug end add");
-	
-	
-	code= $("#distpicker-add #city").find("option:selected").attr("data-code");  //市级编码、名称
-	name= $("#distpicker-add #city").find("option:selected").val();
-	$("#distpicker-add #cityCode").val(code);
-	$("#distpicker-add #cityName").val(name);
+	console.log("debug end");
 	
 	
+	code= $("#city").find("option:selected").attr("data-code");  //市级编码、名称
+	name= $("#city").find("option:selected").val();
+	$("#cityCode").val(code);
+	$("#cityName").val(name);
 	
-	code= $("#distpicker-add #district").find("option:selected").attr("data-code");  //县区级编码、名称
-	name= $("#distpicker-add #district").find("option:selected").val();
-	$("#distpicker-add #countyCode").val(code);
-	$("#distpicker-add #countyName").val(name);
+	
+	
+	code= $("#district").find("option:selected").attr("data-code");  //县区级编码、名称
+	name= $("#district").find("option:selected").val();
+	$("#countyCode").val(code);
+	$("#countyName").val(name);
 	
 	
 }
 
 //页面ready
 $(function() {
-	resetDistPickerDeep_add();
-	syncUpdateHiddenAreaCode_add();  //初始化三级地址编码及三级地址名称字段(hidden类型)
+	resetDistPickerDeep();
+	//syncUpdateHiddenAreaCode();  //初始化三级地址编码及三级地址名称字段(hidden类型)
 	
 	/* 保存签约用户 */
 	$("#btnSave").on('click', function(e) {
@@ -102,22 +102,22 @@ $(function() {
 	/*
 	 *当“省份”变化时，将code赋值给value; 
 	 */
-	$("#distpicker-add #province").on("change",function(){
-		syncUpdateHiddenAreaCode_add();
+	$("#province").on("change",function(){
+		syncUpdateHiddenAreaCode();
 	});
 	
 	/*
 	 *当“市级”变化时，将ode赋值给value; 
 	 */
-	$("#distpicker-add #city").on("change",function(){
-		syncUpdateHiddenAreaCode_add();
+	$("#city").on("change",function(){
+		syncUpdateHiddenAreaCode();
 	});
 	
 	/*
 	 *当“县级”变化时，将code赋值给value; 
 	 */
-	$("#distpicker-add #district").on("change",function(){
-		syncUpdateHiddenAreaCode_add();
+	$("#district").on("change",function(){
+		syncUpdateHiddenAreaCode();
 	});
 	
 	

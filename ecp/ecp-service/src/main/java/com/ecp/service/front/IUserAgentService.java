@@ -54,6 +54,29 @@ public interface IUserAgentService extends IBaseService<UserExtends, Long> {
 	 */
 	public List<UserExtends> searchUserAgent(int searchTypeValue,String condValue,String provinceName,String cityName,String countyName);
 	
+
+	/** 
+		* @Title: searchUserAgent 
+		* @Description: 根据查询条件及范围进行查询.
+		* @param @param searchTypeValue
+		* @param @param condValue
+		* @param @param provinceName
+		* @param @param cityName
+		* @param @param countyName
+		* @param @param agentIdList
+		* @param @return     
+		* @return List<UserExtends>    返回类型 
+		* @throws 
+	*/
+	public List<UserExtends> searchUserAgent(int searchTypeValue,
+											String condValue,
+											String provinceName,
+											String cityName,
+											String countyName,
+											List<Map<String,Object>> agentIdList,
+											byte auditStatus);
+	
+	
 	/** 
 		* @Title: getUsersByAgentId 
 		* @Description: 根据代理商ID查询此代理商下的所有用户 

@@ -51,7 +51,7 @@
   <select id="selectItemsByContractNo" resultType="map">
   	 select * from contract_items as o left join item_sku_picture as p
   	 on(o.sku_id=p.sku_id) 
-	where  o.contract_no=#{contractNo}  GROUP BY o.sku_id
+	where  p.deleted=1 and o.contract_no=#{contractNo}  GROUP BY o.sku_id
   </select>
   
   <!-- 查询合同支付总金额 -->

@@ -5,6 +5,7 @@ import java.util.List;
 
 import org.springframework.stereotype.Service;
 
+import com.ecp.bean.DeletedType;
 import com.ecp.dao.FinalCustomerMapper;
 import com.ecp.entity.FinalCustomer;
 import com.ecp.service.front.IFinalCustomerService;
@@ -30,6 +31,7 @@ public class FinalCustomerServiceImpl extends AbstractBaseService<FinalCustomer,
 	public List<FinalCustomer> getFinalCustomerByOrder(long orderId) {
 		FinalCustomer rec=new FinalCustomer();
 		rec.setOrderId(orderId);
+		rec.setDeleted((byte)DeletedType.NO);
 		
 		return finalCustomerMapper.select(rec);
 		

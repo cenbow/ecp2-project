@@ -140,10 +140,10 @@
 						
 						<!-- 地区选择 -->
 						<div class="form-group">
-							<label for="distpicker-modi" class="col-sm-2 control-label">所在地区（*）</label>
+							<label for="distpicker" class="col-sm-2 control-label">所在地区（*）</label>
 							<div class="col-sm-10">									
 								<!-- 地区选择 -->
-								<div data-toggle="distpicker" id="distpicker-modi">
+								<div data-toggle="distpicker" id="distpicker">
 									<div class="row clearfix">
 										<div class="col-md-12 column">
 											<div class="row clearfix">
@@ -484,6 +484,7 @@
 	<!-- 地区选择 -->
 	<script type="text/javascript" th:src="@{/static/js/distpicker/distpicker.data.js}"></script>
 	<script type="text/javascript" th:src="@{/static/js/distpicker/distpicker.js}"></script>
+	<!-- <script type="text/javascript" th:src="@{/static/js/distpicker/main.js}"></script> -->
 	<!-- 日期组件 -->
 	<script type="text/javascript" th:src="@{/static/calendar/WdatePicker.js}"></script>
 	
@@ -557,8 +558,8 @@
 		 * 复位地区列表
 		 * @returns
 		 */
-		function resetDistPickerDeep_edit(){
-			 var $distpicker = $('#distpicker-modi');
+		function resetDistPickerDeep(){
+			 var $distpicker = $('#distpicker');
 			 $distpicker.distpicker('reset', true);
 		}
 
@@ -566,28 +567,28 @@
 		 * 同步更新地区编码、名称
 		 * @returns
 		 */
-		function syncUpdateHiddenAreaCode_modi(){
+		function syncUpdateHiddenAreaCode(){
 			console.log("debug");
-			var code= $("#distpicker-modi #province").find("option:selected").attr("data-code");  //省级编码、名称
-			var name= $("#distpicker-modi #province").find("option:selected").val();
+			var code= $("#province").find("option:selected").attr("data-code");  //省级编码、名称
+			var name= $("#province").find("option:selected").val();
 			console.log("name:"+name);
-			$("#distpicker-modi #provinceCode").val(code);
-			$("#distpicker-modi #provinceName").val(name);
+			$("#provinceCode").val(code);
+			$("#provinceName").val(name);
 			
 			console.log("debug end");
 			
 			
-			code= $("#distpicker-modi  #city").find("option:selected").attr("data-code");  //市级编码、名称
-			name= $("#distpicker-modi #city").find("option:selected").val();
-			$("#distpicker-modi #cityCode").val(code);
-			$("#distpicker-modi #cityName").val(name);
+			code= $("#city").find("option:selected").attr("data-code");  //市级编码、名称
+			name= $("#city").find("option:selected").val();
+			$("#cityCode").val(code);
+			$("#cityName").val(name);
 			
 			
 			
-			code= $("#distpicker-modi #district").find("option:selected").attr("data-code");  //县区级编码、名称
-			name= $("#distpicker-modi #district").find("option:selected").val();
-			$("#distpicker-modi #countyCode").val(code);
-			$("#distpicker-modi #countyName").val(name);
+			code= $("#district").find("option:selected").attr("data-code");  //县区级编码、名称
+			name= $("#district").find("option:selected").val();
+			$("#countyCode").val(code);
+			$("#countyName").val(name);
 			
 			
 		}
@@ -597,18 +598,15 @@
 		*/
 		function initArea(agent) {
 			//set distpicker
-			$("#distpicker-modi #province").val(agent.province);
-			$("#distpicker-modi #province").trigger("change");
-			$("#distpicker-modi #city").val(agent.city);
-			$("#distpicker-modi #city").trigger("change");
-			$("#distpicker-modi #district").val(agent.county);
+			$("#province").val(agent.province);
+			$("#province").trigger("change");
+			$("#city").val(agent.city);
+			$("#city").trigger("change");
+			$("#district").val(agent.county);
 		}
 		
 		
-		$(function() {
-			
-			resetDistPickerDeep_edit();   //初始化区域选择组件
-			initArea(agent);    //采用用户所选区域进行初始化.
+		$(function() {		
 			
 			/*	保存签约用户 */
 			$("#btnSave").on('click', function(e){
@@ -620,25 +618,26 @@
 			/*
 			 *当“省份”变化时，将code赋值给value; 
 			 */
-			$("#distpicker-modi #province").on("change",function(){
-				syncUpdateHiddenAreaCode_modi();
+			$("#province").on("change",function(){
+				syncUpdateHiddenAreaCode();
 			});
 			
 			/*
 			 *当“市级”变化时，将ode赋值给value; 
 			 */
-			$("#distpicker-modi #city").on("change",function(){
-				syncUpdateHiddenAreaCode_modi();
+			$("#city").on("change",function(){
+				syncUpdateHiddenAreaCode();
 			});
 			
 			/*
 			 *当“县级”变化时，将code赋值给value; 
 			 */
-			$("#distpicker-modi #district").on("change",function(){
-				syncUpdateHiddenAreaCode_modi();
+			$("#district").on("change",function(){
+				syncUpdateHiddenAreaCode();
 			});
 			
-			
+			resetDistPickerDeep();   //初始化区域选择组件
+			initArea(agent);    //采用用户所选区域进行初始化.
 			
 		});
 	</script>

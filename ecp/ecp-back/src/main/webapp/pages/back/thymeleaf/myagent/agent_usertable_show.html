@@ -26,7 +26,7 @@
 	<!-- 代理商用户列表 -->
 	<div class="row clearfix">
 		<div class="col-md-12 column" id="agent-user-table">
-			<div th:include="/back/thymeleaf/user_agent/agent_usertable"></div>
+			<div th:include="/back/thymeleaf/myagent/agent_usertable"></div>
 		</div>
 	</div>
 
@@ -90,7 +90,7 @@
 			console.log("agentId"+agentId);
 			
 			
-			var url = BASE_CONTEXT_PATH + "/back/agent/dispatch"; // 需要提交的 url
+			var url = BASE_CONTEXT_PATH + "/back/myagent/dispatch"; // 需要提交的 url
 			$.ajax({
 				type : "post", // 提交方式 get/post
 				url : url, // 需要提交的 url
@@ -137,7 +137,7 @@
 			//console.log("agentId"+agentId);
 			
 			
-			var url = BASE_CONTEXT_PATH + "/back/agent/modiuser"; // 需要提交的 url
+			var url = BASE_CONTEXT_PATH + "/back/myagent/modiuser"; // 需要提交的 url
 			$.ajax({
 				type : "post", // 提交方式 get/post
 				url : url, // 需要提交的 url
@@ -174,7 +174,7 @@
 		/*重新加载用户列表*/
 		function reloadUserPage(){
 			var container="#agent-user-table";
-			var url = BASE_CONTEXT_PATH + "/back/agent/usertable"; // 需要提交的 url
+			var url = BASE_CONTEXT_PATH + "/back/myagent/usertable"; // 需要提交的 url
 			
 			var parms=new Object();
 			parms.agentId=curr_agentId;
@@ -221,7 +221,7 @@
 		 */
 		function hasSameLoginName() {
 			var loginName = $("#loginName").val();
-			var url = BASE_CONTEXT_PATH + "/back/agent/sameloginname"; // 需要提交的 url
+			var url = BASE_CONTEXT_PATH + "/back/myagent/sameloginname"; // 需要提交的 url
 			$.ajax({
 				type : "post", // 提交方式 get/post
 				url : url, // 需要提交的 url

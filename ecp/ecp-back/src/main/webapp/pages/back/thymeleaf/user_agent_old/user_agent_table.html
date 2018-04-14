@@ -1,0 +1,265 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>Insert title here</title>
+
+<style>
+
+a{  text-decoration:none;
+	cursor:pointer;
+}
+
+a:visited{
+	text-decoration:none;
+}
+
+tr:hover{
+		background-color:#CCFFCC;
+	}
+
+/* 纵向菜单：时间条件 */
+	
+	.ordertime-cont{		
+		margin-bottom: 0;
+		display:inline-block;
+		margin-left:350px;			
+	}	
+	
+	.time-list{
+		display:none;
+		background-color: rgba(65,65,65,.8);		
+		border:2px solid #1296db;
+		position:absolute;		
+	}
+	
+	.time-list ul{		
+		padding:10px 10px 0px 20px;		
+	}
+	
+	.time-list li{
+		list-style-type:none;		
+	}
+	
+	.time-list li.curr{
+		margin-left:-10px;
+		/* background:   一般用图片进行模拟 ，比较好控制 */		
+	}
+		
+	.time-list a{
+		color:#dcdcdc;
+	}
+	
+	
+	.time-list i{
+		color:white;
+	}
+
+</style>
+
+
+</head>
+<body>
+	<div class="container-fluid" style="margin-top: 20px;">
+	
+	<!-- 签约客户列表 -->
+	<div class="row clearfix">
+		<div class="col-md-12 column">
+
+
+			<!-- 工具栏 -->
+			<div class="row clearfix">
+				<div class="col-md-12 column">
+					
+					<div class="container-fluid">
+						<div class="row clearfix">
+							<div class="col-md-12 column">
+								<div class="panel panel-default">
+									<div class="panel-body">
+										<h4 >
+											<i class="icon-user" style="color: green"></i>签约客户维护
+										</h4>
+										<!-- 查询 -->
+										<div class="search-box" style="display:inline;margin-left:200px;">
+											<div class="ordertime-cont">
+												<div class="time-txt" >
+													<span class="text" id="ordertime-cond" value="0">选择查询条件</span>
+													<i class="icon-angle-down icon-large" style="color:black"></i>							
+												</div>
+												<div class="time-list">
+													<ul>
+														<li class="curr" value="0"><i class="icon-ok"></i><a href="javascript:void(0);" >选择查询条件</a></li>
+														<li class="" 	 value="1"><i class="icon-ok"></i><a href="javascript:void(0);" >企业名称</a></li>
+														<li class="" 	 value="2"><i class="icon-ok"></i><a href="javascript:void(0);" >负责人姓名</a></li>
+														<li class="" 	 value="3"><i class="icon-ok"></i><a href="javascript:void(0);" >手机号码</a></li>			
+													</ul>
+												</div>						
+											</div>
+											<div class="cond-box" style="display:inline">
+												<input type="text" value="" id="searchCond" name="searchCond" placeholder="请输入查询关键字" />
+												<a class="start-search" href="javascript:void(0);"><i class="icon-search icon-large "></i></a>
+											</div>
+										</div>
+										<!-- <a th:href="@{/back/agent/add}" id="add-btn" title="增加签约客户" target="_blank" style="float: right; margin-right: 60px;">
+											<i	class="icon-plus-sign icon-large"></i>
+										</a> -->
+										<a id="add-btn" title="增加签约客户" target="_blank" style="float: right; margin-right: 60px;">
+											<i	class="icon-plus-sign icon-large"></i>
+										</a> 
+										<a
+											th:href="@{/back/agent/show}" title="刷新列表"	style="float: right; margin-right: 10px">
+											<i class="icon-refresh icon-large"></i>
+										</a>
+									</div>
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+			<table class="table">
+				<thead>
+					<tr>
+						<th>企业名称</th>
+						<th>企业负责人</th>
+						<th>手机号码</th>
+						<th>帐号</th>
+						<th>状态</th>
+						<th>有效性</th>
+						<th>操作</th>
+					</tr>
+				</thead>
+				<tbody>
+					<tr th:each="agent:${userAgents}">
+						<td th:text="${agent.companyName}" style="width:400px;">北京XXX科技有限责任公司</td>
+						<td th:text="${agent.artificialPersonName}">张XX</td>
+						<td th:text="${agent.contactPhone}">138xxxxxxxx</td>
+						<span th:switch="${agent.userId}" th:remove="tag">
+							<td th:case="0"><i class="icon-magic"></i>未分配</td>
+							<td th:case="*"><i class="icon-user"></i>已分配</td>
+						</span>
+						<span th:switch="${agent.accountState}" th:remove="tag">
+							<td th:case="'1'" style="color:green;">有效</td>
+							<td th:case="'2'" style="color:red;">无效</td>
+						</span>
+
+						<td>
+							<button type="button" th:attr="data-bind=${agent.extendId},data-account-state=${agent.accountState}" 
+								class="btn btn-success btn-sm set-valid" title="设置此帐号有效">有效</button>
+							<button type="button" th:attr="data-bind=${agent.extendId},data-account-state=${agent.accountState}"
+								class="btn btn-warning btn-sm set-invalid" title="设置此帐号无效">无效</button>
+						</td>
+						<td>
+						<!-- <a type="button"
+							th:href="@{/back/agent/detail/{id}(id=${agent.extendId})}"
+							target="_blank" th:attr="data-bind=${agent.extendId}"
+							class="show-detail" title="修改客户信息"> <i
+								class="icon-edit icon-large"></i>
+						</a> -->
+						<a type="button"
+							th:attr="data-bind=${agent.extendId}, 
+									onclick='javascript:editAgent('+${agent.extendId}+');'"
+							class="show-detail" title="修改客户信息"> 
+							<i	class="icon-edit icon-large"></i>
+						</a> 
+						<a type="button"
+							th:attr="data-bind=${agent.extendId},
+									data-company-name=${agent.companyName},
+									data-contact-phone=${agent.contactPhone},
+									data-artificialPersonName=${agent.artificialPersonName},
+									data-user-id=${agent.userId}"
+							class="account-management" 
+							title="帐号管理"> 
+							<i	class="icon-group icon-large"></i>
+						</a>
+						
+						<!-- <a type="button"
+							th:attr="data-bind=${agent.extendId},
+									data-company-name=${agent.companyName},
+									data-contact-phone=${agent.contactPhone},
+									data-artificialPersonName=${agent.artificialPersonName},
+									data-user-id=${agent.userId},
+									data-account-state=${agent.accountState}"
+							class="reset-password" title="重置密码"> <i	class="icon-retweet icon-large"></i>
+						</a> -->
+						
+						</td>
+
+					</tr>
+
+				</tbody>
+			</table>
+			<!-- 加入 分页 -->
+			<div class="row clearfix">				
+				<div th:include="/back/thymeleaf/common/_pager::pager" class="pagerx"
+					style="float: right; margin-right: 100px;"></div>
+			</div>
+			
+		</div>
+	</div>
+	</div>
+	<!-- 当用户点击查询条件时，采用些隐藏表单提交 -->
+	<form th:action="@{/back/agent/show}" method="post" id="searchform">
+		<!-- 保存页号与页大小 -->
+		<input type="hidden" name="pageNum" id="pageNum" th:value="${pageInfo.pageNum}"> 
+		<input type="hidden" name="pageSize" id="pageSize" th:value="${pageInfo.pageSize}">
+
+		<!-- 用户选择的条件列表 -->
+		<!-- <input type="hidden" name="searchCond" id="searchCond"	th:value="${searchCond}"> -->
+	</form>
+
+	
+	<!-- 查询条件  -->
+	<script th:inline="javascript">  
+		/*<![CDATA[*/
+			
+		var g_searchTypeValue = [[${searchTypeValue}]];  //查询类型值
+		var g_condValue=[[${condValue}]]; //查询条件值
+		
+		/*]]>*/  
+		
+		/**
+		 * 点击添加按钮时执行
+		 *		函数功能：打开添加代理商选项卡
+		 */
+		$("#add-btn").click(function(){
+			var url = BASE_CONTEXT_PATH + "/back/agent/add";
+			$("#edit-body").load(url, function(){
+				//TODO
+				$("#edit-tab").removeClass("hide");
+				$("#edit-tab-title").text("增加签约客户信息");
+				$('#tabs-14933 a[href="#panel-602679"]').tab('show');
+			});
+		});
+		
+		/**
+		 * 点击编辑按钮时执行
+		 *		函数功能：打开编辑选项卡
+		 */
+		function editAgent(id){
+			var url = BASE_CONTEXT_PATH + "/back/agent/detail/"+id;
+			$("#edit-body").load(url, function(){
+				//TODO
+				$("#edit-tab").removeClass("hide");
+				$("#edit-tab-title").text("签约客户信息-详情");
+				$('#tabs-14933 a[href="#panel-602679"]').tab('show');
+			});
+		}
+		
+		/**
+		 * 重置选项卡
+		 */
+		function resetTab(){
+			$('#tabs-14933 a[href="#panel-150383"]').tab('show');
+			$("#edit-body").empty();
+			$("#edit-tab").addClass("hide");
+		}
+		
+	</script>	
+
+	
+	<script type="text/javascript" th:src="@{/static/js/user_agent/user_agent.js}"></script>
+	
+	
+</body>
+</html>

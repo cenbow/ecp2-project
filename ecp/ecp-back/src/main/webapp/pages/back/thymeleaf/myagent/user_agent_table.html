@@ -58,9 +58,6 @@ tr:hover {
 </head>
 <body>
 	<div class="container-fluid" style="margin-top: 20px;">
-	
-		<!-- 审核对话框 -->
-		<div id="div-audit-dialog" th:include="/back/thymeleaf/user_agent/audit_agent_dialog"></div>
 
 		<!-- 签约客户列表 -->
 		<div class="row clearfix">
@@ -177,7 +174,7 @@ tr:hover {
 				<a id="add-btn" title="增加签约客户" target="_blank"
 					style="float: right; margin-right: 60px;"> <i
 					class="icon-plus-sign icon-large"></i>
-				</a> <a th:href="@{/back/agent/show}" title="刷新列表"
+				</a> <a th:href="@{/back/myagent/show}" title="刷新列表"
 					style="float: right; margin-right: 10px"> <i
 					class="icon-refresh icon-large"></i>
 				</a>
@@ -192,10 +189,8 @@ tr:hover {
 							<th>手机号码</th>
 							<th>帐号</th>
 							<th>状态</th>
-							<th>有效性</th>
 							<th>审核状态</th>
 							<th>审核结果</th>
-							<th>审核</th>
 							<th>操作</th>
 						</tr>
 					</thead>
@@ -213,14 +208,14 @@ tr:hover {
 								<td th:case="'2'" style="color: red;">无效</td>
 							</span>
 
-							<td>
+							<!-- <td>
 								<button type="button"
 									th:attr="data-bind=${agent.extendId},data-account-state=${agent.accountState}"
 									class="btn btn-success btn-sm set-valid" title="设置此帐号有效">有效</button>
 								<button type="button"
 									th:attr="data-bind=${agent.extendId},data-account-state=${agent.accountState}"
 									class="btn btn-warning btn-sm set-invalid" title="设置此帐号无效">无效</button>
-							</td>
+							</td> -->
 							
 							<!-- 审核相关 -->
 							<td>
@@ -233,17 +228,7 @@ tr:hover {
 							
 							<td th:text="${agent.auditComment}">审核意见</td>
 							
-							<td>
-								<button type="button" th:attr="data-bind-id=${agent.extendId},
-														  data-bind-auditstatus=${agent.auditStatus},
-														  data-bind-companyname=${agent.companyName}, 
-														  onclick='javascript:auditAgent(this);'"	
-														  class="btn btn-primary btn-sm audit-agent" title="审核"> 
-									<!-- <i class="icon-edit icon-large"></i> -->
-									<span><i class="icon-edit icon-large" style="color:white"></i>审核</span>  
-								</button>
 							
-							</td>
 							
 							
 							<td>
@@ -257,7 +242,7 @@ tr:hover {
 									onclick='javascript:editAgent('+${agent.extendId}+');'"
 								class="show-detail" title="修改客户信息"> <i
 									class="icon-edit icon-large"></i>
-							</a> <a type="button"
+							</a> <!-- <a type="button"
 								th:attr="data-bind=${agent.extendId},
 									data-company-name=${agent.companyName},
 									data-contact-phone=${agent.contactPhone},
@@ -265,7 +250,7 @@ tr:hover {
 									data-user-id=${agent.userId}"
 								class="account-management" title="帐号管理"> <i
 									class="icon-group icon-large"></i>
-							</a> <!-- <a type="button"
+							</a> --> <!-- <a type="button"
 							th:attr="data-bind=${agent.extendId},
 									data-company-name=${agent.companyName},
 									data-contact-phone=${agent.contactPhone},
@@ -326,7 +311,7 @@ tr:hover {
 		 *		函数功能：打开添加代理商选项卡
 		 */
 		$("#add-btn").click(function(){
-			var url = BASE_CONTEXT_PATH + "/back/agent/add";
+			var url = BASE_CONTEXT_PATH + "/back/myagent/add";
 			$("#edit-body").load(url, function(){
 				//TODO
 				$("#edit-tab").removeClass("hide");
@@ -340,7 +325,7 @@ tr:hover {
 		 *		函数功能：打开编辑选项卡
 		 */
 		function editAgent(id){
-			var url = BASE_CONTEXT_PATH + "/back/agent/detail/"+id;
+			var url = BASE_CONTEXT_PATH + "/back/myagent/detail/"+id;
 			$("#edit-body").load(url, function(){
 				//TODO
 				$("#edit-tab").removeClass("hide");
@@ -361,10 +346,13 @@ tr:hover {
 	</script>
 
 	<!-- 地区选择 -->
-	<script type="text/javascript" 	th:src="@{/static/js/distpicker/distpicker.data.js}"></script>
-	<script type="text/javascript" 	th:src="@{/static/js/distpicker/distpicker.js}"></script>
+	<script type="text/javascript"
+		th:src="@{/static/js/distpicker/distpicker.data.js}"></script>
+	<script type="text/javascript"
+		th:src="@{/static/js/distpicker/distpicker.js}"></script>
 
-	<script type="text/javascript"	th:src="@{/static/js/user_agent/user_agent.js}"></script>
+	<script type="text/javascript"
+		th:src="@{/static/js/myagent/user_agent.js}"></script>
 
 
 </body>

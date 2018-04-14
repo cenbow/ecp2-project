@@ -73,10 +73,10 @@ CREATE TABLE `final_customer` (
 									</div>
 									
 									<div class="form-group">
-										<label for="distpicker" class="col-sm-2 control-label">所在地区（*）</label>
+										<label for="distpicker-add" class="col-sm-2 control-label">所在地区（*）</label>
 										<div class="col-sm-10">									
 											<!-- 地区选择 -->
-											<div data-toggle="distpicker" id="distpicker">
+											<div data-toggle="distpicker" id="distpicker-add">
 												<div class="row clearfix">
 													<div class="col-md-12 column">
 														<div class="row clearfix">
@@ -177,6 +177,105 @@ CREATE TABLE `final_customer` (
 	</div>
 	
 	</th:block>
+	
+	<!-- 订单选择条件  -->
+	<script th:inline="javascript">  
+		/*<![CDATA[*/
+			
+		/* var ret_provinceName=[[${provinceName}]];  		 	//回传的区域条件
+		var ret_cityName=[[${cityName}]];
+		var ret_countyName=[[${countyName}]]; */
+		
+		/*]]>*/  
+	</script>
+	
+	<script type="text/javascript">
+	//---------------------------区域操作-----------------------------
+	/**
+	 * 复位地区列表
+	 * @returns
+	 */
+	function resetDistPickerDeep(){
+		 var $distpicker = $('#distpicker-add');
+		 $distpicker.distpicker('reset', true);
+	}
+
+	/**
+	 * 同步更新地区编码、名称
+	 * @returns
+	 */
+	function syncUpdateHiddenAreaCode(){
+		console.log("debug");
+		var code= $("#distpicker-add #province").find("option:selected").attr("data-code");  //省级编码、名称
+		var name= $("#distpicker-add #province").find("option:selected").val();
+		console.log("name:"+name);
+		$("#distpicker-add #provinceCode").val(code);
+		$("#distpicker-add #provinceName").val(name);
+		
+		console.log("debug end");
+		
+		
+		code= $("#distpicker-add #city").find("option:selected").attr("data-code");  //市级编码、名称
+		name= $("#distpicker-add #city").find("option:selected").val();
+		$("#distpicker-add #cityCode").val(code);
+		$("#distpicker-add #cityName").val(name);
+		
+		
+		
+		code= $("#distpicker-add #district").find("option:selected").attr("data-code");  //县区级编码、名称
+		name= $("#distpicker-add #district").find("option:selected").val();
+		$("#distpicker-add #countyCode").val(code);
+		$("#distpicker-add #countyName").val(name);
+		
+		
+	}
+	
+	/**
+	 * 根据回传的"区域"数据更新区域选择界面 
+	 * @returns
+	 */
+	/* function updateUIArea(){
+		$("#province").val(ret_provinceName);
+		$("#province").trigger("change");
+		
+		$("#city").val(ret_cityName);
+		$("#city").trigger("change");
+		
+		$("#district").val(ret_countyName);
+	} */
+	
+	$(function(){
+		//syncUpdateHiddenAreaCode();  //初始化三级地址编码及三级地址名称字段(hidden类型)
+		//updateUIArea();
+		
+		resetDistPickerDeep();
+		
+		//==================地区选择====================
+		/*
+		 *当“省份”变化时，将code赋值给value; 
+		 */
+		$("#distpicker-add #province").on("change",function(){
+			syncUpdateHiddenAreaCode();
+		});
+		
+		/*
+		 *当“市级”变化时，将ode赋值给value; 
+		 */
+		$("#distpicker-add #city").on("change",function(){
+			syncUpdateHiddenAreaCode();
+		});
+		
+		/*
+		 *当“县级”变化时，将code赋值给value; 
+		 */
+		$("#distpicker-add #district").on("change",function(){
+			syncUpdateHiddenAreaCode();
+		});
+		
+	})
+	
+	
+	</script>
 	
 </body>
 </html>

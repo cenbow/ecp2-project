@@ -40,18 +40,25 @@ import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
 
 /**
+ * @ClassName UserAgentController
+ * @Description 签约客户维护控制器
+ * @author Administrator
+ * @Date 2017年6月17日 上午11:37:13
+ * @version 1.0.0
+ */
+/**
 	* Copyright (c) 2017 by Hz
-	* @ClassName:     UserAgentController.java
-	* @Description:   签约客户维护控制器:admin端
+	* @ClassName:     MyAgentController.java
+	* @Description:   我的:签约客户维护控制器 (OS/IS使用)
 	* 
 	* @author:        lenovo
 	* @version:       V1.0  
-	* @Date:          2018年4月14日 上午12:56:10 
+	* @Date:          2018年4月13日 上午10:28:51 
 */
 @Controller
-@RequestMapping("/back/agent")
-public class UserAgentController {
-	final String RESPONSE_THYMELEAF_BACK = "back/thymeleaf/user_agent/";
+@RequestMapping("/back/myagent")
+public class MyAgentController {
+	final String RESPONSE_THYMELEAF_BACK = "back/thymeleaf/myagent/";
 	final String RESPONSE_JSP = "jsps/front/";
 	
 	final String DEFAULT_PASSWORD="123456";
@@ -573,20 +580,6 @@ public class UserAgentController {
 		user.setStatus(accountState);
 		userService.updateByPrimaryKeySelective(user);*/
 		
-		return RequestResultUtil.getResultUpdateSuccess(); 
-	}
-	
-	@RequestMapping(value="/audit" ,method=RequestMethod.POST)
-	@ResponseBody
-	public Object auditAgent(long agentId,byte auditStatus,String auditComment,  HttpServletRequest request){
-		UserExtends agent=new UserExtends();
-		agent.setExtendId(agentId);
-		agent.setAuditStatus(auditStatus);
-		agent.setAuditComment(auditComment);
-		agent.setUserId(getLoginUserId());
-		
-		userAgentService.updateByPrimaryKeySelective(agent);
-						
 		return RequestResultUtil.getResultUpdateSuccess(); 
 	}
 	

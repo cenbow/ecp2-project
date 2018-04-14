@@ -93,7 +93,7 @@ function setSearchParams(parms){
 
 // ===================设置代理商:状态====================
 function setAgentState(agentId,  state) {
-	var url = BASE_CONTEXT_PATH+"/back/agent/setstate"; // 需要提交的 url
+	var url = BASE_CONTEXT_PATH+"/back/myagent/setstate"; // 需要提交的 url
 	$.ajax({
 		type : "post", // 提交方式 get/post
 		url : url, // 需要提交的 url
@@ -219,75 +219,6 @@ function updateAuditStatus(){
 	}	
 }
 
-
-//---------------------审核处理--------------------
-/**
- * 打开审核窗口
- * @returns
- */
-function openAuditDialog(agentId,companyName) {
-	$('#modal-container-306690').modal({
-		backdrop : 'static',
-		keyboard : false
-	});
-}
-
-/* close dialog :审核窗口*/
-function closeAuditDialog() {	
-	$("#modal-container-306690").modal("hide");
-}
-
-function auditAgent(that){
-	var agentId=$(that).attr("data-bind-id");
-	var auditStatus=$(that).attr("data-bind-auditstatus");
-	var companyName=$(that).attr("data-bind-companyname");
-	
-	if(auditStatus!=null){
-		if(auditStatus==3){
-			util.message("已经审核通过,不必再进行审核.");
-		}
-		else{
-			$("#audit-companyname").text("-"+companyName);
-			$("#audit-agentid").val(agentId);
-			openAuditDialog(agentId,companyName);
-		}
-	}
-}
-
-/** 
- * @returns 保存审核状态
- */
-function saveAuditStatus(){
-	var url = BASE_CONTEXT_PATH + "/back/agent/audit"; // 需要提交的url
-	$("#audit-agent-form").ajaxSubmit({
-		type : "post",
-		url : url,
-		success : function(res) {
-			console.log(res);
-			if (res != null) {
-				var obj = $.parseJSON(res);
-				if (obj.result_code == "success") {					
-					closeAuditDialog();	//关闭审核窗口
-				} else {
-					util.message(obj.result_msg);
-				}
-			}
-		},
-		error : function(jqXHR, textStatus, errorThrown) {
-			util.message("AJAX请求时发生错误!");
-			/* 弹出jqXHR对象的信息 */
-			console.log(jqXHR.responseText);
-			console.log(jqXHR.status);
-			console.log(jqXHR.readyState);
-			console.log(jqXHR.statusText);
-			/* 弹出其他两个参数的信息 */
-			console.log(textStatus);
-			console.log(errorThrown);
-		}
-		
-	});
-}
-
 //--------------------区域操作-----------------------
 /**
  * 复位地区列表
@@ -340,14 +271,6 @@ $(function() {
 	updateUISearchCond(g_searchTypeValue);
 	//updateUISearchCondValue(g_condValue);
 	
-	
-	//保存审核结果:button:click event
-	/*$('#btn-save-audit').on('click',function(){saveAuditStatus();});*/
-	$("#modal-container-306690").on('hidden.bs.modal', function () {
-		  // 执行一些动作...
-			reloadPage();  		//重新加载页面
-	})
-	
 	// ===================代理商:帐号管理======================
 	/**
 	 * 导航到代理商帐号列表界面.
@@ -369,7 +292,7 @@ $(function() {
 				
 				
 				//加载代理商用户列表.
-				var url = BASE_CONTEXT_PATH + "/back/agent/showusertable?agentId="+agentId;
+				var url = BASE_CONTEXT_PATH + "/back/myagent/showusertable?agentId="+agentId;
 				$("#edit-body").load(url, function(){
 					//在新的选项卡中显示代理商用户列表.
 					$("#edit-tab").removeClass("hide");
