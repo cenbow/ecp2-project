@@ -241,7 +241,11 @@ public class PerformanceController {
 			String orderId = order.get("id").toString();
 			String totalPrice = order.get("total_price").toString();
 			//String contractState = order.get("contract_state").toString();
-			String contractNo = order.get("contract_no").toString();
+			Object contractNoTemp = order.get("contract_no");
+			String contractNo = null;
+			if(contractNoTemp!=null){
+				contractNo = contractNoTemp.toString();
+			}
 			/*if(StringUtils.isNotBlank(orderId)){
 				if(StringUtils.isNotBlank(contractState) && Integer.parseInt(contractState)==ContractStateType.FINISHED){
 					Map<String, Object> params = new HashMap<>();
