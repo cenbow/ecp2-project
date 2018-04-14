@@ -10,11 +10,11 @@
 			<th><input type="checkbox" name="checkbox" id="checkbox" onclick="javascript:checkAll(this);">
 				<label for="checkbox">ALL</label>
 			</th>
-			<th>ID</th>
+			<!-- <th>ID</th> -->
 			<th>IS/OS</th>
-			<th>考核年度名称</th>
-			<th>考核周期名称</th>
-			<th>时间段计法</th>
+			<th>考核年度</th>
+			<th>周期名称</th>
+			<th>时间计法</th>
 			<th>开始时间</th>
 			<th>结束时间</th>
 			<th>指标比例</th>
@@ -28,7 +28,7 @@
 				<td>
 					<input type="checkbox" name="checkbox2" id="sales-target-td-${target.id}" onclick="javascript:checkOne();" value="${target.id}">
 				</td>
-				<td>${target.id}</td>
+				<%-- <td>${target.id}</td> --%>
 				<td>${target.username}（${target.role_name}）</td>
 				<td>${target.year_name}</td>
 				<td>${target.cycle_name}</td>
