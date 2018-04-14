@@ -1242,7 +1242,13 @@ function ajaxRequestUpdateStatusByBatch(itemIds, status){
 function filterItemFun(params){
 	var action = "back/item-price/selectItems";
 	params.clickPageBtn = true;
+	var cateFirst = $("#search-cate-first").val();
+	var cateSecond = $("#search-cate-second").val();
+	var cateThird = $("#search-cate-third").val();
 	var keywords = $("#search-keywords").val();
+	params.search_cate_first = cateFirst;
+	params.search_cate_second = cateSecond;
+	params.search_cate_third = cateThird;
 	params.search_keywords = keywords;
 	//util.loading();
 	$("#item-div").load(action, params, function(){

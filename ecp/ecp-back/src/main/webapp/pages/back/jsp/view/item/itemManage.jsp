@@ -6,7 +6,7 @@
 <html>
 <head>
 <title>商品管理</title>
-<%@ include file="../../../common/headCss.jsp"%>
+<%@ include file="../../../../common/headCss.jsp"%>
 
 <script type="text/javascript">
 	window.UEDITOR_HOME_URL = "/ecp-back/tools/ueditor/"; //一定要用这句话，否则你需要去ueditor.config.js修改路径的配置信息
@@ -23,7 +23,7 @@
 <!-- 日期工具 -->
 <script type="text/javascript" src="static/calendar/WdatePicker.js"></script>
 
-<%@ include file="../../../common/headJs.jsp"%>
+<%@ include file="../../../../common/headJs.jsp"%>
 
 <script type="text/javascript" src="static/jquery/ajaxFileUpload.js"></script>
 
@@ -41,7 +41,7 @@
 							<li class="active" onclick="javascript:clickItemTab();"><a data-toggle="tab" href="#tab-1"
 								aria-expanded="true"> 商品列表</a></li>
 							<li class="hide" id="edit-item-li"><a
-								data-toggle="tab" href="#tab-2" aria-expanded="false">编辑商品</a></li>
+								data-toggle="tab" href="#tab-2" aria-expanded="false">商品详情</a></li>
 						</ul>
 						<div class="tab-content">
 							<div id="tab-1" class="tab-pane active">
@@ -111,13 +111,13 @@
 													</h3>
 												</div>
 												<div class="panel-body">
-													<div class="panel panel-default">
+													<!-- <div class="panel panel-default">
 														<div class="panel-body">
 															<button type="button" class="btn btn-danger" id="batch-delete-btn">批量删除</button>
 															<button type="button" class="btn btn-default btn-warning" id="batch-shelve-btn">批量上架</button>
 															<button type="button" class="btn btn-danger" id="batch-unshelve-btn">批量下架</button>
 														</div>
-													</div>
+													</div> -->
 													<div class="panel panel-default">
 														<div id="item-div" style="margin: 20px">
 															<%@ include file="itemManageTable.jsp"%>
@@ -132,7 +132,7 @@
 								</div>
 							</div>
 							<div id="tab-2" class="tab-pane">
-								<%@ include file="editItemPrice.jsp"%>
+								<%@ include file="editItem.jsp"%>
 							</div>
 						</div>
 					</div>
@@ -143,7 +143,7 @@
 </div>
 </div>
 
-	<script type="text/javascript" src="static/js/itemPriceManage.js"></script>
+	<script type="text/javascript" src="static/js/view/view_itemManage.js"></script>
 	<script type="text/javascript">
 	/*
 	 * 根据父ID查询类目

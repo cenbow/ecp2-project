@@ -190,7 +190,7 @@
 
 	<!-- 根据条件（map中的参数）查询商品 -->
 	<select id="selectItemsByCondition" parameterType="map" resultType="map">
-		SELECT 
+		<!-- SELECT 
 			i.*, c.c_name, b.brand_name 
 		FROM 
 			item i 
@@ -201,14 +201,35 @@
 		LEFT JOIN 
 			item_brand b 
 		ON 
-			i.brand=b.brand_id 
+			i.brand=b.brand_id  -->
+		SELECT
+			i.*, b.brand_name,
+		c_third.cid AS c_third_id, c_third.c_name,
+		c_second.cid AS c_second_id, c_second.c_name AS c_second_name,
+		c_first.cid AS c_first_id, c_first.c_name AS c_first_name
+		FROM
+			item i
+		LEFT JOIN item_category c_third ON i.cid = c_third.cid
+		LEFT JOIN item_category c_second ON c_third.parent_cid = c_second.cid
+		LEFT JOIN item_category c_first ON c_second.parent_cid = c_first.cid
+		LEFT JOIN item_brand b ON i.brand = b.brand_id
 		<where>
+			1=1
 			<if test="itemStatus!=0">
-				i.deleted=1
-			</if>			
+				AND i.deleted=1
+			</if>	
+			<if test="search_cate_third!=null">
+				AND c_third.cid = #{search_cate_third}
+			</if>
+			<if test="search_cate_second!=null">
+				AND c_second.cid = #{search_cate_second}
+			</if>
+			<if test="search_cate_first!=null">
+				AND c_first.cid = #{search_cate_first}
+			</if>		
 			<if test="search_keywords!=null and search_keywords!=''">
 				AND (
-					c.c_name like CONCAT('%',#{search_keywords},'%' )
+					c_third.c_name like CONCAT('%',#{search_keywords},'%' )
 					or 
 					b.brand_name like CONCAT('%',#{search_keywords},'%' )
 					or 

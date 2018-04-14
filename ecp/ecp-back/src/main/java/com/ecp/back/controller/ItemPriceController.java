@@ -103,21 +103,31 @@ public class ItemPriceController {
 	 * @return
 	 */
 	@RequestMapping("/selectItems")
-	public ModelAndView selectLinkItem(HttpServletRequest request, HttpServletResponse response, Boolean clickPageBtn, PageBean pageBean, String pagehelperFun, String search_keywords) {
+	public ModelAndView selectLinkItem(HttpServletRequest request, HttpServletResponse response, Boolean clickPageBtn, PageBean pageBean, String pagehelperFun, Long search_cate_first, Long search_cate_second, Long search_cate_third, String search_keywords) {
 		ModelAndView mav = new ModelAndView();
 		Subject subject = SecurityUtils.getSubject();
 		UserBean user = (UserBean)subject.getPrincipal();
 		
-		Map<String, Object> param = new HashMap<String, Object>();
+		Map<String, Object> param = new HashMap<>();
+		if(search_cate_first!=null && search_cate_first>0){
+			param.put("search_cate_first", search_cate_first);
+		}
+		if(search_cate_second!=null && search_cate_second>0){
+			param.put("search_cate_second", search_cate_second);
+		}
+		if(search_cate_third!=null && search_cate_third>0){
+			param.put("search_cate_third", search_cate_third);
+		}
 		if(StringUtils.isNotBlank(search_keywords)){
 			param.put("search_keywords", search_keywords);
-		}else{
-			param = null;
 		}
 		PageHelper.startPage(pageBean.getPageNum(), pageBean.getPageSize());
 		List<Map<String, Object>> itemList = iItemService.selectItemsByCondition(param);
-		PageInfo<Map<String, Object>> pagehelper = new PageInfo<Map<String, Object>>(itemList);
+		PageInfo<Map<String, Object>> pagehelper = new PageInfo<>(itemList);
 		mav.addObject("pagehelper", pagehelper);
+		
+		List<Category> firstCategoryList = iCategoryService.selectByLev(1);
+		mav.addObject("firstCategoryList", firstCategoryList);
 		
 		//类目
 		List<Category> categoryList = iCategoryService.getAll(null);

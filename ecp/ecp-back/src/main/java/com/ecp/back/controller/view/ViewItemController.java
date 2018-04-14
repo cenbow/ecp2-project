@@ -1,4 +1,4 @@
-package com.ecp.back.controller;
+package com.ecp.back.controller.view;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -43,13 +43,13 @@ import com.github.pagehelper.PageInfo;
 
 /**
  * Class: ItemController
- * 		商品Controller类
+ * 		查看商品Controller类
  * @author srd 
  * @version 1.0 $Date: 2017年5月7日 下午5:16:02
  */
 @Controller
-@RequestMapping("/back/item")
-public class ItemController {
+@RequestMapping("/back/view/item")
+public class ViewItemController {
 
 	private final Logger log = Logger.getLogger(getClass());
 	
@@ -121,6 +121,7 @@ public class ItemController {
 		if(StringUtils.isNotBlank(search_keywords)){
 			param.put("search_keywords", search_keywords);
 		}
+		
 		PageHelper.startPage(pageBean.getPageNum(), pageBean.getPageSize());
 		List<Map<String, Object>> itemList = iItemService.selectItemsByCondition(param);
 		PageInfo<Map<String, Object>> pagehelper = new PageInfo<>(itemList);
@@ -155,9 +156,9 @@ public class ItemController {
 		mav.addObject("attrValueList", attrValueList);*/
 		
 		if(clickPageBtn!=null && clickPageBtn){
-			mav.setViewName(StaticConstants.ITEM_MANAGE_TABLE_PAGE);
+			mav.setViewName(StaticConstants.VIEW_ITEM_MANAGE_TABLE_PAGE);
 		}else{
-			mav.setViewName(StaticConstants.ITEM_MANAGE_PAGE);
+			mav.setViewName(StaticConstants.VIEW_ITEM_MANAGE_PAGE);
 		}
 		
 		mav.addObject("pagehelperFun", pagehelperFun);

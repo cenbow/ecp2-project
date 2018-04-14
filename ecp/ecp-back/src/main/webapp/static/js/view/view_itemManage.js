@@ -422,7 +422,7 @@ function selectDetails(id, cid){
  * ajax请求获取商品信息
  */
 function ajaxRequestGetItemInfo(id){
-	var url = "back/item/selectUpdateById";
+	var url = "back/view/item/selectUpdateById";
 	var params = {"id":id};
 	$.post(url, params, function(res){
 		console.log(res);
@@ -445,11 +445,11 @@ function ajaxRequestGetItemInfo(id){
 				$("#item-model").val(item.model);//型号
 				$("#keywords").val(item.keywords);//关键字
 				//$("#introduction").val(item.introduction);//商品简介	
-				/*$("#guide-price").val(item.guidePrice);//商城指导价格
+				$("#guide-price").val(item.guidePrice);//商城指导价格
 				$("#highest-price").val(item.highestPrice);//最高价格
 				$("#lowest-price").val(item.lowestPrice);//最低价格
 				$("#market-price").val(item.marketPrice);//市场价格
-				$("#market-price2").val(item.marketPrice2);//成本价格
+				/*$("#market-price2").val(item.marketPrice2);//成本价格
 				$("#hard-cost-price").val(item.hardCostPrice);//硬成本价格*/
 				$("#inventory").val(item.inventory);//库存数量
 				$("#origin").val(item.origin);//商品产地
@@ -521,13 +521,13 @@ function ajaxRequestGetItemInfo(id){
 						}
 					}
 					$("#sku-id-"+i).val(sku.skuId);//skuId
-					/*$("#sku-price-id-"+i).val(sku.skuPriceId);//skuPriceId
-					$("#hard-cost-price-"+i).val(sku.hardCostPrice);//硬成本价格
-					$("#cost-price-"+i).val(sku.costPrice);//成本价
+					$("#sku-price-id-"+i).val(sku.skuPriceId);//skuPriceId
+					/*$("#hard-cost-price-"+i).val(sku.hardCostPrice);//硬成本价格
+					$("#cost-price-"+i).val(sku.costPrice);//成本价*/
 					$("#market-price-"+i).val(sku.marketPrice);//指导价
 					$("#highest-price-"+i).val(sku.highestPrice);//最高价格
 					$("#lowest-price-"+i).val(sku.lowestPrice);//最低价格
-					$("#sell-price-"+i).val(sku.sellPrice);//销售价*/
+					$("#sell-price-"+i).val(sku.sellPrice);//销售价
 					$("#volume-"+i).val(sku.volume);//体积
 					$("#weight-"+i).val(sku.weight);//重量
 					$("#sku-short-spec-"+i).val(sku.skuShortSpec);//简单sku规格
@@ -705,7 +705,7 @@ function saveFun(){
 		util.message("此商品没有ID");
 		return;
 	}else{
-		url = "back/item/updateById";
+		url = "back/view/item/updateById";
 	}
 	
 	/*var createTimeStr = $("#create-time-str").val();
@@ -865,7 +865,7 @@ function getParams(){
  * 删除信息AJAX请求（物理删除）
  */
 function deleteInfoAjaxRequest(id){
-	var url = "back/item/deleteById";
+	var url = "back/view/item/deleteById";
 	var params = {"id":id};
 	//util.loading();
 	$.post(url, params, function(res){
@@ -894,7 +894,7 @@ function deleteInfoFun(id){
  */
 function reloadInfoFun(){
 	//操作成功后重新加载
-	var href = "back/item/selectItems?pagehelperFun=clickPageBtnRequestFun";
+	var href = "back/view/item/selectItems?pagehelperFun=clickPageBtnRequestFun";
 	parent.window.iframeLoading(href);//调用主页面中的在iframe中加载内容的方法
 }
 
@@ -903,7 +903,7 @@ function reloadInfoFun(){
  * 		函数功能：根据页码数请求当前页内容
  */
 function clickPageBtnRequestFun(params){
-	var action = "back/item/selectItems";
+	var action = "back/view/item/selectItems";
 	params.clickPageBtn = true;
 	//util.loading();
 	$("#item-div").load(action, params, function(){
@@ -1002,7 +1002,7 @@ function changeItemCategory(){
  * @returns
  */
 function clickItemTab(){
-	util.confirm("显示商品列表选项卡时，当前编辑的商品信息则会被重置，是否继续？", 0, "resetFun", "selectEditItemTab");
+	//util.confirm("显示商品列表选项卡时，当前编辑的商品信息则会被重置，是否继续？", 0, "resetFun", "selectEditItemTab");
 }
 /**
  * 选择添加/编辑商品选项卡
@@ -1084,7 +1084,7 @@ var parserDate = function (dateStr) {
  * @returns
  */
 function updateItemStatus(itemId, status){
-	var url = "back/item/updateStatusById";
+	var url = "back/view/item/updateStatusById";
 	var params = {"itemId":itemId, "itemStatus":status};
 	//util.loading();
 	$.post(url, params, function(res){
@@ -1170,7 +1170,7 @@ function ajaxRequestDelByBatch(){
 		util.message("请选择需要删除的商品！");
 		return;
 	}
-	var url = "back/item/deleteByIds";
+	var url = "back/view/item/deleteByIds";
 	var params = {"ids":itemIds};
 	//util.loading();
 	$.post(url, params, function(res){
@@ -1219,7 +1219,7 @@ $("#batch-unshelve-btn").click(function(){
  * @returns
  */
 function ajaxRequestUpdateStatusByBatch(itemIds, status){
-	var url = "back/item/updateStatusByIds";
+	var url = "back/view/item/updateStatusByIds";
 	var params = {"itemIds":itemIds, "itemStatus":status};
 	//util.loading();
 	$.post(url, params, function(res){
@@ -1240,7 +1240,7 @@ function ajaxRequestUpdateStatusByBatch(itemIds, status){
  * 		函数功能：根据页码数请求当前页内容
  */
 function filterItemFun(params){
-	var action = "back/item/selectItems";
+	var action = "back/view/item/selectItems";
 	params.clickPageBtn = true;
 	var cateFirst = $("#search-cate-first").val();
 	var cateSecond = $("#search-cate-second").val();

@@ -1,5 +1,6 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8"
 	pageEncoding="UTF-8"%>
+<%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c"%>
 
 <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
 <html>
@@ -56,6 +57,38 @@
 												<div class="panel-body" id="">
 													<form class="form-horizontal" id="search-form">
 														<div class="form-group">
+															<label class="col-md-2 control-label">类目</label>
+															<div class="col-md-3">
+																<select class="form-control" id="search-cate-first" name="" onchange="javascript:getCategoryByPidFun(1);">
+																	<option value='' selected='selected'>---请选择一级类目---</option>
+																	<c:forEach items="${categoryList}" var="category">
+																		<c:if test="${category.lev==1}">
+																			<option value="${category.cid}" level="${category.lev}">${category.cName}</option>
+																		</c:if>
+																		<%-- <c:if test="${category.lev==2}">
+																			<option value="${category.cid}" level="${category.lev}">&nbsp;&nbsp;&nbsp;&nbsp;┠&nbsp;&nbsp;${category.cName}</option>
+																		</c:if>
+																		<c:if test="${category.lev==3}">
+																			<option value="${category.cid}" level="${category.lev}">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;┗ &nbsp;&nbsp;${category.cName}</option>
+																		</c:if>
+																		<c:if test="${category.lev!=1 && category.lev!=2 && category.lev!=3}">
+																			<option value="${category.cid}" level="${category.lev}">${category.cName}</option>
+																		</c:if> --%>
+																	</c:forEach>
+																</select>
+															</div>
+															<div class="col-md-3">
+																<select class="form-control" id="search-cate-second" name="" onchange="javascript:getCategoryByPidFun(2);">
+																	<option value='' selected='selected'>---请选择二级类目---</option>
+																</select>
+															</div>
+															<div class="col-md-4">
+																<select class="form-control" id="search-cate-third" name="" onchange="javascript:getCategoryByPidFun(3);">
+																	<option value='' selected='selected'>---请选择三级类目---</option>
+																</select>
+															</div>
+														</div>
+														<div class="form-group">
 															<label class="col-md-2 control-label">关键字</label>
 															<div class="col-md-10">
 																<input type="text" id="search-keywords" name="search-keywords" class="form-control" placeholder="类目名称 / 品牌名称 / 商品名称">
@@ -111,5 +144,54 @@
 </div>
 
 	<script type="text/javascript" src="static/js/itemManage.js"></script>
+	<script type="text/javascript">
+	/*
+	 * 根据父ID查询类目
+	 * 		参数2：当前是第n级类目的change事件
+	 */
+	function getCategoryByPidFun(index){
+		var htmlStr = "<option value='' selected='selected'>---请选择二级类目---</option>";
+		var id = "";
+		var appendId = "";
+		if(index==1){
+			id = "#search-cate-first";
+			appendId = "#search-cate-second";
+			htmlStr = "<option value='' selected='selected'>---请选择二级类目---</option>";
+		}else if(index==2){
+			id = "#search-cate-second";
+			appendId = "#search-cate-third";
+			htmlStr = "<option value='' selected='selected'>---请选择三级类目---</option>";
+		}else if(index==3){
+			return false;
+		}
+		var pid = $(id).val();
+		var url = "back/category/selectByPid";
+		var params = {"pid":pid};
+		//util.loading();
+		$.post(url, params, function(res){
+			console.log(res);
+			if(res!=null && res!=""){
+				var obj = $.parseJSON(res);
+				if(obj.result_code=="success"){
+					$(appendId).empty();
+					var categoryList = obj.categoryList;
+					console.log(JSON.stringify(categoryList));
+					if(categoryList!=null){
+						
+						$.each(categoryList,function(i,n){
+						    htmlStr += "<option value='"+this.cid+"'>"+this.cName+"</option>";//创建类目HTML字符串
+						});
+						$(appendId).append(htmlStr);
+					}else{
+						util.message("查询类目列表为null");
+					}
+				}else{
+					util.message(obj.result_err_msg);
+				}
+			}
+			
+		});
+	}
+	</script>
 </body>
 </html>
