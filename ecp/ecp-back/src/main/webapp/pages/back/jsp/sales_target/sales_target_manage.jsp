@@ -99,7 +99,7 @@
 															</div>
 														</div>
 														<div class="form-group">
-															<label class="col-sm-2 control-label">指标金额（￥）</label>
+															<label class="col-sm-2 control-label">指标金额（元）</label>
 															<div class="col-sm-10">
 																<input type="text" id="sales-target-amount" name="targetAmount"
 																	class="form-control" placeholder="指标金额" />

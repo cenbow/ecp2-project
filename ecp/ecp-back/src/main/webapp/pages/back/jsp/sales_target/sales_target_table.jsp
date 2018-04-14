@@ -29,7 +29,7 @@
 					<input type="checkbox" name="checkbox2" id="sales-target-td-${target.id}" onclick="javascript:checkOne();" value="${target.id}">
 				</td>
 				<td>${target.id}</td>
-				<td>${target.username}</td>
+				<td>${target.username}（${target.role_name}）</td>
 				<td>${target.year_name}</td>
 				<td>${target.cycle_name}</td>
 				<td>
