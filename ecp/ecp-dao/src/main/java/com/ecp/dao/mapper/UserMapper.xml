@@ -78,13 +78,13 @@
 	<!-- 根据ID查询用户 -->
 	<select id="getById" parameterType="map" resultType="map">
 		SELECT
-			u.*, r.role_code, r.role_name
+			*
 		FROM
 			`user`
 		WHERE
 			deleted = 1
 		AND type = 1
-		AND id=#{userId}
+		AND id = #{userId}
 	</select>
 	
 	<!-- 根据parentId(主帐号)查询:本帐号,其下的直接子帐号 -->

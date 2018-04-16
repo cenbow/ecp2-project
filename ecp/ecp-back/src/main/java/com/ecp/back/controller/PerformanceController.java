@@ -22,18 +22,14 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestMapping;
 
-import com.alibaba.fastjson.JSON;
 import com.ecp.back.commons.RoleCodeConstants;
 import com.ecp.bean.AccountItemType;
 import com.ecp.bean.ContractStateType;
 import com.ecp.bean.UserBean;
 import com.ecp.entity.AccountCompany;
 import com.ecp.entity.CustLockRel;
-import com.ecp.entity.Orders;
 import com.ecp.entity.PushmoneyConfig;
 import com.ecp.entity.Role;
-import com.ecp.entity.User;
-import com.ecp.entity.UserExtends;
 import com.ecp.service.back.IPushmoneyConfigService;
 import com.ecp.service.back.IRoleService;
 import com.ecp.service.back.ISalesTargetService;
@@ -133,45 +129,53 @@ public class PerformanceController {
 		
 		List<Map<String, Object>> agentIdList = null;
 		
-		List<Role> roleList = user.getRoleList();
-		boolean isISOrOS = false;
+		/*List<Role> roleList = user.getRoleList();
+		boolean isISOrOS = true;
 		for(Role role : roleList){
 			String roleCode = role.getRoleCode();
 			if(StringUtils.isNotBlank(roleCode)){
-				if(roleCode.equalsIgnoreCase(RoleCodeConstants.IS) || roleCode.equalsIgnoreCase(RoleCodeConstants.OS)){
-					isISOrOS = true;
-					List<Map<String, Object>> userList = userService.getById(user.getId());
-					model.addAttribute("userList", userList);
-					model.addAttribute("roleList", roleList);
-					
-					Example example = new Example(CustLockRel.class);
-					if(roleList.size()>1){
-						example.createCriteria().andEqualTo("bindUserId", user.getId());
-					}else{
-						example.createCriteria().andEqualTo("bindUserId", user.getId()).andEqualTo("roleId", roleList.get(0).getRoleId());
-					}
-					List<CustLockRel> tempList = agentBindService.selectByExample(example);
-					for(CustLockRel temp : tempList){
-						if(agentIdList==null){
-							agentIdList = new ArrayList<>();
-						}
-						Map<String, Object> tempMap = new HashMap<>();
-						Long agentId = temp.getCustId();
-						if(agentId!=null && agentId>0){
-							tempMap.put("cust_id", agentId);
-							agentIdList.add(tempMap);
-						}else{
-							tempMap.put("cust_id", null);
-						}
-					}
-					break;
-				}else if(roleCode.equalsIgnoreCase(RoleCodeConstants.ADMIN) || roleCode.equalsIgnoreCase(RoleCodeConstants.MANAGER) || roleCode.equalsIgnoreCase(RoleCodeConstants.BUSSMAN) || roleCode.equalsIgnoreCase(RoleCodeConstants.SALEMAN)){
+				if(roleCode.equalsIgnoreCase(RoleCodeConstants.ADMIN) || roleCode.equalsIgnoreCase(RoleCodeConstants.MANAGER) || roleCode.equalsIgnoreCase(RoleCodeConstants.BUSSMAN) || roleCode.equalsIgnoreCase(RoleCodeConstants.SALEMAN)){
 					isISOrOS = false;
+					break;
 				}
 			}
 		}
 		
-		if(!isISOrOS){
+		if(isISOrOS){
+			List<Map<String, Object>> userList = userService.getById(user.getId());
+			model.addAttribute("userList", userList);
+			List<Role> tempRoleList = new ArrayList<>();
+			for(Role role : roleList){
+				String roleCode = role.getRoleCode();
+				if(StringUtils.isNotBlank(roleCode)){
+					if(roleCode.equalsIgnoreCase(RoleCodeConstants.IS) || roleCode.equalsIgnoreCase(RoleCodeConstants.OS)){
+						tempRoleList.add(role);
+					}
+				}
+			}
+			model.addAttribute("roleList", tempRoleList);
+			
+			Example example = new Example(CustLockRel.class);
+			if(roleList.size()>1){
+				example.createCriteria().andEqualTo("bindUserId", user.getId());
+			}else{
+				example.createCriteria().andEqualTo("bindUserId", user.getId()).andEqualTo("roleId", roleList.get(0).getRoleId());
+			}
+			List<CustLockRel> tempList = agentBindService.selectByExample(example);
+			for(CustLockRel temp : tempList){
+				if(agentIdList==null){
+					agentIdList = new ArrayList<>();
+				}
+				Map<String, Object> tempMap = new HashMap<>();
+				Long agentId = temp.getCustId();
+				if(agentId!=null && agentId>0){
+					tempMap.put("cust_id", agentId);
+					agentIdList.add(tempMap);
+				}else{
+					tempMap.put("cust_id", null);
+				}
+			}
+		}else{
 			List<Map<String, Object>> userList = userService.getISAndOSUser();
 			model.addAttribute("userList", userList);
 		}
@@ -201,7 +205,8 @@ public class PerformanceController {
 					tempMap.put("cust_id", null);
 				}
 			}
-		}
+		}*/
+		agentIdList = this.judgeRole(user, model, userId, roleId);
 		
 		// 置默认值(搜索)
 		if (searchTypeValue == null) {
@@ -706,45 +711,53 @@ public class PerformanceController {
 		
 		List<Map<String, Object>> agentIdList = null;
 		
-		List<Role> roleList = user.getRoleList();
-		boolean isISOrOS = false;
+		/*List<Role> roleList = user.getRoleList();
+		boolean isISOrOS = true;
 		for(Role role : roleList){
 			String roleCode = role.getRoleCode();
 			if(StringUtils.isNotBlank(roleCode)){
-				if(roleCode.equalsIgnoreCase(RoleCodeConstants.IS) || roleCode.equalsIgnoreCase(RoleCodeConstants.OS)){
-					isISOrOS = true;
-					List<Map<String, Object>> userList = userService.getById(user.getId());
-					model.addAttribute("userList", userList);
-					model.addAttribute("roleList", roleList);
-					
-					Example example = new Example(CustLockRel.class);
-					if(roleList.size()>1){
-						example.createCriteria().andEqualTo("bindUserId", user.getId());
-					}else{
-						example.createCriteria().andEqualTo("bindUserId", user.getId()).andEqualTo("roleId", roleList.get(0).getRoleId());
-					}
-					List<CustLockRel> tempList = agentBindService.selectByExample(example);
-					for(CustLockRel temp : tempList){
-						if(agentIdList==null){
-							agentIdList = new ArrayList<>();
-						}
-						Map<String, Object> tempMap = new HashMap<>();
-						Long agentId = temp.getCustId();
-						if(agentId!=null && agentId>0){
-							tempMap.put("cust_id", agentId);
-							agentIdList.add(tempMap);
-						}else{
-							tempMap.put("cust_id", null);
-						}
-					}
-					break;
-				}else if(roleCode.equalsIgnoreCase(RoleCodeConstants.ADMIN) || roleCode.equalsIgnoreCase(RoleCodeConstants.MANAGER) || roleCode.equalsIgnoreCase(RoleCodeConstants.BUSSMAN) || roleCode.equalsIgnoreCase(RoleCodeConstants.SALEMAN)){
+				if(roleCode.equalsIgnoreCase(RoleCodeConstants.ADMIN) || roleCode.equalsIgnoreCase(RoleCodeConstants.MANAGER) || roleCode.equalsIgnoreCase(RoleCodeConstants.BUSSMAN) || roleCode.equalsIgnoreCase(RoleCodeConstants.SALEMAN)){
 					isISOrOS = false;
+					break;
 				}
 			}
 		}
 		
-		if(!isISOrOS){
+		if(isISOrOS){
+			List<Map<String, Object>> userList = userService.getById(user.getId());
+			model.addAttribute("userList", userList);
+			List<Role> tempRoleList = new ArrayList<>();
+			for(Role role : roleList){
+				String roleCode = role.getRoleCode();
+				if(StringUtils.isNotBlank(roleCode)){
+					if(roleCode.equalsIgnoreCase(RoleCodeConstants.IS) || roleCode.equalsIgnoreCase(RoleCodeConstants.OS)){
+						tempRoleList.add(role);
+					}
+				}
+			}
+			model.addAttribute("roleList", tempRoleList);
+			
+			Example example = new Example(CustLockRel.class);
+			if(roleList.size()>1){
+				example.createCriteria().andEqualTo("bindUserId", user.getId());
+			}else{
+				example.createCriteria().andEqualTo("bindUserId", user.getId()).andEqualTo("roleId", roleList.get(0).getRoleId());
+			}
+			List<CustLockRel> tempList = agentBindService.selectByExample(example);
+			for(CustLockRel temp : tempList){
+				if(agentIdList==null){
+					agentIdList = new ArrayList<>();
+				}
+				Map<String, Object> tempMap = new HashMap<>();
+				Long agentId = temp.getCustId();
+				if(agentId!=null && agentId>0){
+					tempMap.put("cust_id", agentId);
+					agentIdList.add(tempMap);
+				}else{
+					tempMap.put("cust_id", null);
+				}
+			}
+		}else{
 			List<Map<String, Object>> userList = userService.getISAndOSUser();
 			model.addAttribute("userList", userList);
 		}
@@ -774,7 +787,8 @@ public class PerformanceController {
 					tempMap.put("cust_id", null);
 				}
 			}
-		}
+		}*/
+		agentIdList = this.judgeRole(user, model, userId, roleId);
 		
 		// 置默认值(搜索)
 		if (searchTypeValue == null) {
@@ -1142,6 +1156,98 @@ public class PerformanceController {
 		fee = fee.add(travel_expense_fee);
 		fee = fee.add(market_fee);
 		return fee;
+	}
+	
+	/**
+	 * 暂时未用
+	 * @param user
+	 * @param model
+	 * @param userId
+	 * @param roleId
+	 * @return
+	 */
+	private List<Map<String, Object>> judgeRole(UserBean user, Model model, Long userId, Long roleId){
+		
+		List<Map<String, Object>> agentIdList = null;
+		
+		List<Role> roleList = user.getRoleList();
+		boolean isISOrOS = true;
+		for(Role role : roleList){
+			String roleCode = role.getRoleCode();
+			if(StringUtils.isNotBlank(roleCode)){
+				if(roleCode.equalsIgnoreCase(RoleCodeConstants.ADMIN) || roleCode.equalsIgnoreCase(RoleCodeConstants.MANAGER) || roleCode.equalsIgnoreCase(RoleCodeConstants.BUSSMAN) || roleCode.equalsIgnoreCase(RoleCodeConstants.SALEMAN)){
+					isISOrOS = false;
+					break;
+				}
+			}
+		}
+		
+		if(isISOrOS){
+			List<Map<String, Object>> userList = userService.getById(user.getId());
+			model.addAttribute("userList", userList);
+			List<Role> tempRoleList = new ArrayList<>();
+			for(Role role : roleList){
+				String roleCode = role.getRoleCode();
+				if(StringUtils.isNotBlank(roleCode)){
+					if(roleCode.equalsIgnoreCase(RoleCodeConstants.IS) || roleCode.equalsIgnoreCase(RoleCodeConstants.OS)){
+						tempRoleList.add(role);
+					}
+				}
+			}
+			model.addAttribute("roleList", tempRoleList);
+			
+			Example example = new Example(CustLockRel.class);
+			if(roleList.size()>1){
+				example.createCriteria().andEqualTo("bindUserId", user.getId());
+			}else{
+				example.createCriteria().andEqualTo("bindUserId", user.getId()).andEqualTo("roleId", roleList.get(0).getRoleId());
+			}
+			List<CustLockRel> tempList = agentBindService.selectByExample(example);
+			for(CustLockRel temp : tempList){
+				if(agentIdList==null){
+					agentIdList = new ArrayList<>();
+				}
+				Map<String, Object> tempMap = new HashMap<>();
+				Long agentId = temp.getCustId();
+				if(agentId!=null && agentId>0){
+					tempMap.put("cust_id", agentId);
+					agentIdList.add(tempMap);
+				}else{
+					tempMap.put("cust_id", null);
+				}
+			}
+		}else{
+			List<Map<String, Object>> userList = userService.getISAndOSUser();
+			model.addAttribute("userList", userList);
+		}
+		
+		if(userId==null && roleId==null){
+			
+		}else{
+			Example example = new Example(CustLockRel.class);
+			if(userId==null){
+				example.createCriteria().andEqualTo("roleId", roleId);
+			}else if(roleId==null){
+				example.createCriteria().andEqualTo("bindUserId", userId);
+			}else{
+				example.createCriteria().andEqualTo("bindUserId", userId).andEqualTo("roleId", roleId);
+			}
+			List<CustLockRel> tempList = agentBindService.selectByExample(example);
+			for(CustLockRel temp : tempList){
+				if(agentIdList==null){
+					agentIdList = new ArrayList<>();
+				}
+				Map<String, Object> tempMap = new HashMap<>();
+				Long agentId = temp.getCustId();
+				if(agentId!=null && agentId>0){
+					tempMap.put("cust_id", agentId);
+					agentIdList.add(tempMap);
+				}else{
+					tempMap.put("cust_id", null);
+				}
+			}
+		}
+		return agentIdList;
 	}
 	
 	public static void main(String[] args) {
