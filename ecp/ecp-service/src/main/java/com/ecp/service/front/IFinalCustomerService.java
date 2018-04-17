@@ -1,6 +1,7 @@
 package com.ecp.service.front;
 
 import java.util.List;
+import java.util.Map;
 
 import com.ecp.entity.FinalCustomer;
 import com.ecp.service.IBaseService;
@@ -36,5 +37,18 @@ public interface IFinalCustomerService extends IBaseService<FinalCustomer, Long>
 	* @throws 
 	*/
 	public int addFinalCustomer(FinalCustomer finalCustomer);	
+	
+	
+	/** 
+		* @Title: getFinalCustomerByOrganizationName 
+		* @Description: 根据最终用户组织名称查询最终用户 列表.
+		* @param @param organizationName
+		* @param @return     
+		* @return List<Map<String,Object>>    返回类型 
+		* @throws 
+	*/
+	public List<Map<String,Object>> getFinalCustomerByOrganizationName(String organizationName); 
+	
+	
 	
 }

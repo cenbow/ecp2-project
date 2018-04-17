@@ -38,6 +38,7 @@
 			<tr>
 				<th>客户姓名</th>
 				<th>客户电话</th>
+				<th>组织名称</th>
 				<th>区域</th>
 				<th>联系人</th>
 				<th>联系人电话</th>
@@ -50,6 +51,7 @@
 			<tr th:each="finalcustomer:${finalCustomerList}">
 				<td th:text="${finalcustomer.name}">客户姓名</td>
 				<td th:text="${finalcustomer.phone}">客户电话</td>
+				<td th:text="${finalcustomer.organizationName}">组织名称</td>
 				<td
 					th:text="${finalcustomer.province}+${finalcustomer.city}+${finalcustomer.county}">区域</td>
 				<td th:text="${finalcustomer.linkmanName}">联系人</td>

@@ -34,4 +34,21 @@
     added_area, payment_address, delivery_address, install_address, linkman_name, linkman_phone, 
     order_id, deleted, create_time,organization_name
   </sql>
+  
+  <!-- 根据最终用户名称查询 -->
+  <select id="getFinalCustomerByOrganizationName" resultType="map">
+  	 SELECT f.* 
+  	 	FROM final_customer f  	 		 
+  	 	<where>  	 		 
+  	 		f.deleted=1
+  	 	<!-- 组织名称条件 -->	
+  	 	<if test="organizationName!=null and organizationName!='' ">
+  			AND f.organization_name LIKE concat(concat('%',#{organizationName}),'%')	
+  		</if>
+  	 </where>  	 
+  	 	  	 
+  </select>
+  
+  
+  
 </mapper>

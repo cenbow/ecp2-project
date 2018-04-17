@@ -2,6 +2,7 @@ package com.ecp.service.impl.front;
 
 import java.util.Date;
 import java.util.List;
+import java.util.Map;
 
 import org.springframework.stereotype.Service;
 
@@ -42,6 +43,13 @@ public class FinalCustomerServiceImpl extends AbstractBaseService<FinalCustomer,
 	public int addFinalCustomer(FinalCustomer finalCustomer) {
 		finalCustomer.setCreateTime(new Date());
 		return finalCustomerMapper.insertSelective(finalCustomer);
+	}
+
+
+	@Override
+	public List<Map<String, Object>> getFinalCustomerByOrganizationName(String organizationName) {
+		// TODO Auto-generated method stub
+		return finalCustomerMapper.getFinalCustomerByOrganizationName(organizationName);
 	}
 
 
