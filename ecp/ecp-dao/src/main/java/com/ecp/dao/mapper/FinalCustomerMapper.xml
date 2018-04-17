@@ -24,6 +24,7 @@
     <result column="order_id" jdbcType="BIGINT" property="orderId" />
     <result column="deleted" jdbcType="TINYINT" property="deleted" />
     <result column="create_time" jdbcType="TIMESTAMP" property="createTime" />
+    <result column="company_name" jdbcType="VARCHAR" property="companyName" />
   </resultMap>
   <sql id="Base_Column_List">
     <!--
@@ -31,6 +32,6 @@
     -->
     id, name, phone, country, province, province_code, city, city_code, county, county_code, 
     added_area, payment_address, delivery_address, install_address, linkman_name, linkman_phone, 
-    order_id, deleted, create_time
+    order_id, deleted, create_time,company_name
   </sql>
 </mapper>
