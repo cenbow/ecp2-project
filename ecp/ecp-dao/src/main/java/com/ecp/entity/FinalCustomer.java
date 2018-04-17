@@ -62,18 +62,20 @@ public class FinalCustomer {
     
     
     /**
-     * 单位名称
+     * 组织名称
      */
-    @Column(name = "company_name")
-    private String countyName;
+    @Column(name = "organization_name")
+    private String organizationName;
     
 
-    public String getCountyName() {
-		return countyName;
+    
+
+	public String getOrganizationName() {
+		return organizationName;
 	}
 
-	public void setCountyName(String countyName) {
-		this.countyName = countyName;
+	public void setOrganizationName(String organizationName) {
+		this.organizationName = organizationName;
 	}
 
 	/**
