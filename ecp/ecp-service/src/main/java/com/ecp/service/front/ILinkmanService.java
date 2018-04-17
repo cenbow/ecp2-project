@@ -1,6 +1,7 @@
 package com.ecp.service.front;
 
 import java.util.List;
+import java.util.Map;
 
 import com.ecp.entity.Linkman;
 import com.ecp.service.IBaseService;
@@ -39,5 +40,27 @@ public interface ILinkmanService extends IBaseService<Linkman, Long> {
 	* @throws 
 	*/
 	public int addLinkman(Linkman linkman);	
+	
+	/** 
+		* @Title: getLinkmanByLinkman 
+		* @Description: 根据联系人姓名查询 
+		* @param @param LinkmanName
+		* @param @return     
+		* @return List<Map<String,Object>>    返回类型 
+		* @throws 
+	*/
+	public List<Map<String,Object>> getLinkmanByLinkmanName(String name);
+	
+	
+	/** 
+		* @Title: getLinkmanByLinkmanMobile 
+		* @Description: 根据联系人电话查询
+		* @param @param mobile
+		* @param @return     
+		* @return List<Map<String,Object>>    返回类型 
+		* @throws 
+	*/
+	public List<Map<String,Object>> getLinkmanByLinkmanMobile(String mobile);
+	
 	
 }

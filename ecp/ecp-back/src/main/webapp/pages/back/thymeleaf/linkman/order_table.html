@@ -267,9 +267,11 @@
 							<li class="" 	 value="2"><i class="icon-ok"></i><a href="javascript:void(0);" >合同号</a></li>
 							<li class="" 	 value="3"><i class="icon-ok"></i><a href="javascript:void(0);" >收货人姓名</a></li>
 							<li class="" 	 value="4"><i class="icon-ok"></i><a href="javascript:void(0);" >收货人电话</a></li>
-							<li class="" 	 value="5"><i class="icon-ok"></i><a href="javascript:void(0);" >公司名称</a></li>
-							<li class="" 	 value="6"><i class="icon-ok"></i><a href="javascript:void(0);" >负责人姓名</a></li>
-							<li class="" 	 value="7"><i class="icon-ok"></i><a href="javascript:void(0);" >公司电话</a></li>
+							<li class="" 	 value="5"><i class="icon-ok"></i><a href="javascript:void(0);" >公司名称(代理商)</a></li>
+							<li class="" 	 value="6"><i class="icon-ok"></i><a href="javascript:void(0);" >负责人姓名(代理商)</a></li>
+							<li class="" 	 value="7"><i class="icon-ok"></i><a href="javascript:void(0);" >公司电话(代理商)</a></li>
+							<li class="" 	 value="8"><i class="icon-ok"></i><a href="javascript:void(0);" >联系人姓名(订单)</a></li>
+							<li class="" 	 value="9"><i class="icon-ok"></i><a href="javascript:void(0);" >联系人电话(订单)</a></li>
 							
 						</ul>
 					</div>						
@@ -290,6 +292,7 @@
 			<table class="table">
 				<thead>
 					<tr>
+						<th>联系人</th>
 						<th>订单号</th>
 						<th>合同号</th>
 						<th>
@@ -338,6 +341,12 @@
 				</thead>
 				<tbody>
 					<tr th:each="order:${orderList}">
+						<!-- 联系人列表 -->						
+						<td>
+							<ul>								
+								<li th:each="linkman:${order.linkmanList}" th:text="${linkman.name}+'(tel:'+${linkman.mobile}+')'">联系人姓名(电话)</li>
+							</ul>
+						</td>
 						<td><a th:href="@{/back/order/detail(id=${order.id})}" target="_blank" title="订单详情"><span th:text="${order.order_id}" th:remove="tag">订单号</span></a></td>
 						<td>
 							<span th:if="${order.contract_id}" th:remove="tag">								
