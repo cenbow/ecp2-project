@@ -7,15 +7,15 @@
 <body>
 	<div class="row clearfix">
 		<div class="col-md-12 column">
-			<h5>绑定的OS/IS</h5>
+			<h5><strong>绑定的</strong>OS/IS</h5>
 		</div>
 	</div>
 	<table class="table">
 		<thead>
 			<tr>
-				<th><input type="checkbox" id="check-select-all-is"><label
+				<!-- <th><input type="checkbox" id="check-select-all-is"><label
 					for="check-select-all-is">选择</label></th>
-				<th>ID</th>
+				<th>ID</th> -->
 				<th>姓名</th>
 				<th>昵称</th>
 				<th>类型</th>
@@ -24,14 +24,14 @@
 		</thead>
 		<tbody>
 			<tr th:each="bind:${agentBindList}">
-				<td><input type="checkbox" class="check-osis"
+				<!-- <td><input type="checkbox" class="check-osis"
 					th:attr="data-id=${bind.user.id},role-id=${bind.user.role_id}">
 				</td>
-				<td th:text="${bind.user.id}">ID</td>
+				<td th:text="${bind.user.id}">ID</td> -->
 				<td th:text="${bind.user.username}">用户名</td>
 				<td th:text="${bind.user.nickname}">昵称</td>
 				<td th:text="${bind.type}">类型</td>
-				<td><a type="button" title="解绑"> </a></td>
+				<td><a type="button"  title="解绑" th:attr="data-bind-relid=${bind.user.rel_id}" onclick="javascript:agentUnbind(this)"><i class="icon-unlock"></i> </a></td>
 			</tr>
 		</tbody>
 	</table>

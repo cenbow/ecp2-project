@@ -18,6 +18,7 @@ import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 import com.ecp.back.commons.RoleCodeConstants;
+import com.ecp.bean.DeletedType;
 import com.ecp.common.util.RequestResultUtil;
 import com.ecp.entity.CustLockRel;
 import com.ecp.entity.Role;
@@ -511,6 +512,29 @@ public class AgentBindController {
 		}
 		
 		return RequestResultUtil.getResultUpdateSuccess();		
+	}
+	
+	/** 
+		* @Title: agentUnbind 
+		* @Description: 解除绑定 
+		* @param @param relId 绑定关系ID
+		* @param @param model
+		* @param @return     
+		* @return Object    返回类型 
+		* @throws 
+	*/
+	@RequestMapping(value = "/unbind")
+	@ResponseBody
+	public Object agentUnbind(long relId, Model model) {
+		
+		CustLockRel rec=new CustLockRel();
+		rec.setId(relId);
+		rec.setDeleted(DeletedType.YES);
+		int row=agentBindService.updateByPrimaryKeySelective(rec);
+		if(row>=1)
+			return RequestResultUtil.getResultUpdateSuccess();
+		else
+			return RequestResultUtil.getResultUpdateWarn();
 	}
 	
 	

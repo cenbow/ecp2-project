@@ -150,7 +150,7 @@ tr:hover{
 			<table class="table">
 				<thead>
 					<tr>
-						<th><input type="checkbox" id="check-select-all"><label for="check-select-all">选择</label></th>
+						<!-- <th><input type="checkbox" id="check-select-all"><label for="check-select-all">选择</label></th> -->
 						<th>企业名称</th>
 						<th>企业负责人</th>
 						<th>手机号码</th>
@@ -163,7 +163,7 @@ tr:hover{
 				</thead>
 				<tbody>
 					<tr th:each="agentBind:${agentBinds}">
-						<td><input type="checkbox" class="check-select" th:attr="id='check-select-'+${agentBind.agent.extendId},data-id=${agentBind.agent.extendId}"></td>
+						<!-- <td><input type="checkbox" class="check-select" th:attr="id='check-select-'+${agentBind.agent.extendId},data-id=${agentBind.agent.extendId}"></td> -->
 						<td th:text="${agentBind.agent.companyName}" style="width:400px;">北京XXX科技有限责任公司</td>
 						<td th:text="${agentBind.agent.artificialPersonName}">张XX</td>
 						<td th:text="${agentBind.agent.contactPhone}">138xxxxxxxx</td>

@@ -248,7 +248,7 @@ function validateSearchCond() {
 
 }
 
-// -----------------------批量绑定-----------------------
+// -----------------------批量解绑-----------------------
 /**
  * @Description 批量解除绑定
  * @param id
@@ -306,6 +306,9 @@ function batchUnbindOkBtnClick(id) {
 	});
 
 }
+
+
+
 
 // --------------------PAGE LOADED READY-----------------
 $(function() {

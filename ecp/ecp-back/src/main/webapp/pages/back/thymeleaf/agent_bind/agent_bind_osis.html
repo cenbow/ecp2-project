@@ -16,14 +16,14 @@
 			<div class="col-md-4 column">
 				<div class="row clearfix">
 					<div class="col-md-12 column">
-						<h5>外部销售人员列表</h5>
+						<h5><strong>外部销售</strong>人员列表</h5>
 					</div>
 				</div>
 				<table class="table">
 					<thead>
 						<tr>
-							<th><input type="checkbox" id="check-select-all-os"><label for="check-select-all-os">选择</label></th>
-							<th>ID</th>
+							<th><!-- <input type="checkbox" id="check-select-all-os"> --><label for="check-select-all-os">选择</label></th>
+							<!-- <th>ID</th> -->
 							<th>姓名</th>
 							<th>昵称</th>
 						</tr>
@@ -35,7 +35,7 @@
 										bind-id=${os.id},
 										role-id=${os.role_id}"> 
 							</td>
-							<td th:text="${os.id}">ID</td>
+							<!-- <td th:text="${os.id}">ID</td> -->
 							<td th:text="${os.username}">用户名</td>
 							<td th:text="${os.nickname}">昵称</td>
 						</tr>
@@ -46,14 +46,14 @@
 			<div class="col-md-4 column">
 				<div class="row clearfix">
 					<div class="col-md-12 column">
-						<h5>内部销售人员列表</h5>
+						<h5><strong>内部销售</strong>人员列表</h5>
 					</div>
 				</div>
 				<table class="table">
 					<thead>
 						<tr>
-							<th><input type="checkbox" id="check-select-all-is" ><label for="check-select-all-is">选择</label></th>
-							<th>ID</th>
+							<th><!-- <input type="checkbox" id="check-select-all-is" > --><label for="check-select-all-is">选择</label></th>
+							<!-- <th>ID</th> -->
 							<th>姓名</th>
 							<th>昵称</th>
 						</tr>
@@ -65,7 +65,7 @@
 										bind-id=${is.id}, 
 										role-id=${is.role_id}"> 
 							</td>
-							<td th:text="${is.id}">ID</td>
+							<!-- <td th:text="${is.id}">ID</td> -->
 							<td th:text="${is.username}">用户名</td>
 							<td th:text="${is.nickname}">昵称</td>
 						</tr>

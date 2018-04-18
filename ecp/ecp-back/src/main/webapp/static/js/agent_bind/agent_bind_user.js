@@ -28,6 +28,8 @@
 						//util.message(obj.result_msg);
 						//var urlTemp = obj.result_msg;
 						showAgentBindedUser();  //重新加载所绑定的客户信息.
+						reloadPage(); // 重新加载页面
+						
 					} else {
 						util.message(obj.result_msg);
 					}
@@ -48,12 +50,61 @@
 		});
 	}
 	
+	/**
+	 * 解除绑定:单个代理商
+	 * @param that
+	 * @returns
+	 */
+	function agentUnbind(that){
+		var relId=$(that).attr("data-bind-relid");
+		//显示确认对话框.
+		util.delConfirm("删除此绑定?",relId,"agentUnbindRequest");
+	}
+
+	function agentUnbindRequest(relId){
+		var urlStr = BASE_CONTEXT_PATH + "/back/agent-bind/unbind"; // 需要提交的url
+
+		$.ajax({
+			type : "POST", // 提交方式 get/post
+			url : urlStr,
+			// contentType : "application/json", //
+			// 如果采用json格式传送所有参数时必须有,如果采普通js对象传送时,则不可以加此参数
+			// dataType : "html", //表示返回值类型，不必须,如果返回的是面页，则必须
+			data : {"relId":relId},
+			success : function(res) { // data 保存提交后返回的数据，一般为 json 数据
+				// console.log(res);
+				if (res != null && res != "") {
+					var obj = $.parseJSON(res);
+					if (obj.result_code == "success") {
+						showAgentBindedUser();  //重新加载所绑定的客户信息.
+						reloadPage(); // 重新加载页面
+						
+					} else {
+						util.message(obj.result_msg);
+					}
+				}
+			},
+			error : function(jqXHR, textStatus, errorThrown) {
+				util.message("AJAX请求时发生错误!");
+				弹出jqXHR对象的信息
+				console.log(jqXHR.responseText);
+				console.log(jqXHR.status);
+				console.log(jqXHR.readyState);
+				console.log(jqXHR.statusText);
+				弹出其他两个参数的信息
+				console.log(textStatus);
+				console.log(errorThrown);
+
+			}
+		});
+	}
+	
 	/*
 	 * 此函数只用于测试
 	 * 绑定签约代理商与OS/IS 提交参数方式二(经典模式) 备用 @RequestMapping(value = "/bindsales")
 	 * @ResponseBody public Object BindSalesToAgent(long agentId,String saleIdList, Model model)
 	 */
-	function bindAgentAndSales1(agentId,bindedUserList) {
+	/*function bindAgentAndSales1(agentId,bindedUserList) {
 		var urlStr = BASE_CONTEXT_PATH + "/back/agent-bind/bindsales1"; // 需要提交的 url
 																		
 		var params=new Object();
@@ -86,18 +137,18 @@
 			},
 			error : function(jqXHR, textStatus, errorThrown) {
 				util.message("AJAX请求时发生错误!");
-				/* 弹出jqXHR对象的信息 */
+				 弹出jqXHR对象的信息 
 				console.log(jqXHR.responseText);
 				console.log(jqXHR.status);
 				console.log(jqXHR.readyState);
 				console.log(jqXHR.statusText);
-				/* 弹出其他两个参数的信息 */
+				 弹出其他两个参数的信息 
 				console.log(textStatus);
 				console.log(errorThrown);
 
 			}
 		});
-	}
+	}*/
 	
 	// ----------------click handler------------------------
 	
