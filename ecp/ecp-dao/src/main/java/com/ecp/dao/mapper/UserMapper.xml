@@ -98,4 +98,18 @@
 			(u.id=#{pid} or u.parent_id=#{pid})	 		
 	</select>
 	
+	<!-- 根据昵称进行模糊查询 -->
+	<select id="getByLikeUserNickname"  resultType="map">
+		SELECT
+			u.*
+		FROM
+			`user` u		
+		WHERE
+			u.deleted=1 
+			<if test="nickname!=null and nickname!=''">
+	  			AND u.nickname LIKE concat(concat('%',#{nickname}),'%') 
+  			</if>
+				 		
+	</select>
+	
 </mapper>

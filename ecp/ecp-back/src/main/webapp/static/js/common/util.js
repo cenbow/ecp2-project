@@ -291,7 +291,7 @@
 		if(msg==null || msg==""){
 			msg = "确认删除？";
 		}
-		var cancel_click = "javascript;";
+		var cancel_click = "javascript:void(0);";
 		if(cancel_callback_name!=null && cancel_callback_name!=""){
 			cancel_click = "javascript:"+cancel_callback_name+"();";
 		}

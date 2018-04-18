@@ -19,13 +19,19 @@ import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 import com.ecp.back.commons.RoleCodeConstants;
 import com.ecp.common.util.RequestResultUtil;
+import com.ecp.entity.CustLockRel;
+import com.ecp.entity.Role;
+import com.ecp.entity.User;
 import com.ecp.entity.UserExtends;
+import com.ecp.service.back.IRoleService;
 import com.ecp.service.back.IUserService;
 import com.ecp.service.front.IAgentBindService;
 import com.ecp.service.front.IAgentService;
 import com.ecp.service.front.IUserAgentService;
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
+
+import tk.mybatis.mapper.util.StringUtil;
 
 /**
  * @ClassName UserAgentController
@@ -53,6 +59,8 @@ public class AgentBindController {
 	IAgentService agentService; 
 	@Autowired
 	IAgentBindService agentBindService;  //代理商绑定
+	@Autowired
+	IRoleService roleService;  //角色服务
 
 	/**
 	 * @Description 显示-签约客户列表
@@ -102,11 +110,11 @@ public class AgentBindController {
 	
 	
 	/**
-	 * @Description 
+	 * @Description 显示签约客户企业列表.
 	 * @param pageNum 查询页号
 	 * @param pageSize 页大小
 	 * @param searchTypeValue 查询字段
-	 * 		（以整形表示：0-选择查询条件；1：企业名称；2：负责人姓名；3：电话号码）
+	 * 		（以整形表示：0-选择查询条件；1：企业名称；2：负责人姓名；3：电话号码;4:OS人员姓名;5:IS人员姓名）
 	 * @param condValue 查询条件值
 	 * @param provinceName 	省份名称
 	 * @param cityName	   	市名称
@@ -134,11 +142,21 @@ public class AgentBindController {
 			condValue="";
 		}
 		
+		//确定范围
+		List<Map<String,Object>> agentIdList=getAgentScope(searchTypeValue,condValue);  
+		
 		// 查询并分页(PageHelper)		
-		PageHelper.startPage(pageNum, pageSize);  
-			
+		PageHelper.startPage(pageNum, pageSize);
 		//根据查询类型、条件值,区域代码条件进行查询		
-		List<UserExtends> userAgents = userAgentService.searchUserAgent(searchTypeValue, "%"+condValue+"%",provinceName,cityName,countyName);
+		//List<UserExtends> userAgents = userAgentService.searchUserAgent(searchTypeValue, "%"+condValue+"%",provinceName,cityName,countyName);
+		//审核状态:查询所有
+		List<UserExtends> userAgents = userAgentService.searchUserAgent(searchTypeValue, 
+				condValue,
+				provinceName,
+				cityName,
+				countyName,
+				agentIdList,
+				(byte)0);
 		PageInfo<UserExtends> pageInfo = new PageInfo<>(userAgents);// (使用了拦截器或是AOP进行查询的再次处理)
 				
 		
@@ -173,6 +191,164 @@ public class AgentBindController {
 		model.addAttribute("agentBinds", agentBinds);  				//签约客户与OS/IS绑定
 
 		return RESPONSE_THYMELEAF_BACK + "user_agent_table";
+	}
+	
+	/** 
+		* @Title: batchUnbind 
+		* @Description: 批量绑定 
+		* @param @param parms
+		* @param @return     
+		* @return Object    返回类型 
+		* @throws 
+	*/
+	@RequestMapping(value = "/batchbind")
+	@ResponseBody
+	public Object batchbind(@RequestBody String parms) {
+		
+		JSONObject parm=JSON.parseObject(parms);
+		
+		//解析参数:获取所要绑定的用户ID 数组.
+		JSONArray userArr=JSON.parseArray(parm.getString("userList"));  //绑定用户列表
+		
+		//查询范围
+		JSONObject searchCondObj=JSON.parseObject(parm.getString("searchCond"));  //查询范围.
+		int searchTypeValue=searchCondObj.getIntValue("searchTypeValue");
+		String condValue=searchCondObj.getString("condValue");
+		String provinceName=searchCondObj.getString("provinceName");
+		String cityName=searchCondObj.getString("cityName");
+		String countyName=searchCondObj.getString("countyName");
+		
+		//确定范围
+		List<Map<String,Object>> agentIdList=getAgentScope(searchTypeValue,condValue);
+		//根据查询类型、条件值,区域代码条件进行查询		
+		List<UserExtends> agentList = userAgentService.searchUserAgent(searchTypeValue, 
+				condValue,
+				provinceName,
+				cityName,
+				countyName,
+				agentIdList,
+				(byte)0);
+		
+		
+		for(UserExtends agent:agentList){
+			for(int i=0;i<userArr.size();i++){
+				agentBindService.addBindAgentToUser(agent.getExtendId(), 
+													 userArr.getJSONObject(i).getLongValue("userId"),
+													 userArr.getJSONObject(i).getLongValue("roleId")
+													 );
+			}
+		}
+		
+		return RequestResultUtil.getResultUpdateSuccess();		
+	}
+	
+	/** 
+		* @Title: batchUnbind 
+		* @Description: 批量解绑. 
+		* @param @param searchTypeValue
+		* @param @param condValue
+		* @param @param provinceName
+		* @param @param cityName
+		* @param @param countyName
+		* @param @param model
+		* @param @return     
+		* @return Object    返回类型 
+		* @throws 
+	*/
+	@RequestMapping(value = "/batchunbind")
+	@ResponseBody
+	public Object batchUnbind(Integer searchTypeValue,String  condValue,
+			String  provinceName,String cityName,String	countyName,
+			Model model) {
+		
+		//置默认值
+		if(searchTypeValue==null){
+			searchTypeValue=0;
+			condValue="";
+		}
+		
+		//确定范围
+		List<Map<String,Object>> agentIdList=getAgentScope(searchTypeValue,condValue);  
+		
+		//根据查询类型、条件值,区域代码条件进行查询		
+		List<UserExtends> agentList = userAgentService.searchUserAgent(searchTypeValue, 
+				condValue,
+				provinceName,
+				cityName,
+				countyName,
+				agentIdList,
+				(byte)0);
+		
+		List<Long> deleteAgentIdList=new ArrayList<>();
+		for(UserExtends agent:agentList){
+			deleteAgentIdList.add(agent.getExtendId());
+		}
+		
+		agentBindService.deleteByAgentId(deleteAgentIdList);  //批量解绑
+		
+		
+		return RequestResultUtil.getResultUpdateSuccess();		
+	}
+	
+	/** 
+		* @Title: getAgentScope 
+		* @Description: 根据OS用户名称或是IS用户名称来确定agent范围. 
+		* @param @param searchTypeValue
+		* @param @param condValue
+		* @param @return     
+		* @return List<Map<String,Object>>    返回类型 
+		* @throws 
+	*/
+	private List<Map<String,Object>> getAgentScope(int searchTypeValue,String condValue){
+		List<Map<String,Object>> agentIdList=null;  
+		if(searchTypeValue==4  && !StringUtil.isEmpty(condValue)){  //OS用户名称
+			
+			long roleId=getRoleIdByRoleCode(RoleCodeConstants.OS);  //角色ID.
+			List<User> userList=userService.getByLikeUserNickname(condValue);  //姓名==条件值,而不是模糊查询
+			
+			List<Map<String,Object>> tempList=agentBindService.getAgentByUserIdListAndRoleId(userList,roleId);
+			agentIdList=new ArrayList<>();
+			for(Map<String,Object> bind:tempList){
+				Map<String,Object> tempMap=new HashMap<>();
+				tempMap.put("cust_id",bind.get("cust_id"));
+				agentIdList.add(tempMap);
+			}
+		}
+		
+		  
+		if(searchTypeValue==5  && !StringUtil.isEmpty(condValue)){  //IS用户名称
+			long roleId=getRoleIdByRoleCode(RoleCodeConstants.IS);  //角色ID.
+			List<User> userList=userService.getByLikeUserNickname(condValue);  //姓名==条件值,而不是模糊查询
+			
+			List<Map<String,Object>> tempList=agentBindService.getAgentByUserIdListAndRoleId(userList,roleId);
+			agentIdList=new ArrayList<>();
+			for(Map<String,Object> bind:tempList){
+				Map<String,Object> tempMap=new HashMap<>();
+				tempMap.put("cust_id",bind.get("cust_id"));
+				agentIdList.add(tempMap);
+			}
+		}
+		return agentIdList;
+	}
+	
+	
+	/** 
+		* @Title: getRoleIdByRoleCode 
+		* @Description: 根据角色CODE获取角色ID 
+		* @param @param roleCode
+		* @param @return     
+		* @return long    返回类型 ,如果查询到则返回roleId,否则返回-1
+		* @throws 
+	*/
+	private long getRoleIdByRoleCode(String roleCode){
+		Role rec=new Role();
+		rec.setRoleCode(roleCode);
+		List<Role> roleList=roleService.select(rec);
+		if(roleList.size()>0){
+			return roleList.get(0).getRoleId();
+		}
+		else
+			return -1;
 	}
 	
 	
@@ -275,6 +451,36 @@ public class AgentBindController {
 	
 		return RESPONSE_THYMELEAF_BACK + "agent_bind_osis";
 	}
+	
+	/** 
+		* @Title: showBatchBind 
+		* @Description: 显示批量绑定界面. 
+		* @param @param model
+		* @param @return     
+		* @return String    返回类型 
+		* @throws 
+	*/
+	@RequestMapping(value = "/showbatchbind")
+	public String showBatchBind(Model model) {
+		//查询所有OS角色用户
+		List<String> parms=new ArrayList<String>();
+		parms.add(RoleCodeConstants.OS);
+		List<Map<String,Object>> outsideSales=agentBindService.getUsersByRoleCode(parms);
+		
+		//查询所有IS角色用户
+		parms.clear();
+		parms.add(RoleCodeConstants.IS);
+		List<Map<String,Object>> insideSales=agentBindService.getUsersByRoleCode(parms);
+		
+		model.addAttribute("outsideSales",outsideSales);
+		model.addAttribute("insideSales",insideSales);	
+		
+	
+		return RESPONSE_THYMELEAF_BACK + "agent_batchbind_osis";
+	}
+	
+	
+	
 	
 	
 	/** 

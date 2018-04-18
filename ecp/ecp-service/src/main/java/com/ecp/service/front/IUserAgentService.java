@@ -53,7 +53,6 @@ public interface IUserAgentService extends IBaseService<UserExtends, Long> {
 	 * @return
 	 */
 	public List<UserExtends> searchUserAgent(int searchTypeValue,String condValue,String provinceName,String cityName,String countyName);
-	
 
 	/** 
 		* @Title: searchUserAgent 
