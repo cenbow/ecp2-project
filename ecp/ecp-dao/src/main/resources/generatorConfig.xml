@@ -12,8 +12,8 @@
 	 
 	<!-- HZ 本地 D:\maven-repository\mysql\mysql-connector-java\5.1.38 -->
 	
-	<classPathEntry	location="D:\maven-repository\mysql\mysql-connector-java\5.1.38\mysql-connector-java-5.1.38.jar"/>
-	<!-- <classPathEntry	location="D:\Program Files\Repositories\Maven\mysql\mysql-connector-java\5.1.38\mysql-connector-java-5.1.38.jar"/> -->
+	<!-- <classPathEntry	location="D:\maven-repository\mysql\mysql-connector-java\5.1.38\mysql-connector-java-5.1.38.jar"/> -->
+	<classPathEntry	location="D:\Program Files\Repositories\Maven\mysql\mysql-connector-java\5.1.38\mysql-connector-java-5.1.38.jar"/>
 		
 	<!-- 此处指定生成针对MyBatis3的DAO -->
 	<context id="DB2Tables"	targetRuntime="MyBatis3">
@@ -450,11 +450,13 @@
 		</table> -->
 		
 		<!-- user_extends -->
-		<table tableName="user_extends" domainObjectName="UserExtends" enableCountByExample="false" enableUpdateByExample="false" enableDeleteByExample="false" enableSelectByExample="false" selectByExampleQueryId="false">
+		<!-- <table tableName="user_extends" domainObjectName="UserExtends" enableCountByExample="false" enableUpdateByExample="false" enableDeleteByExample="false" enableSelectByExample="false" selectByExampleQueryId="false">
 			<generatedKey column="extend_id" sqlStatement="MySql" identity="true"/>
-		</table> 
+		</table> --> 
 		
-				
+		<table tableName="sales_target" domainObjectName="SalesTarget" enableCountByExample="false" enableUpdateByExample="false" enableDeleteByExample="false" enableSelectByExample="false" selectByExampleQueryId="false">
+			<generatedKey column="id" sqlStatement="MySql" identity="true"/>
+		</table>
 		
 	</context>
 </generatorConfiguration>
