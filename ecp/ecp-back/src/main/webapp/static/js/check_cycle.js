@@ -210,12 +210,42 @@ function reloadInfoFun(){
  * 		函数功能：根据页码数请求当前页内容
  */
 function clickPageBtnRequestFun(params){
+	var yearName = $("#search-check-cycle-year").val();
+	
 	var action = "back/check-cycle/select-items";
 	params.clickPageBtn = true;
+	params.yearName = yearName;
 	//util.loading();
 	$("#item-div").load(action, params, function(){
 	});
 }
+
+/**
+ * 点击查询按钮时执行，根据选择的时间查询考核周期
+ */
+$("#search-check-cycle-btn").on("click", function(){
+	var params = new Object();
+	params.pagehelperFun = "clickPageBtnRequestFun";
+	clickPageBtnRequestFun(params);
+})
+$("#delete-check-cycle-btn").on("click", function(){
+	var yearName = $("#search-check-cycle-year").val();
+	var url = "back/check-cycle/deleteByYearName";
+	var params = {"yearName":yearName};
+	//util.loading();
+	$.post(url, params, function(res){
+		console.log(res);
+		if(res!=null && res!=""){
+			var obj = $.parseJSON(res);
+			if(obj.result_code=="success"){
+				reloadInfoFun();
+			}else{
+				util.message(obj.result_err_msg);
+			}
+		}
+		
+	});
+})
 
 /*
  * 点击列表中某个复选框时，全选或反选
@@ -245,9 +275,76 @@ function checkAll(obj){
  * 点击添加按钮显示添加编辑选项卡
  */
 $("#add-check-cycle-btn").click(function(){
-	$("#edit-check-cycle-li").removeClass("hide");
-	$('#tabs-check-cycle a[href="#tab-check-cycle-edit"]').tab('show');
+	//$("#edit-check-cycle-li").removeClass("hide");
+	//$('#tabs-check-cycle a[href="#tab-check-cycle-edit"]').tab('show');
+	var url = "back/check-cycle/load-add-check-cycle-dialog";
+	$("#load-add-dialog-div").load(url, function(){
+		openAddCheckCycleDialog();
+	});
 });
+
+/**
+ * 打开对话框
+ */
+function openAddCheckCycleDialog() {
+	$('#add-check-cycle-modal').modal({
+		backdrop : 'static',
+		keyboard : false,
+		show : true
+	});
+}
+
+/**
+ * 关闭对话框
+ * @returns
+ */
+function closeAddCheckCycleDialog() {	
+	$("#add-check-cycle-modal").modal("hide");
+}
+
+var currDate = new Date();
+var currYear = currDate.getFullYear();
+$("#search-check-cycle-year").val(currYear);
+
+//$(function(){
+	/*$(".checkbox-all").on("click", function(){
+		var flag = $(this).prop("checked");
+		console.log(flag);
+		//alert($(this).parent().parent());
+		$(this).parent().parent().find(".curr-checkbox-all").find(".checkbox-one").each(function(){
+			console.log(flag);
+			if(flag){
+				$(this).prop("checked",true);
+			}else{
+				$(this).prop("checked",false);
+			}
+			
+		});
+	})*/
+	/*
+	 * 点击列表中某个复选框时，全选或反选
+	 
+	function checkOne(){
+	    
+	    var flag = true;
+	    $("#check-cycle-table tbody input[type='checkbox']").each(function(){
+	    	if(!$(this).prop("checked")){
+	    		flag = false;
+	    	}
+	    });
+	    if(flag){
+	    	$("#check-cycle-table thead input[type='checkbox']").prop('checked', true);
+	    }else{
+	    	$("#check-cycle-table thead input[type='checkbox']").prop('checked', false);
+	    }
+	}
+	
+	 * 点击列表中All复选框时，列表全选或反选
+	 
+	function checkAll(obj){
+		$("#check-cycle-table tbody input[type='checkbox']").prop('checked', $(obj).prop('checked'));
+	}*/
+//});
 
 /*
  * 重置form表单

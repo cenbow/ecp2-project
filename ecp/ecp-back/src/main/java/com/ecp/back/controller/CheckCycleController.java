@@ -1,8 +1,9 @@
 package com.ecp.back.controller;
 
 import java.text.ParseException;
-import java.text.SimpleDateFormat;
+import java.util.Calendar;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -50,16 +51,23 @@ public class CheckCycleController {
 	 * @return
 	 */
 	@RequestMapping("/select-items")
-	public ModelAndView selectLinkItem(HttpServletRequest request, HttpServletResponse response, Boolean clickPageBtn, PageBean pageBean, String pagehelperFun) {
+	public ModelAndView selectLinkItem(HttpServletRequest request, HttpServletResponse response, Boolean clickPageBtn, PageBean pageBean, String pagehelperFun, String yearName) {
 		ModelAndView mav = new ModelAndView();
 		Subject subject = SecurityUtils.getSubject();
 		UserBean user = (UserBean)subject.getPrincipal();
 		
+		if(StringUtils.isBlank(yearName)){
+			Calendar now = Calendar.getInstance();
+			int currYear = now.get(Calendar.YEAR);
+	        System.out.println("年: " + currYear); 
+			yearName = String.valueOf(currYear);
+		}
+		
 		PageHelper.startPage(pageBean.getPageNum(), pageBean.getPageSize());
-		//Map<String, Object> map = new HashMap<String, Object>();
-		//map.put("deleted", 1);//deleted=1:默认（未删除）deleted=2:已删除
-		List<CheckCycle> cycleList = checkCycleService.selectAll();
-		PageInfo<CheckCycle> pagehelper = new PageInfo<CheckCycle>(cycleList);
+		Map<String, Object> map = new HashMap<>();
+		map.put("yearName", yearName);//yearName:年名称
+		List<CheckCycle> cycleList = checkCycleService.getList(map);
+		PageInfo<CheckCycle> pagehelper = new PageInfo<>(cycleList);
 		
 		mav.addObject("pagehelper", pagehelper);
 		
@@ -101,7 +109,7 @@ public class CheckCycleController {
 	 * @param checkCycle
 	 * @return
 	 */
-	@RequestMapping("/insert")
+	/*@RequestMapping("/insert")
 	@ResponseBody
 	public Map<String, Object> insertContent(HttpServletRequest request, HttpServletResponse response, CheckCycle checkCycle, String startDateStr, String endDateStr) {
 		
@@ -109,7 +117,7 @@ public class CheckCycleController {
 		UserBean userBean = (UserBean)subject.getPrincipal();
 		if(userBean!=null){
 			try {
-				/*yyyy-MM-dd HH:mm:ss*/
+				yyyy-MM-dd HH:mm:ss
 				if(StringUtils.isNotBlank(startDateStr)){
 					Date startDate = DateUtils.parseDate(startDateStr, "yyyy-MM-dd");
 					checkCycle.setStartDate(startDate);
@@ -122,6 +130,39 @@ public class CheckCycleController {
 				e.printStackTrace();
 			}
 			int rows = checkCycleService.insertSelective(checkCycle);
+			if(rows>0){
+				return RequestResultUtil.getResultAddSuccess();
+			}
+		}
+		return RequestResultUtil.getResultAddWarn();
+	}*/
+	@RequestMapping("/insert")
+	@ResponseBody
+	public Map<String, Object> insertContent(HttpServletRequest request, HttpServletResponse response, String yearName, String cycleArrJSON) {
+		
+		Subject subject = SecurityUtils.getSubject();
+		UserBean userBean = (UserBean)subject.getPrincipal();
+		if(userBean!=null){
+			/*try {
+				yyyy-MM-dd HH:mm:ss
+				if(StringUtils.isNotBlank(startDateStr)){
+					Date startDate = DateUtils.parseDate(startDateStr, "yyyy-MM-dd");
+					checkCycle.setStartDate(startDate);
+				}
+				if(StringUtils.isNotBlank(endDateStr)){
+					Date endDate = DateUtils.parseDate(endDateStr, "yyyy-MM-dd");
+					checkCycle.setEndDate(endDate);
+				}
+			} catch (ParseException e) {
+				e.printStackTrace();
+			}*/
+			if(StringUtils.isBlank(yearName)){
+				Calendar now = Calendar.getInstance();
+				int currYear = now.get(Calendar.YEAR);
+		        System.out.println("年: " + currYear); 
+				yearName = String.valueOf(currYear);
+			}
+			int rows = checkCycleService.save(yearName, cycleArrJSON);
 			if(rows>0){
 				return RequestResultUtil.getResultAddSuccess();
 			}
@@ -196,6 +237,38 @@ public class CheckCycleController {
 			return RequestResultUtil.getResultDeleteSuccess();
 		}
 		return RequestResultUtil.getResultDeleteWarn();
+	}
+	
+	/**
+	 * 根据年度名称删除
+	 * @param request
+	 * @param response
+	 * @param yearName
+	 * @return
+	 */
+	@RequestMapping("/deleteByYearName")
+	@ResponseBody
+	public Map<String, Object> deleteByYearName(HttpServletRequest request, HttpServletResponse response, String yearName) {
+		CheckCycle cycle = new CheckCycle();
+		cycle.setYearName(yearName);
+		int rows = checkCycleService.delete(cycle);
+		if(rows>0){
+			return RequestResultUtil.getResultDeleteSuccess();
+		}
+		return RequestResultUtil.getResultDeleteWarn();
+	}
+	
+	/**
+	 * load并打开增加考核周期对话框
+	 * @param request
+	 * @param response
+	 * @return
+	 */
+	@RequestMapping("/load-add-check-cycle-dialog")
+	public ModelAndView loadAddCheckCycleDialog(HttpServletRequest request, HttpServletResponse response) {
+		ModelAndView mav = new ModelAndView();
+		mav.setViewName(StaticConstants.ADD_CHECK_CYCLE_DIALOG_PAGE);
+		return mav;
 	}
 	
 }
