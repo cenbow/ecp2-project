@@ -1,0 +1,250 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>四项费用查询页面:用于显示查询条件</title>
+
+<style>
+a {
+	text-decoration: none;
+	color: black;
+}
+
+a:visited {
+	text-decoration: none;
+}
+
+a:hover {
+	text-decoration: none;
+}
+
+.container a:hover {
+	text-decoration: none;
+	color: blue;
+}
+
+.extra-l  a {
+	color: black;
+}
+
+tr:hover {
+	background-color: #CCFFCC;
+}
+
+i {
+	color: darkblue;
+}
+
+a i {
+	cursor: pointer;
+}
+
+/* 时间查询条件样式 */
+.extra-l li {
+	float: left;
+	margin: auto 10px;
+	cursor: pointer;
+}
+</style>
+
+</head>
+<body>
+	<!-- 对话框 -->
+	<!-- <div th:replace="thymeleaf/common/_dispatch_account_dialog::dialog" class="header"></div> -->
+
+	<!-- 订单列表 -->
+	<div class="row clearfix">
+		<div class="col-md-12 column">
+			<!-- <h5>四项费用管理</h5>
+			<br /> -->
+
+			<!-- 查询条件面板 -->
+			<!-- 时间条件 -->
+			<div class="" style="display: inline-block">
+				<ul class="extra-l" style="list-style: none;">
+					<!-- 起止时间条件 -->
+					<li value="0">起始年月<input class="datetimepicker datetime"
+						readonly="readonly" id="search-startdate" type="text"
+						onClick="WdatePicker({dateFmt:'yyyy-MM'});" /></li>
+					<li value="1">结束年月<input class="datetimepicker datetime"
+						readonly="readonly" id="search-enddate" type="text"
+						onClick="WdatePicker({dateFmt:'yyyy-MM'});" /></li>
+						
+					<!-- 人员列表条件 -->
+					<li><span>人员列表</span> <select class="user-osis-list">
+							<option value="-1" selected="selected">所有人员</option>
+							<span th:each="user:${userList}" th:remove="tag">
+								<option th:value="${user.id}" th:text="${user.nickname}">OS/IS姓名(昵称)</option>
+							</span>							
+					</select></li>
+					<!-- 查询按钮 -->
+					<li><a type="button" id="btn-startsearch" onclick="javascript:startSearch();"><i class="icon-search"></i></a></li>
+				</ul>
+			</div>
+
+			<a id="btn-add-fourfee" title="增加四项费用"
+				style="float: right; margin-right: 20px"> <i
+				class=" icon-plus-sign icon-large"></i>
+			</a> <a id="refresh-item" th:href="@{/back/fourfee/show}" title="刷新列表"
+				style="float: right; margin-right: 20px"> <i
+				class="icon-refresh icon-large"></i>
+			</a>
+			
+			<hr style="height:1px;border:none;border-top:1px solid blue;">
+			
+			<!-- 容器:用于加载四项费用列表 -->
+			<div class="fourfee-table"></div>
+
+		</div>
+	</div>
+
+	<!-- footer -->
+	<!-- <div th:include="/thymeleaf/common/_footer::footer" class="footer"></div> -->
+
+	<!-- 订单选择条件  -->
+	<script th:inline="javascript">
+		/*<![CDATA[*/
+
+		/*]]>*/
+	</script>
+
+	<script>
+		/*
+		 * 日期转字符串格式函数
+		 * 调用方法：date.format('yyyy-MM-dd hh:mm:ss');
+		 */
+		Date.prototype.format = function(format) {
+			var date = {
+				"M+" : this.getMonth() + 1,
+				"d+" : this.getDate(),
+				"h+" : this.getHours(),
+				"m+" : this.getMinutes(),
+				"s+" : this.getSeconds(),
+				"q+" : Math.floor((this.getMonth() + 3) / 3),
+				"S+" : this.getMilliseconds()
+			};
+			if (/(y+)/i.test(format)) {
+				format = format.replace(RegExp.$1, (this.getFullYear() + '')
+						.substr(4 - RegExp.$1.length));
+			}
+			for ( var k in date) {
+				if (new RegExp("(" + k + ")").test(format)) {
+					format = format.replace(RegExp.$1,
+							RegExp.$1.length == 1 ? date[k] : ("00" + date[k])
+									.substr(("" + date[k]).length));
+				}
+			}
+			return format;
+		}
+		
+		////初始化当前日期
+		function initSearchDate(){
+			
+			$("#search-startdate").val((new Date()).format('yyyy-MM'));
+			$("#search-enddate").val((new Date()).format('yyyy-MM'));	
+		}
+		
+		//查询四项费用列表
+		function searchFourFee(startDateYear,
+							   startDateMonth,
+							   endDateYear,
+							   endDateMonth,userId,
+							   pageNum,pageSize){
+			
+			var parms=new Object();
+			parms.startDateYear=startDateYear;
+			parms.startDateMonth=startDateMonth;
+			parms.endDateYear=endDateYear;
+			parms.endDateMonth=endDateMonth;
+			parms.userId=userId;
+			parms.pageNum=pageNum;
+			parms.pageSize=pageSize;
+			
+			//加载四项费用页面
+			var url=BASE_CONTEXT_PATH+"/back/fourfee/fourfeetable"
+			$(".fourfee-table").load(url,parms,null);			
+		}
+		
+		//开始查询
+		function startSearch(){
+			var startDateTxt=$("#search-startdate").val();  //开始年月
+			var endDateTxt=$("#search-enddate").val();		//结束年月
+			
+			//console.log("startDateTxt:"+startDateTxt);
+			
+			
+			var startDate=new Date(startDateTxt+'-01');
+			var endDate=new Date(endDateTxt+'-01');
+			
+			var startDateYear=startDate.format("yyyy");
+			var startDateMonth=startDate.format("MM");		
+			var endDateYear=endDate.format("yyyy");
+			var endDateMonth=endDate.format("MM");
+			var userId=$(".user-osis-list").val();
+			var pageNum=$("#pageNum").val();
+			var pageSize=$("#pageSize").val();
+			
+			searchFourFee(startDateYear,startDateMonth,endDateYear,endDateMonth,userId,pageNum,pageSize);
+			
+		}
+		
+		//分页查询
+		function loadPage(){
+			var startDateTxt=ret_startDateYear+'-'+ret_startDateMonth;  //开始年月
+			var endDateTxt=ret_endDateYear+'-'+ret_endDateMonth;		//结束年月
+			
+			console.log("pager------startDateTxt:"+startDateTxt);
+			
+			var startDate=new Date(startDateTxt+'-01');
+			var endDate=new Date(endDateTxt+'-01');
+			
+			var startDateYear=startDate.format("yyyy");
+			var startDateMonth=startDate.format("MM");		
+			var endDateYear=endDate.format("yyyy");
+			var endDateMonth=endDate.format("MM");
+			
+			var userId=ret_userId;
+			
+			var pageNum=curr_pageNum;
+			var pageSize=curr_pageSize;
+			
+			searchFourFee(startDateYear,startDateMonth,endDateYear,endDateMonth,userId,pageNum,pageSize);
+		}
+		
+		
+		//默认查询
+		function defaultSearchFourFee(){
+			var nowDate=new Date();	
+		
+			var startDateYear=nowDate.format("yyyy");
+			var startDateMonth=nowDate.format("MM");		
+			var endDateYear=nowDate.format("yyyy");
+			var endDateMonth=nowDate.format("MM");			
+			var userId=-1;  //表示所有;
+			
+			searchFourFee(startDateYear,startDateMonth,endDateYear,endDateMonth,userId,0,0);
+		}
+		
+		$(function(){
+			initSearchDate();  //初始化当前年月
+			defaultSearchFourFee();  //主页:默认查询
+			
+			//user-osis-list
+			$(".user-osis-list").on("change",function(){
+				//$("#btn-startsearch").trigger("click");
+			});
+		});
+		
+		
+		
+	</script>
+
+	<!-- 日期组件 -->
+	<script type="text/javascript"
+		th:src="@{/static/calendar/WdatePicker.js}"></script>
+	<!-- 四项费用管理 -->
+	<!-- <script type="text/javascript"
+		th:src="@{/static/js/fourfee/fourFeeManagement.js}"></script> -->
+
+</body>
+</html>

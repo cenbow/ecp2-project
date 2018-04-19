@@ -35,6 +35,27 @@ public interface IAccountCompanyService extends IBaseService<AccountCompany, Lon
 	
 	
 	/** 
+		* @Title: getItemsByDateAndUser 
+		* @Description: 根据时间及用户查询会计条目. 
+		* @param @param startDateYear
+		* @param @param startDateMonth
+		* @param @param endDateYear
+		* @param @param endDateMonth
+		* @param @param userId
+		* @param @param itemTypeList  会计条目类型
+		* @param @return     
+		* @return List<Map<String,Object>>    返回类型 
+		* @throws 
+	*/
+	public List<Map<String,Object>> getItemsByDateAndUser(String startDateYear,
+			String startDateMonth,
+			String endDateYear,
+			String endDateMonth,
+			long   userId,
+			List<Integer> itemTypeList);
+	
+	
+	/** 
 		* @Title: getItemsByOrderAndBindUser 
 		* @Description: TODO(这里用一句话描述这个方法的作用) 
 		* @param @param orderId

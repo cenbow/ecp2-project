@@ -41,7 +41,6 @@ import com.github.pagehelper.PageInfo;
  * Copyright (c) 2018 by [个人或者公司信息]
  * @ClassName:     FourFeeController.java
  * @Description:   四项费用管理 
- * 
  * @author:        lenovo
  * @version:       V1.0  
  * @Date:          2018年3月21日 下午4:42:59 
@@ -74,14 +73,165 @@ public class FourFeeController {
 	
 
 	/**
-	 * @Description 显示-订单列表
+	 * @Description 显示-四项费用管理页面(选项卡部分)
 	 * @param model
 	 * @return
 	 */
 	@RequestMapping(value = "/show")
-	public String order_show(Model model) {
-		return RESPONSE_THYMELEAF_BACK + "order_show";
+	public String fourFeeManagement(Model model) {
+		return RESPONSE_THYMELEAF_BACK + "fourfee_management";
 	}
+	
+	/** 
+		* @Title: fourFeeSearch 
+		* @Description: 显示四项费用"查询框架" 
+		* @param @param model
+		* @param @return     
+		* @return String    返回类型 
+		* @throws 
+	*/
+	@RequestMapping(value = "/fourfeesearch")
+	public String showFourFeeSearch(Model model) {
+		//查询所有的OS及IS角色的用户(采用ID去重).
+		List<Map<String,Object>> userList=userService.getISAndOSUser();
+		model.addAttribute("userList", userList);
+		
+		return RESPONSE_THYMELEAF_BACK + "fourfee_search";
+	}
+	
+	/** 
+		* @Title: searchFourFee 
+		* @Description: 查询四项费用并返回列表 
+		* @param @param startDateYear
+		* @param @param startDateMonth
+		* @param @param endDateYear
+		* @param @param endDateMonth
+		* @param @param userId
+		* @param @param model
+		* @param @return     
+		* @return String    返回类型 
+		* @throws 
+	*/
+	@RequestMapping(value = "/fourfeetable")
+	public String searchFourFeeTable(String startDateYear,
+								String startDateMonth,
+								String endDateYear,
+								String endDateMonth,
+								long	userId,
+								Integer pageNum, 
+								Integer pageSize,
+								
+								Model model) {
+		
+		searchFourFee(
+				 startDateYear,
+				 startDateMonth,
+				 endDateYear,
+				 endDateMonth,
+				 userId,
+				 pageNum,
+				 pageSize,
+				 model);
+		
+		model.addAttribute("startDateYear", startDateYear);
+		model.addAttribute("startDateMonth", startDateMonth);
+		model.addAttribute("endDateYear", endDateYear);
+		model.addAttribute("endDateMonth", endDateMonth);
+		model.addAttribute("userId", userId);
+		model.addAttribute("pageNum", pageNum);
+		model.addAttribute("pageSize", pageSize);
+		
+		return RESPONSE_THYMELEAF_BACK + "fourfee_table";
+	}
+	
+	/** 
+		* @Title: searchFourFee 
+		* @Description: 根据起止日期及用户ID号查询四项费用+其它费用.
+		* @param @param startDateYear
+		* @param @param startDateMonth
+		* @param @param endDateYear
+		* @param @param endDateMonth
+		* @param @param userId
+		* @param @param pageNum
+		* @param @param pageSize
+		* @param @param model
+		* @param @return     
+		* @return List<Map<String,Object>>    返回类型 
+		* @throws 
+	*/
+	private List<Map<String,Object>> searchFourFee(
+			String startDateYear,
+			String startDateMonth,
+			String endDateYear,
+			String endDateMonth,
+			long	userId,
+			Integer pageNum,
+			Integer pageSize,
+			Model model){
+		
+		if(pageNum==null || pageNum==0)
+		{
+			pageNum=1;
+			pageSize=PAGE_SIZE;
+		}
+		
+		//费用类型
+		List<Integer> itemTypeList=new ArrayList<Integer>();
+		itemTypeList.add(AccountItemType.COMMUNICATION_FEE);
+		itemTypeList.add(AccountItemType.ENTERTAINMENT_FEE);
+		itemTypeList.add(AccountItemType.TRANSPORTATION_FEE);
+		itemTypeList.add(AccountItemType.TRAVEL_EXPENSE_FEE);
+		itemTypeList.add(AccountItemType.OTHER_FEE);
+		
+		// 查询 并分页		
+		PageHelper.startPage(pageNum, pageSize); // PageHelper
+		//查询公司帐薄
+		List<Map<String,Object>> accountList=accountCompanyService.getItemsByDateAndUser(startDateYear,
+				 startDateMonth,
+				 endDateYear,
+				 endDateMonth,
+				 userId, itemTypeList);
+		PageInfo<Map<String,Object>> pageInfo = new PageInfo<Map<String,Object>>(accountList);// (使用了拦截器或是AOP进行查询的再次处理)
+		
+		//根据帐薄条目查询费用归属
+		List<Map<String,Object>> accountCompanyList=new ArrayList<Map<String,Object>>();
+		for(int i=0;i<accountList.size();i++){
+			Map<String,Object> accountItem=new HashMap<String,Object>();
+			
+			
+			Long bindUserId=(Long)accountList.get(i).get("bind_user_id");
+			//Long roleId=(Long)accountList.get(i).get("role_id");
+			
+			String bindUserName="";
+			//String bindUserRole="";
+			
+			if(bindUserId==null || bindUserId==0){		
+				bindUserName="公司内部";
+				//bindUserRole="";
+			}
+			else{
+				bindUserName=userService.selectByPrimaryKey(bindUserId).getUsername();
+				//bindUserRole=roleService.selectByPrimaryKey(roleId).getRoleName();
+			}
+			
+			accountItem.put("bindUserName", bindUserName);
+			//accountItem.put("bindUserRole", bindUserRole);
+			accountItem.put("accountItem", accountList.get(i));
+						
+			accountCompanyList.add(accountItem);
+			
+		}
+		
+		model.addAttribute("accountCompanyList", accountCompanyList);
+		model.addAttribute("pageInfo", pageInfo);  //分页
+		
+		
+		
+		
+		return accountCompanyList;
+	}
+	
+	
 	
 	/**
 	 * @Description 订单查询列表

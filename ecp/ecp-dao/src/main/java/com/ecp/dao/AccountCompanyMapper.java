@@ -56,4 +56,14 @@ public interface AccountCompanyMapper extends Mapper<AccountCompany> {
 			@Param("userId") long userId,
 			@Param("roleIdList") List<Long> roleIdList);
 	
+	
+	public List<Map<String, Object>> getItemsByDateAndUser(
+			@Param("startDateYear") String startDateYear, 
+			@Param("startDateMonth") String startDateMonth,
+			@Param("endDateYear") String endDateYear, 
+			@Param("endDateMonth") String endDateMonth, 
+			@Param("userId") long userId, 
+			@Param("itemTypeList") List<Integer> itemTypeList);
+
+	
 }

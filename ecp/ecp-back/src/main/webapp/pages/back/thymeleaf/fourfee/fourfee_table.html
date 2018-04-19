@@ -5,65 +5,105 @@
 <title>Insert title here</title>
 </head>
 <body>
-<!-- 四项费用列表 -->
-<table class="table">
-						<thead>
-							<tr>
-								<th>ID</th>								
-								<th>金额	</th>
-								<th>费用类型	</th>
-								<th>归属</th>
-								<th>备注</th>
-								<th>日期	</th>								
-								<th>操作 </th>
-							</tr>
-						</thead>
-						<tbody>
-							<tr th:each="item: ${accountCompanyList}">
-								<td th:text="${item.accountItem.id}">条目ID</td>
-								<td th:text="${item.accountItem.amount}">金额</td>
-								<td>
-									<span th:switch="${item.accountItem.type}" th:remove="tag">
-										<span th:case=1 th:remove="tag">
-									  		<span>交通费</span>
-									  	</span>
-									  	<span th:case=2 th:remove="tag">
-									  		<span>通讯费</span>
-									  	</span>
-										<span th:case=3 th:remove="tag">
-									  		<span>招待费</span>
-									  	</span>
-									  	<span th:case=4 th:remove="tag">
-									  		<span>差旅费</span>
-									  	</span>
-									  	<span th:case="*" th:remove="tag">
-									  		<span>其它费用</span>
-									  	</span>
-									</span>									
-								</td>
-								
-								<td th:text="${item.bindUserName}+'('+${item.bindUserRole} +')'"></td>
-								<!-- 备注 -->
-								<td th:text="${item.accountItem.comment}">备注</td>
-								<td th:text="${#dates.format(item.accountItem.createTime,'yyyy-MM-dd HH:mm:ss')}">日期</td>
-								<td>				
-									<a type="button" class="modi-four-fee" th:attr="bind-id=${item.accountItem.id}"><i class=" icon-edit icon-large" style="color:darkblue"></i></a>
-									<a type="button" class="del-four-fee" th:attr="bind-id=${item.accountItem.id}"><i class=" icon-remove-circle icon-large" style="color:darkblue"></i></a>	
-								</td>
-							</tr>
-							
-						</tbody>
-					</table>
+	<!-- 四项费用列表 -->
+	<table class="table">
+		<thead>
+			<tr>
+				<!-- <th>ID</th> -->
+				<th>金额</th>
+				<th>费用类型</th>
+				<th>费用归属</th>
+				<th>备注</th>
+				<th>录入日期</th>
+				<th>归属日期(年)</th>
+				<th>归属日期(月)</th>
+				<th>操作</th>
+			</tr>
+		</thead>
+		<tbody>
+			<tr th:each="item: ${accountCompanyList}">
+				<!-- <td th:text="${item.accountItem.id}">条目ID</td> -->
+				<td th:text="${item.accountItem.amount}">金额</td>
+				<td><span th:switch="${item.accountItem.type}" th:remove="tag">
+						<span th:case=1 th:remove="tag"> <span>交通费</span>
+					</span> <span th:case=2 th:remove="tag"> <span>通讯费</span>
+					</span> <span th:case=3 th:remove="tag"> <span>招待费</span>
+					</span> <span th:case=4 th:remove="tag"> <span>差旅费</span>
+					</span> <span th:case="*" th:remove="tag"> <span>其它费用</span>
+					</span>
+				</span></td>
+
+				<!-- <td th:text="${item.bindUserName}+'('+${item.bindUserRole} +')'"></td> -->
+				<td th:text="${item.bindUserName}"></td>
+				<!-- 备注 -->
+				<td th:text="${item.accountItem.comment}">备注</td>
+				<td
+					th:text="${#dates.format(item.accountItem.create_time,'yyyy-MM-dd HH:mm:ss')}">日期</td>
 					
-					
+				<td th:text="${item.accountItem.year}">归属年份</td>
+				<td th:text="${item.accountItem.month}">归属月份</td>
+				<td><a type="button" class="modi-four-fee"
+					th:attr="bind-id=${item.accountItem.id}"><i
+						class=" icon-edit icon-large" style="color: darkblue"></i></a> <a
+					type="button" class="del-four-fee"
+					th:attr="bind-id=${item.accountItem.id}"><i
+						class=" icon-remove-circle icon-large" style="color: darkblue"></i></a>
+				</td>
+			</tr>
+		</tbody>
+	</table>
+	
+	<hr style="height:1px;border:none;border-top:1px solid blue;"> 
+	
+	<!-- 加入 分页 -->
+	<div th:include="/back/thymeleaf/common/_pager::pager" class="pagerx" style="float: right; margin-right: 100px;"></div>
+	
+	<!--  -->
+	<script th:inline="javascript">  
+		/*<![CDATA[*/
+		var ret_startDateYear = [[${startDateYear}]];  //回传的时间条件 
+		var ret_startDateMonth=[[${startDateMonth}]];
+		var ret_endDateYear=[[${endDateYear}]];		
+		var ret_endDateMonth=[[${endDateMonth}]];		
+		var ret_userId=[[${userId}]];
+		var curr_pageNum=[[${pageNum}]];
+		var curr_pageSize=[[${pageSize}]]; 
+		
+		/*]]>*/  
+	</script>
+
+
 	<script type="text/javascript">
-		$('.modi-four-fee').on('click',function(){
+		$('.modi-four-fee').on('click', function() {
 			console.log("modify four fee");
 		})
-		
-		$('.del-four-fee').on('click',function(){
+
+		$('.del-four-fee').on('click', function() {
 			console.log("delete four fee");
 		})
+		
+		//======================分页（页码导航）==============
+
+	/*
+	 * 【分页】导航： 当点击页号时读取需要导航到的页码及每页记录数（pageNum,pageSize）
+	 * data-bind:pageNum-pageSize形式 如果data-bind为空字符串，则不做动作 当用户点击某页时，则发送与筛选相同的请求
+	 */
+
+	$(".pagination li a").on('click', function(e) {
+		// alert($(this).attr("data-bind"));
+		//console.log("debug1");
+		var dataBind = $(this).attr("data-bind");
+		// 当dataBind有数据时处理
+		if (dataBind != "") {
+			var pageArr = new Array();
+			pageArr = dataBind.split("-");
+			// 置隐藏表单数据
+			curr_pageNum=pageArr[0];
+			curr_pageSize=pageArr[1];			
+			loadPage();  //加载页
+		}
+
+	});
 	</script>
 </body>
 </html>
