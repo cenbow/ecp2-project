@@ -53,6 +53,34 @@ public class AccountCompany {
      */
     private Integer type;
     
+    
+    /** 
+    	* @Fields year : 所属会计年份
+    */
+    private String year;  
+
+	/** 
+    	* @Fields month : 所属会计月份 
+    */
+    private String month;
+    
+    public String getYear() {
+		return year;
+	}
+
+	public void setYear(String year) {
+		this.year = year;
+	}
+
+	public String getMonth() {
+		return month;
+	}
+
+	public void setMonth(String month) {
+		this.month = month;
+	}
+    
+    
     /** 
     	1:未删除; 2:删除状态 
     */

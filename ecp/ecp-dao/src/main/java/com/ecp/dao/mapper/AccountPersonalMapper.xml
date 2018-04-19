@@ -23,13 +23,15 @@
     <result column="comment" jdbcType="VARCHAR" property="comment" />
     <result column="account_company_id" jdbcType="BIGINT" property="accountCompanyId" />
     <result column="deleted" jdbcType="TINYINT" property="deleted" />
+    <result column="year" jdbcType="VARCHAR" property="year" />
+    <result column="month" jdbcType="VARCHAR" property="month" />
   </resultMap>
   <sql id="Base_Column_List">
     <!--
       WARNING - @mbggenerated
     -->
     id, cust_id, order_id, order_no, contract_id, contract_no, item_id, sku_id, bind_user_id, 
-    role_id, amount, type, create_time, operator_id, operator_name, comment,account_company_id,deleted
+    role_id, amount, type, create_time, operator_id, operator_name, comment,account_company_id,deleted,year,month
   </sql>
   <select id="selectPerformanceMap" resultType="map">
   	SELECT
