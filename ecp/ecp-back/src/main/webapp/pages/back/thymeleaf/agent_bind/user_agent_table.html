@@ -117,9 +117,13 @@ tr:hover{
 												<div class="time-list">
 													<ul>
 														<li class="curr" value="0"><i class="icon-ok"></i><a href="javascript:void(0);" >选择查询条件</a></li>
-														<li class="" 	 value="1"><i class="icon-ok"></i><a href="javascript:void(0);" >企业名称</a></li>
-														<li class="" 	 value="2"><i class="icon-ok"></i><a href="javascript:void(0);" >负责人姓名</a></li>
-														<li class="" 	 value="3"><i class="icon-ok"></i><a href="javascript:void(0);" >手机号码</a></li>			
+														<li class="" 	 value="1"><i class="icon-ok"></i><a href="javascript:void(0);" >企业名称(代理商)</a></li>
+														<li class="" 	 value="2"><i class="icon-ok"></i><a href="javascript:void(0);" >负责人姓名(代理商)</a></li>
+														<li class="" 	 value="3"><i class="icon-ok"></i><a href="javascript:void(0);" >手机号码(代理商)</a></li>
+														<li class="" 	 value="4"><i class="icon-ok"></i><a href="javascript:void(0);" >OS人员姓名(昵称)</a></li>
+														<li class="" 	 value="5"><i class="icon-ok"></i><a href="javascript:void(0);" >IS人员姓名(昵称)</a></li>
+														
+																	
 													</ul>
 												</div>						
 											</div>
@@ -146,7 +150,7 @@ tr:hover{
 			<table class="table">
 				<thead>
 					<tr>
-						<th><input type="checkbox" id="check-select-all"><label for="check-select-all">选择</label></th>
+						<!-- <th><input type="checkbox" id="check-select-all"><label for="check-select-all">选择</label></th> -->
 						<th>企业名称</th>
 						<th>企业负责人</th>
 						<th>手机号码</th>
@@ -159,7 +163,7 @@ tr:hover{
 				</thead>
 				<tbody>
 					<tr th:each="agentBind:${agentBinds}">
-						<td><input type="checkbox" class="check-select" th:attr="id='check-select-'+${agentBind.agent.extendId},data-id=${agentBind.agent.extendId}"></td>
+						<!-- <td><input type="checkbox" class="check-select" th:attr="id='check-select-'+${agentBind.agent.extendId},data-id=${agentBind.agent.extendId}"></td> -->
 						<td th:text="${agentBind.agent.companyName}" style="width:400px;">北京XXX科技有限责任公司</td>
 						<td th:text="${agentBind.agent.artificialPersonName}">张XX</td>
 						<td th:text="${agentBind.agent.contactPhone}">138xxxxxxxx</td>
@@ -200,13 +204,19 @@ tr:hover{
 										 data-contact-phone=${agentBind.agent.contactPhone},
 										 data-artificialPersonName=${agentBind.agent.artificialPersonName},
 										 data-user-id=${agentBind.agent.userId},
-										 onclick='javascript:showAgentBindOIS('+${agentBind.agent.extendId}+');'
+										 onclick='javascript:showAgentBindOIS(this);'
 										 "
 								class="dispatch-account" title="客户锁定"> 
 								<i class="icon-user icon-large" style="color:green"></i>
 							</a>							
 						</td>
 
+					</tr>
+					<tr >
+						<td colspan="9">
+							<button class="btn btn-primary" id="batch-unbind" style="float:right; margin-right:10px;" ><i class="icon-unlock"></i>批量解绑</button>
+							<button class="btn btn-primary" id="batch-bind" style="float:right; margin-right:10px;" ><i class="icon-lock"></i>批量绑定</button>
+						</td>
 					</tr>
 
 				</tbody>

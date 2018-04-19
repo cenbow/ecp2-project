@@ -115,6 +115,21 @@ public class OrderServiceImpl extends AbstractBaseService<Orders, Long> implemen
 		return ordersMapper.selectOrdersMap(params);
 	}
 	
+	/* (非 Javadoc) 
+		* <p>Title: selectOrder</p> 
+		* <p>Description: 根据欠款条件查询订单</p> 
+		* @param orderTimeCond
+		* @param dealStateCond
+		* @param searchTypeValue
+		* @param condValue
+		* @param provinceName
+		* @param cityName
+		* @param countyName
+		* @param agentIdList
+		* @param totalPayFlag
+		* @return 
+		* @see com.ecp.service.front.IOrderService#selectOrder(int, int, int, java.lang.String, java.lang.String, java.lang.String, java.lang.String, java.util.List, int) 
+	*/
 	public List<Map<String, Object>> selectOrder(int orderTimeCond, int dealStateCond, int searchTypeValue,
 			String condValue, String provinceName, String cityName, String countyName,
 			List<Map<String, Object>> agentIdList, int totalPayFlag) {
@@ -133,5 +148,15 @@ public class OrderServiceImpl extends AbstractBaseService<Orders, Long> implemen
 			int dealStateCond) {
 		return ordersMapper.selectOrderByCondAndSubUser(buyerId,subList,-orderTimeCond,dealStateCond);
 	}
+
+	@Override
+	public List<Map<String, Object>> selectOrderByOrderScope(int orderTimeCond, int dealStateCond,
+			int searchTypeValue, String condValue, String provinceName, String cityName, String countyName,
+			List<Map<String, Object>> agentIdList,List<Map<String, Object>> orderIdList) {
+		List<Map<String,Object>> resultList=null;
+		return ordersMapper.selectOrderByOrderScope(-orderTimeCond, dealStateCond, searchTypeValue,condValue,provinceName,cityName,countyName,agentIdList,orderIdList);
+	}
+	
+	
 
 }

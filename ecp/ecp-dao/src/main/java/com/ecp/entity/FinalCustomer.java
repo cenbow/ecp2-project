@@ -59,8 +59,26 @@ public class FinalCustomer {
      */
     @Column(name = "county_code")
     private String countyCode;
-
+    
+    
     /**
+     * 组织名称
+     */
+    @Column(name = "organization_name")
+    private String organizationName;
+    
+
+    
+
+	public String getOrganizationName() {
+		return organizationName;
+	}
+
+	public void setOrganizationName(String organizationName) {
+		this.organizationName = organizationName;
+	}
+
+	/**
      * 补充区县
      */
     @Column(name = "added_area")

@@ -13,7 +13,7 @@
 			</div>
 		</div>
 		<div class="row clearfix">
-			<div class="col-md-4 column">
+			<div class="col-md-6 column">
 				<div class="row clearfix">
 					<div class="col-md-12 column">
 						<h5><strong>外部销售</strong>人员列表</h5>
@@ -43,7 +43,7 @@
 					</tbody>
 				</table>
 			</div>
-			<div class="col-md-4 column">
+			<div class="col-md-6 column">
 				<div class="row clearfix">
 					<div class="col-md-12 column">
 						<h5><strong>内部销售</strong>人员列表</h5>
@@ -72,28 +72,28 @@
 					</tbody>
 				</table>
 			</div>
-			<div class="col-md-4 column" id="binded-users">
+			<!-- <div class="col-md-4 column" id="binded-users">
 				
-			</div>
+			</div> -->
 		</div>
 		<div class="row clearfix">			
 			<div class="col-md-12 column">
 				<hr style="height:1px;border:none;border-top:1px solid blue;" />
-				<button type="button" class="btn btn-primary" id="btn-bind" style="float:right; margin-right:100px;">绑定</button>
+				<button type="button" class="btn btn-primary" id="btn-batchbind" style="float:right; margin-right:100px;">绑定</button>
 				<!-- <button type="button" class="btn btn-primary" id="btn-bind1" style="float:right; margin-right:100px;">绑定2</button> -->
 			</div>
 		</div>
 		
 		<div class="row clearfix">			
 			<div class="col-md-12 column">
-				<!-- 当前签约客户id  -->
-				<input type="hidden" id="curr-agent" th:value="${agentId}">
+				<!-- 当前签约客户id 0:表示批量绑定 -->
+				<input type="hidden" id="curr-agent" value="0">
 			</div>
 		</div>
 		
 	</div>
 	
-	<script type="text/javascript" th:src="@{/static/js/agent_bind/agent_bind_user.js}"></script>
+	<script type="text/javascript" th:src="@{/static/js/agent_bind/agent_batchbind.js}"></script>
 	
 	
 </body>

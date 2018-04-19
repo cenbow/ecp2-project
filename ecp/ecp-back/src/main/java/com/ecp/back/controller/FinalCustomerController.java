@@ -1,6 +1,7 @@
 package com.ecp.back.controller;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -18,7 +19,6 @@ import com.ecp.bean.DeletedType;
 import com.ecp.bean.UserBean;
 import com.ecp.common.util.RequestResultUtil;
 import com.ecp.entity.FinalCustomer;
-import com.ecp.entity.Linkman;
 import com.ecp.entity.Role;
 import com.ecp.service.back.IRoleService;
 import com.ecp.service.back.IUserService;
@@ -29,6 +29,8 @@ import com.ecp.service.front.IOrderService;
 import com.ecp.service.front.IUserAgentService;
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
+
+import tk.mybatis.mapper.util.StringUtil;
 
 /**
  * Copyright (c) 2018 by [个人或者公司信息]
@@ -64,6 +66,7 @@ public class FinalCustomerController {
 	IUserService userService;  //用户服务
 	@Autowired
 	IRoleService roleService;  //角色服务
+	
 	
 
 	/**
@@ -120,7 +123,20 @@ public class FinalCustomerController {
 		model.addAttribute("searchTypeValue", searchTypeValue);  	//查询字段值
 		model.addAttribute("condValue", condValue);  				//查询条件值
 		
-		List<Map<String,Object>> agentIdList=getSearchScope(userId,roleId);  //确认登录用户所查询的代理商范围
+		//确认登录用户所查询的代理商范围
+		List<Map<String,Object>> agentIdList=getSearchScope(userId,roleId);  
+		
+		//确定查询订单范围
+		List<Map<String,Object>> orderIdList=null;  
+		if(searchTypeValue==8  && !StringUtil.isEmpty(condValue)){  //最终用户组织名称条件
+			List<Map<String,Object>> tempList=finalCustomerService.getFinalCustomerByOrganizationName(condValue);
+			orderIdList=new ArrayList<>();
+			for(Map<String,Object> finalCustomer:tempList){
+				Map<String,Object> tempMap=new HashMap<>();
+				tempMap.put("order_id",finalCustomer.get("order_id"));
+				orderIdList.add(tempMap);
+			}
+		}
 		
 		// 查询 并分页		
 		PageHelper.startPage(pageNum, pageSize); // PageHelper			
@@ -128,19 +144,25 @@ public class FinalCustomerController {
 		//List<Map<String,Object>> orderList = orderService.selectAllOrderByOrderTimeAndDealState(orderTimeCond,dealStateCond);
 		
 		//List<Map<String,Object>> orderList = orderService.selectOrder(orderTimeCond,dealStateCond,searchTypeValue,condValue);  //查询订单
-		List<Map<String,Object>> orderList = orderService.selectOrder(
+		List<Map<String,Object>> orderList = orderService.selectOrderByOrderScope(
 				 orderTimeCond,dealStateCond,
 				 searchTypeValue,condValue,
 				 provinceName,cityName,countyName,
-				 agentIdList);  //查询订单
+				 agentIdList,orderIdList);  //查询订单
+		
 		
 		PageInfo<Map<String,Object>> pageInfo = new PageInfo<Map<String,Object>>(orderList);// (使用了拦截器或是AOP进行查询的再次处理)
 		
 		List<Map<String,Object>> userRoleList=getUserRoles();
 		model.addAttribute("userRoleList", userRoleList);  //查询用户角色列表
 		
-		model.addAttribute("pageInfo", pageInfo);  //分页
+		model.addAttribute("pageInfo", pageInfo);  //返回分页信息		
 		model.addAttribute("orderList", orderList); //列表
+		//在订单中加入最终用户信息
+		for(Map<String,Object> order:orderList){
+			List<FinalCustomer> finalCustomerList=finalCustomerService.getFinalCustomerByOrder((long)order.get("id"));
+			order.put("finalCustomerList", finalCustomerList);
+		}
 		
 		//回传区域条件及用户/角色
 		model.addAttribute("provinceName", provinceName);

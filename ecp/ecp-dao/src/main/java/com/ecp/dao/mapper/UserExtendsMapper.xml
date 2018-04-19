@@ -136,7 +136,7 @@
   		</if> 
   		
   	 </where>  	 
-  	 order by a.create_dt DESC
+  	 order by a.create_dt
   	 
   </select>
   

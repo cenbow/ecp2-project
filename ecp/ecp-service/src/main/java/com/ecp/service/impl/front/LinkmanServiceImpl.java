@@ -2,6 +2,7 @@ package com.ecp.service.impl.front;
 
 import java.util.Date;
 import java.util.List;
+import java.util.Map;
 
 import org.springframework.stereotype.Service;
 
@@ -43,6 +44,18 @@ public class LinkmanServiceImpl extends AbstractBaseService<Linkman, Long> imple
 		linkman.setCreateTime(new Date());
 		
 		return linkmanMapper.insertSelective(linkman);
+	}
+
+
+	@Override
+	public List<Map<String, Object>> getLinkmanByLinkmanName(String name) {
+		return linkmanMapper.getLinkmanByLinkmanName(name);
+	}
+
+
+	@Override
+	public List<Map<String, Object>> getLinkmanByLinkmanMobile(String mobile) {
+		return linkmanMapper.getLinkmanByLinkmanMobile(mobile);
 	}
 
 

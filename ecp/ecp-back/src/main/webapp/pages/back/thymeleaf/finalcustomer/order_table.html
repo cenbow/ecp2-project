@@ -171,8 +171,8 @@
 	.state-txt{
 		cursor:pointer;
 	}
-	.myTable { border-top:1px solid #000000; border-left:1px solid #000000; border-bottom:1px solid #000000;  border-right:1px solid #000000; padding:3px;} 
-	.myTable td { border-top:0px solid #000000; border-left:1px solid #000000; border-bottom:0px solid #000000;  border-right:1px solid #000000; padding:3px;}  
+	/* .myTable { border-top:1px solid #000000; border-left:1px solid #000000; border-bottom:1px solid #000000;  border-right:1px solid #000000; padding:3px;} 
+	.myTable td { border-top:0px solid #000000; border-left:1px solid #000000; border-bottom:0px solid #000000;  border-right:1px solid #000000; padding:3px;} */  
 	
 	
 </style>
@@ -267,13 +267,13 @@
 						<ul>
 							<li class="curr" value="0"><i class="icon-ok"></i><a href="javascript:void(0);" >选择查询条件</a></li>
 							<li class="" 	 value="1"><i class="icon-ok"></i><a href="javascript:void(0);" >订单号</a></li>
-							<li class="" 	 value="2"><i class="icon-ok"></i><a href="javascript:void(0);" >合同号</a></li>
+							<li class="" 	 value="2"><i class="icon-ok"></i><a href="javascript:void(0);" >合同号</a></li>							
 							<li class="" 	 value="3"><i class="icon-ok"></i><a href="javascript:void(0);" >收货人姓名</a></li>
 							<li class="" 	 value="4"><i class="icon-ok"></i><a href="javascript:void(0);" >收货人电话</a></li>
-							<li class="" 	 value="5"><i class="icon-ok"></i><a href="javascript:void(0);" >公司名称</a></li>
-							<li class="" 	 value="6"><i class="icon-ok"></i><a href="javascript:void(0);" >负责人姓名</a></li>
-							<li class="" 	 value="7"><i class="icon-ok"></i><a href="javascript:void(0);" >公司电话</a></li>
-							
+							<li class="" 	 value="5"><i class="icon-ok"></i><a href="javascript:void(0);" >公司名称(代理商)</a></li>
+							<li class="" 	 value="6"><i class="icon-ok"></i><a href="javascript:void(0);" >负责人姓名(代理商)</a></li>
+							<li class="" 	 value="7"><i class="icon-ok"></i><a href="javascript:void(0);" >公司电话(代理商)</a></li>
+							<li class="" 	 value="8"><i class="icon-ok"></i><a href="javascript:void(0);" >最终用户(组织名称)</a></li>
 						</ul>
 					</div>						
 				</div>
@@ -292,6 +292,7 @@
 			<table class="table myTable" >
 				<thead>
 					<tr>
+						<th>最终用户</th>
 						<th>订单号</th>
 						<th>合同号</th>
 						<th>
@@ -334,12 +335,19 @@
 								</div>
 							</div>
 						</th>
-						<th>公司名称</th>
+						<th>代理商名称</th>						
 						<th>操作</th>
 					</tr>
 				</thead>
 				<tbody>
 					<tr th:each="order:${orderList}">
+						<!-- 最终用户列表 -->						
+						<td>
+							<ul>								
+								<li th:each="finalCustomer:${order.finalCustomerList}" th:text="${finalCustomer.organizationName}">最终用户组织名称</li>
+							</ul>
+						</td>
+						
 						<td><a th:href="@{/back/order/detail(id=${order.id})}" target="_blank" title="订单详情"><span th:text="${order.order_id}" th:remove="tag">订单号</span></a></td>
 						<td>
 							<span th:if="${order.contract_id}" th:remove="tag">								
@@ -375,6 +383,7 @@
 						
 						<td th:text="${order.company_name}">公司名称</td>
 						
+						
 						<td>
 							<!-- <a type="button" th:href="@{/back/order/detail(id=${order.id})}" class="btn btn-primary show-detail" target="_blank">详情</a> -->
 							<a type="button" th:attr="data-id=${order.id},
@@ -387,11 +396,12 @@
 							</a>							
 						</td>
 						
+						
 					</tr>
 
 				</tbody>
 			</table>
-			<!-- <hr style="height:1px;border:none;border-top:1px solid blue;"> -->
+			<hr style="height:1px;border:none;border-top:1px solid blue;">
 			<!-- 加入 分页 -->
 			<div th:include="/back/thymeleaf/common/_pager::pager" class="pagerx" style="float: right; margin-right: 100px;"></div>
 

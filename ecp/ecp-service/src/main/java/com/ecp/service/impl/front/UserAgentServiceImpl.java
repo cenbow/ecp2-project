@@ -161,7 +161,7 @@ public class UserAgentServiceImpl extends AbstractBaseService<UserExtends, Long>
 		if(agent.getUserId()!=null && agent.getUserId()!=0){
 			return userService.getUsersByParentId(agent.getUserId());
 		}
-		return new ArrayList<Map<String,Object>>();
+		return new ArrayList<>();
 	}
 
 
@@ -172,10 +172,5 @@ public class UserAgentServiceImpl extends AbstractBaseService<UserExtends, Long>
 				 cityName,  countyName,  agentIdList,auditStatus);
 		
 	}
-	
-	
-	
-
-	
 
 }

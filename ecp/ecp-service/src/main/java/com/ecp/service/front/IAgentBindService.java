@@ -4,6 +4,8 @@ import java.util.List;
 import java.util.Map;
 
 import com.ecp.entity.CustLockRel;
+import com.ecp.entity.User;
+import com.ecp.entity.UserExtends;
 import com.ecp.service.IBaseService;
 
 
@@ -106,5 +108,26 @@ public interface IAgentBindService extends IBaseService<CustLockRel, Long> {
 	* @throws 
 	*/
 	public int addBindAgentToUser(long agentId,long userId,long roleId); 
+	
+	/** 
+		* @Title: getAgentByUserIdListAndRoleCode 
+		* @Description: 根据用户列表及角色ID进行查询 
+		* @param @param userList
+		* @param @param roleId
+		* @param @return     
+		* @return List<Map<String,Object>>    返回类型 
+		* @throws 
+	*/
+	public List<Map<String,Object>> getAgentByUserIdListAndRoleId(List<User> userList,long roleId);
+	
+	/** 
+		* @Title: deleteByAgentId 
+		* @Description: TODO(这里用一句话描述这个方法的作用) 
+		* @param @param agentList
+		* @param @return     
+		* @return int    返回类型 
+		* @throws 
+	*/
+	public int deleteByAgentId(List<Long> agentIdList);
 	
 }

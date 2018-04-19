@@ -7,6 +7,7 @@ import org.springframework.stereotype.Service;
 
 import com.ecp.dao.CustLockRelMapper;
 import com.ecp.entity.CustLockRel;
+import com.ecp.entity.User;
 import com.ecp.service.front.IAgentBindService;
 import com.ecp.service.impl.AbstractBaseService;
 
@@ -80,6 +81,19 @@ public class AgentBindServiceImpl extends AbstractBaseService<CustLockRel, Long>
 	public List<Map<String, Object>> getSalesByAgentIdAndRoleCodes(long agentId, List<String> roleCodeList) {
 		
 		return custLockRelMapper.getSalesByAgentIdAndRoleCodes(agentId,  roleCodeList);
+	}
+
+
+	@Override
+	public List<Map<String, Object>> getAgentByUserIdListAndRoleId(List<User> userList, long roleId) {
+		return custLockRelMapper.getAgentByUserIdListAndRoleId(userList,roleId);
+	}
+
+
+	@Override
+	public int deleteByAgentId(List<Long> agentIdList) {
+		return custLockRelMapper.deleteByAgentId(agentIdList);
+		
 	}
 
 	

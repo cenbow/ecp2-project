@@ -1,6 +1,7 @@
 package com.ecp.back.controller;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -17,6 +18,7 @@ import com.ecp.back.commons.RoleCodeConstants;
 import com.ecp.bean.DeletedType;
 import com.ecp.bean.UserBean;
 import com.ecp.common.util.RequestResultUtil;
+import com.ecp.entity.FinalCustomer;
 import com.ecp.entity.Linkman;
 import com.ecp.entity.Role;
 import com.ecp.service.back.IRoleService;
@@ -28,6 +30,8 @@ import com.ecp.service.front.IOrderService;
 import com.ecp.service.front.IUserAgentService;
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
+
+import tk.mybatis.mapper.util.StringUtil;
 
 /**
  * Copyright (c) 2018 by [个人或者公司信息]
@@ -121,16 +125,40 @@ public class LinkmanController {
 		
 		List<Map<String,Object>> agentIdList=getSearchScope(userId,roleId);  //确认登录用户所查询的代理商范围
 		
+		
+		//确定查询订单范围(联系人姓名)
+		List<Map<String,Object>> orderIdList=null;  
+		if(searchTypeValue==8  && !StringUtil.isEmpty(condValue)){  //最终用户组织名称条件
+			List<Map<String,Object>> tempList=linkmanService.getLinkmanByLinkmanName(condValue);
+			orderIdList=new ArrayList<>();
+			for(Map<String,Object> linkman:tempList){
+				Map<String,Object> tempMap=new HashMap<>();
+				tempMap.put("order_id",linkman.get("order_id"));
+				orderIdList.add(tempMap);
+			}
+		}
+		else if(searchTypeValue==9  && !StringUtil.isEmpty(condValue)){  //最终用户组织名称条件
+			List<Map<String,Object>> tempList=linkmanService.getLinkmanByLinkmanMobile(condValue);
+			orderIdList=new ArrayList<>();
+			for(Map<String,Object> linkman:tempList){
+				Map<String,Object> tempMap=new HashMap<>();
+				tempMap.put("order_id",linkman.get("order_id"));
+				orderIdList.add(tempMap);
+			}
+		}
+		
+		
+		
 		// 查询 并分页		
 		PageHelper.startPage(pageNum, pageSize); // PageHelper			
 
 		//List<Map<String,Object>> orderList = orderService.selectAllOrderByOrderTimeAndDealState(orderTimeCond,dealStateCond);
 		//List<Map<String,Object>> orderList = orderService.selectOrder(orderTimeCond,dealStateCond,searchTypeValue,condValue);  //查询订单
-		List<Map<String,Object>> orderList = orderService.selectOrder(
+		List<Map<String,Object>> orderList = orderService.selectOrderByOrderScope(
 				 orderTimeCond,dealStateCond,
 				 searchTypeValue,condValue,
 				 provinceName,cityName,countyName,
-				 agentIdList);  //查询订单
+				 agentIdList,orderIdList);  //查询订单
 		
 		
 		PageInfo<Map<String,Object>> pageInfo = new PageInfo<Map<String,Object>>(orderList);// (使用了拦截器或是AOP进行查询的再次处理)
@@ -140,6 +168,11 @@ public class LinkmanController {
 		
 		model.addAttribute("pageInfo", pageInfo);  //分页
 		model.addAttribute("orderList", orderList); //列表
+		//在订单中加入联系人列表信息
+		for(Map<String,Object> order:orderList){
+			List<Linkman> linkmanList=linkmanService.getLinkmanByOrder((long)order.get("id"));
+			order.put("linkmanList", linkmanList);
+		}
 		
 		//回传区域条件及用户/角色
 		model.addAttribute("provinceName", provinceName);

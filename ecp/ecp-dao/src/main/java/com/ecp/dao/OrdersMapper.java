@@ -100,6 +100,17 @@ public interface OrdersMapper extends Mapper<Orders> {
 												 @Param("countyName")	String countyName,
 												 @Param("agentIdList") List<Map<String, Object>> agentIdList);
 	
+	public List<Map<String, Object>> selectOrderByOrderScope(@Param("orderTimeCond") int orderTimeCond, 
+				 @Param("dealStateCond") int dealStateCond, 
+				 @Param("searchTypeValue") int searchTypeValue,
+				 @Param("condValue")	String condValue, 
+				 @Param("provinceName") String provinceName, 
+				 @Param("cityName") 	String cityName, 
+				 @Param("countyName")	String countyName,
+				 @Param("agentIdList") List<Map<String, Object>> agentIdList,
+				 @Param("orderIdList") List<Map<String, Object>> OrderIdList
+				 );
+	
 	/**
 	 * 根据条件查询订单
 	 * @param params

@@ -75,13 +75,14 @@
   
   
   <select id="getSalesByAgentId" resultType="map">
-  	 SELECT user.id,user.username,user.nickname,cust_lock_rel.role_id,role.role_name,role.role_code from user 
+  	 SELECT user.id,user.username,user.nickname,cust_lock_rel.role_id,cust_lock_rel.id as rel_id, role.role_name,role.role_code from user 
   	 LEFT JOIN cust_lock_rel ON (user.id=cust_lock_rel.bind_user_id) 
   	 LEFT JOIN user_role on(user.id=user_role.user_id) 
   	 LEFT JOIN role ON(user_role.role_id=role.role_id AND cust_lock_rel.role_id=role.role_id)
   	 <where>
   	 	user.type=1 AND  
-  	 	user.deleted=1  AND  	 	
+  	 	user.deleted=1  AND  
+  	 	cust_lock_rel.deleted=1 AND	 	
   	 	cust_lock_rel.cust_id=#{agentId} AND
   	 	role.role_code=#{roleCode} 
   	 </where>  
@@ -95,19 +96,40 @@
   	 LEFT JOIN role ON(user_role.role_id=role.role_id AND cust_lock_rel.role_id=role.role_id)
   	 <where>
   	 	user.type=1 AND  
-  	 	user.deleted=1  AND  	 	
+  	 	user.deleted=1  AND
+  	 	cust_lock_rel.deleted=1 AND  	 	
   	 	cust_lock_rel.cust_id=#{agentId}
   	 	<if test="roleCodeList!=null and roleCodeList.size()>0">		
 			AND
 			<foreach collection="roleCodeList" index="index" item="item" open="("  separator="or"  close=")" >
 				role.role_code=#{item}
 			</foreach>
-		</if>
-		
+		</if>		
   	 </where>  
   </select>
   
-  
+  <!-- 根据用户列表及roleId查询 -->
+  <select id="getAgentByUserIdListAndRoleId" resultType="map">
+  	 SELECT * from  cust_lock_rel r
+  	 <where>  	 	  
+  	 	r.deleted=1  AND  	 	
+  	 	r.role_id=#{roleId}
+  	 	
+  	 	<if test="userList!=null and userList.size()>=0">
+  			<if test="userList.size>0">
+  				AND r.bind_user_id in
+  				<foreach collection="userList" index="index" item="user" open="(" separator="," close=")" >
+  					#{user.id}
+  				</foreach>
+  			</if>
+  			
+  			<if test="userList.size==0">
+  				and (0>1)
+  			</if>
+  		</if>
+  	 </where>
+  	   
+  </select>
   
   
   
@@ -125,7 +147,32 @@
   		cr.bind_user_id=#{userId}
   	</where>	 
   </select>
-  
+ 
+  <!-- 按代理商ID列表进行更新 -->
+  <update id="deleteByAgentId"> 
+  	 update cust_lock_rel r
+  	 set r.deleted=2  	 
+  	 <where>  	 	  
+  	 	r.deleted=1
+  	 	<if test="agentIdList!=null and agentIdList.size()>=0">
+  			<if test="agentIdList.size>0">
+  				AND r.cust_id in
+  				<foreach collection="agentIdList" index="index" item="agentId" open="(" separator="," close=")" >
+  					#{agentId}
+  				</foreach>
+  			</if>
+  			
+  			<if test="agentIdList.size==0">
+  				and (0>1)
+  			</if>
+  		</if>
+  		<!-- 如果代理商ID列表为空时,则不做任何操作 -->
+  		<if test="agentIdList==null">
+  			and (0>1)
+  		</if>
+  	 </where>
+  	   
+  </update> 
   
   
 </mapper>

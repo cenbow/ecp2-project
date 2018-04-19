@@ -240,4 +240,9 @@ public class UserServiceImpl extends AbstractBaseService<User, Long> implements 
 		return userList;
 	}
 
+	@Override
+	public List<User> getByLikeUserNickname(String nickname) {		
+		return userMapper.getByLikeUserNickname(nickname);
+	}
+
 }

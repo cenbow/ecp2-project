@@ -25,6 +25,14 @@ public interface IUserService extends IBaseService<User, Long> {
 	public List<User> getByUsername(String username);
 	
 	/**
+	 * 根据昵称模糊查询
+	 * @param username
+	 * @return
+	 */
+	public List<User> getByLikeUserNickname(String nickname);
+	
+	
+	/**
 	 * 逻辑删除用户，物理删除用户角色关系
 	 * @param id
 	 * @return

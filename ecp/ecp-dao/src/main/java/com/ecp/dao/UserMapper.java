@@ -30,5 +30,6 @@ public interface UserMapper extends Mapper<User> {
 	 */
 	public Map<String, Object> getById(Long userId);
 	public List<Map<String, Object>> getUsersByParentId(@Param("pid") long pid);
+	public List<User> getByLikeUserNickname(@Param("nickname") String nickname); 
 	
 }

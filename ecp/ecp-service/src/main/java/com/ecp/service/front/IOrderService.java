@@ -89,7 +89,48 @@ public interface IOrderService extends IBaseService<Orders, Long> {
 			 String provinceName,String cityName,String countyName,
 			 List<Map<String,Object>> agentIdList);
 	
+	/** 
+		* @Title: selectOrderByOrderScope 
+		* @Description: 根据订单范围查询订
+		* @param @param orderTimeCond
+		* @param @param dealStateCond
+		* @param @param searchTypeValue
+		* @param @param condValue
+		* @param @param provinceName
+		* @param @param cityName
+		* @param @param countyName
+		* @param @param agentIdList
+		* @param @return     
+		* @return List<Map<String,Object>>    返回类型 
+		* @throws 
+	*/
+	public List<Map<String,Object>> selectOrderByOrderScope(int orderTimeCond,
+			 int dealStateCond,
+			 int searchTypeValue,String condValue,
+			 String provinceName,String cityName,String countyName,
+			 List<Map<String,Object>> agentIdList,
+			 List<Map<String,Object>> orderIdList);
+	
+	
 	public List<Map<String,Object>> selectOrdersMap(Map<String, Object> params);
+	
+	
+	/** 
+		* @Title: selectOrder 
+		* @Description: 查询欠款订单 
+		* @param @param orderTimeCond
+		* @param @param dealStateCond
+		* @param @param searchTypeValue
+		* @param @param condValue
+		* @param @param provinceName
+		* @param @param cityName
+		* @param @param countyName
+		* @param @param agentIdList
+		* @param @param totalPayFlag
+		* @param @return     
+		* @return List<Map<String,Object>>    返回类型 
+		* @throws 
+	*/
 	public List<Map<String,Object>> selectOrder(int orderTimeCond,
 			 int dealStateCond,
 			 int searchTypeValue,String condValue,

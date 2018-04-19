@@ -39,4 +39,33 @@
     attitude, schooltag, work_address, work_postcode, work_tel, work_fax, email, address, 
     postcode, tel, mobile, tendency, qqwechat, order_id, deleted, create_time
   </sql>
+  
+  <!-- 根据联系人姓名查询 -->
+  <select id="getLinkmanByLinkmanName" resultType="map">
+  	 SELECT m.* 
+  	 	FROM linkman m 	 		 
+  	 	<where>  	 		 
+  	 		m.deleted=1
+  	 	<!-- 姓名条件 -->	
+  	 	<if test="name!=null and name!='' ">
+  			AND m.name LIKE concat(concat('%',#{name}),'%')	
+  		</if>
+  	 </where>  	 
+  </select>
+  
+  <!-- 根据联系人电话查询 -->
+  <select id="getLinkmanByLinkmanMobile" resultType="map">
+  	 SELECT m.* 
+  	 	FROM linkman m 	 		 
+  	 	<where>  	 		 
+  	 		m.deleted=1
+  	 	<!-- 电话条件 -->	
+  	 	<if test="mobile!=null and mobile!='' ">
+  			AND m.mobile LIKE concat(concat('%',#{mobile}),'%')	
+  		</if>
+  	 </where>  	 
+  	 	  	 
+  </select>
+  
+  
 </mapper>
