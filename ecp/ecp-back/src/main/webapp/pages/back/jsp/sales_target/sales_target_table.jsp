@@ -7,16 +7,13 @@
 	style="width: 100%;"center">
 	<thead style="width: 98%; padding-top: 80px;">
 		<tr role="row">
-			<th><input type="checkbox" name="checkbox" id="checkbox" onclick="javascript:checkAll(this);">
+			<!-- <th><input type="checkbox" name="checkbox" id="checkbox" onclick="javascript:checkAll(this);">
 				<label for="checkbox">ALL</label>
-			</th>
+			</th> -->
 			<!-- <th>ID</th> -->
-			<th>IS/OS</th>
+			<th>人员（角色）</th>
 			<th>考核年度</th>
 			<th>周期名称</th>
-			<th>时间计法</th>
-			<th>开始时间</th>
-			<th>结束时间</th>
 			<th>指标比例</th>
 			<th>指标金额</th>
 			<th>操作</th>
@@ -25,26 +22,13 @@
 	<tbody>
 		<c:forEach items="${pagehelper.list}" var="target">
 			<tr>
-				<td>
+				<%-- <td>
 					<input type="checkbox" name="checkbox2" id="sales-target-td-${target.id}" onclick="javascript:checkOne();" value="${target.id}">
-				</td>
+				</td> --%>
 				<%-- <td>${target.id}</td> --%>
 				<td>${target.username}（${target.role_name}）</td>
 				<td>${target.year_name}</td>
 				<td>${target.cycle_name}</td>
-				<td>
-					<c:if test="${empty target.cal_type && (target.cal_type!=1 || target.cal_type!=2 || target.cal_type!=3 || target.cal_type!=4)}">天</c:if>
-					<c:if test="${target.cal_type==1}">天</c:if>
-					<c:if test="${target.cal_type==2}">月</c:if>
-					<c:if test="${target.cal_type==3}">季</c:if>
-					<c:if test="${target.cal_type==4}">年</c:if>
-				</td>
-				<td>${target.start_date}
-				<%-- <fmt:parseDate value="${target.start_date}" var="yearMonth" pattern="yyyy-MM-dd"/> --%>
-				</td>
-				<td>${target.end_date}
-				<%-- <fmt:parseDate value="${target.end_date}" var="yearMonth" pattern="yyyy-MM-dd"/> --%>
-				</td>
 				<td>${target.target_rate}%</td>
 				<td>￥${target.target_amount}</td>
 				<td class="center ">
