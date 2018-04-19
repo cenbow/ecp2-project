@@ -1,5 +1,7 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8"
 	pageEncoding="UTF-8"%>
+<%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c"%>
+
 <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
 <html>
 <head>
@@ -34,7 +36,31 @@
 												<div class="panel-body">
 												<div class="panel panel-default">
 													<div class="panel-body">
-														<button type="button" class="btn btn-default btn-primary" id="add-sales-target-btn">添加销售指标</button>
+														<div class="row clearfix">
+															<div class="col-md-2 column">
+																<button type="button" class="btn btn-default btn-primary" id="add-sales-target-btn">添加销售指标</button>
+															</div>
+															<div class="col-md-2 column">
+																<input type="text" id="search-check-cycle-year" name="searchYearName" title="考核年度"
+																			class="datetimepicker datetime form-control"
+																			readonly="readonly" placeholder="考核年度"
+																			onClick="WdatePicker({dateFmt:'yyyy'})" />
+																			<!-- onClick="WdatePicker({dateFmt:'yyyy-MM-dd HH:mm:ss'})" /> -->
+															</div>
+															<div class="col-md-3 column">
+																<input type="hidden" id="search-user-id" name="userId" value="" />
+																<input type="hidden" id="search-role-id" name="roleId" value="" />
+																<select class="form-control" id="search-is-os" title="人员（角色）">
+																	<option value="">请选择人员（角色）</option>
+																	<c:forEach items="${userList}" var="user">
+																		<option value="${user.id}-${user.role_id}">${user.nickname}（${user.role_name}）</option>
+																	</c:forEach>
+																</select>
+															</div>
+															<div class="col-md-2 column">
+																<button type="button" class="btn btn-default btn-primary" id="search-sales-target-btn">查询</button>
+															</div>
+														</div>
 													</div>
 												</div>
 												<div class="panel panel-default">
@@ -64,31 +90,39 @@
 													<form class="form-horizontal" id="save-form">
 														<input type="hidden" id="sales-target-id" name="id" value="" />
 														<div class="form-group">
-															<label class="col-sm-2 control-label">考核周期</label>
-															<div class="col-sm-10">
-																<!-- <input type="text" id="sales-target-check-cycle-id" name="checkCycleId"
-																	class="form-control" placeholder="考核周期" /> -->
-																<select class="form-control" id="sales-target-check-cycle-id" name="checkCycleId">
-																	<option value="">请选择考核周期</option>
-																	<c:forEach items="${checkCycleList}" var="checkCycle">
-																		<option value="${checkCycle.id}">${checkCycle.yearName}&nbsp;-&nbsp;${checkCycle.cycleName}</option>
-																	</c:forEach>
-																</select>
+															<label class="col-sm-2 control-label">考核年度</label>
+															<div class="col-sm-10" id="show-year-name">
+																考核年度
 															</div>
 														</div>
 														<div class="form-group">
-															<label class="col-sm-2 control-label">IS/OS</label>
-															<div class="col-sm-10">
-																<!-- <input type="text" id="sales-target-user-id" name="userId"
-																	class="form-control" placeholder="IS/OS" /> -->
-																<input type="hidden" id="user-id" name="userId" value="" />
-																<input type="hidden" id="role-id" name="roleId" value="" />
-																<select class="form-control" id="sales-target-is-os">
-																	<option value="">请选择IS/OS</option>
-																	<c:forEach items="${userList}" var="user">
-																		<option value="${user.id}-${user.role_id}">${user.role_name}&nbsp;-&nbsp;${user.nickname}</option>
-																	</c:forEach>
-																</select>
+															<label class="col-sm-2 control-label">周期名称</label>
+															<div class="col-sm-10" id="show-cycle-name">
+																周期名称
+															</div>
+														</div>
+														<div class="form-group">
+															<label class="col-sm-2 control-label">开始时间</label>
+															<div class="col-sm-10" id="show-start-date">
+																开始时间
+															</div>
+														</div>
+														<div class="form-group">
+															<label class="col-sm-2 control-label">结束时间</label>
+															<div class="col-sm-10" id="show-end-date">
+																结束时间
+															</div>
+														</div>
+														<div class="form-group">
+															<label class="col-sm-2 control-label">人员</label>
+															<div class="col-sm-10" id="show-username">
+																人员
+															</div>
+														</div>
+														<div class="form-group">
+															<label class="col-sm-2 control-label">角色</label>
+															<div class="col-sm-10" id="show-role-name">
+																角色
 															</div>
 														</div>
 														<div class="form-group">
@@ -105,55 +139,6 @@
 																	class="form-control" placeholder="指标金额" />
 															</div>
 														</div>
-														<!-- <div class="form-group">
-															<label class="col-sm-2 control-label">周期名称</label>
-															<div class="col-sm-10">
-																<input type="text" id="sales-target-name" name="cycleName"
-																	class="form-control" placeholder="周期" />
-															</div>
-														</div>
-														<div class="form-group">
-															<label class="col-md-2 control-label">年度名称</label>
-															<div class="col-md-10">
-																<input type="text" id="sales-target-year-name" name="yearName"
-																	class="form-control" placeholder="年度名称" />
-															</div>
-														</div>
-														<div class="form-group">
-															<label class="col-md-2 control-label">时间段计法</label>
-															<div class="col-md-10">
-																<input type="text" id="sales-target-cal-type" name="calType"
-																	class="form-control" placeholder="时间段计法" />
-																<select class="form-control" id="sales-target-cal-type" name="calType">
-																	<option value="4">年</option>
-																	<option value="3">季</option>
-																	<option value="2">月</option>
-																	<option value="1">天</option>
-																</select>
-															</div>
-														</div>
-														<div class="form-group">
-															<label for="name" class="col-sm-2 control-label">开始时间</label>
-															<div class="col-sm-10">
-																<input type="text" id="sales-target-start-date-str"
-																			name="startDateStr"
-																			class="datetimepicker datetime form-control"
-																			readonly="readonly" placeholder="开始时间"
-																			onClick="WdatePicker({dateFmt:'yyyy-MM-dd'})" />
-																			onClick="WdatePicker({dateFmt:'yyyy-MM-dd HH:mm:ss'})"
-															</div>
-														</div>
-														<div class="form-group">
-															<label for="name" class="col-sm-2 control-label">结束时间</label>
-															<div class="col-sm-10">
-																<input type="text" id="sales-target-end-date-str"
-																			name="endDateStr"
-																			class="datetimepicker datetime form-control"
-																			readonly="readonly" placeholder="结束时间"
-																			onClick="WdatePicker({dateFmt:'yyyy-MM-dd'})" />
-																			onClick="WdatePicker({dateFmt:'yyyy-MM-dd HH:mm:ss'})"
-															</div>
-														</div> -->
 														<div class="form-group">
 															<label class="col-sm-2 control-label">&nbsp;</label>
 															<div class="col-sm-10">

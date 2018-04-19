@@ -1,9 +1,8 @@
 package com.ecp.entity;
 
+import java.text.SimpleDateFormat;
 import java.util.Date;
 import javax.persistence.*;
-
-import org.apache.commons.lang3.time.DateFormatUtils;
 
 @Table(name = "check_cycle")
 public class CheckCycle {
@@ -27,7 +26,7 @@ public class CheckCycle {
     private String yearName;
 
     /**
-     * 时间段计法（对于周期的定义可以采用三种计时方式：1：day；2：month；3：year）
+     * 时间段计法（对于周期的定义可以采用三种计时方式：1：day；2：month；3：quarter；4：year）
      */
     @Column(name = "cal_type")
     private Byte calType;
@@ -43,6 +42,16 @@ public class CheckCycle {
      */
     @Column(name = "end_date")
     private Date endDate;
+
+    /**
+     * 父ID
+     */
+    private Long pid;
+
+    /**
+     * 排序
+     */
+    private Integer sort;
 
     /**
      * 获取考核周期表自增ID
@@ -99,18 +108,18 @@ public class CheckCycle {
     }
 
     /**
-     * 获取时间段计法（对于周期的定义可以采用三种计时方式：1：day；2：month；3：year）
+     * 获取时间段计法（对于周期的定义可以采用三种计时方式：1：day；2：month；3：quarter；4：year）
      *
-     * @return cal_type - 时间段计法（对于周期的定义可以采用三种计时方式：1：day；2：month；3：year）
+     * @return cal_type - 时间段计法（对于周期的定义可以采用三种计时方式：1：day；2：month；3：quarter；4：year）
      */
     public Byte getCalType() {
         return calType;
     }
 
     /**
-     * 设置时间段计法（对于周期的定义可以采用三种计时方式：1：day；2：month；3：year）
+     * 设置时间段计法（对于周期的定义可以采用三种计时方式：1：day；2：month；3：quarter；4：year）
      *
-     * @param calType 时间段计法（对于周期的定义可以采用三种计时方式：1：day；2：month；3：year）
+     * @param calType 时间段计法（对于周期的定义可以采用三种计时方式：1：day；2：month；3：quarter；4：year）
      */
     public void setCalType(Byte calType) {
         this.calType = calType;
@@ -126,11 +135,8 @@ public class CheckCycle {
     }
     
     public String getStartDateStr(){
-    	if(startDate==null){
-    		return null;
-    	}
-    	//return DateFormatUtils.format(startDate, "yyyy-MM-dd HH:mm:ss");
-    	return DateFormatUtils.format(startDate, "yyyy-MM-dd");
+    	SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+    	return sdf.format(startDate);
     }
 
     /**
@@ -152,11 +158,8 @@ public class CheckCycle {
     }
     
     public String getEndDateStr(){
-    	if(endDate==null){
-    		return null;
-    	}
-    	//return DateFormatUtils.format(endDate, "yyyy-MM-dd HH:mm:ss");
-    	return DateFormatUtils.format(endDate, "yyyy-MM-dd");
+    	SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+    	return sdf.format(endDate);
     }
 
     /**
@@ -166,6 +169,42 @@ public class CheckCycle {
      */
     public void setEndDate(Date endDate) {
         this.endDate = endDate;
+    }
+
+    /**
+     * 获取父ID
+     *
+     * @return pid - 父ID
+     */
+    public Long getPid() {
+        return pid;
+    }
+
+    /**
+     * 设置父ID
+     *
+     * @param pid 父ID
+     */
+    public void setPid(Long pid) {
+        this.pid = pid;
+    }
+
+    /**
+     * 获取排序
+     *
+     * @return sort - 排序
+     */
+    public Integer getSort() {
+        return sort;
+    }
+
+    /**
+     * 设置排序
+     *
+     * @param sort 排序
+     */
+    public void setSort(Integer sort) {
+        this.sort = sort;
     }
 
     @Override
@@ -180,6 +219,8 @@ public class CheckCycle {
         sb.append(", calType=").append(calType);
         sb.append(", startDate=").append(startDate);
         sb.append(", endDate=").append(endDate);
+        sb.append(", pid=").append(pid);
+        sb.append(", sort=").append(sort);
         sb.append("]");
         return sb.toString();
     }

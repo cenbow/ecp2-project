@@ -21,7 +21,7 @@ function bootstrapValidateFun(){
 	    },
 	    
 	    fields: {
-	    	checkCycleId: {
+	    	/*checkCycleId: {
 	            validators: {
 	                notEmpty: {
 	                    message: "请选择考核周期"
@@ -34,7 +34,7 @@ function bootstrapValidateFun(){
 	                    message: "请选择IS/OS"
 	                },
 	            }   
-	        },
+	        },*/
 	        targetRate: {
 	            validators: {
 	                notEmpty: {
@@ -65,13 +65,6 @@ function bootstrapValidateFun(){
                     },
 	            }
 	        },
-	        endDateStr: {
-	            validators: {
-	                notEmpty: {
-	                    message: "请选择结束时间"
-	                },
-	            }
-	        },
 	    }
 	}).on('success.form.bv',function(e){
 	    e.preventDefault();
@@ -94,12 +87,14 @@ function selectDetails(id){
 				$("#edit-sales-target-li").removeClass("hide");
 				var target =resp.salesTarget;
 				$("#sales-target-id").val(target.id);//ID
-				$("#sales-target-check-cycle-id").val(target.checkCycleId);//考核周期ID
-				$("#sales-target-is-os").val(target.userId+"-"+target.roleId);//IS/OS
-				$("#user-id").val(target.userId);
-				$("#role-id").val(target.roleId);
-				$("#sales-target-rate").val(target.targetRate);//指标比例
-				$("#sales-target-amount").val(target.targetAmount);//指标金额
+				$("#show-year-name").text(target.year_name);//考核年度
+				$("#show-cycle-name").text(target.cycle_name);//周期名称
+				$("#show-username").text(target.username);//人员
+				$("#show-role-name").text(target.role_name);//角色
+				$("#show-start-date").text(new Date(target.start_date).format('yyyy-MM-dd hh:mm:ss'));//开始时间
+				$("#show-end-date").text(new Date(target.end_date).format('yyyy-MM-dd hh:mm:ss'));//结束时间
+				$("#sales-target-rate").val(target.target_rate);//指标比例
+				$("#sales-target-amount").val(target.target_amount);//指标金额
 				
 				$('#tabs-sales-target a[href="#tab-sales-target-edit"]').tab('show');
 				return;
@@ -250,15 +245,15 @@ function resetFun(){
 /**
  * 绑定用户角色change事件
  */
-$("#sales-target-is-os").on("change", function(){
+$("#search-is-os").on("change", function(){
 	var userIdRoleId = $(this).val();
 	console.log("value:"+userIdRoleId);
 	if(userIdRoleId!=null && userIdRoleId!=""){
 		var arr = userIdRoleId.split("-");// 在每个减号(-)处进行分解
 		var userId = arr[0];
 		var roleId = arr[1];
-		$("#user-id").val(userId);
-		$("#role-id").val(roleId);
+		$("#search-user-id").val(userId);
+		$("#search-role-id").val(roleId);
 	}
 });
 

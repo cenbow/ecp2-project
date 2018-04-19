@@ -93,14 +93,19 @@ public class SalesTargetController {
 	@ResponseBody
 	public Map<String, Object> selectUpdateById(HttpServletRequest request, HttpServletResponse response, Long id) {
 		try {
-			SalesTarget salesTarget = salesTargetService.selectByPrimaryKey(id);
+			Map<String, Object> params = new HashMap<>();
+			params.put("sales_target_id", id);
+			List<Map<String, Object>> salesTargetList = salesTargetService.selectSalesTargetMap(params);
+			
 			Map<String, Object> respM = RequestResultUtil.getResultSelectSuccess();
-			respM.put("salesTarget", salesTarget);
-			return respM;
+			if(salesTargetList!=null && !salesTargetList.isEmpty()){
+				respM.put("salesTarget", salesTargetList.get(0));
+				return respM;
+			}
 		} catch (Exception e) {
 			log.error("查询异常", e);
-			return RequestResultUtil.getResultSelectWarn();
 		}
+		return RequestResultUtil.getResultSelectWarn();
 	}
 	
 	/**
@@ -148,7 +153,7 @@ public class SalesTargetController {
 		
 		try {
 			
-			Long salesTargetId = salesTarget.getId();
+			/*Long salesTargetId = salesTarget.getId();
 			SalesTarget temp = salesTargetService.selectByPrimaryKey(salesTargetId);
 			Long cycleId = temp.getCheckCycleId();
 			Long checkCycleId = salesTarget.getCheckCycleId();
@@ -164,7 +169,7 @@ public class SalesTargetController {
 					salesTarget.setStartDate(checkCycle.getStartDate());
 					salesTarget.setEndDate(checkCycle.getEndDate());
 				}
-			}
+			}*/
 			
 			int rows = salesTargetService.updateByPrimaryKeySelective(salesTarget);
 			if(rows>0){

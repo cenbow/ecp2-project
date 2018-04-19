@@ -18,9 +18,9 @@ public class SalesTarget {
      */
     @Column(name = "user_id")
     private Long userId;
-    
+
     /**
-     * 角色ID
+     * 角色
      */
     @Column(name = "role_id")
     private Long roleId;
@@ -38,11 +38,11 @@ public class SalesTarget {
     private BigDecimal targetAmount;
 
     /**
-     * 考核周期ID
+     * 考核周期条目ID
      */
     @Column(name = "check_cycle_id")
     private Long checkCycleId;
-    
+
     /**
      * 周期名
      */
@@ -72,6 +72,16 @@ public class SalesTarget {
      */
     @Column(name = "end_date")
     private Date endDate;
+
+    /**
+     * 考核周期父ID
+     */
+    private Long pid;
+
+    /**
+     * 考核周期排序
+     */
+    private Integer sort;
 
     /**
      * 获取销售指标表自增ID
@@ -109,15 +119,25 @@ public class SalesTarget {
         this.userId = userId;
     }
 
+    /**
+     * 获取角色
+     *
+     * @return role_id - 角色
+     */
     public Long getRoleId() {
-		return roleId;
-	}
+        return roleId;
+    }
 
-	public void setRoleId(Long roleId) {
-		this.roleId = roleId;
-	}
+    /**
+     * 设置角色
+     *
+     * @param roleId 角色
+     */
+    public void setRoleId(Long roleId) {
+        this.roleId = roleId;
+    }
 
-	/**
+    /**
      * 获取指标比例
      *
      * @return target_rate - 指标比例
@@ -153,15 +173,25 @@ public class SalesTarget {
         this.targetAmount = targetAmount;
     }
 
+    /**
+     * 获取考核周期条目ID
+     *
+     * @return check_cycle_id - 考核周期条目ID
+     */
     public Long getCheckCycleId() {
-		return checkCycleId;
-	}
+        return checkCycleId;
+    }
 
-	public void setCheckCycleId(Long checkCycleId) {
-		this.checkCycleId = checkCycleId;
-	}
+    /**
+     * 设置考核周期条目ID
+     *
+     * @param checkCycleId 考核周期条目ID
+     */
+    public void setCheckCycleId(Long checkCycleId) {
+        this.checkCycleId = checkCycleId;
+    }
 
-	/**
+    /**
      * 获取周期名
      *
      * @return cycle_name - 周期名
@@ -251,6 +281,42 @@ public class SalesTarget {
         this.endDate = endDate;
     }
 
+    /**
+     * 获取考核周期父ID
+     *
+     * @return pid - 考核周期父ID
+     */
+    public Long getPid() {
+        return pid;
+    }
+
+    /**
+     * 设置考核周期父ID
+     *
+     * @param pid 考核周期父ID
+     */
+    public void setPid(Long pid) {
+        this.pid = pid;
+    }
+
+    /**
+     * 获取考核周期排序
+     *
+     * @return sort - 考核周期排序
+     */
+    public Integer getSort() {
+        return sort;
+    }
+
+    /**
+     * 设置考核周期排序
+     *
+     * @param sort 考核周期排序
+     */
+    public void setSort(Integer sort) {
+        this.sort = sort;
+    }
+
     @Override
     public String toString() {
         StringBuilder sb = new StringBuilder();
@@ -259,13 +325,17 @@ public class SalesTarget {
         sb.append("Hash = ").append(hashCode());
         sb.append(", id=").append(id);
         sb.append(", userId=").append(userId);
+        sb.append(", roleId=").append(roleId);
         sb.append(", targetRate=").append(targetRate);
         sb.append(", targetAmount=").append(targetAmount);
+        sb.append(", checkCycleId=").append(checkCycleId);
         sb.append(", cycleName=").append(cycleName);
         sb.append(", yearName=").append(yearName);
         sb.append(", calType=").append(calType);
         sb.append(", startDate=").append(startDate);
         sb.append(", endDate=").append(endDate);
+        sb.append(", pid=").append(pid);
+        sb.append(", sort=").append(sort);
         sb.append("]");
         return sb.toString();
     }

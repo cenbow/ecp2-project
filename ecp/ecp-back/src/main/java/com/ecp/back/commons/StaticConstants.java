@@ -58,6 +58,7 @@ public class StaticConstants {
 	
 	public static final String CHECK_CYCLE_MANAGE_PAGE = "back/jsp/check_cycle/check_cycle_manage";//考核周期管理页面
 	public static final String CHECK_CYCLE_MANAGE_TABLE_PAGE = "back/jsp/check_cycle/check_cycle_table";//考核周期管理列表页面
+	public static final String ADD_CHECK_CYCLE_DIALOG_PAGE = "back/jsp/check_cycle/add_check_cycle_dialog";//增加考核周期对话框页面
 	
 	public static final String SALES_TARGET_MANAGE_PAGE = "back/jsp/sales_target/sales_target_manage";//销售指标管理页面
 	public static final String SALES_TARGET_MANAGE_TABLE_PAGE = "back/jsp/sales_target/sales_target_table";//销售指标管理列表页面

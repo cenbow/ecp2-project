@@ -1,28 +1,30 @@
-<?xml version="1.0" encoding="UTF-8" ?>
-<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
-<mapper namespace="com.ecp.dao.SalesTargetMapper" >
-  <resultMap id="BaseResultMap" type="com.ecp.entity.SalesTarget" >
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ecp.dao.SalesTargetMapper">
+  <resultMap id="BaseResultMap" type="com.ecp.entity.SalesTarget">
     <!--
       WARNING - @mbggenerated
     -->
-    <id column="id" property="id" jdbcType="BIGINT" />
-    <result column="user_id" property="userId" jdbcType="BIGINT" />
-    <result column="role_id" property="roleId" jdbcType="BIGINT" />
-    <result column="target_rate" property="targetRate" jdbcType="VARCHAR" />
-    <result column="target_amount" property="targetAmount" jdbcType="DECIMAL" />
-    <result column="check_cycle_id" property="checkCycleId" jdbcType="BIGINT" />
-    <result column="cycle_name" property="cycleName" jdbcType="VARCHAR" />
-    <result column="year_name" property="yearName" jdbcType="VARCHAR" />
-    <result column="cal_type" property="calType" jdbcType="TINYINT" />
-    <result column="start_date" property="startDate" jdbcType="TIMESTAMP" />
-    <result column="end_date" property="endDate" jdbcType="TIMESTAMP" />
+    <id column="id" jdbcType="BIGINT" property="id" />
+    <result column="user_id" jdbcType="BIGINT" property="userId" />
+    <result column="role_id" jdbcType="BIGINT" property="roleId" />
+    <result column="target_rate" jdbcType="VARCHAR" property="targetRate" />
+    <result column="target_amount" jdbcType="DECIMAL" property="targetAmount" />
+    <result column="check_cycle_id" jdbcType="BIGINT" property="checkCycleId" />
+    <result column="cycle_name" jdbcType="VARCHAR" property="cycleName" />
+    <result column="year_name" jdbcType="VARCHAR" property="yearName" />
+    <result column="cal_type" jdbcType="TINYINT" property="calType" />
+    <result column="start_date" jdbcType="TIMESTAMP" property="startDate" />
+    <result column="end_date" jdbcType="TIMESTAMP" property="endDate" />
+    <result column="pid" jdbcType="BIGINT" property="pid" />
+    <result column="sort" jdbcType="INTEGER" property="sort" />
   </resultMap>
-  <sql id="Base_Column_List" >
+  <sql id="Base_Column_List">
     <!--
       WARNING - @mbggenerated
     -->
-    id, user_id, target_rate, target_amount, check_cycle_id, cycle_name, year_name, cal_type, start_date, 
-    end_date
+    id, user_id, role_id, target_rate, target_amount, check_cycle_id, cycle_name, year_name, 
+    cal_type, start_date, end_date, pid, sort
   </sql>
   <!-- 根据Map中的条件查询销售指标 -->
 	<select id="getListMap" parameterType="map" resultType="map">
@@ -42,10 +44,10 @@
 		<if test="user_id!=null">
 			and st.user_id = #{user_id}
 		</if>
-		<if test="role_id_list!=null and role_id_list.size()>0">
+		<if test="role_id_list!=null and role_id_list.size()&gt;0">
 			and st.role_id IN 
 			<!-- r.role_id IN (16, 17) -->
-			<foreach collection="role_id_list" index="index" item="item" open="(" separator="," close=")">
+			<foreach close=")" collection="role_id_list" index="index" item="item" open="(" separator=",">
 				#{item}
 			</foreach>
 		</if>
@@ -63,19 +65,22 @@
 		LEFT JOIN role r ON st.role_id = r.role_id
 		WHERE
 			1=1
-			<if test="role_id_list!=null and role_id_list.size()>0">
+			<if test="role_id_list!=null and role_id_list.size()&gt;0">
 				and st.role_id IN 
 				<!-- r.role_id IN (16, 17) -->
-				<foreach collection="role_id_list" index="index" item="item" open="(" separator="," close=")">
+				<foreach close=")" collection="role_id_list" index="index" item="item" open="(" separator=",">
 					#{item}
 				</foreach>
 			</if>
 			<if test="user_id!=null">
 				and st.user_id = #{user_id}
 			</if>
+			<if test="sales_target_id!=null">
+				and st.id = #{sales_target_id}
+			</if>
 			<if test="year_name!=null and year_name!=''">
 				and st.year_name = #{year_name}
 			</if>
-			ORDER BY u.id,st.cal_type DESC
+			ORDER BY u.id,st.sort
 	</select>
 </mapper>

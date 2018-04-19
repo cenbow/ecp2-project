@@ -16,10 +16,11 @@ public interface ICheckCycleService extends IBaseService<CheckCycle, Long> {
 	public int logicDelById(Long id);
 	
 	/**
-	 * 查询未删除的考核周期
-	 * 		deleted=1:默认（未删除）deleted=2:已删除
+	 * 根据条件查询考核周期
 	 * @return
 	 */
 	public List<CheckCycle> getList(Map<String, Object> map);
+	
+	public int save(String yearName, String cycleArrJSON);
 	
 }
