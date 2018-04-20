@@ -54,6 +54,22 @@ public interface IAccountCompanyService extends IBaseService<AccountCompany, Lon
 			long   userId,
 			List<Integer> itemTypeList);
 	
+	//同上求和
+	public List<Map<String,Object>> getItemsSumByDateAndUser(String startDateYear,
+			String startDateMonth,
+			String endDateYear,
+			String endDateMonth,
+			long   userId,
+			List<Integer> itemTypeList);
+	//同上分组求和
+	public List<Map<String,Object>> getItemsGroupSumByDateAndUser(String startDateYear,
+			String startDateMonth,
+			String endDateYear,
+			String endDateMonth,
+			long   userId,
+			List<Integer> itemTypeList);
+	
+	
 	
 	/** 
 		* @Title: getItemsByOrderAndBindUser 

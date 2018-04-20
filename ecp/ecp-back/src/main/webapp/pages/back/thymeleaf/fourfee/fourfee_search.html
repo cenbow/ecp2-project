@@ -50,9 +50,10 @@ a i {
 </head>
 <body>
 	<!-- 对话框 -->
-	<!-- <div th:replace="thymeleaf/common/_dispatch_account_dialog::dialog" class="header"></div> -->
+	<!-- add/modi fourfee dialog -->
+	<div id="edit-fourfee-dialog"></div>
 
-	<!-- 订单列表 -->
+	<!-- 四项费用列表 -->
 	<div class="row clearfix">
 		<div class="col-md-12 column">
 			<!-- <h5>四项费用管理</h5>
@@ -85,7 +86,7 @@ a i {
 			<a id="btn-add-fourfee" title="增加四项费用"
 				style="float: right; margin-right: 20px"> <i
 				class=" icon-plus-sign icon-large"></i>
-			</a> <a id="refresh-item" th:href="@{/back/fourfee/show}" title="刷新列表"
+			</a> <a id="refresh-item" onclick="javascript:startSearch();" title="刷新列表"
 				style="float: right; margin-right: 20px"> <i
 				class="icon-refresh icon-large"></i>
 			</a>
@@ -101,7 +102,7 @@ a i {
 	<!-- footer -->
 	<!-- <div th:include="/thymeleaf/common/_footer::footer" class="footer"></div> -->
 
-	<!-- 订单选择条件  -->
+	<!--  -->
 	<script th:inline="javascript">
 		/*<![CDATA[*/
 
@@ -225,6 +226,13 @@ a i {
 			searchFourFee(startDateYear,startDateMonth,endDateYear,endDateMonth,userId,0,0);
 		}
 		
+		//加载增加四项费用对话框
+		function loadAddFourfeeDialog(){
+			
+			var url=BASE_CONTEXT_PATH+'/back/fourfee/loadadddialog';
+			$("#edit-fourfee-dialog").load(url,null,openAddFourFeeDialog);  //加载完毕后显示
+		}
+		
 		$(function(){
 			initSearchDate();  //初始化当前年月
 			defaultSearchFourFee();  //主页:默认查询
@@ -233,18 +241,17 @@ a i {
 			$(".user-osis-list").on("change",function(){
 				//$("#btn-startsearch").trigger("click");
 			});
-		});
-		
-		
+		});		
 		
 	</script>
 
 	<!-- 日期组件 -->
 	<script type="text/javascript"
 		th:src="@{/static/calendar/WdatePicker.js}"></script>
-	<!-- 四项费用管理 -->
-	<!-- <script type="text/javascript"
-		th:src="@{/static/js/fourfee/fourFeeManagement.js}"></script> -->
+		
+	<!-- 四项费用管理(增加/编辑) -->
+	<script type="text/javascript"
+		th:src="@{/static/js/fourfee/editfourfee.js}"></script>
 
 </body>
 </html>

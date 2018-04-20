@@ -113,4 +113,20 @@ public class AccountCompanyServiceImpl extends AbstractBaseService<AccountCompan
 				 endDateYear,  endDateMonth,  userId, itemTypeList);
 	}
 
+
+	@Override
+	public List<Map<String, Object>> getItemsSumByDateAndUser(String startDateYear, String startDateMonth,
+			String endDateYear, String endDateMonth, long userId, List<Integer> itemTypeList) {
+		return accountCompanyMapper.getItemsSumByDateAndUser(startDateYear, startDateMonth,
+				 endDateYear,  endDateMonth,  userId, itemTypeList);
+	}
+
+
+	@Override
+	public List<Map<String, Object>> getItemsGroupSumByDateAndUser(String startDateYear, String startDateMonth,
+			String endDateYear, String endDateMonth, long userId, List<Integer> itemTypeList) {
+		return accountCompanyMapper.getItemsGroupSumByDateAndUser(startDateYear, startDateMonth,
+				 endDateYear,  endDateMonth,  userId, itemTypeList);
+	}
+
 }

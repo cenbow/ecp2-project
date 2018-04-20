@@ -87,4 +87,14 @@ public List<AccountPersonal> selectItems(
 	 */
 	public List<Map<String, Object>> selectPerformanceMap(Map<String, Object> params);
 	
+	/** 
+		* @Title: logicDeleteByCompanyItemId 
+		* @Description: 根据所引用的公司分录ID删除个人帐薄中的分录 
+		* @param @param companyItemId
+		* @param @return     
+		* @return int    返回类型 
+		* @throws 
+	*/
+	public int logicDeleteByCompanyItemId(long companyItemId);
+	
 }
