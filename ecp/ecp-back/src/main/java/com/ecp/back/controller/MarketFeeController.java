@@ -126,8 +126,120 @@ public class MarketFeeController {
 		model.addAttribute("pageInfo", pageInfo);  //分页
 		model.addAttribute("orderList", addedList); //列表
 		
+		//获取订单总金额
+		BigDecimal orderAmount=getOrderAmount(orderTimeCond,dealStateCond,
+				 searchTypeValue,condValue,
+				 "","","",
+				 null,-1);
+		model.addAttribute("orderAmountSum", orderAmount);  //订单金额合计	
+		
+		//读取合同总金额及市场费用金额
+		
+		//获取合同总金额,市场费用总金额
+		Map<String,Object> amountMap=getScopeAmount(orderTimeCond,
+				   dealStateCond,				   
+				   searchTypeValue, condValue,							  
+				   "", "", "");	
+		
+		model.addAttribute("marketFeeAmountSum", amountMap.get("marketFeeAmountSum"));
+		model.addAttribute("contractAmountSum", amountMap.get("contractAmountSum"));
+		
+		
 		
 		return RESPONSE_THYMELEAF_BACK + "order_table";
+	}
+	
+	private Map<String,Object> getScopeAmount(int orderTimeCond, int dealStateCond,			  
+			  Integer searchTypeValue, String condValue,							  
+			  String provinceName, String cityName,String countyName ){
+		
+		int searchType=0;
+		String condStr="";
+		
+		//置默认值(搜索)
+		if(searchTypeValue!=null){
+			searchType=searchTypeValue;
+			condStr=condValue;
+		}
+		
+		//(1)准备查询条件  费用类型列表:市场费用
+		List<Integer> itemTypeList=getItemTypeList();		
+
+		List<Long> roleIdList=null;  	//角色列表列表为空:此条件无效
+		long searchUserId=-1;		    //用户ID无效.
+		
+		//(2)确定用户的查询范围(代理商范围)
+		List<Map<String,Object>> agentIdList=null;	
+		
+		//(3)查询公司帐薄
+		BigDecimal marketFeeAmountSum=accountCompanyService.searchAccountItemAmount(
+				orderTimeCond,dealStateCond,
+				searchType,	condStr,
+				provinceName,cityName,countyName,
+				agentIdList,														
+				itemTypeList,
+				searchUserId,roleIdList);
+		//(3)查询合同详情.
+		BigDecimal contractAmountSum=contractItemsService.searchContractAmount(
+				orderTimeCond,dealStateCond,
+				searchType,	condStr,
+				provinceName,cityName,countyName,
+				agentIdList);
+		
+		Map<String,Object> compositeObj=new HashMap<String,Object>();
+		compositeObj.put("marketFeeAmountSum", marketFeeAmountSum);
+		compositeObj.put("contractAmountSum", contractAmountSum);
+		
+		
+		return compositeObj;
+	}
+	
+	
+	/** 
+		* @Title: getItemTypeList 
+		* @Description: 获取需要查询的分录类型列表.
+		* @param @return     
+		* @return List<Integer>    返回类型 
+		* @throws 
+	*/
+	private List<Integer> getItemTypeList(){
+		List<Integer> itemTypeList=new ArrayList<Integer>();		
+		itemTypeList.add(AccountItemType.MARKET_FEE);  		//
+		return itemTypeList;
+	}
+	
+	
+	
+	/** 
+	* @Title: getOrderAmount 
+	* @Description: 获取范围内订单总金额. 
+	* @param @param orderTimeCond
+	* @param @param dealStateCond
+	* @param @param searchTypeValue
+	* @param @param condValue
+	* @param @param provinceName
+	* @param @param cityName
+	* @param @param countyName
+	* @param @param agentIdList
+	* @param @param totalPayFlag
+	* @param @return     
+	* @return BigDecimal    返回类型 
+	* @throws 
+	*/
+	private BigDecimal getOrderAmount(int orderTimeCond,
+			  int dealStateCond,
+			  Integer searchTypeValue,
+			  String condValue,							  
+			  String provinceName,
+			  String cityName,
+			  String countyName,
+			  List<Map<String,Object>> agentIdList,
+			  int totalPayFlag){
+		
+		return orderService.getOrderAmount(orderTimeCond,dealStateCond,
+				 searchTypeValue,condValue,
+				 provinceName,cityName,countyName,
+				 agentIdList,totalPayFlag);
 	}
 	
 	/** 

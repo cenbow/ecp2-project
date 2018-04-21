@@ -652,7 +652,7 @@ public class SearchDueController {
 		
 		//查询并分页:开始		
 		//PageHelper.startPage(pageNum, pageSize); // PageHelper
-		//询公司帐薄
+		//查询公司帐薄
 		List<AccountCompany> accountList=accountCompanyService.selectItems(
 																orderTimeCond,dealStateCond,
 																searchType,	condStr,
