@@ -192,4 +192,19 @@
   	<update id="logicDeleteByCompanyItemId">
   		update account_personal ap set deleted=2 where account_company_id=#{companyItemId}
   	</update>
+  	
+  	<!-- 根据公司帐薄分录ID查询所关联的用户 -->
+  	<select id="getUserByAccountCompanyId" resultType="map">
+  		SELECT u.* FROM account_personal ap 
+  				   LEFT JOIN user u ON(ap.bind_user_id=u.id) 
+  		<where>
+  			ap.deleted=1 AND 
+  			u.deleted=1 AND  			
+  			ap.account_company_id=#{accountCompanyId}
+  		</where> 
+  		group by u.id
+  	
+  	</select>
+  	
+  	
 </mapper>

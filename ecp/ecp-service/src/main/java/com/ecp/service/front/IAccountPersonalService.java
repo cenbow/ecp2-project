@@ -97,4 +97,7 @@ public List<AccountPersonal> selectItems(
 	*/
 	public int logicDeleteByCompanyItemId(long companyItemId);
 	
+	//根据公司分录ID查询所对应的用户(在个人帐薄中查询)
+	public List<Map<String,Object>> getUserByAccountCompanyId(long accountCompanyId);
+	
 }

@@ -325,7 +325,8 @@
 							<a type="button" th:attr="data-id=${order.id},
 													data-orderid=${order.order_id},
 													data-contractState=${order.contract_state},
-													data-contract-id=${order.contract_id}" 
+													data-contract-id=${order.contract_id},
+													data-companyname=${order.company_name}" 
 												class="edit-market-fee" 
 												title="市场费用管理">												
 								<i class=" icon-money icon-large" style="color:darkblue"></i>
@@ -350,9 +351,9 @@
 						<td colspan="3"></td>						
 					</tr>
 					
-					<tr>
+					<!-- <tr>
 						<td colspan="9"><a type="button" class="btn btn-primary" style="float:right;">市场费列表</a></td>
-					</tr>
+					</tr> -->
 
 				</tbody>
 			</table>

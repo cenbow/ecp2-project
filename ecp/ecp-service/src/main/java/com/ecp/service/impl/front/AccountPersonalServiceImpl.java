@@ -80,6 +80,12 @@ public class AccountPersonalServiceImpl extends AbstractBaseService<AccountPerso
 	public int logicDeleteByCompanyItemId(long companyItemId) {
 		return accountPersonalMapper.logicDeleteByCompanyItemId(companyItemId);
 	}
+
+
+	@Override
+	public List<Map<String, Object>> getUserByAccountCompanyId(long accountCompanyId) {
+		return accountPersonalMapper.getUserByAccountCompanyId(accountCompanyId);
+	}
 	
 	
 

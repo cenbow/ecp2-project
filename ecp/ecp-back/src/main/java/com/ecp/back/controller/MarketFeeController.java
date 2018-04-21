@@ -21,6 +21,7 @@ import com.alibaba.fastjson.JSONArray;
 import com.ecp.back.commons.RoleCodeConstants;
 import com.ecp.bean.AccountItemType;
 import com.ecp.bean.UserBean;
+import com.ecp.common.util.EntityToMap;
 import com.ecp.common.util.RequestResultUtil;
 import com.ecp.entity.AccountCompany;
 import com.ecp.entity.AccountPersonal;
@@ -133,8 +134,6 @@ public class MarketFeeController {
 				 null,-1);
 		model.addAttribute("orderAmountSum", orderAmount);  //订单金额合计	
 		
-		//读取合同总金额及市场费用金额
-		
 		//获取合同总金额,市场费用总金额
 		Map<String,Object> amountMap=getScopeAmount(orderTimeCond,
 				   dealStateCond,				   
@@ -149,6 +148,7 @@ public class MarketFeeController {
 		return RESPONSE_THYMELEAF_BACK + "order_table";
 	}
 	
+	//市场费合计,合同额合计
 	private Map<String,Object> getScopeAmount(int orderTimeCond, int dealStateCond,			  
 			  Integer searchTypeValue, String condValue,							  
 			  String provinceName, String cityName,String countyName ){
@@ -289,9 +289,13 @@ public class MarketFeeController {
 	*/
 	@RequestMapping(value="/edit")
 	public String showMarketFeeEditUI(long orderId,String orderNo,Model model){
-		prepareMarketFee(orderId,orderNo,model);
+		//prepareMarketFee(orderId,orderNo,model);
 		model.addAttribute("orderId", orderId);
 		model.addAttribute("orderNo",orderNo);
+		
+		//查询订单的记帐状态
+		Orders order=orderService.selectByPrimaryKey(orderId);
+		model.addAttribute("accountStatus", order.getAccountState());  //订单的记帐状态
 		
 		return RESPONSE_THYMELEAF_BACK + "marketfee_edit";
 	}
@@ -303,10 +307,9 @@ public class MarketFeeController {
 		
 		//查询公司帐薄
 		List<AccountCompany> accountCompanyList=accountCompanyService.getItemsByOrder(orderId, orderNo, itemTypeList);
+		model.addAttribute("accountCompanyList",accountCompanyList);  //回传数据
 		
-		//回传参数
-		model.addAttribute("accountCompanyList",accountCompanyList);		
-		//查询合同的记帐状态
+		//查询订单的记帐状态
 		Orders order=orderService.selectByPrimaryKey(orderId);
 		model.addAttribute("accountStatus", order.getAccountState());  //订单的记帐状态
 		
@@ -314,7 +317,7 @@ public class MarketFeeController {
 		long agentId=searchAgentByOrder(orderId);
 		List<String> roleCodeList=new ArrayList<>();
 		roleCodeList.add(RoleCodeConstants.OS);
-		roleCodeList.add(RoleCodeConstants.IS);
+		//roleCodeList.add(RoleCodeConstants.IS);
 		List<Map<String,Object>> bindUserList=agentBindService.getSalesByAgentIdAndRoleCodes(agentId, roleCodeList);
 		
 		model.addAttribute("bindUserList", bindUserList);  //所绑定的用户
@@ -342,20 +345,72 @@ public class MarketFeeController {
 	}
 	
 	
+	/** 
+		* @Title: showMarketFeeTable 
+		* @Description: 订单市场费用列表 
+		* @param @param orderId
+		* @param @param orderNo
+		* @param @param model
+		* @param @return     
+		* @return String    返回类型 
+		* @throws 
+	*/
 	@RequestMapping(value="/table")
 	public String showMarketFeeTable(long orderId,String orderNo,Model model){		
-		//费用类型
-		List<Integer> itemTypeList=new ArrayList<>();
-		itemTypeList.add(AccountItemType.MARKET_FEE);  //市场费		
+		//费用类型列表
+		List<Integer> itemTypeList=this.getItemTypeList();		
 		//查询公司帐薄
 		List<AccountCompany> accountCompanyList=accountCompanyService.getItemsByOrder(orderId, orderNo, itemTypeList);
 		
+		//将对象转变成map类型并求和.
+		BigDecimal amountSum=new BigDecimal(0);
+		List<Map<String,Object>> acItemList=new ArrayList<>();
+		for(AccountCompany accItem:accountCompanyList){
+			Map<String,Object> mapx=EntityToMap.ConvertObjToMap(accItem);
+			
+			amountSum=amountSum.add(accItem.getAmount());
+			//查询此费用所关联的用户.
+			long acItemId=accItem.getId();
+			//自个人帐户查询所关联的用户
+			//将用户信息加入到对象中.
+			List<Map<String,Object>> userList=accountPersonalService.getUserByAccountCompanyId(acItemId);
+			
+			mapx.put("userList", userList);
+			
+			acItemList.add(mapx);
+		}
+		
+		
 		//回传参数
-		model.addAttribute("accountCompanyList",accountCompanyList);	
+		model.addAttribute("accountCompanyList",acItemList);
+		model.addAttribute("amountSum",amountSum);  //费用合计.
 		
 		
 		return RESPONSE_THYMELEAF_BACK + "marketfee_table";
 	}
+	
+	/** 
+		* @Title: loadAddDialog 
+		* @Description: TODO(这里用一句话描述这个方法的作用) 
+		* @param @param orderId
+		* @param @param model
+		* @param @return     
+		* @return String    返回类型 
+		* @throws 
+	*/
+	@RequestMapping(value="/loadadddialog")
+	public String loadAddDialog(long orderId,Model model){
+		//查询与此订单相关的OS (只查询OS)
+		long agentId=searchAgentByOrder(orderId);
+		List<String> roleCodeList=new ArrayList<>();
+		roleCodeList.add(RoleCodeConstants.OS);
+		List<Map<String,Object>> bindUserList=agentBindService.getSalesByAgentIdAndRoleCodes(agentId, roleCodeList);
+		
+		model.addAttribute("bindUserList", bindUserList);  //所绑定的用户
+		
+		return RESPONSE_THYMELEAF_BACK+"add_marketfee_dialog";
+	}
+	
 	
 	/** 
 		* @Title: addFeeItem 
@@ -379,6 +434,7 @@ public class MarketFeeController {
 							 BigDecimal amount,
 							 String comment,
 							 String bindUserList,
+							 String period,  //期间(格式: yyyy-MM)
 							 Model model){
 		final byte COMPANY_FEE_FLAG_TRUE=1;  //内部费用
 		final byte COMPANY_FEE_FLAG_FALSE=0; //双计费用
@@ -388,21 +444,28 @@ public class MarketFeeController {
 		boolean selectedFlag=false;
 		//查询是否选择了用户
 		JSONArray userArr=JSON.parseArray(bindUserList); //解析参数:获取所要绑定的用户ID 数组.
-		for(int i=0;i<userArr.size();i++){
-			boolean selected=userArr.getJSONObject(i).getBooleanValue("selected");
-			if(selected){
-				selectedFlag=true;
-				break;
+		if(userArr!=null){
+			for(int i=0;i<userArr.size();i++){
+				boolean selected=userArr.getJSONObject(i).getBooleanValue("selected");
+				if(selected){
+					selectedFlag=true;
+					break;
+				}
 			}
 		}
 		
+		String[] tempArr=period.split("-");
+		String year=tempArr[0];
+		String month=tempArr[1];
+		
+		//公司费用flag
 		byte companyFeeFlag=COMPANY_FEE_FLAG_TRUE;
 		if(selectedFlag){
 			companyFeeFlag=COMPANY_FEE_FLAG_FALSE;
 		}
 		
 		//记公司帐薄
-		long companyItemId=keepAccountCompany( orderId, orderNo, itemType, amount, comment,companyFeeFlag);  
+		long companyItemId=keepAccountCompany( orderId, orderNo, itemType, amount, comment,companyFeeFlag,year,month);  
 		
 		
 		if(selectedFlag){  //如果选择了绑定用户,则计个人帐薄
@@ -412,7 +475,7 @@ public class MarketFeeController {
 					long userId=userArr.getJSONObject(i).getLongValue("id");
 					long roleId=userArr.getJSONObject(i).getLongValue("role_id");
 					
-					int row=keepAccountPersonal( orderId, orderNo, itemType, amount, comment,userId,roleId,companyItemId);	//记个人帐薄
+					int row=keepAccountPersonal( orderId, orderNo, itemType, amount, comment,userId,roleId,companyItemId,year,month);	//记个人帐薄(引用公司帐薄分录)
 				}
 			}
 		}
@@ -436,7 +499,7 @@ public class MarketFeeController {
 		* @return long    返回公司帐薄分录ID 
 		* @throws 
 	*/
-	private long keepAccountCompany(long orderId,String orderNo,int itemType,BigDecimal amount,String comment,byte companyFeeFlag){
+	private long keepAccountCompany(long orderId,String orderNo,int itemType,BigDecimal amount,String comment,byte companyFeeFlag,String year,String month){
 		AccountCompany accountItem=new AccountCompany();
 		accountItem.setOrderId(orderId);
 		accountItem.setOrderNo(orderNo);
@@ -444,6 +507,8 @@ public class MarketFeeController {
 		accountItem.setAmount(amount);
 		accountItem.setComment(comment);
 		accountItem.setCreateTime(new Date());
+		accountItem.setYear(year);
+		accountItem.setMonth(month);
 		
 		long agentId=searchAgentByOrder(orderId); //代理商ID
 		accountItem.setCustId(agentId);  
@@ -483,7 +548,9 @@ public class MarketFeeController {
 									String comment,
 									long userId,
 									long roleId,
-									long accountCompanyId
+									long accountCompanyId,
+									String year,
+									String month
 									){
 		
 		//操作员信息
@@ -500,6 +567,8 @@ public class MarketFeeController {
 		accountItem.setAmount(amount);
 		accountItem.setComment(comment);
 		accountItem.setCreateTime(new Date());
+		accountItem.setYear(year);
+		accountItem.setMonth(month);
 		
 		//查询代理商
 		accountItem.setCustId(agentId);
