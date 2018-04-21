@@ -75,7 +75,7 @@ public class SearchDueController {
 	@Autowired
 	IContractService contractService;  //合同服务
 	@Autowired
-	IContractItemsService contractItemsService;  //合同服务
+	IContractItemsService contractItemsService;  //合同详情服务
 	
 
 	/**

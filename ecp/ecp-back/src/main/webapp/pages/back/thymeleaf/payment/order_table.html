@@ -255,8 +255,9 @@
 								</div>
 							</div>
 						</th>
-						<th>订单金额</th>
+						<th>订单金额</th>												
 						<th>收货人</th>
+						<th>代理商名称</th>
 						<th>
 							<!-- 状态：查询条件 -->
 							<div class="deal-state-cont" id="orderState">
@@ -297,6 +298,7 @@
 						<td	th:text="${#calendars.format(order.order_time,'yyyy-MM-dd HH:mm:ss')}">订单时间</td>
 						<td th:text="${order.total_price}">优惠前金额</td>
 						<td th:text="${order.name}">收货人</td>
+						<td th:text="${order.company_name}">代理商名称</td>
 						<!-- 状态显示 -->
 						<td>
 							<!-- 取消状态 -->

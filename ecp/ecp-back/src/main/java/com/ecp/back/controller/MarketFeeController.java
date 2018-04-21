@@ -3,6 +3,7 @@ package com.ecp.back.controller;
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -28,6 +29,7 @@ import com.ecp.entity.UserExtends;
 import com.ecp.service.front.IAccountCompanyService;
 import com.ecp.service.front.IAccountPersonalService;
 import com.ecp.service.front.IAgentBindService;
+import com.ecp.service.front.IContractItemsService;
 import com.ecp.service.front.IOrderItemService;
 import com.ecp.service.front.IOrderService;
 import com.ecp.service.front.IUserAgentService;
@@ -65,6 +67,8 @@ public class MarketFeeController {
 	IAccountPersonalService accountPersonalService;  //个人帐户
 	@Autowired
 	IAgentBindService agentBindService;  //代理商绑定服务
+	@Autowired
+	IContractItemsService contractItemsService;  //合同详情服务
 	
 
 	/**
@@ -112,18 +116,51 @@ public class MarketFeeController {
 		
 		// 查询 并分页		
 		PageHelper.startPage(pageNum, pageSize); // PageHelper			
-
 		//List<Map<String,Object>> orderList = orderService.selectAllOrderByOrderTimeAndDealState(orderTimeCond,dealStateCond);
-		
-		List<Map<String,Object>> orderList = orderService.selectOrder(orderTimeCond,dealStateCond,searchTypeValue,condValue);  //查询订单
-		
+		//List<Map<String,Object>> orderList = orderService.selectOrder(orderTimeCond,dealStateCond,searchTypeValue,condValue);  //查询订单
+		List<Map<String,Object>> orderList = orderService.selectOrders(null,orderTimeCond,dealStateCond,searchTypeValue,condValue);  //查询订单
 		PageInfo<Map<String,Object>> pageInfo = new PageInfo<Map<String,Object>>(orderList);// (使用了拦截器或是AOP进行查询的再次处理)
 		
+		List<Map<String,Object>> addedList=getContractAndMarketFeeAmount(orderList);
+		
 		model.addAttribute("pageInfo", pageInfo);  //分页
-		model.addAttribute("orderList", orderList); //列表
+		model.addAttribute("orderList", addedList); //列表
 		
 		
 		return RESPONSE_THYMELEAF_BACK + "order_table";
+	}
+	
+	/** 
+	* @Title: getContractAndPayAmount 
+	* @Description:  获取订单合同金额(应收款)及回款额
+	* @param @param orderList
+	* @param @return     
+	* @return List<Map<String,Object>>    返回类型 
+	* @throws 
+	*/
+	private List<Map<String,Object>> getContractAndMarketFeeAmount(List<Map<String,Object>> orderList){
+		//List<Map<String,Object>> tmpList=new ArrayList<Map<String,Object>>();
+		for(int i=0;i<orderList.size();i++){
+			//Map<String,Object> compositeObj=new HashMap<String,Object>();
+			
+			Map<String,Object> order=orderList.get(i);
+			//compositeObj.put("order", order);
+			
+			//根据合同ID查询:合同金额(应收款)
+			BigDecimal contractAmount=new BigDecimal(0);  
+			if(order.get("contract_id")!=null){
+				contractAmount=contractItemsService.getContractAmountByNo((String) order.get("contract_no"));
+			}
+			order.put("contractAmount", contractAmount);
+			
+			//根据订单ID:查询收款合计
+			BigDecimal payAmount= accountCompanyService.getAmountByOrderId((long) order.get("id"),AccountItemType.MARKET_FEE);			
+			order.put("marketFeeAmount", payAmount);
+			
+			//tmpList.add(compositeObj);
+		}
+		
+		return orderList;
 	}
 	
 	
