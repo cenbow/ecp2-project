@@ -19,7 +19,7 @@
 							<div class="modal-header">
 								<button type="button" class="close" data-dismiss="modal"
 									aria-hidden="true">×</button>
-								<h4 class="modal-title" id="myModalLabel">增加回款记录</h4>
+								<h4 class="modal-title" id="myModalLabel">修改回款记录</h4>
 							</div>
 							<div class="modal-body">
 								<form class="form-horizontal" role="form">
@@ -30,7 +30,7 @@
 										<div class="col-sm-10">
 											<input class="datetimepicker datetime form-control"
 												readonly="readonly" id="accountItemPeriod" type="text"
-												onClick="WdatePicker({dateFmt:'yyyy-MM'});" />
+												onClick="WdatePicker({dateFmt:'yyyy-MM'});" th:value="${accountItem.year}+'-'+${accountItem.month}" />
 										</div>
 									</div>
 									
@@ -56,7 +56,7 @@
 										<label for="amount" class="col-sm-2 control-label">金额</label>
 										<div class="col-sm-10">
 											<input type="number" class="form-control" id="amount"
-												name="amount" />
+												name="amount" th:value="${accountItem.amount}"/>
 										</div>
 									</div>
 									
@@ -64,7 +64,7 @@
 									<div class="form-group">
 										<label for="comment" class="col-sm-2 control-label">备注</label>
 										<div class="col-sm-10">
-											<input type="text" class="form-control" id="comment" name="comment" />
+											<input type="text" class="form-control" id="comment" name="comment"  th:value="${accountItem.comment}"/>
 										</div>
 									</div>																
 
@@ -87,14 +87,20 @@
 	
 	</th:block>
 	
+	<script th:inline="javascript">
+		/*<![CDATA[*/
+			var curr_accountItem=[[${accountItem}]];
+		/*]]>*/
+	</script>
+	
 	<script type="text/javascript">
 	//------------------业务操作----------------------
 	/**
 	 * 保存回款条目:增加
 	 * @returns
 	 */
-	function addPaymentFeeItem(){
-		var urlStr = BASE_CONTEXT_PATH + "/back/payment/add"; // 需要提交的url
+	function modiPaymentFeeItem(){
+		var urlStr = BASE_CONTEXT_PATH + "/back/payment/modi"; // 需要提交的url
 		
 		/*var params=new Object();  //生成参数对象.
 		
@@ -110,6 +116,9 @@
 		var comment=$('#comment').val();
 		//期间(格式:  yyyy-MM)
 		var period=$('#accountItemPeriod').val();
+		//当前编辑的分录条目ID
+		var accountItemId=curr_accountItem.id;
+		
 
 		$.ajax({
 			type : "POST", // 提交方式 get/post
@@ -122,7 +131,9 @@
 				'itemType':itemType,
 				'amount':amount,
 				'comment':comment,
-				'period':period				
+				'period':period,
+				'accountItemId':accountItemId
+				
 			},
 			success : function(res) { // data 保存提交后返回的数据，一般为 json 数据
 				//console.log(res);
@@ -133,7 +144,7 @@
 						//var urlTemp = obj.result_msg;
 						loadPaymentFeeTable();
 						search_normal();  //更新主页面,也可以在点击主页选项卡时进行更新(效率更高一些)
-						closeAddPaymentFeeDialog();
+						closeModiDialog();
 						
 					} else {
 						util.message(obj.result_msg);
@@ -158,10 +169,10 @@
 	
 	$(function(){
 		
-		$("#accountItemPeriod").val((new Date()).format('yyyy-MM'));  //初始化期间为当前年,当前月份
+		//$("#accountItemPeriod").val((new Date()).format('yyyy-MM'));  //初始化期间为当前年,当前月份
 		
 		//保存回款条目button:click event
-		$('#btn-save-payment').on('click',function(){addPaymentFeeItem();})	
+		$('#btn-save-payment').on('click',function(){modiPaymentFeeItem();})	
 	});
 	
 	</script>

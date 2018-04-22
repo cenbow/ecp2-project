@@ -35,8 +35,13 @@
   <select id="getItemsByOrder" resultMap="BaseResultMap">
   	select * from account_company 
   	<where>
-  		order_id=#{orderId} AND
-  		order_no=#{orderNo} 
+  		deleted=1 AND order_id=#{orderId} 
+		
+		<!-- ORDER_NO参数可选 -->  		
+		<if test="orderNo!=null">
+			AND order_no=#{orderNo} 
+		</if>
+  		
   		
   		<if test="itemTypeList!=null and itemTypeList.size&gt;0">
   			AND
@@ -52,7 +57,7 @@
   <select id="getItemsByOrderAndBindUser" resultMap="BaseResultMap">
   	select * from account_company 
   	<where>
-  		order_id=#{orderId}   		   		
+  		order_id=#{orderId}  and deleted=1 		   		
   		<if test="itemTypeList!=null and itemTypeList.size&gt;0">
   			AND
   			type in 	
@@ -81,7 +86,7 @@
 					   
 		<where>
 			o.deleted=1 AND o.yn=1 and o.extend_id is not NULL AND
-			ac.cust_id is not NULL 	AND
+			ac.cust_id is not NULL 	AND ac.deleted=1 AND
 			o.create_time&gt;=DATE_ADD(now(),INTERVAL #{orderTimeCond} MONTH)
 			<if test="dealStateCond!=null and dealStateCond!='' and dealStateCond!='0'.toString()">
 				AND 
@@ -168,7 +173,7 @@
 	LEFT JOIN trade_orders o ON c.order_id = o.id
 	LEFT JOIN user_extends ue ON o.extend_id = ue.extend_id
 	WHERE 
-		1=1
+		c.deleted=1 
 		<if test="account_type!=null">
 			and c.type = #{account_type}
 		</if>
@@ -200,6 +205,7 @@
 		account_company ac	
 	WHERE
 		ac.order_id = #{orderId} and
+		ac.deleted=1 and
 		ac.type=#{accountItemType}		  	 
   </select>
   

@@ -13,7 +13,7 @@
  * @returns
  */
 function search(){
-	parms=new Object(); //生成参数对象
+	var parms=new Object(); //生成参数对象
 	//分页数据
 	parms.pageNum=$("#pageNum").val();
 	parms.pageSize=$("#pageSize").val();
@@ -49,13 +49,17 @@ function search_normal() {
  * @param orderNo 订单No
  * @returns
  */
-function editPayment(url,orderId,orderNo){
+function editPayment(url,orderId,orderNo,agentName){
 	
 	var params = {"orderId":orderId, "orderNo":orderNo};
 	$("#edit-body").load(url,params, function(){
 		
 		$("#edit-tab").removeClass("hide");
-		$("#edit-tab-title").text("回款管理");
+		$("#edit-tab-title").text("订单回款管理");
+		
+		//设置订单号及代理商名称
+		$(".edit-payment-info").text('('+agentName+':'+orderNo+')');		
+		
 		$('#tabs-14933 a[href="#panel-602679"]').tab('show');
 	});
 	
@@ -192,6 +196,7 @@ $(function() {
 	updateUIOrderTime(g_ordertime_cond);
 	updateUISearchCond(g_searchTypeValue);
 	
+	
 
 	//----------click event binding------------
 
@@ -204,8 +209,11 @@ $(function() {
 		var orderId = $(this).attr("data-id");  //订单id(PK)
 		var orderNo = $(this).attr("data-orderid");  //订单号
 		var contractState=$(this).attr("data-contractState"); //合同状态
+		var agentName=$(this).attr("data-companyname");  //代理商名称
 		
-		editPayment(url, orderId, orderNo);
+		
+		
+		editPayment(url, orderId, orderNo,agentName);
 		
 		
 		

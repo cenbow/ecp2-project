@@ -183,7 +183,7 @@
 	<!-- 订单列表 -->
 	<div class="row clearfix">
 		<div class="col-md-12 column">
-			<h5>订单列表</h5>
+			<h5>订单回款列表</h5>
 			<br />
 			<!-- 横向菜单 -->
 			<div class="row clearfix" style="display:inline-block">
@@ -225,7 +225,7 @@
 				</div>
 			</div>
 			<a id="refresh-item"
-						th:href="@{/back/order/show}" title="刷新列表"	style="float: right; margin-right: 20px">
+						th:href="@{/back/payment/show}" title="刷新列表"	style="float: right; margin-right: 20px">
 						<i class="icon-refresh icon-large"></i>
 			</a>
 			<hr style="height:1px;border:none;border-top:1px solid blue;">
@@ -255,8 +255,11 @@
 								</div>
 							</div>
 						</th>
-						<th>订单金额</th>												
-						<th>收货人</th>
+						<th>订单金额</th>
+						<th>合同金额</th>
+						<th>回款金额</th>
+						<th>欠款金额</th>
+						<!-- <th>收货人</th> -->
 						<th>代理商名称</th>
 						<th>
 							<!-- 状态：查询条件 -->
@@ -296,8 +299,11 @@
 							
 						</td>
 						<td	th:text="${#calendars.format(order.order_time,'yyyy-MM-dd HH:mm:ss')}">订单时间</td>
-						<td th:text="${order.total_price}">优惠前金额</td>
-						<td th:text="${order.name}">收货人</td>
+						<td th:text="${order.total_price}">优惠前金额(订单金额)</td>
+						<td th:text="${order.contractAmount}">合同金额</td>
+						<td th:text="${order.paymentAmount}">己回款</td>
+						<td th:text="${order.contractAmount-order.paymentAmount}">尚欠款</td>
+						<!-- <td th:text="${order.name}">收货人</td> -->
 						<td th:text="${order.company_name}">代理商名称</td>
 						<!-- 状态显示 -->
 						<td>
@@ -321,7 +327,8 @@
 							<a type="button" th:attr="data-id=${order.id},
 													data-orderid=${order.order_id},
 													data-contractState=${order.contract_state},
-													data-contract-id=${order.contract_id}" 
+													data-contract-id=${order.contract_id},
+													data-companyname=${order.company_name}"													
 												class="edit-payment" 
 												title="回款管理">												
 								<i class=" icon-money icon-large" style="color:darkblue"></i>
@@ -330,6 +337,20 @@
 
 					</tr>
 					
+					<tr>
+						<tr>
+						<td colspan="3"><span style="float:right;">合计</span></td>
+						<!-- 订单总金额 -->
+						<td><strong><span th:text="${orderAmountSum}"></span></strong></td>
+						<!-- 订单金额合计 -->
+						<td><strong><span th:text="${contractAmountSum}"></span></strong></td>
+						<!-- 市场费用金额合计 -->
+						<td><strong><span th:text="${paymentAmountSum}"></span></strong></td>
+						<!-- 欠款合计 -->
+						<td><strong><span th:text="${contractAmountSum-paymentAmountSum}"></span></strong></td>
+						<td colspan="2"></td>						
+					</tr>
+					</tr>
 					
 
 				</tbody>

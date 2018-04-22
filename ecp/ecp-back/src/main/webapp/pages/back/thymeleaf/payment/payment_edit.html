@@ -8,14 +8,20 @@
 <div class="container-">
 	<div class="row clearfix">
 		<div class="col-md-12 column">
-			<h4>
-				回款管理
-			</h4>
+			<h5>
+				<span>订单回款管理</span>
+				<span style="color:darkblue;">
+					<strong>
+						<span class="edit-payment-info"></span>
+					</strong>
+				</span>
+			</h5>
 		</div>		
 	</div>
 	
 	<!-- dialog  -->
-	<span th:include="/back/thymeleaf/payment/add_payment_dialog::dialog" th:remove="tag"></span>
+	<div class="edit-payment-dialog"></div>
+	<!-- <span th:include="/back/thymeleaf/payment/add_payment_dialog::dialog" th:remove="tag"></span> -->
 		
 	<div class="row clearfix">
 		<div class="col-md-12 column">
@@ -28,7 +34,7 @@
 			<div class="row clearfix">
 				<!-- 回款列表 -->
 				<div class="col-md-12 column" id="payment-table">
-					<span th:include="/back/thymeleaf/payment/payment_table" th:remove="tag"></span>					
+					<!-- <span th:include="/back/thymeleaf/payment/payment_table" th:remove="tag"></span> -->					
 				</div>
 			</div>
 			<hr  style="height:1px;border:none;border-top:1px solid #555555;">
@@ -37,19 +43,21 @@
 	</div>
 </div>
 
-<script th:inline="javascript">
-/*<![CDATA[*/
-    
-    var curr_orderId = [[${orderId}]];
-    var curr_orderNo=[[${orderNo}]];
-    
-/*]]>*/
-</script>
+	<script th:inline="javascript">
+	/*<![CDATA[*/
+	    
+	    var curr_orderId = [[${orderId}]];
+	    var curr_orderNo=[[${orderNo}]];
+	    
+	/*]]>*/
+	</script>
 
 
-<script type="text/javascript" >
-</script>
-
- <script type="text/javascript" th:src="@{/static/js/payment/payment.js}"></script>
+	<script type="text/javascript" >
+	</script>
+	<!-- 日期组件 -->
+	<script type="text/javascript"
+		th:src="@{/static/calendar/WdatePicker.js}"></script>
+ 	<script type="text/javascript" th:src="@{/static/js/payment/payment.js}"></script>
 </body>
 </html>
