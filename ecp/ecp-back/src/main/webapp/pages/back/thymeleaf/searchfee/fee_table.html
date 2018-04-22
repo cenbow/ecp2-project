@@ -5,47 +5,218 @@
 <title>Insert title here</title>
 </head>
 <body>
+	<!-- 修改四项费用对话框 -->
+	<div id="modi-fourfee-dialog"></div>
+	
+	<!-- 四项费用列表 -->
 	<table class="table">
 		<thead>
 			<tr>
-				<th class="col-md-1 column">ID</th>
-				<th class="col-md-1 column">订单号</th>				
-				<th class="col-md-1 column">金额</th>
-				<th class="col-md-1 column">费用类型</th>
-				<th class="col-md-2 column">归属</th>
-				<th class="col-md-2 column">备注</th>
-				<th class="col-md-2 column">日期</th>
-				<th class="col-md-2 column">操作</th>
+				<!-- <th>ID</th> -->
+				<th>录入日期</th>
+				<th>费用类型</th>
+				<th>金额</th>				
+				<th>备注</th>
+				<th>费用归属</th>
+				<th>期间-年</th>
+				<th>期间-月</th>
+				<th>操作</th>
 			</tr>
 		</thead>
 		<tbody>
-			<tr th:each="item: ${accountItemList}">
-				<td th:text="${item.accountItem.id}">条目ID</td>
-				<td th:text="${item.accountItem.orderNo}">订单号</td>
-				<td th:text="${item.accountItem.amount}">金额</td>
+			<tr th:each="item: ${accountCompanyList}">
+				<!-- <td th:text="${item.accountItem.id}">条目ID</td> -->
+				<!-- 录入日期 -->
+				<td
+					th:text="${#dates.format(item.accountItem.create_time,'yyyy-MM-dd HH:mm:ss')}">条目录入日期</td>
 				<td><span th:switch="${item.accountItem.type}" th:remove="tag">
-						<span th:case=1 th:remove="tag"> <span>交通费</span>
+					<span th:case=1 th:remove="tag"> <span>交通费</span>
 					</span> <span th:case=2 th:remove="tag"> <span>通讯费</span>
 					</span> <span th:case=3 th:remove="tag"> <span>招待费</span>
 					</span> <span th:case=4 th:remove="tag"> <span>差旅费</span>
-					</span> <span th:case=5 th:remove="tag"> <span>市场费</span>
-					</span> <span th:case="*" th:remove="tag"> <span>其它费用</span>
+					</span> <span th:case="10" th:remove="tag"> <span>其它费用</span>
+					</span> <span th:case="*" th:remove="tag"> <span>未知类型条目</span>
 					</span>
 				</span></td>
-
-				<td th:text="${item.bindUserName}+'('+${item.bindUserRole} +')'"></td>
+				
+				<td th:text="${item.accountItem.amount}">金额</td>
 				<!-- 备注 -->
 				<td th:text="${item.accountItem.comment}">备注</td>
-				<td
-					th:text="${#dates.format(item.accountItem.createTime,'yyyy-MM-dd HH:mm:ss')}">日期</td>
+				<!-- 归属人姓名 -->
+				<td th:text="${item.bindUserName}"></td>
+				<!-- <td th:text="${item.bindUserName}+'('+${item.bindUserRole} +')'"></td> -->
+				<!-- 归属期间 -->	
+				<td th:text="${item.accountItem.year}">归属年份</td>
+				<td th:text="${item.accountItem.month}">归属月份</td>
 				<td>
-					<!-- <a type="button" class="modi-four-fee" th:attr="bind-id=${item.accountItem.id}"><i class=" icon-edit icon-large" style="color:darkblue"></i></a>
-					<a type="button" class="del-four-fee" th:attr="bind-id=${item.accountItem.id}"><i class=" icon-remove-circle icon-large" style="color:darkblue"></i></a> -->
+					<!-- 修改费用 -->
+					<a type="button" class="modi-four-fee"
+					th:attr="bind-id=${item.accountItem.id}"><i
+						class=" icon-edit icon-large" style="color: darkblue"></i></a>
+					<!-- 删除费用 --> 
+					<a	type="button" class="del-four-fee"
+					th:attr="bind-id=${item.accountItem.id}"><i
+						class=" icon-remove-circle icon-large" style="color: darkblue"></i></a>
 				</td>
 			</tr>
-
+			<tr>
+				<td colspan="2"><span style="float:right;"><strong>合计:</strong></span></td>
+				<td colspan="6">
+					<span style="float:left;">
+						<span style="margin-right:20px;">
+							<span th:text="${amountSum}"></span>
+						</span>
+						
+						<span th:each="amount:${amountGroupSum}" style="margin-right:10px;">
+							<span th:switch="${amount.type}" th:remove="tag">
+								<span th:case=1 th:remove="tag"> <span><strong>交通费:</strong></span></span> 
+								<span th:case=2 th:remove="tag"> <span><strong>通讯费:</strong></span></span> 
+								<span th:case=3 th:remove="tag"> <span><strong>招待费:</strong></span></span> 
+								<span th:case=4 th:remove="tag"> <span><strong>差旅费:</strong></span></span> 
+								<span th:case="10" th:remove="tag"> <span><strong>其它费用:</strong></span></span> 
+								<span th:case="*" th:remove="tag"> <span><strong>未知类型条目:</strong></span></span>
+							</span>
+							<span th:text="${amount.amountSum}"></span>					
+						</span>
+					</span>
+				</td>
+			</tr>
 		</tbody>
 	</table>
 	
+	<hr style="height:1px;border:none;border-top:1px solid blue;"> 
+	
+	<!-- 加入 分页 -->
+	<div th:include="/back/thymeleaf/common/_pager::pager" class="pagerx" style="float: right; margin-right: 100px;"></div>
+	
+	<!--  -->
+	<script th:inline="javascript">  
+		/*<![CDATA[*/
+		var ret_startDateYear = [[${startDateYear}]];  //回传的时间条件 
+		var ret_startDateMonth=[[${startDateMonth}]];
+		var ret_endDateYear=[[${endDateYear}]];		
+		var ret_endDateMonth=[[${endDateMonth}]];		
+		var ret_userId=[[${userId}]];
+		var curr_pageNum=[[${pageNum}]];
+		var curr_pageSize=[[${pageSize}]]; 
+		
+		/*]]>*/  
+	</script>
+
+
+	<script type="text/javascript">
+	
+	//删除分录条目
+	function delAccountItem(id){
+		var urlStr = BASE_CONTEXT_PATH + "/back/fourfee/delete"; // 需要提交的url
+
+		var params = new Object(); //生成参数对象.
+		params.accountItemId=id;
+		
+		$.ajax({
+			type : "POST", // 提交方式 get/post
+			url : urlStr,
+			//contentType : "application/json", // 如果采用json格式传送所有参数时必须有,如果采普通js对象传送时,则不可以加此参数
+			//dataType : "html", //表示返回值类型，不必须,如果返回的是面页，则必须
+			data : params,
+			success : function(res) { // data 保存提交后返回的数据，一般为 json 数据
+				//console.log(res);
+				if (res != null && res != "") {
+					var obj = $.parseJSON(res);
+					if (obj.result_code == "success") {
+						//util.message(obj.result_msg);
+						//var urlTemp = obj.result_msg;
+						//reloadFourFeeTable();
+						loadPage();
+					} else {
+						util.message(obj.result_msg);
+					}
+				}
+			},
+			error : function(jqXHR, textStatus, errorThrown) {
+				util.message("AJAX请求时发生错误!");
+				/* 弹出jqXHR对象的信息 */
+				console.log(jqXHR.responseText);
+				console.log(jqXHR.status);
+				console.log(jqXHR.readyState);
+				console.log(jqXHR.statusText);
+				/* 弹出其他两个参数的信息 */
+				console.log(textStatus);
+				console.log(errorThrown);
+
+			}
+		});
+	}
+	
+	
+	//------------------UI 交互------------------------
+	/**
+	 * 打开修改四项费用窗口
+	 * @returns
+	 */
+	function openModiFourFeeDialog() {
+		//console.log("debug!");
+		$('#modal-container-306690').modal({
+			backdrop : 'static',
+			keyboard : false
+		});
+	}
+
+	/* close dialog :修改四项费用窗口*/
+	function closeModiFourFeeDialog() {	
+		$("#modal-container-306690").modal("hide");
+	}
+	
+	
+	
+	$(function(){
+		
+		/* 修改四项费用 */
+		$('.modi-four-fee').on('click', function() {
+			var url=BASE_CONTEXT_PATH+'/back/fourfee/loadmodidialog';
+			
+			var accountItemId=$(this).attr("bind-id");  //费用条目ID			
+			var parms=new Object();  //参数
+			parms.accountItemId=accountItemId;
+			
+			
+			$("#edit-fourfee-dialog").load(url,parms,openModiFourFeeDialog);  //加载完毕后显示
+		})
+
+		/* 删除四项费用 */
+		$('.del-four-fee').on('click', function() {
+			//console.log("delete four fee");
+			var accountItemId=$(this).attr("bind-id");  //分录ID
+			console.log("accountItemId:"+accountItemId);
+			util.delConfirm("确认删除此条目?",accountItemId,"delAccountItem");
+		})
+		
+		//======================分页（页码导航）==============
+
+		/*
+		 * 【分页】导航： 当点击页号时读取需要导航到的页码及每页记录数（pageNum,pageSize）
+		 * data-bind:pageNum-pageSize形式 如果data-bind为空字符串，则不做动作 当用户点击某页时，则发送与筛选相同的请求
+		 */
+	
+		$(".pagination li a").on('click', function(e) {
+			// alert($(this).attr("data-bind"));
+			//console.log("debug1");
+			var dataBind = $(this).attr("data-bind");
+			// 当dataBind有数据时处理
+			if (dataBind != "") {
+				var pageArr = new Array();
+				pageArr = dataBind.split("-");
+				// 置隐藏表单数据
+				curr_pageNum=pageArr[0];
+				curr_pageSize=pageArr[1];			
+				loadPage();  //加载页
+			}
+	
+		});
+		
+	});
+	
+		
+	</script>
 </body>
 </html>
