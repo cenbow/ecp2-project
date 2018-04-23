@@ -1,5 +1,6 @@
 package com.ecp.back.controller;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -52,13 +53,19 @@ public class PushmoneyConfigController {
 	 * @return
 	 */
 	@RequestMapping("/select-items")
-	public ModelAndView selectLinkItem(HttpServletRequest request, HttpServletResponse response, Boolean clickPageBtn, PageBean pageBean, String pagehelperFun) {
+	public ModelAndView selectLinkItem(HttpServletRequest request, HttpServletResponse response, Boolean clickPageBtn, PageBean pageBean, String pagehelperFun, Long roleId) {
 		ModelAndView mav = new ModelAndView();
 		Subject subject = SecurityUtils.getSubject();
 		UserBean user = (UserBean)subject.getPrincipal();
 		
-		PageHelper.startPage(pageBean.getPageNum(), pageBean.getPageSize());
+		List<Long> roleIdList = new ArrayList<>();
+		if(roleId!=null && roleId>0){
+			roleIdList.add(roleId);
+		}
 		Map<String, Object> map = new HashMap<>();
+		map.put("role_id_list", roleIdList);
+		
+		PageHelper.startPage(pageBean.getPageNum(), pageBean.getPageSize());
 		List<Map<String, Object>> levelList = pushmoneyConfigService.getList(map);
 		PageInfo<Map<String, Object>> pagehelper = new PageInfo<>(levelList);
 		

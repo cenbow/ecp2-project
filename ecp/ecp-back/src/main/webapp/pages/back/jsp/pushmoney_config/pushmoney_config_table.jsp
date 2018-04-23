@@ -7,10 +7,10 @@
 	style="width: 100%;"center">
 	<thead style="width: 98%; padding-top: 80px;">
 		<tr role="row">
-			<th><input type="checkbox" name="checkbox" id="checkbox" onclick="javascript:checkAll(this);">
+			<!-- <th><input type="checkbox" name="checkbox" id="checkbox" onclick="javascript:checkAll(this);">
 				<label for="checkbox">ALL</label>
 			</th>
-			<th>ID</th>
+			<th>ID</th> -->
 			<th>角色</th>
 			<th>销售额完成比例（%）</th>
 			<th>提成比例（%）</th>
@@ -20,10 +20,10 @@
 	<tbody>
 		<c:forEach items="${pagehelper.list}" var="config">
 			<tr>
-				<td>
+				<%-- <td>
 					<input type="checkbox" name="checkbox2" id="pushmoney-config-td-${config.id}" onclick="javascript:checkOne();" value="${config.id}">
 				</td>
-				<td>${config.id}</td>
+				<td>${config.id}</td> --%>
 				<td>${config.role_name}</td>
 				<td>>=${config.completion_rate}</td>
 				<td>${config.pushmoney_rate}</td>

@@ -69,7 +69,6 @@ function selectDetails(id){
 		if(res!=null){
 			var resp = $.parseJSON(res);
 			if(resp.result_code=="success"){
-				$("#edit-pushmoney-config-li").removeClass("hide");
 				var config =resp.pushmoneyConfig;
 				$("#config-id").val(config.id);//ID
 				$("#role-id").val(config.roleId);//角色ID
@@ -77,7 +76,7 @@ function selectDetails(id){
 				$("#config-pushmoney-rate").val(config.pushmoneyRate);//提成比例
 				$("#config-comment").val(config.comment);//备注
 				
-				$('#tabs-pushmoney-config a[href="#tab-pushmoney-config-edit"]').tab('show');
+				openEditPushmoneyConfigDialog();
 				return;
 			}
 		}
@@ -175,6 +174,29 @@ function clickPageBtnRequestFun(params){
 	});
 }
 
+/**
+ * 点击查询按钮执行，根据角色查询
+ */
+$("#search-pushmoney-config-btn").on("click", function(){
+	var params = new Object();
+	params.pagehelperFun = "clickPageBtnRequestFun";
+	searchClickPageBtnRequestFun(params);
+});
+
+/*
+ * 点击查询结果页面中的页码执行此函数
+ * 		函数功能：根据页码数请求当前页内容
+ */
+function searchClickPageBtnRequestFun(params){
+	var roleId = $("#search-role-id").val();
+	var action = "back/pushmoney-config/select-items";
+	params.clickPageBtn = true;
+	params.roleId = roleId;
+	//util.loading();
+	$("#item-div").load(action, params, function(){
+	});
+}
+
 /*
  * 点击列表中某个复选框时，全选或反选
  */
@@ -203,9 +225,29 @@ function checkAll(obj){
  * 点击添加按钮显示添加编辑选项卡
  */
 $("#add-pushmoney-config-btn").click(function(){
-	$("#edit-pushmoney-config-li").removeClass("hide");
-	$('#tabs-pushmoney-config a[href="#tab-pushmoney-config-edit"]').tab('show');
+	//$("#edit-pushmoney-config-li").removeClass("hide");
+	//$('#tabs-pushmoney-config a[href="#tab-pushmoney-config-edit"]').tab('show');
+	openEditPushmoneyConfigDialog();
 });
+
+/**
+ * 打开对话框
+ */
+function openEditPushmoneyConfigDialog() {
+	$('#edit-pushmoney-config-modal').modal({
+		backdrop : 'static',
+		keyboard : false,
+		show : true
+	});
+}
+
+/**
+ * 关闭对话框
+ * @returns
+ */
+function closeEditPushmoneyConfigDialog() {	
+	$("#edit-pushmoney-config-modal").modal("hide");
+}
 
 /*
  * 重置form表单
