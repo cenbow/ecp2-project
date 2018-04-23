@@ -40,9 +40,13 @@ function bootstrapValidateFun(){
 	                notEmpty: {
 	                    message: "指标比例不能为空"
 	                },
-	                regexp: {
+	                /*regexp: {
 		                regexp: "^[0-9]*[1-9][0-9]*$",
 		                message: "请输入正整数"
+	                },*/
+	                regexp: {
+		                regexp: /(^[1-9]([0-9]+)?(\.[0-9]{1,2})?$)|(^(0){1}$)|(^[0-9]\.[0-9]([0-9])?$)/,
+		                message: "请输入正确金额"
 	                },
 	                stringLength: {
                         max: 20,
@@ -84,7 +88,6 @@ function selectDetails(id){
 		if(res!=null){
 			var resp = $.parseJSON(res);
 			if(resp.result_code=="success"){
-				$("#edit-sales-target-li").removeClass("hide");
 				var target =resp.salesTarget;
 				$("#sales-target-id").val(target.id);//ID
 				$("#show-year-name").text(target.year_name);//考核年度
@@ -96,7 +99,11 @@ function selectDetails(id){
 				$("#sales-target-rate").val(target.target_rate);//指标比例
 				$("#sales-target-amount").val(target.target_amount);//指标金额
 				
-				$('#tabs-sales-target a[href="#tab-sales-target-edit"]').tab('show');
+				$('#edit-sales-target-modal').modal({
+					backdrop : 'static',
+					keyboard : false
+				});
+				
 				return;
 			}
 		}
@@ -222,9 +229,58 @@ function checkAll(obj){
  * 点击添加按钮显示添加编辑选项卡
  */
 $("#add-sales-target-btn").click(function(){
-	$("#edit-sales-target-li").removeClass("hide");
-	$('#tabs-sales-target a[href="#tab-sales-target-edit"]').tab('show');
+	//$("#edit-sales-target-li").removeClass("hide");
+	//$('#tabs-sales-target a[href="#tab-sales-target-edit"]').tab('show');
+	var url = "back/sales-target/load-add-sales-target-dialog";
+	$("#load-add-dialog-div").load(url, function(){
+		openAddSalesTargetDialog();
+	});
 });
+
+/**
+ * 打开对话框
+ */
+function openAddSalesTargetDialog() {
+	$('#add-sales-target-modal').modal({
+		backdrop : 'static',
+		keyboard : false
+	});
+}
+
+/**
+ * 关闭对话框
+ * @returns
+ */
+function closeAddSalesTargetDialog() {	
+	$("#add-sales-target-modal").modal("hide");
+}
+
+/**
+ * 点击查询考核指标按钮
+ */
+$("#search-sales-target-btn").on("click", function(){
+	var params = new Object();
+	params.pagehelperFun = "searchClickPageBtnRequestFun";
+	searchClickPageBtnRequestFun(params);
+});
+
+/*
+ * 点击页面中的页码执行此函数，查询结果分页
+ * 		函数功能：根据页码数请求当前页内容
+ */
+function searchClickPageBtnRequestFun(params){
+	var yearName = $("#search-check-cycle-year").val();
+	var userId = $("#search-user-id").val();
+	var roleId = $("#search-role-id").val();
+	var action = "back/sales-target/select-items";
+	params.clickPageBtn = true;
+	params.searchYearName = yearName;
+	params.searchUserId = userId;
+	params.searchRoleId = roleId;
+	//util.loading();
+	$("#item-div").load(action, params, function(){
+	});
+}
 
 /*
  * 重置form表单
@@ -238,12 +294,10 @@ function resetFun(){
 	 .val("")
 	 .removeAttr("checked")  
 	 .removeAttr("selected");
-	$("#sales-target-check-cycle-id").val("");//考核周期
-	$("#sales-target-is-os").val("");//IS/OS
 	$("#edit-sales-target-li").addClass("hide");
 }
 /**
- * 绑定用户角色change事件
+ * 绑定查询功能的用户角色change事件
  */
 $("#search-is-os").on("change", function(){
 	var userIdRoleId = $(this).val();
@@ -254,6 +308,9 @@ $("#search-is-os").on("change", function(){
 		var roleId = arr[1];
 		$("#search-user-id").val(userId);
 		$("#search-role-id").val(roleId);
+	}else{
+		$("#search-user-id").val("");
+		$("#search-role-id").val("");
 	}
 });
 

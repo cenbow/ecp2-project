@@ -83,7 +83,60 @@ public class SalesTarget {
      */
     private Integer sort;
 
-    /**
+    public SalesTarget() {
+		super();
+	}
+
+	/**
+     * @param id
+     * @param userId
+     * @param roleId
+     * @param targetRate
+     * @param targetAmount
+     * @param checkCycleId
+     * @param cycleName
+     * @param yearName
+     * @param calType
+     * @param startDate
+     * @param endDate
+     * @param pid
+     * @param sort
+     */
+    public SalesTarget(Long id, Long userId, Long roleId, String targetRate, BigDecimal targetAmount, Long checkCycleId,
+			String cycleName, String yearName, Byte calType, Date startDate, Date endDate, Long pid, Integer sort) {
+		super();
+		this.id = id;
+		this.userId = userId;
+		this.roleId = roleId;
+		this.targetRate = targetRate;
+		this.targetAmount = targetAmount;
+		this.checkCycleId = checkCycleId;
+		this.cycleName = cycleName;
+		this.yearName = yearName;
+		this.calType = calType;
+		this.startDate = startDate;
+		this.endDate = endDate;
+		this.pid = pid;
+		this.sort = sort;
+	}
+    
+    public SalesTarget(Long userId, Long roleId, String targetRate, BigDecimal targetAmount, Long checkCycleId, String cycleName, String yearName, Byte calType, Date startDate, Date endDate, Long pid, Integer sort) {
+		super();
+		this.userId = userId;
+		this.roleId = roleId;
+		this.targetRate = targetRate;
+		this.targetAmount = targetAmount;
+		this.checkCycleId = checkCycleId;
+		this.cycleName = cycleName;
+		this.yearName = yearName;
+		this.calType = calType;
+		this.startDate = startDate;
+		this.endDate = endDate;
+		this.pid = pid;
+		this.sort = sort;
+	}
+
+	/**
      * 获取销售指标表自增ID
      *
      * @return id - 销售指标表自增ID

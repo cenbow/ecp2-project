@@ -4,6 +4,7 @@ import java.util.List;
 import java.util.Map;
 
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.transaction.interceptor.TransactionAspectSupport;
 
 import com.ecp.dao.SalesTargetMapper;
@@ -58,6 +59,20 @@ public class SalesTargetServiceImpl extends AbstractBaseService<SalesTarget, Lon
 	@Override
 	public List<Map<String, Object>> selectSalesTargetMap(Map<String, Object> params) {
 		return salesTargetMapper.selectSalesTargetMap(params);
+	}
+
+	@Override
+	@Transactional
+	public int save(List<SalesTarget> salesTargetList) {
+		int rows = 0;
+		for(SalesTarget target : salesTargetList){
+			rows = salesTargetMapper.insertSelective(target);
+			if(rows<=0){
+				TransactionAspectSupport.currentTransactionStatus().setRollbackOnly();
+				break;
+			}
+		}
+		return rows;
 	}
 
 }

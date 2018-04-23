@@ -29,4 +29,11 @@ public interface ISalesTargetService extends IBaseService<SalesTarget, Long> {
 	 */
 	public List<Map<String, Object>> selectSalesTargetMap(Map<String, Object> params);
 	
+	/**
+	 * 保存
+	 * @param salesTargetList
+	 * @return
+	 */
+	public int save(List<SalesTarget> salesTargetList);
+	
 }
