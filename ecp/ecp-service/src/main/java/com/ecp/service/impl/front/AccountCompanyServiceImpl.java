@@ -80,7 +80,6 @@ public class AccountCompanyServiceImpl extends AbstractBaseService<AccountCompan
 		return accountCompanyMapper.selectAccountCompanyMap(params);
 	}
 	public BigDecimal getAmountByOrderId(long orderId, int accountItemType) {
-		// TODO Auto-generated method stub
 		return accountCompanyMapper.getAmountByOrderId(orderId,accountItemType);
 	}
 
@@ -104,6 +103,30 @@ public class AccountCompanyServiceImpl extends AbstractBaseService<AccountCompan
 				bindedUserId,
 				roleIdList
 				);
+	}
+
+
+	@Override
+	public List<Map<String, Object>> getItemsByDateAndUser(String startDateYear, String startDateMonth,
+			String endDateYear, String endDateMonth, long userId, List<Integer> itemTypeList) {
+		return accountCompanyMapper.getItemsByDateAndUser(startDateYear, startDateMonth,
+				 endDateYear,  endDateMonth,  userId, itemTypeList);
+	}
+
+
+	@Override
+	public List<Map<String, Object>> getItemsSumByDateAndUser(String startDateYear, String startDateMonth,
+			String endDateYear, String endDateMonth, long userId, List<Integer> itemTypeList) {
+		return accountCompanyMapper.getItemsSumByDateAndUser(startDateYear, startDateMonth,
+				 endDateYear,  endDateMonth,  userId, itemTypeList);
+	}
+
+
+	@Override
+	public List<Map<String, Object>> getItemsGroupSumByDateAndUser(String startDateYear, String startDateMonth,
+			String endDateYear, String endDateMonth, long userId, List<Integer> itemTypeList) {
+		return accountCompanyMapper.getItemsGroupSumByDateAndUser(startDateYear, startDateMonth,
+				 endDateYear,  endDateMonth,  userId, itemTypeList);
 	}
 
 }

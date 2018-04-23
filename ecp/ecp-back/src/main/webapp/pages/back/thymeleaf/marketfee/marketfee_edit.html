@@ -8,14 +8,18 @@
 <div class="container-">
 	<div class="row clearfix">
 		<div class="col-md-12 column">
-			<h4>
-				市场费用管理
-			</h4>
+			<h5>
+				<span>市场费用管理</span>
+				<strong style="color:darkblue;">
+					<span class="edit-marketfee-info"></span>
+				</strong>
+			</h5>
 		</div>		
 	</div>
 	
-	<!-- dialog  -->
-	<span th:include="/back/thymeleaf/marketfee/add_market_fee_dialog::dialog" th:remove="tag"></span>
+	<!-- 编辑对话框(add):dialog  -->
+	<div class="edit-marketfee-dialog"></div>
+	<!-- <span th:include="/back/thymeleaf/marketfee/add_market_fee_dialog::dialog" th:remove="tag"></span> -->
 		
 	<div class="row clearfix">
 		<div class="col-md-12 column">
@@ -26,9 +30,9 @@
 			</div>
 			<hr  style="height:1px;border:none;border-top:1px solid #555555;">
 			<div class="row clearfix">
-				<!-- 市场费用列表 -->
+				<!-- 市场费用列表:动态加载 -->
 				<div class="col-md-12 column" id="marketfee-table">
-					<span th:include="/back/thymeleaf/marketfee/marketfee_table" th:remove="tag"></span>					
+					<!-- <span th:include="/back/thymeleaf/marketfee/marketfee_table" th:remove="tag"></span> -->					
 				</div>
 			</div>
 			<hr  style="height:1px;border:none;border-top:1px solid #555555;">
@@ -42,10 +46,7 @@
     
     var curr_orderId = [[${orderId}]];
     var curr_orderNo=[[${orderNo}]];
-    
-    var curr_accountStatus=[[${accountStatus}]];
-    var curr_bindUserList=[[${bindUserList}]];
-    
+    var curr_accountStatus=[[${accountStatus}]];  //加载订单费用列表时赋值.
 /*]]>*/
 </script>
 
@@ -53,6 +54,10 @@
 <script type="text/javascript" >
 </script>
 
- <script type="text/javascript" th:src="@{/static/js/marketfee/marketfee.js}"></script>
+	<!-- 日期组件 -->
+	<script type="text/javascript"
+		th:src="@{/static/calendar/WdatePicker.js}"></script>
+	<!-- 业务处理 -->
+ 	<script type="text/javascript" th:src="@{/static/js/marketfee/marketfee.js}"></script>
 </body>
 </html>

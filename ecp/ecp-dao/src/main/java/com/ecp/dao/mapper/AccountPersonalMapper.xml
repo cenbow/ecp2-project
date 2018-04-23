@@ -23,13 +23,15 @@
     <result column="comment" jdbcType="VARCHAR" property="comment" />
     <result column="account_company_id" jdbcType="BIGINT" property="accountCompanyId" />
     <result column="deleted" jdbcType="TINYINT" property="deleted" />
+    <result column="year" jdbcType="VARCHAR" property="year" />
+    <result column="month" jdbcType="VARCHAR" property="month" />
   </resultMap>
   <sql id="Base_Column_List">
     <!--
       WARNING - @mbggenerated
     -->
     id, cust_id, order_id, order_no, contract_id, contract_no, item_id, sku_id, bind_user_id, 
-    role_id, amount, type, create_time, operator_id, operator_name, comment,account_company_id,deleted
+    role_id, amount, type, create_time, operator_id, operator_name, comment,account_company_id,deleted,year,month
   </sql>
   <select id="selectPerformanceMap" resultType="map">
   	SELECT
@@ -186,4 +188,23 @@
   	 	order by o.create_time DESC  	 
   	</select>
   
+  	<!-- 逻辑删除:根据公司帐薄分录ID -->
+  	<update id="logicDeleteByCompanyItemId">
+  		update account_personal ap set deleted=2 where account_company_id=#{companyItemId}
+  	</update>
+  	
+  	<!-- 根据公司帐薄分录ID查询所关联的用户 -->
+  	<select id="getUserByAccountCompanyId" resultType="map">
+  		SELECT u.* FROM account_personal ap 
+  				   LEFT JOIN user u ON(ap.bind_user_id=u.id) 
+  		<where>
+  			ap.deleted=1 AND 
+  			u.deleted=1 AND  			
+  			ap.account_company_id=#{accountCompanyId}
+  		</where> 
+  		group by u.id
+  	
+  	</select>
+  	
+  	
 </mapper>

@@ -8,19 +8,23 @@
 	<table class="table">
 		<thead>
 			<tr>
-				<th>ID</th>
+				<!-- <th>ID</th> -->
+				<th>录入日期</th>
+				<th>类型</th>
 				<th>金额</th>
-				<th>回款类型</th>
-				<th>回款归属</th>
+				<!-- <th>回款归属</th> -->
 				<th>备注</th>
-				<th>日期</th>
+				<th>期间(年)</th>
+				<th>期间(月)</th>
 				<th>操作</th>
 			</tr>
 		</thead>
 		<tbody>
 			<tr th:each="item: ${accountCompanyList}">
-				<td th:text="${item.id}">条目ID</td>
-				<td th:text="${item.amount}">金额</td>
+			<td
+					th:text="${#dates.format(item.createTime,'yyyy-MM-dd HH:mm:ss')}">日期</td>
+				<!-- <td th:text="${item.id}">条目ID</td> -->
+				
 				<td><span th:switch="${item.type}" th:remove="tag"> <!-- <span th:case=1 th:remove="tag">
 									  		<span>交通费</span>
 									  	</span>
@@ -36,11 +40,13 @@
 					</span> <span th:case="*" th:remove="tag"> <span>其它费用</span>
 					</span>
 				</span></td>
+				<td th:text="${item.amount}">金额</td>
 
-				<td>人员/公司</td>
+				<!-- <td>人员/公司</td> -->
 				<td th:text="${item.comment}">备注</td>
-				<td
-					th:text="${#dates.format(item.createTime,'yyyy-MM-dd HH:mm:ss')}">日期</td>
+				<td th:text="${item.year}">期间(年)</td>
+				<td th:text="${item.month}">期间(月)</td>
+				
 				<td><a type="button" class="modi-payment"
 					th:attr="bind-id=${item.id}"><i class=" icon-edit icon-large"
 						style="color: darkblue"></i></a> <a type="button" class="del-payment"
@@ -51,12 +57,16 @@
 
 			<!-- 订单回款统计 -->
 			<tr>
-				<td colspan="7">
-					<span style="float: right; margin-right: 50px;">
-						<span th:text="'合同额:'+${contractAmount}"style="margin-right: 10px;"></span> 
-						<span th:text="'回款额:'+${payAmount}" style="margin-right: 10px;"></span>
-						<span th:text="'欠款:'+${contractAmount-payAmount}"	style="margin-right: 10px;"></span>
-				</span></td>
+				<td colspan="2">
+					<strong><span th:text="'合同额:'+${contractAmount}"style="float:right;"></span></strong>
+				</td>
+				<td>
+					<strong><span th:text="'回款额:'+${payAmount}" style="float:left;"></span></strong>
+				</td>
+				<td>
+					<strong><span th:text="'欠款:'+${contractAmount-payAmount}"	style="float:left;"></span></strong>
+				</td>
+				<td colspan="3"></td>
 			</tr>
 
 		</tbody>
@@ -64,13 +74,91 @@
 
 
 	<script type="text/javascript">
+	//删除分录条目
+	function delAccountItem(id){
+		var urlStr = BASE_CONTEXT_PATH + "/back/payment/delete"; // 需要提交的url
+
+		var params = new Object(); //生成参数对象.
+		params.accountItemId=id;
+		
+		$.ajax({
+			type : "POST", // 提交方式 get/post
+			url : urlStr,
+			//contentType : "application/json", // 如果采用json格式传送所有参数时必须有,如果采普通js对象传送时,则不可以加此参数
+			//dataType : "html", //表示返回值类型，不必须,如果返回的是面页，则必须
+			data : params,
+			success : function(res) { // data 保存提交后返回的数据，一般为 json 数据
+				//console.log(res);
+				if (res != null && res != "") {
+					var obj = $.parseJSON(res);
+					if (obj.result_code == "success") {
+						//util.message(obj.result_msg);
+						//var urlTemp = obj.result_msg;
+						loadPaymentFeeTable();
+						search_normal();  //更新主页面,也可以在点击主页选项卡时进行更新(效率更高一些)
+						//loadPage();
+					} else {
+						util.message(obj.result_msg);
+					}
+				}
+			},
+			error : function(jqXHR, textStatus, errorThrown) {
+				util.message("AJAX请求时发生错误!");
+				/* 弹出jqXHR对象的信息 */
+				console.log(jqXHR.responseText);
+				console.log(jqXHR.status);
+				console.log(jqXHR.readyState);
+				console.log(jqXHR.statusText);
+				/* 弹出其他两个参数的信息 */
+				console.log(textStatus);
+				console.log(errorThrown);
+
+			}
+		});
+	}
+	
+	//------------------UI 交互------------------------
+	/**
+	 * 打开修改四项费用窗口
+	 * @returns
+	 */
+	function openModiDialog() {
+		//console.log("debug!");
+		$('#modal-container-306690').modal({
+			backdrop : 'static',
+			keyboard : false
+		});
+	}
+
+	/* close dialog :修改四项费用窗口*/
+	function closeModiDialog() {	
+		$("#modal-container-306690").modal("hide");
+	}
+	
+	
+	$(function(){
+		
+		//修改回款分录
 		$('.modi-payment').on('click', function() {
-			console.log("modify payment");
+			var url=BASE_CONTEXT_PATH+'/back/payment/loadmodidialog';
+			
+			var accountItemId=$(this).attr("bind-id");  //分录条目ID			
+			var parms=new Object();  //参数
+			parms.accountItemId=accountItemId;
+			
+			
+			$(".edit-payment-dialog").load(url,parms,openModiDialog);  //加载完毕后显示
 		})
 
+		//删除回款分录
 		$('.del-payment').on('click', function() {
-			console.log("delete payment");
+			//console.log("delete payment");
+			var accountItemId=$(this).attr("bind-id");
+			util.delConfirm("是否确认删除?",accountItemId,"delAccountItem");
+			
 		})
+	});
+		
 	</script>
 </body>
 </html>

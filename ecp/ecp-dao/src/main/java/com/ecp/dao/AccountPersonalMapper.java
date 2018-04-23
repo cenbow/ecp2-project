@@ -35,4 +35,8 @@ public interface AccountPersonalMapper extends Mapper<AccountPersonal> {
 			@Param("userId") long userId,
 			@Param("roleIdList") List<Long> roleIdList);
 	
+	public int logicDeleteByCompanyItemId(@Param("companyItemId") long companyItemId);
+	
+	public List<Map<String, Object>> getUserByAccountCompanyId(@Param("accountCompanyId") long accountCompanyId);
+	
 }

@@ -1,0 +1,209 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>Insert title here</title>
+</head>
+<!-- 增加四项费:对话框 -->
+<style>
+/* @font-face {  
+	    font-family: glyphicons;  
+	    font-size: small;
+	    src: url('../../../static/3.3.5/fonts/fontawesome-webfont.woff') format('woff'); 
+	}
+	body { font-family: glyphicons, "Microsoft YaHei UI";}   */
+</style>
+<body>
+
+	<th:block th:fragment="dialog">
+
+		<div class="row clearfix">
+			<div class="col-md-12 column">
+
+				<!--  <a id="modal-306690" href="#modal-container-306690" role="button" class="btn" data-toggle="modal" type="hidden"></a> -->
+				<div class="modal fade" id="modal-container-306690" role="dialog"
+					aria-labelledby="myModalLabel" aria-hidden="true">
+					<div class="modal-dialog">
+						<div class="modal-content">
+							<div class="modal-header">
+								<button type="button" class="close" data-dismiss="modal"
+									aria-hidden="true">×</button>
+								<h4 class="modal-title" id="myModalLabel">增加费用</h4>
+							</div>
+							<div class="modal-body">
+								<form class="form-horizontal" role="form">
+									<!-- 费用期间 -->
+									<div class="form-group">
+										<label for="accountItemPeriod" class="col-sm-2 control-label">期间</label>
+										<div class="col-sm-10">
+											<input class="datetimepicker datetime form-control"
+												readonly="readonly" id="accountItemPeriod" type="text"
+												onClick="WdatePicker({dateFmt:'yyyy-MM'});" />
+										</div>
+									</div>
+									
+									<!-- 费用归属 -->
+									<div class="form-group">
+										<label for="belongUserRole" class="col-sm-2 control-label">归属</label>
+										<div class="col-sm-10">
+											<select class="form-control" id="belongUserRole"
+												name="belongUserRole">
+												<option
+													th:attr="data-bind-user-id='0',data-bind-role-id='0'">公司内部费用<i
+														class="glyphicon glyphicon-camera"></i>
+												</option>
+												<span th:if="${not #lists.isEmpty(userList)}"
+												th:remove="tag"> <span th:each="user:${userList}"
+													th:remove="tag">
+														<option
+															th:attr="data-bind-user-id=${user.id},data-bind-role-id='0'"
+															th:text="${user.nickname}+'('+${user.username}+')'">外部销售</option>
+												</span>
+											</span>
+											</select>
+										</div>
+									</div>
+
+									<!-- 费用类型 -->
+									<div class="form-group">
+										<label for="accountItemType" class="col-sm-2 control-label">类型</label>
+										<div class="col-sm-10">
+											<select class="form-control" id="accountItemType"
+												name="itemType">
+												<option value="1">交通费</option>
+												<option value="2">通讯费</option>
+												<option value="3">招待费</option>
+												<option value="4">差旅费</option>
+												<option value="10">其它费</option>
+											</select>
+										</div>
+									</div>
+
+
+									<!-- 金额 -->
+									<div class="form-group">
+										<label for="amount" class="col-sm-2 control-label">金额</label>
+										<div class="col-sm-10">
+											<input type="number" class="form-control" id="amount"
+												name="amount" />
+										</div>
+									</div>
+
+									<!-- 备注 -->
+									<div class="form-group">
+										<label for="comment" class="col-sm-2 control-label">备注</label>
+										<div class="col-sm-10">
+											<input type="text" class="form-control" id="comment"
+												name="comment" />
+										</div>
+									</div>
+
+								</form>
+							</div>
+							<div class="modal-footer">
+								<button type="button" class="btn btn-default"
+									data-dismiss="modal">关闭</button>
+								<button type="button" class="btn btn-primary"
+									id="btn-saveandback-fourfee">保存&返回</button>
+								<button type="button" class="btn btn-success"
+									id="btn-saveandcont-fourfee">保存&继续</button>
+							</div>
+						</div>
+
+					</div>
+
+				</div>
+
+			</div>
+		</div>
+
+	</th:block>
+
+	<script>
+		//------------------业务操作----------------------
+		/**
+		 * 保存四项费用条目:增加
+		 * closeAddDialogFlag:是否关才对话框标志  true:
+		 * @returns
+		 */
+		function addFourFeeItem(closeAddDialogFlag) {
+			var urlStr = BASE_CONTEXT_PATH + "/back/fourfee/add"; // 需要提交的url
+
+			var params = new Object(); //生成参数对象.
+
+			//自对话框中取得所输入的值
+			var itemType = $('#accountItemType').val();
+			var amount = $('#amount').val();
+			var comment = $('#comment').val();
+			/* 归属用户 */
+			var bindUserId = $("#belongUserRole option:selected").attr("data-bind-user-id");
+			/* 归属期间 */
+			var period=$("#accountItemPeriod").val();
+			
+			params.itemType = $('#accountItemType').val(); //类型
+			params.amount = $('#amount').val(); //金额
+			params.comment = $('#comment').val(); //备注
+			params.bindUserId = bindUserId;
+			params.period=period
+			
+
+			$.ajax({
+				type : "POST", // 提交方式 get/post
+				url : urlStr,
+				contentType : "application/json", // 如果采用json格式传送所有参数时必须有,如果采普通js对象传送时,则不可以加此参数
+				//dataType : "html", //表示返回值类型，不必须,如果返回的是面页，则必须
+				data : JSON.stringify(params),
+				success : function(res) { // data 保存提交后返回的数据，一般为 json 数据
+					//console.log(res);
+					if (res != null && res != "") {
+						var obj = $.parseJSON(res);
+						if (obj.result_code == "success") {
+							//util.message(obj.result_msg);
+							//var urlTemp = obj.result_msg;
+							//reloadFourFeeTable();
+							loadPage();
+							if(closeAddDialogFlag)
+								closeAddFourFeeDialog();
+
+						} else {
+							util.message(obj.result_msg);
+						}
+					}
+				},
+				error : function(jqXHR, textStatus, errorThrown) {
+					util.message("AJAX请求时发生错误!");
+					/* 弹出jqXHR对象的信息 */
+					console.log(jqXHR.responseText);
+					console.log(jqXHR.status);
+					console.log(jqXHR.readyState);
+					console.log(jqXHR.statusText);
+					/* 弹出其他两个参数的信息 */
+					console.log(textStatus);
+					console.log(errorThrown);
+
+				}
+			});
+		}
+
+		//-------------------------------------------
+		$(function() {
+
+			//---------------click event process binding------------------------
+			/*$('.modi-four-fee').on('click',function(){
+				console.log("modify four fee");
+			})
+			
+			$('.del-four-fee').on('click',function(){
+				console.log("delete four fee");
+			})*/
+			$("#accountItemPeriod").val((new Date()).format('yyyy-MM'));
+
+			//保存费用条目button:click event
+			$('#btn-saveandback-fourfee').on('click', function() {addFourFeeItem(true);});
+			$('#btn-saveandcont-fourfee').on('click', function() {addFourFeeItem(false);});
+
+		});
+	</script>
+
+</body>
+</html>

@@ -20,11 +20,13 @@ import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
 import com.ecp.back.commons.RoleCodeConstants;
 import com.ecp.bean.AccountItemType;
+import com.ecp.bean.DeletedType;
 import com.ecp.bean.UserBean;
 import com.ecp.common.util.RequestResultUtil;
 import com.ecp.entity.AccountCompany;
 import com.ecp.entity.AccountPersonal;
 import com.ecp.entity.Orders;
+import com.ecp.entity.User;
 import com.ecp.entity.UserExtends;
 import com.ecp.service.back.IRoleService;
 import com.ecp.service.back.IUserService;
@@ -41,7 +43,6 @@ import com.github.pagehelper.PageInfo;
  * Copyright (c) 2018 by [个人或者公司信息]
  * @ClassName:     FourFeeController.java
  * @Description:   四项费用管理 
- * 
  * @author:        lenovo
  * @version:       V1.0  
  * @Date:          2018年3月21日 下午4:42:59 
@@ -74,14 +75,270 @@ public class FourFeeController {
 	
 
 	/**
-	 * @Description 显示-订单列表
+	 * @Description 显示-四项费用管理页面(选项卡部分)
 	 * @param model
 	 * @return
 	 */
 	@RequestMapping(value = "/show")
-	public String order_show(Model model) {
-		return RESPONSE_THYMELEAF_BACK + "order_show";
+	public String fourFeeManagement(Model model) {
+		return RESPONSE_THYMELEAF_BACK + "fourfee_management";
 	}
+	
+	/** 
+		* @Title: fourFeeSearch 
+		* @Description: 显示四项费用"查询框架" 
+		* @param @param model
+		* @param @return     
+		* @return String    返回类型 
+		* @throws 
+	*/
+	@RequestMapping(value = "/fourfeesearch")
+	public String showFourFeeSearch(Model model) {
+		//查询IS/OS用户
+		List<Map<String,Object>> userList=getISAndOSUser();
+		model.addAttribute("userList", userList);
+		
+		return RESPONSE_THYMELEAF_BACK + "fourfee_search";
+	}
+	
+	/** 
+		* @Title: searchFourFee 
+		* @Description: 查询四项费用并返回列表 
+		* @param @param startDateYear
+		* @param @param startDateMonth
+		* @param @param endDateYear
+		* @param @param endDateMonth
+		* @param @param userId
+		* @param @param model
+		* @param @return     
+		* @return String    返回类型 
+		* @throws 
+	*/
+	@RequestMapping(value = "/fourfeetable")
+	public String searchFourFeeTable(String startDateYear,
+								String startDateMonth,
+								String endDateYear,
+								String endDateMonth,
+								long	userId,
+								Integer pageNum, 
+								Integer pageSize,
+								
+								Model model) {
+		
+		searchFourFee(
+				 startDateYear,
+				 startDateMonth,
+				 endDateYear,
+				 endDateMonth,
+				 userId,
+				 pageNum,
+				 pageSize,
+				 model);
+		
+		model.addAttribute("startDateYear", startDateYear);
+		model.addAttribute("startDateMonth", startDateMonth);
+		model.addAttribute("endDateYear", endDateYear);
+		model.addAttribute("endDateMonth", endDateMonth);
+		model.addAttribute("userId", userId);
+		model.addAttribute("pageNum", pageNum);
+		model.addAttribute("pageSize", pageSize);
+		
+		return RESPONSE_THYMELEAF_BACK + "fourfee_table";
+	}
+	
+	/** 
+		* @Title: searchFourFee 
+		* @Description: 根据起止日期及用户ID号查询四项费用+其它费用.
+		* @param @param startDateYear
+		* @param @param startDateMonth
+		* @param @param endDateYear
+		* @param @param endDateMonth
+		* @param @param userId
+		* @param @param pageNum
+		* @param @param pageSize
+		* @param @param model
+		* @param @return     
+		* @return List<Map<String,Object>>    返回类型 
+		* @throws 
+	*/
+	private List<Map<String,Object>> searchFourFee(
+			String startDateYear,
+			String startDateMonth,
+			String endDateYear,
+			String endDateMonth,
+			long	userId,
+			Integer pageNum,
+			Integer pageSize,
+			Model model){
+		
+		if(pageNum==null || pageNum==0)
+		{
+			pageNum=1;
+			pageSize=PAGE_SIZE;
+		}
+		
+		//费用类型
+		List<Integer> itemTypeList=new ArrayList<Integer>();
+		itemTypeList.add(AccountItemType.COMMUNICATION_FEE);
+		itemTypeList.add(AccountItemType.ENTERTAINMENT_FEE);
+		itemTypeList.add(AccountItemType.TRANSPORTATION_FEE);
+		itemTypeList.add(AccountItemType.TRAVEL_EXPENSE_FEE);
+		itemTypeList.add(AccountItemType.OTHER_FEE);
+		
+		// 查询 并分页		
+		PageHelper.startPage(pageNum, pageSize); // PageHelper
+		//查询公司帐薄
+		List<Map<String,Object>> accountList=accountCompanyService.getItemsByDateAndUser(startDateYear,
+				 startDateMonth,
+				 endDateYear,
+				 endDateMonth,
+				 userId, itemTypeList);
+		PageInfo<Map<String,Object>> pageInfo = new PageInfo<Map<String,Object>>(accountList);// (使用了拦截器或是AOP进行查询的再次处理)
+		
+		//根据帐薄条目查询费用归属
+		List<Map<String,Object>> accountCompanyList=new ArrayList<Map<String,Object>>();
+		for(int i=0;i<accountList.size();i++){
+			Map<String,Object> accountItem=new HashMap<String,Object>();
+			
+			
+			Long bindUserId=(Long)accountList.get(i).get("bind_user_id");
+			//Long roleId=(Long)accountList.get(i).get("role_id");
+			
+			String bindUserName="";
+			//String bindUserRole="";
+			
+			if(bindUserId==null || bindUserId==0){		
+				bindUserName="公司内部";
+				//bindUserRole="";
+			}
+			else{
+				bindUserName=userService.selectByPrimaryKey(bindUserId).getUsername();
+				//bindUserRole=roleService.selectByPrimaryKey(roleId).getRoleName();
+			}
+			
+			accountItem.put("bindUserName", bindUserName);
+			//accountItem.put("bindUserRole", bindUserRole);
+			accountItem.put("accountItem", accountList.get(i));
+						
+			accountCompanyList.add(accountItem);
+			
+		}
+		
+		getItemsSum( startDateYear,
+				 startDateMonth,
+				 endDateYear,
+				 endDateMonth,
+				 userId,
+				 itemTypeList,
+				 model);  //
+		model.addAttribute("accountCompanyList", accountCompanyList);
+		model.addAttribute("pageInfo", pageInfo);  //分页
+		
+		return accountCompanyList;
+	}
+	
+	//分录条目求和
+	private void getItemsSum(String startDateYear,
+			String startDateMonth,
+			String endDateYear,
+			String endDateMonth,
+			long	userId,
+			List<Integer> itemTypeList,
+			Model model
+			){
+		List<Map<String,Object>> accountSumList=accountCompanyService.getItemsSumByDateAndUser(startDateYear,
+				 startDateMonth,
+				 endDateYear,
+				 endDateMonth,
+				 userId, itemTypeList);
+		model.addAttribute("amountSum", accountSumList.get(0).get("amountSum"));
+		
+		List<Map<String,Object>> accountGroupSumList=accountCompanyService.getItemsGroupSumByDateAndUser(startDateYear,
+				 startDateMonth,
+				 endDateYear,
+				 endDateMonth,
+				 userId, itemTypeList);
+		model.addAttribute("amountGroupSum", accountGroupSumList);
+		
+	}
+	
+	
+	/** 
+		* @Title: loadAddFourfeeDialog 
+		* @Description: 加载增加四项费用对话框 
+		* @param @param model
+		* @param @return     
+		* @return String    返回类型 
+		* @throws 
+	*/
+	@RequestMapping(value = "/loadadddialog")
+	public String loadAddFourfeeDialog(Model model){
+		//查询所有的OS及IS角色的用户(采用ID去重).  //getUsersByRoleCode
+		List<Map<String,Object>> userList=getISAndOSUser();
+		model.addAttribute("userList", userList);
+		
+		return RESPONSE_THYMELEAF_BACK + "add_fourfee_dialog"; 
+	}
+	
+	@RequestMapping(value = "/loadmodidialog")
+	public String loadModiFourfeeDialog(long accountItemId,Model model){
+		//读取当前编辑的分录条目ID.
+		AccountCompany accItem=accountCompanyService.selectByPrimaryKey(accountItemId);		
+		model.addAttribute("accountItem", accItem);
+		
+		//查询所有的OS及IS角色的用户(采用ID去重).  //getUsersByRoleCode
+		List<Map<String,Object>> userList=getISAndOSUser();
+		model.addAttribute("userList", userList);
+		
+		
+		return RESPONSE_THYMELEAF_BACK + "modi_fourfee_dialog"; 
+	}
+	
+	@RequestMapping(value="/modi")
+	@ResponseBody
+	public Object modiAccountItem(@RequestBody String parms, Model model){
+		
+		//记入帐薄
+		JSONObject parm=JSON.parseObject(parms);
+		
+		//(1)被修改的公司帐薄分录ID
+		long modifiedAccountItemId=parm.getLongValue("accountItemId");
+		deleteAccountItem(modifiedAccountItemId);  //删除被修改的分录
+		
+		//(2)插入新的分录(公司帐薄与个人帐薄)
+		//新的费用归属
+		long bindUserId=parm.getLongValue("bindUserId");
+		
+		if(bindUserId==0) {  //内部费用,只记公司帐薄
+			long accountItemId =keepAccountCompany(parms);  	//记公司帐薄			
+			return RequestResultUtil.getResultAddSuccess();			
+			//return RequestResultUtil.getResultAddWarn();
+		}
+		else{
+			long companyItemId =keepAccountCompany(parms);  	//记公司帐薄
+			int row2=keepAccountPersonal(parms,companyItemId);	//记个人帐薄
+			if (row2>0){
+				return RequestResultUtil.getResultAddSuccess();
+			}
+			else
+				return RequestResultUtil.getResultAddWarn();
+		}
+	}
+	
+	private List<User> getAllUser(){
+		Map<String, Object> map = new HashMap<String, Object>();
+		map.put("deleted", 1);//deleted=1:默认（未删除）deleted=2:已删除
+		map.put("type", 1);//type=1:默认（后台管理用户）type=2:前端访问用户
+		List<User> userList = userService.getList(map);	
+		return userList;
+	}
+	
+	private List<Map<String,Object>> getISAndOSUser(){
+		List<Map<String,Object>> userList=userService.getISAndOSUser();
+		return userList;
+	}
+	
+	
 	
 	/**
 	 * @Description 订单查询列表
@@ -94,7 +351,7 @@ public class FourFeeController {
 	 * @param model
 	 * @return
 	 */
-	@RequestMapping(value = "/ordertable")
+	/*@RequestMapping(value = "/ordertable")
 	public String order_table(int orderTimeCond,
 							  int dealStateCond,
 							  Integer pageNum, 
@@ -136,7 +393,10 @@ public class FourFeeController {
 		
 		
 		return RESPONSE_THYMELEAF_BACK + "order_table";
-	}
+	}*/
+	
+	
+	
 	
 	
 	
@@ -150,7 +410,7 @@ public class FourFeeController {
 	* @return String    四项费用编辑UI
 	* @throws 
 	*/
-	@RequestMapping(value="/edit")
+	/*@RequestMapping(value="/edit")
 	public String showFourFeeEditUI(long orderId,String orderNo,Model model){
 		
 		List<Map<String,Object>> accountCompanyList=searchOrderFourFee(orderId,orderNo);
@@ -171,7 +431,7 @@ public class FourFeeController {
 		model.addAttribute("orderNo",orderNo);
 		
 		return RESPONSE_THYMELEAF_BACK + "fourfee_edit";
-	}
+	}*/
 	
 	/** 
 	* @Title: searchAgentByOrder 
@@ -181,7 +441,7 @@ public class FourFeeController {
 	* @return long      如果查询到代理商则返回代理商ID,否则返回0 
 	* @throws 
 	*/
-	private long searchAgentByOrder(long orderId){
+	/*private long searchAgentByOrder(long orderId){
 		//(1)先查询订单
 		Orders order=orderService.selectByPrimaryKey(orderId);
 		
@@ -192,7 +452,7 @@ public class FourFeeController {
 			agentId=agent.getExtendId();
 		
 		return agentId;
-	}
+	}*/
 	
 	
 	/** 
@@ -205,7 +465,7 @@ public class FourFeeController {
 	* @return String    返回类型 
 	* @throws 
 	*/
-	@RequestMapping(value="/table")
+	/*@RequestMapping(value="/table")
 	public String showFourFeeTable(long orderId,String orderNo,Model model){
 		
 		List<Map<String,Object>> accountCompanyList=searchOrderFourFee(orderId,orderNo);
@@ -215,7 +475,7 @@ public class FourFeeController {
 		
 		
 		return RESPONSE_THYMELEAF_BACK + "fourfee_table";
-	}
+	}*/
 	
 	
 	/** 
@@ -227,7 +487,7 @@ public class FourFeeController {
 	* @return List<Map<String,Object>>    返回类型 
 	* @throws 
 	*/
-	private List<Map<String,Object>> searchOrderFourFee(long orderId,String orderNo){
+	/*private List<Map<String,Object>> searchOrderFourFee(long orderId,String orderNo){
 		//费用类型
 		List<Integer> itemTypeList=new ArrayList<Integer>();
 		itemTypeList.add(AccountItemType.COMMUNICATION_FEE);
@@ -269,7 +529,7 @@ public class FourFeeController {
 		}
 		
 		return accountCompanyList;
-	}
+	}*/
 	
 	
 	/** 
@@ -283,14 +543,16 @@ public class FourFeeController {
 	*/
 	@RequestMapping(value="/add")
 	@ResponseBody
-	public Object addFeeItem(@RequestBody String parms, Model model){
+	public Object addAccountItem(@RequestBody String parms, Model model){
 		
 		//记入帐薄
 		JSONObject parm=JSON.parseObject(parms);
-		long bindUserId=parm.getLongValue("bindUserId");
-		long roleId=parm.getLongValue("roleId");
 		
-		if(bindUserId==0 && roleId==0) {  //内部费用,只记公司帐薄
+		//费用归属
+		long bindUserId=parm.getLongValue("bindUserId");
+		
+				
+		if(bindUserId==0) {  //内部费用,只记公司帐薄
 			long accountItemId =keepAccountCompany(parms);  	//记公司帐薄			
 			return RequestResultUtil.getResultAddSuccess();			
 			//return RequestResultUtil.getResultAddWarn();
@@ -307,11 +569,42 @@ public class FourFeeController {
 	}
 	
 	/** 
+		* @Title: deleteAccountItem 
+		* @Description: 删除公司帐薄分录条目 
+		* @param @param accountItemId  公司帐薄分录ID
+		* @param @param model
+		* @param @return     
+		* @return Object    返回类型 
+		* @throws 
+	*/
+	@RequestMapping(value="/delete")
+	@ResponseBody
+	public Object deleteAccountItem(long accountItemId, Model model){
+		deleteAccountItem(accountItemId);
+		
+		
+		return RequestResultUtil.getResultUpdateSuccess();
+	}
+	
+	private void deleteAccountItem(long accountItemId){
+		//自公司帐薄中删除分录条目
+		AccountCompany rec1=new AccountCompany();
+		rec1.setId(accountItemId);
+		rec1.setDeleted((byte)DeletedType.YES);
+		accountCompanyService.updateByPrimaryKeySelective(rec1);
+		
+		//自个人帐薄中删除分录条目(个人分录会引用公司分录)
+		accountPersonalService.logicDeleteByCompanyItemId(accountItemId);
+	}
+	
+	
+	
+	/** 
 		* @Title: keepAccountCompany 
 		* @Description: 记入公司帐薄 
 		* @param @param parms
 		* @param @return     
-		* @return long    返回类型 
+		* @return long   返回公司帐薄分录ID
 		* @throws 
 	*/
 	private long keepAccountCompany(String parms){
@@ -320,29 +613,32 @@ public class FourFeeController {
 		//参数:long orderId,String orderNo,int itemType,BigDecimal amount,String comment,long bindUserId,long roleId
 		AccountCompany accountItem =new AccountCompany();
 		JSONObject parm=JSON.parseObject(parms);
-		accountItem.setOrderId(parm.getLongValue("orderId"));
-		accountItem.setOrderNo(parm.getString("orderNo"));
 		
-		accountItem.setType(parm.getIntValue("itemType"));  //费用类型
+		/*accountItem.setOrderId(parm.getLongValue("orderId"));
+		accountItem.setOrderNo(parm.getString("orderNo"));*/
 		
+		//费用类型,金额,备注
+		accountItem.setType(parm.getIntValue("itemType"));  		
 		accountItem.setAmount(parm.getBigDecimal("amount"));
-		accountItem.setComment(parm.getString("comment"));
+		accountItem.setComment(parm.getString("comment"));		
 		
+		//费用归属人
 		long bindUserId=parm.getLongValue("bindUserId");
-		long roleId=parm.getLongValue("roleId");
-		
 		accountItem.setBindUserId(parm.getLongValue("bindUserId"));
-		accountItem.setRoleId(parm.getLongValue("roleId"));
+		accountItem.setRoleId((long)0);
+		
+		//费用归属期间
+		String period=parm.getString("period");
+		String[] tempArr=period.split("-");
+		String year=tempArr[0];
+		String month=tempArr[1];
+		accountItem.setYear(year);
+		accountItem.setMonth(month);
 		
 		//记公司帐户时:置为公司内部费用.
-		if(bindUserId==0 && roleId==0){
+		if(bindUserId==0){
 			accountItem.setCompanyFeeFlag(COMPANY_FEE_FLAG_TRUE);			
 		}
-		
-		
-		
-		long agentId=searchAgentByOrder(parm.getLongValue("orderId"));
-		accountItem.setCustId(agentId);  //代理商ID
 		
 		//操作员信息
 		UserBean user=getLoginUser();
@@ -367,25 +663,36 @@ public class FourFeeController {
 		* @return int    返回类型 
 		* @throws 
 	*/
-	private int keepAccountPersonal(String parms,long accountCompanyId){
+	private int keepAccountPersonal(String parms,long accountCompanyItemId){
 		//参数:long orderId,String orderNo,int itemType,BigDecimal amount,String comment,long bindUserId,long roleId
 		AccountPersonal accountItem =new AccountPersonal();
+		
 		JSONObject parm=JSON.parseObject(parms);
-		accountItem.setOrderId(parm.getLongValue("orderId"));
-		accountItem.setOrderNo(parm.getString("orderNo"));
+		
+		//费用类型,金额,备注
 		accountItem.setType(parm.getIntValue("itemType"));
 		accountItem.setAmount(parm.getBigDecimal("amount"));
 		accountItem.setComment(parm.getString("comment"));
 		
-		accountItem.setAccountCompanyId(accountCompanyId);
+		//设置引用
+		accountItem.setAccountCompanyId(accountCompanyItemId);
 		
+		//归属用户及角色
 		accountItem.setBindUserId(parm.getLongValue("bindUserId"));
-		accountItem.setRoleId(parm.getLongValue("roleId"));
+		accountItem.setRoleId((long)0);
 		
 		
-		long agentId=searchAgentByOrder(parm.getLongValue("orderId"));
+		//费用归属期间
+		String period=parm.getString("period");
+		String[] tempArr=period.split("-");
+		String year=tempArr[0];
+		String month=tempArr[1];
+		accountItem.setYear(year);
+		accountItem.setMonth(month);
+		
+		/*long agentId=searchAgentByOrder(parm.getLongValue("orderId"));
 		accountItem.setCustId(agentId);  //代理商ID
-		
+*/		
 		//操作员信息
 		UserBean user=getLoginUser();
 		accountItem.setOperatorId(user.getId());
@@ -399,6 +706,8 @@ public class FourFeeController {
 		
 		return row;
 	}
+	
+	
 	
 	
 	/** 

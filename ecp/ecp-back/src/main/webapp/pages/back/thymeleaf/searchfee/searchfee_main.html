@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<div th:include="/back/thymeleaf/common/_head2::headx('费用查询')"
+	th:remove="tag"></div>
+</head>
+<body>
+	<!-- 订单显示框架:主页名称. -->
+	<div class="container-fluid" style="margin-top: 20px;">
+		<div class="row clearfix">
+			<div class="col-md-12 column">
+				<div class="tabbable" id="tabs-14933">
+					<ul class="nav nav-tabs">
+						<li class="active" onclick="javascript:resetTab();"><a
+							href="#panel-150383" data-toggle="tab">列表</a></li>
+						<li id="edit-tab" class="hide"><a href="#panel-602679"
+							data-toggle="tab" id="edit-tab-title">编辑</a></li>
+					</ul>
+					<div class="tab-content">
+						<div class="tab-pane active" id="panel-150383">
+							<div class="container-fluid" style="margin-top: 20px;">
+								<div class="row clearfix">
+									<div class="col-md-12 column">
+										<div class="panel panel-default">
+											<div class="panel-heading">
+												<h3 class="panel-title">费用查询</h3>
+											</div>
+											<div class="panel-body" id="container">
+												<!-- content -->
+											</div>
+										</div>
+									</div>
+								</div>
+							</div>
+						</div>
+						<div class="tab-pane" id="panel-602679">
+							<div id="edit-body"></div>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+
+
+
+	<script>
+		/* 加载默认内容:当前年月,所有人员 */
+		/*function:加载费用查询页面 */
+		function loadFeeSearch(parms, callback) {
+			var url = "/back/fee/loadsearch";
+			var callbackFunc = callback;
+			var containerId = "#container";
+			loadPage(containerId, url, parms, callbackFunc);
+		}
+
+		$(function() {
+			loadFeeSearch(null, null);
+		})
+
+		/**
+		 * 重置选项卡
+		 */
+		function resetTab() {
+			$('#tabs-14933 a[href="#panel-150383"]').tab('show');
+			$("#edit-body").empty();
+			$("#edit-tab").addClass("hide");
+		}
+	</script>
+
+
+</body>
+</html>

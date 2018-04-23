@@ -21,20 +21,27 @@
     <result column="role_id" jdbcType="BIGINT" property="roleId" />
     <result column="company_fee_flag" jdbcType="TINYINT" property="companyFeeFlag" />
     <result column="deleted" jdbcType="TINYINT" property="deleted" />
+    <result column="year" jdbcType="VARCHAR" property="year" />
+    <result column="month" jdbcType="VARCHAR" property="month" />
   </resultMap>
   <sql id="Base_Column_List">
     <!--
       WARNING - @mbggenerated
     -->
     id, cust_id, order_id, order_no, contract_id, contract_no, amount, type, create_time, 
-    operator_id, operator_name, comment, bind_user_id, role_id, company_fee_flag,deleted
+    operator_id, operator_name, comment, bind_user_id, role_id, company_fee_flag,deleted,year,month
   </sql>
   
   <select id="getItemsByOrder" resultMap="BaseResultMap">
   	select * from account_company 
   	<where>
-  		order_id=#{orderId} AND
-  		order_no=#{orderNo} 
+  		deleted=1 AND order_id=#{orderId} 
+		
+		<!-- ORDER_NO参数可选 -->  		
+		<if test="orderNo!=null">
+			AND order_no=#{orderNo} 
+		</if>
+  		
   		
   		<if test="itemTypeList!=null and itemTypeList.size&gt;0">
   			AND
@@ -50,7 +57,7 @@
   <select id="getItemsByOrderAndBindUser" resultMap="BaseResultMap">
   	select * from account_company 
   	<where>
-  		order_id=#{orderId}   		   		
+  		order_id=#{orderId}  and deleted=1 		   		
   		<if test="itemTypeList!=null and itemTypeList.size&gt;0">
   			AND
   			type in 	
@@ -79,7 +86,7 @@
 					   
 		<where>
 			o.deleted=1 AND o.yn=1 and o.extend_id is not NULL AND
-			ac.cust_id is not NULL 	AND
+			ac.cust_id is not NULL 	AND ac.deleted=1 AND
 			o.create_time&gt;=DATE_ADD(now(),INTERVAL #{orderTimeCond} MONTH)
 			<if test="dealStateCond!=null and dealStateCond!='' and dealStateCond!='0'.toString()">
 				AND 
@@ -166,7 +173,7 @@
 	LEFT JOIN trade_orders o ON c.order_id = o.id
 	LEFT JOIN user_extends ue ON o.extend_id = ue.extend_id
 	WHERE 
-		1=1
+		c.deleted=1 
 		<if test="account_type!=null">
 			and c.type = #{account_type}
 		</if>
@@ -198,6 +205,7 @@
 		account_company ac	
 	WHERE
 		ac.order_id = #{orderId} and
+		ac.deleted=1 and
 		ac.type=#{accountItemType}		  	 
   </select>
   
@@ -287,5 +295,87 @@
 		 </where>  	 
   	 	order by o.create_time DESC  	 
   	</select>
+  	
+  	<!-- 查询指定时间,指定用户,指定分录类型的所有条目 -->
+  	<select id="getItemsByDateAndUser" resultType="map">
+		select * from account_company ac 
+		<where>
+			ac.deleted=1 AND
+			ac.year&gt;=#{startDateYear} AND
+			ac.month&gt;=#{startDateMonth} AND
+			ac.year&lt;=#{endDateYear}	AND
+			ac.month&lt;=#{endDateMonth}
+  			<!-- 分录类型条件 -->
+			<if test="itemTypeList!=null and itemTypeList.size&gt;0">
+				AND
+				ac.type in 	
+				<foreach close=")" collection="itemTypeList" index="index" item="itemType" open="(" separator=",">  
+					#{itemType}  
+				</foreach>  		
+			</if>
+			
+			<!-- 用户ID条件:如果是-1时,查询所有用户 -->
+			<if test="userId!=-1">
+				AND ac.bind_user_id=#{userId}
+			</if>
+			
+		 </where>  	 
+  	 	 order by ac.create_time DESC  	 
+  	</select>
+  	
+  	<!-- 查询指定时间,指定用户,指定分录类型的所有条目  SUM-->
+  	<select id="getItemsSumByDateAndUser" resultType="map">
+		select IFNULL(SUM(ac.amount),0) as amountSum from account_company ac 
+		<where>
+			ac.deleted=1 AND
+			ac.year&gt;=#{startDateYear} AND
+			ac.month&gt;=#{startDateMonth} AND
+			ac.year&lt;=#{endDateYear}	AND
+			ac.month&lt;=#{endDateMonth}
+  			<!-- 分录类型条件 -->
+			<if test="itemTypeList!=null and itemTypeList.size&gt;0">
+				AND
+				ac.type in 	
+				<foreach close=")" collection="itemTypeList" index="index" item="itemType" open="(" separator=",">  
+					#{itemType}  
+				</foreach>  		
+			</if>
+			
+			<!-- 用户ID条件:如果是-1时,查询所有用户 -->
+			<if test="userId!=-1">
+				AND ac.bind_user_id=#{userId}
+			</if>
+			
+		 </where>  	 
+  	 	 order by ac.create_time DESC  	 
+  	</select>
+  	
+  	<!-- 查询指定时间,指定用户,指定分录类型的所有条目  分组求和 SUM-->
+  	<select id="getItemsGroupSumByDateAndUser" resultType="map">
+		select IFNULL(SUM(ac.amount),0) as amountSum,type from account_company ac 
+		<where>
+			ac.deleted=1 AND
+			ac.year&gt;=#{startDateYear} AND
+			ac.month&gt;=#{startDateMonth} AND
+			ac.year&lt;=#{endDateYear}	AND
+			ac.month&lt;=#{endDateMonth}
+  			<!-- 分录类型条件 -->
+			<if test="itemTypeList!=null and itemTypeList.size&gt;0">
+				AND
+				ac.type in 	
+				<foreach close=")" collection="itemTypeList" index="index" item="itemType" open="(" separator=",">  
+					#{itemType}  
+				</foreach>  		
+			</if>
+			
+			<!-- 用户ID条件:如果是-1时,查询所有用户 -->
+			<if test="userId!=-1">
+				AND ac.bind_user_id=#{userId}
+			</if>			
+		 </where>  	 
+  	 	 group by type   	 
+  	</select>
+  	
+  	
   
 </mapper>

@@ -6,14 +6,13 @@
 		  };
 })(jQuery);
 
-
-//----------------------查询-订单-----------------------
+/*查询-订单 */
 /**
  * 根据用户的输入条件查询（包括分页数据）
  * @returns
  */
 function search(){
-	var parms=new Object(); //生成参数对象
+	parms=new Object(); //生成参数对象
 	//分页数据
 	parms.pageNum=$("#pageNum").val();
 	parms.pageSize=$("#pageSize").val();
@@ -36,35 +35,110 @@ function search(){
 }
 
 function search_normal() {
+	//console.log("debug");
 	search();
 }
 
-
-//------------------------界面交互-----------------------
+/**
+ * 生成隐藏表单域函数
+ * 
+ * @param {Object}
+ *            name input's name
+ * @param {Object}
+ *            value value:inptu's value
+ */
+var generateHideElement = function(name, value) {
+	var tempInput = document.createElement("input");
+	tempInput.type = "hidden";
+	tempInput.name = name;
+	tempInput.value = value;
+	return tempInput;
+}
 
 /**
- * 加载页面:编辑-回款
+ * 创建form并提交,创建合同请求 *
+ * 
+ * @param {Object}
+ *            url 提交的地址
+ * @param {Object}
+ *            id 订单id(自增ID)
+ * @param {Object}
+ *            orderId 订单号
+ */
+function createFormAndCommit(url, id, orderId) {
+	/*var form = document.createElement("form");
+	form.id = "test";
+	form.name = "test";
+	form.target="_blank";
+	document.body.appendChild(form);
+
+	// 生成隐藏表单中的内容
+	var id = generateHideElement("id", id), 
+		orderId = generateHideElement("orderId", orderId);
+
+	form.appendChild(id);
+	form.appendChild(orderId);
+
+	form.method = "post";
+	form.action = url;
+	form.submit();*/
+	var params = {"id":id, "orderId":orderId};
+	$("#edit-body").load(url,params, function(){
+		//TODO
+		$("#edit-tab").removeClass("hide");
+		$("#edit-tab-title").text("创建合同");
+		$('#tabs-14933 a[href="#panel-602679"]').tab('show');
+	});
+}
+
+/**
+ * 加载四项费用编辑页面
  * @param url	
  * @param orderId	order:自增ID
  * @param orderNo 订单No
  * @returns
  */
-function editPayment(url,orderId,orderNo,agentName){
+function editFourFee(url,orderId,orderNo){
 	
 	var params = {"orderId":orderId, "orderNo":orderNo};
 	$("#edit-body").load(url,params, function(){
 		
 		$("#edit-tab").removeClass("hide");
-		$("#edit-tab-title").text("订单回款管理");
-		
-		//设置订单号及代理商名称
-		$(".edit-payment-info").text('('+agentName+':'+orderNo+')');		
-		
+		$("#edit-tab-title").text("四项费用管理");
 		$('#tabs-14933 a[href="#panel-602679"]').tab('show');
 	});
 	
 }
 
+/**
+ * @param url 请求编辑合同的URL地址
+ * @param id  合同URL
+ * @returns
+ */
+function editContract(url, id) {
+	/*var form = document.createElement("form");
+	form.id = "test1";
+	form.name = "test1";
+	form.target="_blank";
+	document.body.appendChild(form);
+
+	// 生成隐藏表单中的内容
+	var id = generateHideElement("id", id); 
+		
+
+	form.appendChild(id);
+
+	form.method = "post";
+	form.action = url;
+	form.submit();*/
+	var params = {"id":id};
+	$("#edit-body").load(url, params, function(){
+		//TODO
+		$("#edit-tab").removeClass("hide");
+		$("#edit-tab-title").text("编辑合同");
+		$('#tabs-14933 a[href="#panel-602679"]').tab('show');
+	});
+}
 
 /**
  * 根据回传的条件值（处理状态）更新界面
@@ -145,8 +219,6 @@ function updateUISearchCond(condType){
 	});
 }
 
-//-------------------数据交互----------------------
-
 /**
  * 设置当前处理状态名称及值
  * @param selectedTxt  处理状态名称
@@ -188,48 +260,70 @@ function sendRequest(){
 }
 
 
-//-------------------page loaded ready------------------------
+//==================page loaded ready==============
 $(function() {
-	
-	//-----------INITIALIZE-----------
+	//================INITIALIZE====================
 	updateUIDealState(g_dealstate_cond);
 	updateUIOrderTime(g_ordertime_cond);
 	updateUISearchCond(g_searchTypeValue);
 	
-	
 
-	//----------click event binding------------
+	//===================BUSINESS业务处理==============
 
 	/*
-	 * 【回款】按钮
+	 * 【四项费用】按钮
 	 */
-	$(".edit-payment").on("click", function(e) {
-		var url = BASE_CONTEXT_PATH + "/back/payment/edit"; //需要提交的 url
+	$(".edit-four-fee").on("click", function(e) {
+		var url = BASE_CONTEXT_PATH + "/back/fourfee/edit"; //需要提交的 url
 		
 		var orderId = $(this).attr("data-id");  //订单id(PK)
 		var orderNo = $(this).attr("data-orderid");  //订单号
 		var contractState=$(this).attr("data-contractState"); //合同状态
-		var agentName=$(this).attr("data-companyname");  //代理商名称
+		
+		
+		//console.log("orderid is:"+id);
+		//console.log("orderNo is:"+orderId);
+		
+		
+		editFourFee(url, orderId, orderNo);
 		
 		
 		
-		editPayment(url, orderId, orderNo,agentName);
 		
-		
-		
-		
-		//如果此合同已经执行完毕后,不可以再录入回款		
+		//如果此合同已经执行完毕后,不可以再录入四项费用		
 		//TODO 是否加入此业务规则约束?
 		//TODO 采有枚举类型对合同的状态进行描述.		
 		if(!contractState==6){  //如果是未建合同状态
 			
 		}
 		else{
-			//util.message("此合同已经执行完毕,不可以再录入回款！");
+			//util.message("此合同已经执行完毕,不可以再录入四项费用！");
 		}
 
 		
 	});
+	
+	/*
+	 * 【市场费用】按钮
+	 */
+	/*$(".edit-market-fee").on("click", function(e) {
+		var url = BASE_CONTEXT_PATH + "/back/contract/edit"; // 需要提交的 url
+		var id = $(this).attr("data-id");   //订单id (pk)
+		var orderId = $(this).attr("data-orderid"); //订单id
+		var contractId=$(this).attr("data-contract-id");  //合同ID
+		var contractState=$(this).attr("data-contractState");  //合同状态
+		
+		
+		
+		if(contractState==2){  //如果是己建合同状态，则可进行编辑
+			editContract(url,contractId);  
+		}
+		else{
+			util.message("此状态不可编辑合同！");
+		}
+
+		
+	});*/
 	
 	
 	/* 搜索按钮 -click */

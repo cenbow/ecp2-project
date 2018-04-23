@@ -74,6 +74,18 @@ public class AccountPersonalServiceImpl extends AbstractBaseService<AccountPerso
 	public List<Map<String, Object>> selectPerformanceMap(Map<String, Object> params) {
 		return accountPersonalMapper.selectPerformanceMap(params);
 	}
+
+
+	@Override
+	public int logicDeleteByCompanyItemId(long companyItemId) {
+		return accountPersonalMapper.logicDeleteByCompanyItemId(companyItemId);
+	}
+
+
+	@Override
+	public List<Map<String, Object>> getUserByAccountCompanyId(long accountCompanyId) {
+		return accountPersonalMapper.getUserByAccountCompanyId(accountCompanyId);
+	}
 	
 	
 

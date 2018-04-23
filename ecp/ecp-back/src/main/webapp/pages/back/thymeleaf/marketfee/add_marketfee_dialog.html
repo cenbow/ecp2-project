@@ -6,12 +6,12 @@
 </head>
 <body>
 
-<th:block th:fragment="dialog">
+	<th:block th:fragment="dialog">
 
-<div class="row clearfix">
-		<div class="col-md-12 column">
-				
-			<!--  <a id="modal-306690" href="#modal-container-306690" role="button" class="btn" data-toggle="modal" type="hidden"></a> -->
+		<div class="row clearfix">
+			<div class="col-md-12 column">
+
+				<!--  <a id="modal-306690" href="#modal-container-306690" role="button" class="btn" data-toggle="modal" type="hidden"></a> -->
 				<div class="modal fade" id="modal-container-306690" role="dialog"
 					aria-labelledby="myModalLabel" aria-hidden="true">
 					<div class="modal-dialog">
@@ -19,11 +19,10 @@
 							<div class="modal-header">
 								<button type="button" class="close" data-dismiss="modal"
 									aria-hidden="true">×</button>
-								<h4 class="modal-title" id="myModalLabel">增加回款记录</h4>
+								<h4 class="modal-title" id="myModalLabel">增加市场费<span class="add-marketfee-info"></span></h4>
 							</div>
 							<div class="modal-body">
 								<form class="form-horizontal" role="form">
-									
 									<!-- 费用期间 -->
 									<div class="form-group">
 										<label for="accountItemPeriod" class="col-sm-2 control-label">期间</label>
@@ -44,12 +43,30 @@
 												<option value="2">通讯费</option>
 												<option value="3">招待费</option>
 												<option value="4">差旅费</option> -->
-												<option value="6">回款</option>
+												<option value="5">市场费</option>
 											</select>
 										</div>
 									</div>
-									
+
 									<!-- 选择人员 -->
+									<div class="form-group">
+										<label for="belongTo" class="col-sm-2 control-label">归属</label>
+										<div class="col-sm-10">
+											<span th:if="${not #lists.isEmpty(bindUserList)}" th:remove="tag">
+												<span th:each="bindUser:${bindUserList}" th:remove="tag">
+													<input type="checkbox"  th:attr="id='bind-user-'+${bindUser.rel_id},data-bind-id=${bindUser.rel_id}" class="bind-user" />
+													<label th:attr="for='bind-user-'+${bindUser.rel_id}" th:text="${bindUser.username}+'('+${bindUser.role_code}+')'"></label>
+												</span>
+											</span>
+											<span th:if="${#lists.isEmpty(bindUserList)}" th:remove="tag">
+												<span>公司内部费用									
+												</span>
+											</span>
+											
+											
+										</div>
+									</div>
+									
 
 									<!-- 金额 -->
 									<div class="form-group">
@@ -59,22 +76,22 @@
 												name="amount" />
 										</div>
 									</div>
-									
+
 									<!-- 备注 -->
 									<div class="form-group">
 										<label for="comment" class="col-sm-2 control-label">备注</label>
 										<div class="col-sm-10">
-											<input type="text" class="form-control" id="comment" name="comment" />
+											<input type="text" class="form-control" id="comment"
+												name="comment" />
 										</div>
-									</div>																
-
+									</div>
 								</form>
 							</div>
 							<div class="modal-footer">
 								<button type="button" class="btn btn-default"
 									data-dismiss="modal">关闭</button>
 								<button type="button" class="btn btn-primary"
-									id="btn-save-payment">保存</button>
+									id="btn-save-market-fee">保存</button>
 							</div>
 						</div>
 
@@ -83,18 +100,49 @@
 				</div>
 
 			</div>
-	</div>
-	
+		</div>
+
 	</th:block>
 	
+	<script th:inline="javascript">
+	/*<![CDATA[*/
+	    var curr_bindUserList=[[${bindUserList}]];	//动态加载增加市场费对话框时赋值.
+	/*]]>*/
+	</script>
+	
 	<script type="text/javascript">
-	//------------------业务操作----------------------
+	
+	
+	
+	//-------------------前端数据操作------------------
 	/**
-	 * 保存回款条目:增加
+	 * 返回绑定用户列表(自服务器返回的参数)
+	 */
+	function getBindUserList(){
+		return curr_bindUserList;
+	}
+
+
+	/**
+	 * 设定绑定用户列表的状态
+	 * @param status  true/false;
 	 * @returns
 	 */
-	function addPaymentFeeItem(){
-		var urlStr = BASE_CONTEXT_PATH + "/back/payment/add"; // 需要提交的url
+	function setBindUserCheckStatus(status){
+		var bindUserList=getBindUserList();
+
+		for(i=0;i<bindUserList.length;i++){
+			bindUserList[i].selected=status;
+		}
+	}
+
+	//------------------业务操作----------------------
+	/**
+	 * 保存市场费用条目:增加
+	 * @returns
+	 */
+	function addMarketFeeItem(){
+		var urlStr = BASE_CONTEXT_PATH + "/back/marketfee/add"; // 需要提交的url
 		
 		/*var params=new Object();  //生成参数对象.
 		
@@ -108,8 +156,10 @@
 		var itemType=$('#accountItemType').val();
 		var amount=$('#amount').val();
 		var comment=$('#comment').val();
+		
 		//期间(格式:  yyyy-MM)
 		var period=$('#accountItemPeriod').val();
+		
 
 		$.ajax({
 			type : "POST", // 提交方式 get/post
@@ -122,7 +172,8 @@
 				'itemType':itemType,
 				'amount':amount,
 				'comment':comment,
-				'period':period				
+				'bindUserList':JSON.stringify(curr_bindUserList),
+				'period':period
 			},
 			success : function(res) { // data 保存提交后返回的数据，一般为 json 数据
 				//console.log(res);
@@ -131,9 +182,9 @@
 					if (obj.result_code == "success") {
 						//util.message(obj.result_msg);
 						//var urlTemp = obj.result_msg;
-						loadPaymentFeeTable();
-						search_normal();  //更新主页面,也可以在点击主页选项卡时进行更新(效率更高一些)
-						closeAddPaymentFeeDialog();
+						loadmarketFeeTable();
+						search_normal();//重新加载订单列表的当前页.
+						closeAddmarketFeeDialog();
 						
 					} else {
 						util.message(obj.result_msg);
@@ -157,14 +208,40 @@
 	
 	
 	$(function(){
+		$("#accountItemPeriod").val((new Date()).format('yyyy-MM'));
 		
-		$("#accountItemPeriod").val((new Date()).format('yyyy-MM'));  //初始化期间为当前年,当前月份
 		
-		//保存回款条目button:click event
-		$('#btn-save-payment').on('click',function(){addPaymentFeeItem();})	
+		
+		
+		//选定/取消选定用户
+		$(".bind-user").on("change",function(){
+			var checkState=$(this).is(":checked");
+			
+			var currRelId=$(this).attr("data-bind-id");
+			//console.log("bind user relid is:"+bindUserRelId);
+			
+			//置绑定用户的选定状态.
+			var bindUserList=getBindUserList();  //获取绑定用户列表.
+			for(i=0;i<bindUserList.length;i++){
+				if(bindUserList[i].rel_id==currRelId){
+					bindUserList[i].selected=checkState;
+					return;
+				}
+			}
+			
+		})
+		
+		//保存费用条目button:click event
+		$('#btn-save-market-fee').on('click',function(){		
+			addMarketFeeItem();
+			//closeAddmarketFeeDialog();
+		})
+		
+		
 	});
+		
 	
 	</script>
-	
+
 </body>
 </html>
