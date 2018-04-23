@@ -38,6 +38,46 @@ public interface IAccountPersonalService extends IBaseService<AccountPersonal, L
 	
 	
 	/** 
+	* @Title: getItemsByDateAndUser 
+	* @Description: 根据时间及用户查询会计条目. 
+	* @param @param startDateYear
+	* @param @param startDateMonth
+	* @param @param endDateYear
+	* @param @param endDateMonth
+	* @param @param userId
+	* @param @param itemTypeList  会计条目类型
+	* @param @return     
+	* @return List<Map<String,Object>>    返回类型 
+	* @throws 
+*/
+public List<Map<String,Object>> getItemsByDateAndUser(String startDateYear,
+		String startDateMonth,
+		String endDateYear,
+		String endDateMonth,
+		long   userId,
+		List<Integer> itemTypeList);
+
+//同上求和
+public List<Map<String,Object>> getItemsSumByDateAndUser(String startDateYear,
+		String startDateMonth,
+		String endDateYear,
+		String endDateMonth,
+		long   userId,
+		List<Integer> itemTypeList);
+//同上分组求和
+public List<Map<String,Object>> getItemsGroupSumByDateAndUser(String startDateYear,
+		String startDateMonth,
+		String endDateYear,
+		String endDateMonth,
+		long   userId,
+		List<Integer> itemTypeList);
+	
+	
+	
+	
+	
+	
+	/** 
 	* @Title: selectItems 
 	* @Description: 查询费用 
 	* @param @param orderTimeCond

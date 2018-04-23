@@ -24,7 +24,7 @@
 			</tr>
 		</thead>
 		<tbody>
-			<tr th:each="item: ${accountCompanyList}">
+			<tr th:each="item: ${accountItemList}">
 				<!-- <td th:text="${item.accountItem.id}">条目ID</td> -->
 				<!-- 录入日期 -->
 				<td
@@ -34,7 +34,8 @@
 					</span> <span th:case=2 th:remove="tag"> <span>通讯费</span>
 					</span> <span th:case=3 th:remove="tag"> <span>招待费</span>
 					</span> <span th:case=4 th:remove="tag"> <span>差旅费</span>
-					</span> <span th:case="10" th:remove="tag"> <span>其它费用</span>
+					</span> <span th:case="10" th:remove="tag"> <span>其它费</span>
+					</span> <span th:case="5" th:remove="tag"> <span>市场费</span>
 					</span> <span th:case="*" th:remove="tag"> <span>未知类型条目</span>
 					</span>
 				</span></td>
@@ -73,8 +74,9 @@
 								<span th:case=2 th:remove="tag"> <span><strong>通讯费:</strong></span></span> 
 								<span th:case=3 th:remove="tag"> <span><strong>招待费:</strong></span></span> 
 								<span th:case=4 th:remove="tag"> <span><strong>差旅费:</strong></span></span> 
-								<span th:case="10" th:remove="tag"> <span><strong>其它费用:</strong></span></span> 
-								<span th:case="*" th:remove="tag"> <span><strong>未知类型条目:</strong></span></span>
+								<span th:case="10" th:remove="tag"> <span><strong>其它费:</strong></span></span> 
+								<span th:case="5" th:remove="tag"> <span><strong>市场费:</strong></span></span>
+								<span th:case="*" th:remove="tag"> <span><strong>未知类型费用:</strong></span></span>
 							</span>
 							<span th:text="${amount.amountSum}"></span>					
 						</span>
@@ -99,12 +101,50 @@
 		var ret_userId=[[${userId}]];
 		var curr_pageNum=[[${pageNum}]];
 		var curr_pageSize=[[${pageSize}]]; 
+		var curr_perspectiveType=[[${perspectiveType}]]; 	//视角条件
+		var curr_accountItemType=[[${accountItemType}]];  	//费用类型条件
 		
 		/*]]>*/  
 	</script>
 
 
 	<script type="text/javascript">
+	
+	//分页查询(全部采用返回值进行查询.)
+	function loadPager(){
+		var startDateTxt=ret_startDateYear+'-'+ret_startDateMonth;  //开始年月
+		var endDateTxt=ret_endDateYear+'-'+ret_endDateMonth;		//结束年月
+		
+		//console.log("pager------startDateTxt:"+startDateTxt);
+		
+		var startDate=new Date(startDateTxt+'-01');
+		var endDate=new Date(endDateTxt+'-01');
+		
+		var startDateYear=startDate.format("yyyy");
+		var startDateMonth=startDate.format("MM");		
+		var endDateYear=endDate.format("yyyy");
+		var endDateMonth=endDate.format("MM");
+		
+		var userId=ret_userId;
+		
+		//分页条件
+		var pageNum=curr_pageNum;
+		var pageSize=curr_pageSize;
+		
+		var perspectiveType=curr_perspectiveType;  //视角
+		var accountItemType=curr_accountItemType;  //费用类型
+		
+		searchFee(startDateYear,
+					  startDateMonth,
+					  endDateYear,
+					  endDateMonth,
+					  userId,
+					  pageNum,
+					  pageSize,
+					  perspectiveType,
+					  accountItemType);
+	}
+	
 	
 	//删除分录条目
 	function delAccountItem(id){
@@ -209,7 +249,7 @@
 				// 置隐藏表单数据
 				curr_pageNum=pageArr[0];
 				curr_pageSize=pageArr[1];			
-				loadPage();  //加载页
+				loadPager();  //加载页
 			}
 	
 		});

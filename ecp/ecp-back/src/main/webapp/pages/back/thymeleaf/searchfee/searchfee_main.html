@@ -47,15 +47,27 @@
 
 	<script>
 		/* 加载默认内容:当前年月,所有人员 */
-		/*function:加载费用查询页面 */
+		/*function:加载费用查询页面	ADMIN-公司视角   个人:个人视角 */
 		function loadFeeSearch(parms, callback) {
 			var url = "/back/fee/loadsearch";
 			var callbackFunc = callback;
 			var containerId = "#container";
 			loadPage(containerId, url, parms, callbackFunc);
 		}
+	
+		//admin-个人视角	查询面板.
+		function loadAdminPersonalFeeSearch(parms, callback) {
+			var url = "/back/fee/loadAdminPersonalSearch";
+			var callbackFunc = callback;
+			var containerId = "#container";
+			
+			console.log("url------"+url);
+			
+			loadPage(containerId, url, parms, callbackFunc);
+		}
 
 		$(function() {
+			//加载默认查询面板
 			loadFeeSearch(null, null);
 		})
 
