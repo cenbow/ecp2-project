@@ -1,7 +1,6 @@
 package com.ecp.service.back;
 
 import java.util.List;
-import java.util.Map;
 
 import com.ecp.entity.CheckCycle;
 import com.ecp.service.IBaseService;
@@ -16,10 +15,17 @@ public interface ICheckCycleService extends IBaseService<CheckCycle, Long> {
 	public int logicDelById(Long id);
 	
 	/**
-	 * 根据条件查询考核周期
+	 * 根据年度名称查询考核周期
 	 * @return
 	 */
-	public List<CheckCycle> getList(Map<String, Object> map);
+	public List<CheckCycle> getListByYearName(String yearName);
+	
+	/**
+	 * 根据pid查询
+	 * @param pid
+	 * @return
+	 */
+	public List<CheckCycle> getListByPid(Long pid);
 	
 	public int save(String yearName, String cycleArrJSON);
 	

@@ -62,6 +62,8 @@ public class StaticConstants {
 	
 	public static final String SALES_TARGET_MANAGE_PAGE = "back/jsp/sales_target/sales_target_manage";//销售指标管理页面
 	public static final String SALES_TARGET_MANAGE_TABLE_PAGE = "back/jsp/sales_target/sales_target_table";//销售指标管理列表页面
+	public static final String ADD_SALES_TARGET_DIALOG_PAGE = "back/jsp/sales_target/add_sales_target_dialog";//增加考核指标对话框页面
+	public static final String LOAD_SALES_TARGET_TABLE_PAGE = "back/jsp/sales_target/load_sales_target_table";//创建考核指标table页面
 	
 	public static final String PUSHMONEY_CONFIG_MANAGE_PAGE = "back/jsp/pushmoney_config/pushmoney_config_manage";//提成比例配置页面
 	public static final String PUSHMONEY_CONFIG_MANAGE_TABLE_PAGE = "back/jsp/pushmoney_config/pushmoney_config_table";//提成比例配置列表页面

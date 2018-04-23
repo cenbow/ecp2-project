@@ -2,8 +2,8 @@ package com.ecp.service.impl.back;
 
 import java.util.Date;
 import java.util.List;
-import java.util.Map;
 
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.transaction.interceptor.TransactionAspectSupport;
@@ -16,6 +16,7 @@ import com.ecp.service.back.ICheckCycleService;
 import com.ecp.service.impl.AbstractBaseService;
 
 import tk.mybatis.mapper.entity.Example;
+import tk.mybatis.mapper.entity.Example.Criteria;
 
 @Service("checkCycleServiceBean")
 public class CheckCycleServiceImpl extends AbstractBaseService<CheckCycle, Long> implements ICheckCycleService {
@@ -52,14 +53,26 @@ public class CheckCycleServiceImpl extends AbstractBaseService<CheckCycle, Long>
 	}
 
 	/**
-	 * 查询考核周期
-	 * 
-	 * @see com.ecp.service.back.ICheckCycleService#getList(java.util.Map)
+	 * 根据年度名称查询
+	 * @see com.ecp.service.back.ICheckCycleService#getListByYearName(java.lang.String)
 	 */
 	@Override
-	public List<CheckCycle> getList(Map<String, Object> map) {
+	public List<CheckCycle> getListByYearName(String yearName) {
 		Example example = new Example(CheckCycle.class);
-		example.createCriteria().andEqualTo("yearName", map.get("yearName").toString());
+		example.createCriteria().andEqualTo("yearName", yearName);
+		List<CheckCycle> list = checkCycleMapper.selectByExample(example);
+		return list;
+	}
+	
+	/**
+	 * 根据pid查询
+	 * @see com.ecp.service.back.ICheckCycleService#getListByPid(java.lang.Long)
+	 */
+	@Override
+	public List<CheckCycle> getListByPid(Long pid) {
+		Example example = new Example(CheckCycle.class);
+		example.createCriteria().andEqualTo("pid", pid);
+		example.setOrderByClause("year_name");
 		List<CheckCycle> list = checkCycleMapper.selectByExample(example);
 		return list;
 	}
@@ -67,22 +80,49 @@ public class CheckCycleServiceImpl extends AbstractBaseService<CheckCycle, Long>
 	@Override
 	@Transactional
 	public int save(String yearName, String cycleArrJSON) {
-		CheckCycle cycle = new CheckCycle();
-		cycle.setYearName(yearName);
-		cycle.setCycleName("全年");
-		cycle.setCalType((byte) 1);
-		cycle.setStartDate(CalendarUtil.getFirstDayOfYear(Integer.parseInt(yearName)));
-		cycle.setEndDate(CalendarUtil.getLastDayOfYear(Integer.parseInt(yearName)));
-		cycle.setPid(0l);
-		cycle.setSort(0);
-		int rows = checkCycleMapper.insertSelective(cycle);
+		int rows = 0;
+		CheckCycle cycle = this.getDB(yearName, "全年");
+		if(cycle==null){
+			cycle = new CheckCycle();
+			cycle.setYearName(yearName);
+			cycle.setCycleName("全年");
+			cycle.setCalType((byte) 1);
+			cycle.setStartDate(CalendarUtil.getFirstDayOfYear(Integer.parseInt(yearName)));
+			cycle.setEndDate(CalendarUtil.getLastDayOfYear(Integer.parseInt(yearName)));
+			cycle.setPid(0l);
+			cycle.setSort(0);
+			rows = checkCycleMapper.insertSelective(cycle);
+		}
 		if(rows>0){
 			rows = this.save(cycle.getId(), yearName, cycleArrJSON);
-			if(rows<=0){
-				TransactionAspectSupport.currentTransactionStatus().setRollbackOnly();
+			if(rows>0){
+				return rows;
 			}
 		}
-		return rows;
+		TransactionAspectSupport.currentTransactionStatus().setRollbackOnly();
+		return 0;
+	}
+	
+	/**
+	 * 判断数据库中是否包含此数据
+	 * @param yearName
+	 * @param cycleName
+	 * @return
+	 */
+	private CheckCycle getDB(String yearName, String cycleName){
+		Example example = new Example(CheckCycle.class);
+		Criteria criteria = example.createCriteria();
+		if(StringUtils.isNotBlank(yearName)){
+			criteria.andEqualTo("yearName", yearName);
+		}
+		if(StringUtils.isNotBlank(cycleName)){
+			criteria.andEqualTo("cycleName", cycleName);
+		}
+		List<CheckCycle> cycleList = checkCycleMapper.selectByExample(example);
+		if(cycleList!=null && !cycleList.isEmpty()){
+			return cycleList.get(0);
+		}
+		return null;
 	}
 	
 	/**
@@ -103,6 +143,12 @@ public class CheckCycleServiceImpl extends AbstractBaseService<CheckCycle, Long>
 			String currNum = tempArr[1];//当前半年、季度、月是第几个
 			String cycleName = tempArr[2];//周期名称
 			String sort = tempArr[3];//排序
+			
+			CheckCycle cycle = this.getDB(yearName, cycleName);
+			if(cycle!=null){//如果数据库中有考核年度为yearName，且周期名称为cycleName的数据，则直接跳过并继续
+				continue;
+			}
+			
 			Date startDate = null;
 			Date endDate = null;
 			if(flag.equalsIgnoreCase("halfAYear")){
@@ -118,7 +164,7 @@ public class CheckCycleServiceImpl extends AbstractBaseService<CheckCycle, Long>
 				continue;
 			}
 			
-			CheckCycle cycle = new CheckCycle();
+			cycle = new CheckCycle();
 			cycle.setYearName(yearName);
 			cycle.setCycleName(cycleName);
 			cycle.setCalType((byte) 1);

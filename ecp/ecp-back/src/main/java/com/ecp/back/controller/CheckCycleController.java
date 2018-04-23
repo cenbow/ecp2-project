@@ -3,7 +3,6 @@ package com.ecp.back.controller;
 import java.text.ParseException;
 import java.util.Calendar;
 import java.util.Date;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -26,7 +25,9 @@ import com.ecp.bean.PageBean;
 import com.ecp.bean.UserBean;
 import com.ecp.common.util.RequestResultUtil;
 import com.ecp.entity.CheckCycle;
+import com.ecp.entity.SalesTarget;
 import com.ecp.service.back.ICheckCycleService;
+import com.ecp.service.back.ISalesTargetService;
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
 
@@ -43,6 +44,8 @@ public class CheckCycleController {
 	
 	@Resource(name="checkCycleServiceBean")
 	private ICheckCycleService checkCycleService;
+	@Resource(name="salesTargetServiceBean")
+	private ISalesTargetService salesTargetService;
 	
 	/**
 	 * 方法功能：查询列表
@@ -64,9 +67,7 @@ public class CheckCycleController {
 		}
 		
 		PageHelper.startPage(pageBean.getPageNum(), pageBean.getPageSize());
-		Map<String, Object> map = new HashMap<>();
-		map.put("yearName", yearName);//yearName:年名称
-		List<CheckCycle> cycleList = checkCycleService.getList(map);
+		List<CheckCycle> cycleList = checkCycleService.getListByYearName(yearName);
 		PageInfo<CheckCycle> pagehelper = new PageInfo<>(cycleList);
 		
 		mav.addObject("pagehelper", pagehelper);
@@ -249,6 +250,13 @@ public class CheckCycleController {
 	@RequestMapping("/deleteByYearName")
 	@ResponseBody
 	public Map<String, Object> deleteByYearName(HttpServletRequest request, HttpServletResponse response, String yearName) {
+		SalesTarget target = new SalesTarget();
+		target.setYearName(yearName);
+		List<SalesTarget> targetList = salesTargetService.select(target);
+		if(targetList!=null && !targetList.isEmpty()){
+			return RequestResultUtil.getResultFail(yearName+" 年考核指标已创建，不允许删除考核周期！");
+		}
+		
 		CheckCycle cycle = new CheckCycle();
 		cycle.setYearName(yearName);
 		int rows = checkCycleService.delete(cycle);
