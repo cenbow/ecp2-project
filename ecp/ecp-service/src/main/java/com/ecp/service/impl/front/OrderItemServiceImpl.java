@@ -104,4 +104,9 @@ public class OrderItemServiceImpl extends AbstractBaseService<OrderItems, Long> 
 		
 	}
 
+	@Override
+	public BigDecimal getOrderAmountByNo(String orderNo) {
+		return orderItemsMapper.getOrderAmountByNo(orderNo);
+	}
+
 }

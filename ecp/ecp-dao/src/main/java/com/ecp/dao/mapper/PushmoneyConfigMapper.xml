@@ -32,5 +32,6 @@
 				#{item}
 			</foreach>
 		</if>
+		ORDER BY c.completion_rate desc
   </select>
 </mapper>

@@ -32,49 +32,55 @@
 									<th>操作</th>
 								</tr> -->
 								<th>序号</th>
+								<th>公司名称</th>
 								<!-- <th>订单ID</th> -->
 								<th>订单编号</th>								
 								<!-- <th>合同ID</th> -->
 								<th>合同编号</th>
-								<th>业绩&nbsp;/&nbsp;用户&nbsp;/&nbsp;角色</th>
+								<th>订单金额</th>
+								<th>合同金额</th>
+								<th>业绩</th>
 								<th>创建时间</th>
 							</thead>
 							<tbody>
-								<tr th:each="item,iterState:${orderList}">
+								<tr th:each="item,iterState:${performanceList}">
 									<td th:text="${iterState.count}">序号</td>
+									<td th:text="${item.company_name}">公司名称</td>
 									<!-- <td th:text="${item.order_id}">订单ID</td> -->
 									<td th:text="${item.order_no}">订单编号</td>
 									<!-- <td th:text="${item.id}">合同ID</td> -->
 									<td th:text="${item.contract_no}">合同编号</td>
-									<td>
-										<table>
+									<td th:text="'￥'+${item.orderAmount}">订单金额</td>
+									<td th:text="'￥'+${item.contractAmount}">合同金额</td>
+									
+									<td th:text="${item.nickname}+'（'+${item.role_code}+'）：￥'+${item.amount}">用户（角色）业绩
+										<!-- <table>
 											<tbody>
 											
 											<span th:if="${#lists.isEmpty(item.order_account_company_list) && #lists.size(item.order_account_company_list)<=0}">
 												<tr>
-													<td th:text="'￥0.00&nbsp;/&nbsp;'">业绩</td>
-													<td th:text="'用户&nbsp;/&nbsp;'">用户</td>
-													<td th:text="'角色'">角色</td>
+													<td th:text="'用户（角色）:￥0.00'">用户（角色）业绩</td>
 												</tr>
 											</span>
 											<span th:if="${not #lists.isEmpty(item.order_account_company_list) && #lists.size(item.order_account_company_list)>0}">
 												<tr th:each="accountPersonal:${item.order_account_company_list}">
-													<td th:text="'￥'+${accountPersonal.amount}+'&nbsp;/&nbsp;'">业绩</td>
-													<td th:text="${accountPersonal.nickname}+'&nbsp;/&nbsp;'">用户</td>
-													<td th:text="${accountPersonal.role_name}">角色</td>
+													<td th:text="${accountPersonal.nickname}+'（'+${accountPersonal.role_code}+'）：￥'+${accountPersonal.amount}">用户（角色）业绩</td>
 												</tr>
 											</span>
 											</tbody>
-										</table>
+										</table> -->
 									</td>
-									<td th:text="${item.create_date}">创建时间</td>
+									<td th:text="${item.create_time}">创建时间</td>
 																		
 								</tr>								
 								<tr>
 									<td></td>
 									<td></td>
+									<td></td>
 									<td><b>总计</b></td>
-									<td colspan="3"><b>￥</b><b style="font-size:18px;color:red" id="sumAmount" th:text="${performanceTotalAmount}">总计</b></td>
+									<td><b>￥</b><b style="font-size:18px;color:red" id="" th:text="${orderTotalAmount}">订单金额总计</b></td>
+									<td><b>￥</b><b style="font-size:18px;color:red" id="" th:text="${contractTotalAmount}">合同金额总计</b></td>
+									<td colspan="3"><b>￥</b><b style="font-size:18px;color:red" id="" th:text="${performanceTotalAmount}">业绩总计</b></td>
 								</tr>
 								</hr>					
 							</tbody>

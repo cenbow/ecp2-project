@@ -32,8 +32,8 @@
 						<div class="col-sm-10 checkbox curr-checkbox-all" id="quarter">
 							<label><input type="checkbox" class="checkbox-one" id="" name="" value="quarter-1-一季度-3" />一季度</label>
 							<label><input type="checkbox" class="checkbox-one" id="" name="" value="quarter-2-二季度-4" />二季度</label>
-							<label><input type="checkbox" class="checkbox-one" id="" name="" value="quarter-3-二季度-5" />三季度</label>
-							<label><input type="checkbox" class="checkbox-one" id="" name="" value="quarter-4-二季度-6" />四季度</label>
+							<label><input type="checkbox" class="checkbox-one" id="" name="" value="quarter-3-三季度-5" />三季度</label>
+							<label><input type="checkbox" class="checkbox-one" id="" name="" value="quarter-4-四季度-6" />四季度</label>
 						</div>
 					</div>
 					<div class="form-group">
@@ -105,18 +105,6 @@ $("#save-check-cycle-btn").on("click", function(){
 	$(".checkbox-one").each(function(){
 		var currChckbox = $(this).val();
 		cycleArr.push(currChckbox);
-		/* var arr = currChckbox.split("-");
-		var flag = arr[0];
-		var cycleName = arr[1];
-		var sort = arr[2];
-		var obj = new Object();
-		obj.yearName = yearName;
-		obj.cycleName = "全年";
-		obj.calType = 1;
-		obj.startDate = null;
-		obj.endDate = null; 
-		obj.pid = null;
-		obj.sort = null; */
 	});
 	
 	var cycleArrJSON = JSON.stringify(cycleArr);

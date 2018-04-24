@@ -164,7 +164,7 @@ function search() {
  * @param status  合同状态
  * @returns
  */
-function setContractStatus(orderId, contractId, status, bindUserJSON){
+function setContractStatus(orderId, contractId, status, bindUserJSON, year, month){
 	var url = BASE_CONTEXT_PATH + "/back/contract/setstatus"; // 需要提交的 url
 
 	$.ajax({
@@ -173,9 +173,11 @@ function setContractStatus(orderId, contractId, status, bindUserJSON){
 		// dataType: "application/json",
 		data : {
 			'orderId' : orderId,
-			'contractId':contractId,
-			'status':status,
-			'bindUserJSON':bindUserJSON
+			'contractId' : contractId,
+			'status' : status,
+			'bindUserJSON' : bindUserJSON, 
+			'year' : year, 
+			'month' : month
 		},
 		success : function(res) { // data 保存提交后返回的数据，一般为 json 数据
 			console.log(res);
@@ -305,7 +307,7 @@ $(function() {
 		//alert("debug");
 		if(status==4){  //如甲方已经确认
 			status=3;
-			setContractStatus(orderId, contractId, status, null);
+			setContractStatus(orderId, contractId, status, null, null, null);
 		}
 		else{
 			util.message("执行此操作时，合同当前状态需为：甲方己确认！");
@@ -321,7 +323,7 @@ $(function() {
 		
 		if(status==3){  //如乙方（LM）已经确认
 			status=5;  //执行状态
-			setContractStatus(orderId, contractId, status, null);
+			setContractStatus(orderId, contractId, status, null, null, null);
 		}
 		else{
 			util.message("执行此操作时，合同当前状态需为：乙方己确认！");
@@ -335,9 +337,8 @@ $(function() {
 		var status=$(this).attr("data-contract-status");
 		
 		if(status==5){  //如乙方（LM）已经确认
-			status=6;  //执行完毕
+			//status=6;  //执行完毕
 			loadChooseAccountUserPage(orderId, contractId);//加载选择计费用户对话框页面，并打开对话框
-			//TODO
 			//setContractStatus(orderId, contractId, status, bindUserJSON);
 		}
 		else{

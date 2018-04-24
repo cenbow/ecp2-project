@@ -65,6 +65,10 @@
 	LEFT JOIN cust_lock_rel l ON ue.extend_id = l.cust_id
 	WHERE
 		o.contract_state = 6
+		AND ci.deleted = 1
+		AND o.deleted = 1
+		AND ue.deleted = 1
+		AND l.deleted = 1
 		<if test="order_no!=null and order_no!=''">
   			and o.order_id = #{order_no}	
   		</if>

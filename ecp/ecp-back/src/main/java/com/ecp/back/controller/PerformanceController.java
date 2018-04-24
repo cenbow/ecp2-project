@@ -1,6 +1,7 @@
 package com.ecp.back.controller;
 
 import java.math.BigDecimal;
+import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -30,6 +31,7 @@ import com.ecp.entity.AccountCompany;
 import com.ecp.entity.CustLockRel;
 import com.ecp.entity.PushmoneyConfig;
 import com.ecp.entity.Role;
+import com.ecp.entity.UserExtends;
 import com.ecp.service.back.IPushmoneyConfigService;
 import com.ecp.service.back.IRoleService;
 import com.ecp.service.back.ISalesTargetService;
@@ -96,7 +98,16 @@ public class PerformanceController {
 	 */
 	@RequestMapping(value = "/show")
 	public String order_show(Model model) {
-		return RESPONSE_THYMELEAF_BACK + "order_show";
+		
+		Subject subject = SecurityUtils.getSubject();
+		UserBean user = (UserBean)subject.getPrincipal();
+		
+		List<Map<String, Object>> agentIdList = null;
+		
+		agentIdList = this.judgeRole(user, model, null, null);
+		
+		//return RESPONSE_THYMELEAF_BACK + "order_show";
+		return RESPONSE_THYMELEAF_BACK + "performance";
 	}
 
 	/**
@@ -304,63 +315,78 @@ public class PerformanceController {
 	 * @return
 	 */
 	@RequestMapping(value = "/get-performance")
-	public String getPerformance(Model model, HttpServletRequest request, Long orderId, String fullYear, Long userId, Long roleId, String provinceName, String cityName, String countyName, String startTime, String endTime) {
+	public String getPerformance(Model model, HttpServletRequest request, String fullYear, Long userId, Long roleId, String startTime, String endTime) {
 
 		Subject subject = SecurityUtils.getSubject();
 		UserBean user = (UserBean)subject.getPrincipal();
 
-		List<String> roleCodeList = new ArrayList<>();
-			
-		if(roleId!=null){
-			Role role = roleService.selectByPrimaryKey(roleId);
-			String roleCode = role.getRoleCode();
-			if(StringUtils.isNotBlank(roleCode)){
-				roleCodeList.add(roleCode);
+		String startDateYear = this.getYearOrMonth(startTime, 1);//开始时间年
+		String startDateMonth = this.getYearOrMonth(startTime, 2);//开始时间月
+		String endDateYear = this.getYearOrMonth(endTime, 1);//结束时间年
+		String endDateMonth = this.getYearOrMonth(endTime, 2);//结束时间月
+		//费用类型
+		List<Integer> itemTypeList=new ArrayList<>();
+		itemTypeList.add(AccountItemType.PERFORMANCE_FEE);//业绩
+		
+		List<Map<String, Object>> performanceList = accountPersonalService.getItemsByDateAndUser(startDateYear, startDateMonth, endDateYear, endDateMonth, userId, roleId, itemTypeList);
+
+		BigDecimal performanceTotalAmount = new BigDecimal("0.00");//业绩总金额
+		BigDecimal orderTotalAmount = new BigDecimal("0.00");//订单总金额
+		BigDecimal contractTotalAmount = new BigDecimal("0.00");//合同总金额
+		
+		for(Map<String, Object> temp : performanceList){
+			String amount = temp.get("amount").toString();
+			if(StringUtils.isNotBlank(amount)){
+				performanceTotalAmount = performanceTotalAmount.add(new BigDecimal(amount));
 			}
 			
-		}else if(userId!=null){
-			List<Role> roleList = roleService.getByUserId(userId);
-			for(Role temp : roleList){
-				String roleCode = temp.getRoleCode();
-				if(StringUtils.isNotBlank(roleCode)){
-					roleCodeList.add(roleCode);
+			temp.put("company_name", null);
+			String agentId = temp.get("cust_id").toString();
+			if(StringUtils.isNotBlank(agentId)){
+				UserExtends agent = userAgentService.selectByPrimaryKey(Long.parseLong(agentId));
+				if(agent!=null){
+					temp.put("company_name", agent.getCompanyName());
 				}
+			}
+			
+			String orderNo = temp.get("order_no").toString();
+			if(StringUtils.isNotBlank(orderNo)){
+				BigDecimal orderAmount = orderItemService.getOrderAmountByNo(orderNo);
+				temp.put("orderAmount", orderAmount);
+				orderTotalAmount = orderTotalAmount.add(orderAmount);
+			}else{
+				temp.put("orderAmount", "0.00");
+			}
+			
+			
+			String contractNo = temp.get("contract_no").toString();
+			if(StringUtils.isNotBlank(contractNo)){
+				BigDecimal contractAmount = contractItemsService.getContractAmountByNo(contractNo);
+				temp.put("contractAmount", contractAmount);
+				contractTotalAmount = contractTotalAmount.add(contractAmount);
+			}else{
+				temp.put("contractAmount", "0.00");
 			}
 		}
 		
-		if(StringUtils.isBlank(startTime) || StringUtils.isBlank(endTime)){
-			if(StringUtils.isNotBlank(fullYear)){
-				int currYear = Integer.parseInt(fullYear);
-				if(StringUtils.isBlank(startTime)){
-					startTime = this.getCurrYearFirst(currYear);
-					System.out.println("====================== "+fullYear+"年第一天日期第一秒："+startTime);
-				}
-				if(StringUtils.isBlank(endTime)){
-					endTime = this.getCurrYearLast(currYear);
-					System.out.println("====================== "+fullYear+"年最后一天最后一秒："+endTime);
-				}
-			}
+		/*List<Long> roleIdList = new ArrayList<>();
+		if(roleId!=null && roleId>0){
+			roleIdList.add(roleId);
 		}
 		
 		Map<String, Object> params = new HashMap<>();
-		params.put("order_id", orderId);
 		params.put("user_id", userId);
-		params.put("role_code_list", roleCodeList);
+		params.put("role_id_list", roleIdList);
 		params.put("start_time", startTime);
 		params.put("end_time", endTime);
-		params.put("provinceName", provinceName);
-		params.put("cityName", cityName);
-		params.put("countyName", countyName);
-		
-		List<Map<String, Object>> performanceList = accountPersonalService.selectPerformanceMap(params);
-
 		List<Map<String, Object>> orderList = orderService.selectOrdersMap(params);
 		//List<Map<String, Object>> performanceList = accountCompanyService.selectAccountCompanyMap(params);
 		
 		BigDecimal performanceTotalAmount = new BigDecimal("0.00");//业绩总金额
+		BigDecimal orderTotalAmount = new BigDecimal("0.00");//订单总金额
+		BigDecimal contractTotalAmount = new BigDecimal("0.00");//合同总金额
 		for(Map<String, Object> order : orderList){
 			String tempOrderId = order.get("order_id").toString();
-			String tempOrderNo = order.get("order_no").toString();
 			String contractState = order.get("contract_status").toString();
 			if(StringUtils.isNotBlank(contractState) && Integer.parseInt(contractState)==ContractStateType.FINISHED){
 				List<Map<String, Object>> orderAccountCompanyList = new ArrayList<>();
@@ -380,10 +406,33 @@ public class PerformanceController {
 			}else{
 				order.put("order_account_company_list", new ArrayList<Map<String, Object>>());
 			}
+
+			String orderNo = order.get("order_no").toString();
+			if(StringUtils.isNotBlank(orderNo)){
+				BigDecimal orderAmount = orderItemService.getOrderAmountByNo(orderNo);
+				order.put("orderAmount", orderAmount);
+				orderTotalAmount = orderTotalAmount.add(orderAmount);
+			}else{
+				order.put("orderAmount", "0.00");
+			}
+			
+			
+			String contractNo = order.get("contract_no").toString();
+			if(StringUtils.isNotBlank(contractNo)){
+				BigDecimal contractAmount = contractItemsService.getContractAmountByNo(contractNo);
+				order.put("contractAmount", contractAmount);
+				contractTotalAmount = contractTotalAmount.add(contractAmount);
+			}else{
+				order.put("contractAmount", "0.00");
+			}
+			
 		}
 		
-		model.addAttribute("orderList", orderList);
+		model.addAttribute("orderList", orderList);*/
+		model.addAttribute("performanceList", performanceList);
 		model.addAttribute("performanceTotalAmount", performanceTotalAmount);
+		model.addAttribute("orderTotalAmount", orderTotalAmount);
+		model.addAttribute("contractTotalAmount", contractTotalAmount);
 
 		return RESPONSE_THYMELEAF_BACK + "performance_table";
 	}
@@ -442,7 +491,7 @@ public class PerformanceController {
 	 * @return
 	 */
 	@RequestMapping(value = "/get-sales-progress")
-	public String getSalesProgress(Model model, HttpServletRequest request, Long userId, Long roleId, Long orderId, String fullYear, String provinceName, String cityName, String countyName) {
+	public String getSalesProgress(Model model, HttpServletRequest request, Long userId, Long roleId, String fullYear) {
 
 		Subject subject = SecurityUtils.getSubject();
 		UserBean user = (UserBean)subject.getPrincipal();
@@ -474,21 +523,48 @@ public class PerformanceController {
 		Iterator<Map<String, Object>> it = salesProgressList.iterator();
 		while (it.hasNext()) {
 			Map<String, Object> map = it.next();
-			String user_id = map.get("user_id").toString();
-			String role_id = map.get("role_id").toString();
-			String startTime = map.get("start_date").toString();
-			String endTime = map.get("end_date").toString();
-			Map<String, Object> tempParams = new HashMap<>();
+			String tempUserId1 = map.get("user_id").toString();
+			String tempRoleId1 = map.get("role_id").toString();
+			String tempStartTime = map.get("start_date").toString();
+			String tempEndTime = map.get("end_date").toString();
+			
+			Long tempUserId = null;
+			Long tempRoleId = null;
+			if(StringUtils.isNotBlank(tempUserId1)){
+				tempUserId = Long.parseLong(tempUserId1);
+			}
+			if(StringUtils.isNotBlank(tempRoleId1)){
+				tempRoleId = Long.parseLong(tempRoleId1);
+			}
+			
+			String startDateYear = this.getYearOrMonth(tempStartTime, 1);//开始时间年
+			String startDateMonth = this.getYearOrMonth(tempStartTime, 2);//开始时间月
+			String endDateYear = this.getYearOrMonth(tempEndTime, 1);//结束时间年
+			String endDateMonth = this.getYearOrMonth(tempEndTime, 2);//结束时间月
+			//费用类型
+			List<Integer> itemTypeList=new ArrayList<>();
+			itemTypeList.add(AccountItemType.PERFORMANCE_FEE);//业绩
+			
+			List<Map<String, Object>> performanceList = accountPersonalService.getItemsByDateAndUser(startDateYear, startDateMonth, endDateYear, endDateMonth, tempUserId, tempRoleId, itemTypeList);
+			BigDecimal totalAmount = new BigDecimal("0.00");
+			for(Map<String, Object> temp : performanceList){
+				String amount = temp.get("amount").toString();
+				if(StringUtils.isNotBlank(amount)){
+					totalAmount = totalAmount.add(new BigDecimal(amount));
+				}
+			}
+			map.put("total_amount", totalAmount);
+			/*Map<String, Object> tempParams = new HashMap<>();
 			//tempParams.put("order_no", orderId);
-			tempParams.put("start_time", startTime);
-			tempParams.put("end_time", endTime);
+			tempParams.put("start_time", tempStartTime);
+			tempParams.put("end_time", tempEndTime);
 			tempParams.put("provinceName", provinceName);
 			tempParams.put("cityName", cityName);
 			tempParams.put("countyName", countyName);
-			tempParams.put("user_id", user_id);
-			tempParams.put("role_id", role_id);
+			tempParams.put("user_id", tempUserId);
+			tempParams.put("role_id", tempRoleId);
 			BigDecimal totalPrice = contractItemsService.selectContractPayPriceTotal(tempParams);
-			map.put("total_price", totalPrice);
+			map.put("total_price", totalPrice);*/
 		}
 
 		model.addAttribute("salesProgressList", salesProgressList);
@@ -511,68 +587,114 @@ public class PerformanceController {
 	@RequestMapping(value = "/get-pushmoney")
 	public String getPushmoney(Model model, HttpServletRequest request, String fullYear, Long userId, Long roleId, String startTime, String endTime, BigDecimal completionRate, String provinceName, String cityName, String countyName) {
 
-		//查询该用户角色下的代理商
-		Example example = new Example(CustLockRel.class);
-		example.createCriteria().andEqualTo("bindUserId", userId).andEqualTo("roleId", roleId);
-		List<CustLockRel> tempList = agentBindService.selectByExample(example);
-		List<Long> agentIdList = new ArrayList<>();
-		for(CustLockRel temp : tempList){
-			Long agentId = temp.getCustId();
-			if(agentId!=null && agentId>0){
-				agentIdList.add(agentId);
-			}
-		}
-		
+		//获取提成比例列表并计算当前的提成比例
+		List<Long> roleIdList = new ArrayList<>();
+		roleIdList.add(roleId);
 		Map<String, Object> params = new HashMap<>();
-		params.put("agent_id_list", agentIdList);
-		params.put("start_time", startTime);
-		params.put("end_time", endTime);
-		params.put("provinceName", provinceName);
-		params.put("cityName", cityName);
-		params.put("countyName", countyName);
-		List<Map<String, Object>> contractItemsList = contractItemsService.selectContractItems(params);
-		model.addAttribute("contractItemsList", contractItemsList);
-		
-		BigDecimal pushmoneyTotalPrice = new BigDecimal("0.00");//提成总金额
-		
-		List<Map<String, Object>> contractList = contractService.selectContract(params);
-		Iterator<Map<String, Object>> it = contractList.iterator();
-		while (it.hasNext()) {
-			Map<String, Object> map = it.next();
-			String orderId = map.get("order_id").toString();
-			String orderNo = map.get("order_no").toString();
-			String contractNo = map.get("contract_no").toString();
-			if(StringUtils.isNotBlank(orderId) && StringUtils.isNotBlank(orderNo)){
-				if(StringUtils.isNotBlank(contractNo)){
-					BigDecimal contractTotalAmount = contractItemsService.getContractAmountByNo(contractNo);
-					map.put("contract_total_amount", contractTotalAmount);
+		params.put("role_id_list", roleIdList);
+		List<Map<String, Object>> pushmoneyConfigList = pushmoneyConfigService.getList(params);
+		double pushmoneyRate = 0d;//提成比例
+		for(Map<String, Object> tempEntity : pushmoneyConfigList){
+			tempEntity.put("class_active", false);
+		}
+		for(Map<String, Object> tempEntity : pushmoneyConfigList){
+			String tempCompletionRate = tempEntity.get("completion_rate").toString();
+			String tempPushmontyRate = tempEntity.get("pushmoney_rate").toString();
+			if(StringUtils.isNotBlank(tempCompletionRate) && StringUtils.isNotBlank(tempPushmontyRate)){
+				BigDecimal temp1 = new BigDecimal(tempCompletionRate);
+				double temp2 = Double.valueOf(tempPushmontyRate);
+				if(completionRate!=null){
+					if(completionRate.compareTo(temp1)==0 || completionRate.compareTo(temp1)==1){
+						pushmoneyRate = temp2/100;
+						tempEntity.put("class_active", true);
+						break;
+					}
 				}
-				BigDecimal pushmoneyPrice = this.setAllFee(map, orderId, orderNo, roleId, completionRate);
-				pushmoneyTotalPrice = pushmoneyTotalPrice.add(pushmoneyPrice);
 			}
-			
 		}
 		
-		model.addAttribute("pushmoney_total_price", pushmoneyTotalPrice);
-		model.addAttribute("contractList", contractList);
+		model.addAttribute("pushmoneyConfigList", pushmoneyConfigList);
+		
+		String startDateYear = this.getYearOrMonth(startTime, 1);//开始时间年
+		String startDateMonth = this.getYearOrMonth(startTime, 2);//开始时间月
+		String endDateYear = this.getYearOrMonth(endTime, 1);//结束时间年
+		String endDateMonth = this.getYearOrMonth(endTime, 2);//结束时间月
+		
+		//获取业绩总和
+		BigDecimal performanceTotalAmount = this.getPerformanceTotalAmount(startDateYear, startDateMonth, endDateYear, endDateMonth, userId, roleId);
+		//获取四项费用总和
+		BigDecimal fourFeeTotalAmount = this.getFourFeeTotalAmount(startDateYear, startDateMonth, endDateYear, endDateMonth, userId);
+		//获取市场费用总和
+		BigDecimal marketFeeTotalAmount = this.getMarketFeeTotalAmount(startDateYear, startDateMonth, endDateYear, endDateMonth, userId, roleId);
+		//获取提成金额
+		BigDecimal pushmoneyTotalAmount = this.getPushmoneyPrice(userId, roleId, startTime, endTime, marketFeeTotalAmount, fourFeeTotalAmount, pushmoneyRate);
+		
+		model.addAttribute("performance_total_amount", performanceTotalAmount);
+		model.addAttribute("four_fee_total_amount", fourFeeTotalAmount);
+		model.addAttribute("market_fee_total_amount", marketFeeTotalAmount);
+		model.addAttribute("pushmoney_total_amount", pushmoneyTotalAmount);
 		
 		return RESPONSE_THYMELEAF_BACK + "pushmoney_table";
 	}
 	
 	/**
-	 * 获取四项费用和市场费用，并put到合同（map）中，计算提成并put到合同（map）中
-	 * @param map
-	 * @param orderId
-	 * @param orderNo
+	 * 获取业绩总金额
+	 * @param startDateYear
+	 * @param startDateMonth
+	 * @param endDateYear
+	 * @param endDateMonth
+	 * @param userId
 	 * @param roleId
-	 * @param completionRate
+	 * @return
 	 */
-	private BigDecimal setAllFee(Map<String, Object> map, String orderId, String orderNo, Long roleId, BigDecimal completionRate){
-		BigDecimal communication_fee = new BigDecimal("0.00");//通讯费
-		BigDecimal entertainment_fee = new BigDecimal("0.00");//招待费
-		BigDecimal transportation_fee = new BigDecimal("0.00");//交通费
-		BigDecimal travel_expense_fee = new BigDecimal("0.00");//差旅费
-		BigDecimal market_fee = new BigDecimal("0.00");//市场费
+	private BigDecimal getPerformanceTotalAmount(String startDateYear, String startDateMonth, String endDateYear, String endDateMonth, Long userId, Long roleId){
+		
+		BigDecimal performanceTotalAmount = new BigDecimal("0.00");//业绩
+		try {
+			//费用类型
+			List<Integer> itemTypeList=new ArrayList<>();
+			itemTypeList.add(AccountItemType.PERFORMANCE_FEE);//业绩
+			
+			List<Map<String, Object>> accountPersonalList = accountPersonalService.getItemsByDateAndUser(startDateYear, startDateMonth, endDateYear, endDateMonth, userId, roleId, itemTypeList);
+			
+			for(Map<String, Object> temp : accountPersonalList){
+				int type = Integer.parseInt(temp.get("type").toString());
+				BigDecimal amount = new BigDecimal(temp.get("amount").toString());
+				switch (type) {
+				case AccountItemType.PERFORMANCE_FEE://业绩
+					performanceTotalAmount = performanceTotalAmount.add(amount);
+					break;
+				default:
+					
+					break;
+				}
+			}
+
+			return performanceTotalAmount;
+		} catch (Exception e) {
+			e.printStackTrace();
+			System.out.println("计算四项费用总和异常");
+		}
+		return new BigDecimal("0.00");
+	}
+	
+	/**
+	 * 获取四项费用总和
+	 * @param startDateYear
+	 * @param startDateMonth
+	 * @param endDateYear
+	 * @param endDateMonth
+	 * @param userId
+	 * @return
+	 */
+	private BigDecimal getFourFeeTotalAmount(String startDateYear, String startDateMonth, String endDateYear, String endDateMonth, Long userId){
+		
+		BigDecimal fourFeeTotalAmount = new BigDecimal("0.00");//四项费用总和
+		
+		BigDecimal communicationFee = new BigDecimal("0.00");//通讯费
+		BigDecimal entertainmentFee = new BigDecimal("0.00");//招待费
+		BigDecimal transportationFee = new BigDecimal("0.00");//交通费
+		BigDecimal travelExpenseFee = new BigDecimal("0.00");//差旅费
 		try {
 			//费用类型
 			List<Integer> itemTypeList=new ArrayList<>();
@@ -580,28 +702,24 @@ public class PerformanceController {
 			itemTypeList.add(AccountItemType.ENTERTAINMENT_FEE);//招待费
 			itemTypeList.add(AccountItemType.TRANSPORTATION_FEE);//交通费
 			itemTypeList.add(AccountItemType.TRAVEL_EXPENSE_FEE);//差旅费
-			itemTypeList.add(AccountItemType.MARKET_FEE);//市场费
 			
-			List<AccountCompany> accountCompanyList = accountCompanyService.getItemsByOrder(Long.parseLong(orderId), orderNo, itemTypeList);
+			List<Map<String, Object>> accountPersonalList = accountPersonalService.getItemsByDateAndUser(startDateYear, startDateMonth, endDateYear, endDateMonth, userId, null, itemTypeList);
 			
-			for(AccountCompany temp : accountCompanyList){
-				int type = temp.getType();
-				BigDecimal amount = temp.getAmount();
+			for(Map<String, Object> temp : accountPersonalList){
+				int type = Integer.parseInt(temp.get("type").toString());
+				BigDecimal amount = new BigDecimal(temp.get("amount").toString());
 				switch (type) {
 				case AccountItemType.COMMUNICATION_FEE://通讯费
-					communication_fee = communication_fee.add(amount);
+					communicationFee = communicationFee.add(amount);
 					break;
 				case AccountItemType.ENTERTAINMENT_FEE://招待费
-					entertainment_fee = entertainment_fee.add(amount);				
+					entertainmentFee = entertainmentFee.add(amount);				
 					break;
 				case AccountItemType.TRANSPORTATION_FEE://交通费
-					transportation_fee = transportation_fee.add(amount);
+					transportationFee = transportationFee.add(amount);
 					break;
 				case AccountItemType.TRAVEL_EXPENSE_FEE://差旅费
-					travel_expense_fee = travel_expense_fee.add(amount);
-					break;
-				case AccountItemType.MARKET_FEE://市场费
-					market_fee = market_fee.add(amount);
+					travelExpenseFee = travelExpenseFee.add(amount);
 					break;
 
 				default:
@@ -610,63 +728,160 @@ public class PerformanceController {
 				}
 			}
 
-			map.put("communication_fee", communication_fee);//通讯费
-			map.put("entertainment_fee", entertainment_fee);//招待费
-			map.put("transportation_fee", transportation_fee);//交通费
-			map.put("travel_expense_fee", travel_expense_fee);//差旅费
-			map.put("market_fee", market_fee);//市场费
+			fourFeeTotalAmount = fourFeeTotalAmount.add(communicationFee);
+			fourFeeTotalAmount = fourFeeTotalAmount.add(entertainmentFee);
+			fourFeeTotalAmount = fourFeeTotalAmount.add(transportationFee);
+			fourFeeTotalAmount = fourFeeTotalAmount.add(travelExpenseFee);
+			return fourFeeTotalAmount;
 		} catch (Exception e) {
 			e.printStackTrace();
-			System.out.println("计算四项费用和市场费用异常");
+			System.out.println("计算四项费用总和异常");
 		}
-		
+		return new BigDecimal("0.00");
+	}
+	
+	/**
+	 * 获取市场费用总和
+	 * @param startDateYear
+	 * @param startDateMonth
+	 * @param endDateYear
+	 * @param endDateMonth
+	 * @param userId
+	 * @param roleId
+	 * @return
+	 */
+	private BigDecimal getMarketFeeTotalAmount(String startDateYear, String startDateMonth, String endDateYear, String endDateMonth, Long userId, Long roleId){
+		BigDecimal marketFeeTotalAmount = new BigDecimal("0.00");//市场费用总和
+		BigDecimal marketFee = new BigDecimal("0.00");//市场费
+		try {
+			//费用类型
+			List<Integer> itemTypeList=new ArrayList<>();
+			itemTypeList.add(AccountItemType.MARKET_FEE);//市场费
+			
+			List<Map<String, Object>> accountPersonalList = accountPersonalService.getItemsByDateAndUser(startDateYear, startDateMonth, endDateYear, endDateMonth, userId, roleId, itemTypeList);
+			
+			for(Map<String, Object> temp : accountPersonalList){
+				int type = Integer.parseInt(temp.get("type").toString());
+				BigDecimal amount = new BigDecimal(temp.get("amount").toString());
+				switch (type) {
+				case AccountItemType.MARKET_FEE://市场费
+					marketFee = marketFee.add(amount);
+					break;
+
+				default:
+					
+					break;
+				}
+			}
+			marketFeeTotalAmount = marketFeeTotalAmount.add(marketFee);
+			return marketFeeTotalAmount;
+			
+		} catch (Exception e) {
+			e.printStackTrace();
+			System.out.println("计算市场费用总和异常");
+		}
+		return new BigDecimal("0.00");
+	}
+	
+	/**
+	 * 获取差价总金额
+	 * @param userId
+	 * @param roleId
+	 * @param startTime
+	 * @param endTime
+	 * @return
+	 */
+	private BigDecimal getPriceDifferenceTotalAmount(Long userId, Long roleId, String startTime, String endTime){
 		//差价
-		AccountCompany temp = new AccountCompany();
-		temp.setOrderId(Long.parseLong(orderId));
-		temp.setOrderNo(orderNo);
-		temp.setType(AccountItemType.PRICE_DIFFERENCE_FEE);
-		List<AccountCompany> accountCompanyList = accountCompanyService.select(temp);
-		if(accountCompanyList!=null && !accountCompanyList.isEmpty()){
-			temp = accountCompanyList.get(0);
+		String startDateYear = this.getYearOrMonth(startTime, 1);//开始时间年
+		String startDateMonth = this.getYearOrMonth(startTime, 2);//开始时间月
+		String endDateYear = this.getYearOrMonth(endTime, 1);//结束时间年
+		String endDateMonth = this.getYearOrMonth(endTime, 2);//结束时间月
+		//费用类型
+		List<Integer> itemTypeList=new ArrayList<>();
+		itemTypeList.add(AccountItemType.PRICE_DIFFERENCE_FEE);//差价
+		List<Map<String, Object>> accountPersonalList = accountPersonalService.getItemsByDateAndUser(startDateYear, startDateMonth, endDateYear, endDateMonth, userId, roleId, itemTypeList);
+		
+		BigDecimal priceDifferenceTotal = new BigDecimal("0.00");//差价总金额
+		
+		for(Map<String, Object> temp : accountPersonalList){
+			String amount = temp.get("amount").toString();
+			if(StringUtils.isNotBlank(amount)){
+				priceDifferenceTotal = priceDifferenceTotal.add(new BigDecimal(amount));
+			}
 		}
-		BigDecimal price_difference = temp.getAmount();//差价
+		return priceDifferenceTotal;
+	}
+	
+	/**
+	 * 获取提成金额
+	 * @param userId
+	 * @param roleId
+	 * @param startTime
+	 * @param endTime
+	 * @param marketFeeTotalAmount
+	 * @param fourFeeTotalAmount
+	 * @param pushmoneyRate
+	 * @return
+	 */
+	private BigDecimal getPushmoneyPrice(Long userId, Long roleId, String startTime, String endTime, BigDecimal marketFeeTotalAmount, BigDecimal fourFeeTotalAmount, double pushmoneyRate){
+		//差价总和
+		BigDecimal priceDifferenceTotal = this.getPriceDifferenceTotalAmount(userId, roleId, startTime, endTime);
+		
 		BigDecimal tax = new BigDecimal("0.83");//增值税后
 		BigDecimal pushmoney = null;//提成
 		//毛利=（订单总金额-订单市场费用-订单中商品最低限价总额）* （1-17%）
-		pushmoney = price_difference.subtract(market_fee);
-		pushmoney = pushmoney.multiply(tax);
+		pushmoney = priceDifferenceTotal.subtract(marketFeeTotalAmount);//减市场费
+		pushmoney = pushmoney.multiply(tax);//乘以增值税后
 		//提成基数=销售毛利-四项费用
-		pushmoney = pushmoney.subtract(communication_fee);//通讯费
-		pushmoney = pushmoney.subtract(entertainment_fee);//招待费
-		pushmoney = pushmoney.subtract(transportation_fee);//交通费
-		pushmoney = pushmoney.subtract(travel_expense_fee);//差旅费
-		
-		//completionRate
-		Example example = new Example(PushmoneyConfig.class);
-		example.createCriteria().andEqualTo("roleId", roleId);
-		example.setOrderByClause("completion_rate desc");
-		List<PushmoneyConfig> pushmoneyConfigList = pushmoneyConfigService.selectByExample(example);
-		double pushmoneyRate = 0d;//提成比例
-		for(PushmoneyConfig tempEntity : pushmoneyConfigList){
-			Integer tempCompletionRate = tempEntity.getCompletionRate();
-			Integer tempPushmontyRate = tempEntity.getPushmoneyRate();
-			if(tempCompletionRate!=null && tempPushmontyRate!=null){
-				BigDecimal temp1 = new BigDecimal(tempCompletionRate);
-				double temp2 = tempPushmontyRate.doubleValue();
-				if(completionRate!=null){
-					if(completionRate.compareTo(temp1)==0 || completionRate.compareTo(temp1)==1){
-						pushmoneyRate = temp2/100;
-						break;
-					}
-				}
-			}
-		}
+		pushmoney = pushmoney.subtract(fourFeeTotalAmount);//减四项费用
 		
 		BigDecimal pushmoneyPrice = pushmoney.multiply(BigDecimal.valueOf(pushmoneyRate));//提成金额
 		pushmoneyPrice = pushmoneyPrice.setScale(2,BigDecimal.ROUND_HALF_UP);//提成金额保留两位小数
-		
-		map.put("pushmoney_price", pushmoneyPrice);
 		return pushmoneyPrice;
+	}
+	
+	/**
+	 * 获取年和月
+	 * @param date
+	 * @param type
+	 * 		1：年；2：月
+	 * @return
+	 */
+	private String getYearOrMonth(String date, int type){
+		SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+		Date tempStartTime = null;
+		try {
+			tempStartTime = sdf.parse(date);
+		} catch (ParseException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		
+		String result = null;
+		Calendar calendar = Calendar.getInstance();
+		calendar.clear();
+		calendar.setTime(tempStartTime);
+		switch (type) {
+		case 1:
+			//获取年
+			int year = calendar.get(Calendar.YEAR);
+			result = ""+year;
+			break;
+		case 2:
+			//获取月份，0表示1月份
+			int month = calendar.get(Calendar.MONTH) + 1;
+			if(month<10){
+				result = "0"+month;
+			}else{
+				result = ""+month;
+			}
+			break;
+		default:
+			break;
+		}
+		
+		return result;
 	}
 	
 	/*==============================================================公司业绩==============================================================*/

@@ -28,13 +28,46 @@
 			<div class="col-md-12 column">
 				<div class="panel panel-success">
 					<div class="panel-heading">
-						<h3 class="panel-title" style="display:inline">提成列表</h3>
+						<h3 class="panel-title" style="display:inline">提成比例列表</h3>
+						
+					</div>
+					<div class="panel-body">
+						<table class="table table-hover">
+							<thead>
+								<th>序号</th>
+								<th>角色</th>
+								<th>销售额完成比例（%）</th>
+								<th>提成比例（%）</th>
+							</thead>
+							<tbody>
+								<span th:each="item,iterState:${pushmoneyConfigList}" th:remove="tag">
+									<tr th:class="${item.class_active!=null && item.class_active} ? 'active' : ''" th:title="${item.class_active!=null && item.class_active} ? '当前计算提成的比例' : ''">
+										<td th:text="${item.class_active}+'-'+${iterState.count}">序号</td>
+										<td th:text="${item.role_name}">角色</td>
+										<td th:text="'>='+${item.completion_rate}">销售额完成比例</td>
+										<td th:text="${item.pushmoney_rate}">提成比例</td>
+									</tr>
+								</span>								
+								</hr>					
+							</tbody>
+						</table>
+					</div>
+					<!-- <div class="panel-footer">Panel footer</div> -->
+					<div class="panel-footer"><b>注：</b>提成比例列表中颜色突出的为本次提成的提成比例。</div>
+				</div>
+				<br>
+				
+			</div>
+			<div class="col-md-12 column">
+				<div class="panel panel-success">
+					<div class="panel-heading">
+						<h3 class="panel-title" style="display:inline">提成</h3>
 						
 					</div>
 					<div class="panel-body">
 						<table class="table">
-							<thead>
-								<th>序号</th>
+							<!-- <thead>
+								<th></th>
 								<th>公司名称</th>
 								<th>合同号</th>
 								<th>合同电话</th>
@@ -45,65 +78,37 @@
 								<th>招待费</th>
 								<th>差旅费</th>
 								<th>提成</th>
-							</thead>
+							</thead> -->
 							<tbody>
-								<tr th:each="contract,iterState:${contractList}">
-									<td th:text="${iterState.count}">序号</td>
-									<td th:text="${contract.company_name}">公司名称</td>
-									<td th:text="${contract.contract_no}">合同号</td>
-									<td th:text="${contract.contact_phone}">合同电话</td>
-									<td th:text="'￥'+${contract.contract_total_amount}">合同总金额</td>
-									<td th:text="'￥'+${contract.market_fee}">市场费</td>
-									<td th:text="'￥'+${contract.communication_fee}">通讯费</td>
-									<td th:text="'￥'+${contract.transportation_fee}">交通费</td>
-									<td th:text="'￥'+${contract.entertainment_fee}">招待费</td>
-									<td th:text="'￥'+${contract.travel_expense_fee}">差旅费</td>
-									<td th:text="'￥'+${contract.pushmoney_price}">
-										
-										<!-- SKU信息 -->
-										<!-- <table class="table">
-											<thead>
-												<th>SKU名称</th>
-												<th>原始单价</th>								
-												<th>折减后单价</th>
-												<th>数量</th>
-												<th>支付总金额</th>
-											</thead>
-											<tbody>
-												<tr th:each="contractItem:${contractItemsList}">
-													<span th:if="${contractItem.order_id eq contract.order_no}" th:remove="tag">
-														<td th:text="${contract.order_no}"></td>
-														<td th:text="${contractItem.sku_name}+'-'">SKU名称</td>
-														<td th:text="'￥'+${contractItem.primitive_price}">原始单价</td>
-														<td th:text="'￥'+${contractItem.pay_price}">折减后单价</td>
-														<td th:text="${contractItem.num}">数量</td>
-														<td th:text="'￥'+${contractItem.pay_price_total}">支付总金额</td>
-													</span>
-													<span th:if="${contract.order_no ne contractItem.order_id}" th:remove="tag"> 
-														<td th:text="">SKU名称</td>
-														<td th:text="">原始单价</td>
-														<td th:text="">折减后单价</td>
-														<td th:text="">数量</td>
-														<td th:text="">支付总金额</td>
-													</span>
-												</tr>						
-											</tbody>
-										</table> -->
-									</td>
-								</tr>								
 								<tr>
+									<th>业绩</th>
+									<td th:text="'￥'+${performance_total_amount}">业绩</td>
+								</tr>
+								<tr>
+									<th>四项费用</th>
+									<td th:text="'￥'+${four_fee_total_amount}">四项费用</td>
+								</tr>
+								<tr>
+									<th>市场费用</th>
+									<td th:text="'￥'+${market_fee_total_amount}">市场费用</td>
+								</tr>
+								<tr>
+									<th>提成</th>
+									<td th:text="'￥'+${pushmoney_total_amount}">提成</td>
+								</tr>								
+								<!-- <tr>
 									<td><b>提成总金额</b></td>
 									<td colspan="6">（毛利=（合同支付总金额-市场费用-合同中商品最低限价总额）* （1-17%）；提成基数=销售毛利-四项费用）</td>
 									<td></td>
 									<td></td>
 									<td></td>
 									<td><strong>￥</strong><strong style="font-size:18px;color:red" id="pushmoney-amount" th:text="${pushmoney_total_price}">提成总金额</strong></td>
-								</tr>
+								</tr> -->
 								</hr>					
 							</tbody>
 						</table>
 					</div>
-					<!-- <div class="panel-footer">Panel footer</div> -->
+					<div class="panel-footer"><b>计算方式：</b>毛利=（合同支付总金额-市场费用-合同中商品最低限价总额）*（1-17%）；提成基数=销售毛利-四项费用；提成金额=提成基数*提成比例。</div>
 				</div>
 				<br>
 				

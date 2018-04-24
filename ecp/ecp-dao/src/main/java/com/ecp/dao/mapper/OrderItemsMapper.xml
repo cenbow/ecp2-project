@@ -51,4 +51,14 @@
 	where p.deleted=1 and o.order_id=#{orderId} GROUP BY o.sku_id
   </select>
   
+  <!-- 查询订单总金额 -->
+  <select id="getOrderAmountByNo" resultType="java.math.BigDecimal">
+	SELECT
+		IFNULL(SUM(oi.pay_price_total), 0)
+	FROM
+		trade_order_items oi
+	WHERE
+		oi.order_id = #{orderNo}		  	 
+  </select>
+  
 </mapper>

@@ -39,4 +39,27 @@ public interface AccountPersonalMapper extends Mapper<AccountPersonal> {
 	
 	public List<Map<String, Object>> getUserByAccountCompanyId(@Param("accountCompanyId") long accountCompanyId);
 	
+	/** 
+	* @Title: getItemsByDateAndUser 
+	* @Description: 根据时间及用户查询会计条目. 
+	* @param @param startDateYear
+	* @param @param startDateMonth
+	* @param @param endDateYear
+	* @param @param endDateMonth
+	* @param @param userId
+	* @param @param roleId 查询四项费用时角色为null
+	* @param @param itemTypeList  会计条目类型
+	* @param @return     
+	* @return List<Map<String,Object>>    返回类型 
+	* @throws 
+	*/
+	public List<Map<String, Object>> getItemsByDateAndUser(
+			@Param("startDateYear") String startDateYear, 
+			@Param("startDateMonth") String startDateMonth,
+			@Param("endDateYear") String endDateYear, 
+			@Param("endDateMonth") String endDateMonth, 
+			@Param("userId") long userId, 
+			@Param("roleId") Long roleId, 
+			@Param("itemTypeList") List<Integer> itemTypeList);
+	
 }

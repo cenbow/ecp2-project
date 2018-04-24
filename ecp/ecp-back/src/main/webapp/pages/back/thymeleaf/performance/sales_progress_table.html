@@ -63,13 +63,13 @@
 									<td th:text="${progress.role_name}">用户角色</td>
 									<td th:text="${progress.year_name}+' - '+${progress.cycle_name}">周期名称</td>
 									<td th:text="'￥'+${progress.target_amount}">额度</td>
-									<td th:text="'￥'+${progress.total_price}">已完成</td>
+									<td th:text="'￥'+${progress.total_amount}">已完成</td>
 									<td>
-										<div class="progressbar" th:attr="data-target-amount=${progress.target_amount}, data-total-price=${progress.total_price}"><div class="progress-label">加载...</div></div>
+										<div class="progressbar" th:attr="data-target-amount=${progress.target_amount}, data-total-price=${progress.total_amount}"><div class="progress-label">加载...</div></div>
 									</td>
 									<td>
 										<button type="button" class="btn btn-default btn-primary performance-btn" th:attr="data-user-id=${progress.user_id}, data-role-id=${progress.role_id}, data-start-time=${progress.start_date}, data-end-time=${progress.end_date}">业绩列表</button>
-										<button type="button" class="btn btn-default btn-primary pushmoney-btn" id="" th:attr="data-user-id=${progress.user_id}, data-role-id=${progress.role_id}, data-start-time=${progress.start_date}, data-end-time=${progress.end_date}, data-completion-rate=(${progress.total_price/progress.target_amount})*100">提成</button>
+										<button type="button" class="btn btn-default btn-primary pushmoney-btn" id="" th:attr="data-user-id=${progress.user_id}, data-role-id=${progress.role_id}, data-start-time=${progress.start_date}, data-end-time=${progress.end_date}, data-completion-rate=(${progress.total_amount/progress.target_amount})*100">提成</button>
 									</td>
 								</tr>								
 								</hr>					
@@ -105,9 +105,9 @@
 			 */
 			$(".table .progressbar").each(function(index) {
 				var target_amount = $(this).attr("data-target-amount");
-				var total_price = $(this).attr("data-total-price");
-				if (target_amount != null && target_amount != '' && total_price != null && total_price != '') {
-					var progress = Number(total_price) / Number(target_amount) * 100;
+				var total_amount = $(this).attr("data-total-price");
+				if (target_amount != null && target_amount != '' && total_amount != null && total_amount != '') {
+					var progress = Number(total_amount) / Number(target_amount) * 100;
 					progress = progress.toFixed(2);
 					$(".pushmoney-btn").each(function(index1){
 						if(index==index1){
@@ -163,7 +163,7 @@
 			var params = {"userId":userId, "roleId":roleId, "startTime":startTime, "endTime":endTime, "completionRate":completionRate};
 			$("#edit-body-pushmoney").load(url, params, function(){
 				$("#edit-tab-pushmoney").removeClass("hide");
-				$('#tabs-14933 a[href="#panel-6026793"]').tab('show');
+				$('#tabs-item a[href="#panel-tab-pushmoney"]').tab('show');
 			});
 		})
 		/**
@@ -187,7 +187,7 @@
 			var params = {"userId":userId,"roleId":roleId, "startTime":startTime, "endTime":endTime};
 			$("#edit-body-performance").load(url, params, function(){
 				$("#edit-tab-performance").removeClass("hide");
-				$('#tabs-14933 a[href="#panel-6026791"]').tab('show');
+				$('#tabs-item a[href="#panel-tab-performance"]').tab('show');
 			});
 		})
 	</script>

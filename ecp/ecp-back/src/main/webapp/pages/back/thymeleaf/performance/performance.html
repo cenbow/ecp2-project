@@ -1,0 +1,257 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<div th:include="/back/thymeleaf/common/_head2::headx('销售进度')"
+	th:remove="tag"></div>
+<!-- 日期工具 -->
+<script type="text/javascript" th:src="@{/static/calendar/WdatePicker.js}"></script>
+</head>
+<body>
+
+<div class="container-fluid" style="margin-top: 20px;">
+	<div class="row clearfix">
+		<div class="col-md-12 column">
+			<div class="tabbable" id="tabs-item">
+				<ul class="nav nav-tabs">
+					<li id="edit-tab-progress" class="active">
+						 <a href="#panel-tab-progress" data-toggle="tab" id="">进度列表</a>
+					</li>
+					<li id="edit-tab-performance" class="hide">
+						 <a href="#panel-tab-performance" data-toggle="tab" id="">业绩列表</a>
+					</li>
+					<li id="edit-tab-pushmoney" class="hide">
+						 <a href="#panel-tab-pushmoney" data-toggle="tab" id="">提成列表</a>
+					</li>
+				</ul>
+				<div class="tab-content">
+					<!-- 进度列表 -->
+					<div class="tab-pane active" id="panel-tab-progress">
+						<br>
+						<div class="row clearfix">
+							<div class="col-md-12 column">
+								<!-- 增加年度查询条件 -->
+								<div data-toggle="distpicker" id="distpicker" style="display:inline-block; vertical-align:middle;">
+									<div class="col-md-12 column">
+										<input type="text" id="select-year" name="searchYearName" title="年度"
+													class="datetimepicker datetime form-control"
+													readonly="readonly" placeholder="年度"
+													onClick="WdatePicker({dateFmt:'yyyy'})" />
+													<!-- onClick="WdatePicker({dateFmt:'yyyy-MM-dd HH:mm:ss'})" /> -->
+									</div>
+								</div>
+								<!-- 增加用户角色查询条件 -->
+								<div id="distpicker" style="display:inline-block; vertical-align:middle;">
+									<div class="col-md-6 column" style="padding-right:5px;">
+					  					<select class="form-control" id="select-user" onchange="javascript:functionChangeUser();" title="用户">
+					  						<option  value="" data-code="">—— 用户 ——</option>
+					  						<span th:each="user:${userList}" th:remove="tag">
+					  							<option  th:attr="value=${user.id}" th:text="${user.nickname}">用户昵称</option>
+					  						</span>
+					  					</select>
+									</div>
+									<div class="col-md-6 column" style="padding:0px 0px 0px 0px;">
+					   					<select class="form-control" id="select-role" title="角色">
+					   						<option value="" data-code="">—— 角色 ——</option>
+					   						<span th:each="role:${roleList}" th:remove="tag">
+					   							<option  th:attr="value=${role.roleId}, data-code=${role.roleCode}" th:text="${role.roleName}">角色名称</option>
+					   						</span>
+					   					</select>
+									</div>
+								</div>
+								<div id="distpicker" style="display:inline-block; vertical-align:middle;">
+									<div class="col-md-12 column" style="padding-right:5px;">
+										<button type="button" class="btn btn-default btn-primary" id="select-btn">查询</button>
+									</div>
+								</div>
+								<select class="btn btn-default btn-primary" id="change-view" onchange="javascript:changeViewFunction();" style="float: right; margin-right: 20px">
+									<option value="1" selected="selected">个人视角</option>
+									<option value="2">公司视角</option>
+								</select>
+							</div>
+						</div>
+						<div id="edit-body-progress"></div>
+					</div>
+					<!-- 业绩列表 -->
+					<div class="tab-pane" id="panel-tab-performance">
+						<div id="edit-body-performance"></div>
+					</div>
+					<!-- 提成列表 -->
+					<div class="tab-pane" id="panel-tab-pushmoney">
+						<div id="edit-body-pushmoney"></div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>
+
+<script type="text/javascript">
+
+var currDate = new Date();
+var currYear = currDate.getFullYear();
+$("#select-year").val(currYear);//初始化年度条件，默认为当前年份
+
+/**
+ * 根据用户ID查询角色
+ */
+function functionChangeUser(){
+	 var userId = $("#select-user").val();
+	 if(userId==null || userId==""){
+		$("#select-role").empty();
+		var html = '<option value="" data-code="">—— 角色 ——</option>';
+		$("#select-role").append(html);
+		return false;
+	 }
+	 var url = BASE_CONTEXT_PATH + "/back/role/selectByUserId";
+		var params = {"userId":userId};
+		$.post(url, params, function(res){
+			console.log(res);
+			if(res!=null){
+				var resp = $.parseJSON(res);
+				if(resp.result_code=="success"){
+					var roleList =resp.roleList;
+					$("#select-role").empty();
+					//var html = '<option value="" data-code="">—— 角色 ——</option>';
+					var html = '';
+					$.each(roleList, function(index){
+						if(index==0){
+							html += '<option value="'+this.roleId+'" data-code="'+this.roleCode+'" selected="selected">'+this.roleName+'</option>'
+						}else{
+							html += '<option value="'+this.roleId+'" data-code="'+this.roleCode+'">'+this.roleName+'</option>'
+						}
+					});
+					
+					$("#select-role").append(html);
+					
+					var roleId=ret_roleId;
+					if(roleId!=null && roleId!=""){
+						$("#select-role").val(roleId);
+					}
+					
+					return;
+				}
+			}
+			util.message("查询异常");
+			
+		});
+}
+/**
+ * 切换视角	1：个人视角；2：公司视角
+ */
+function changeViewFunction(){
+	 var changeView = $("#change-view").val();
+	 if(changeView==1){
+		var href = "back/performance/show";
+		parent.window.iframeLoading(href);//调用主页面中的在iframe中加载内容的方法
+	 }else if(changeView==2){
+		var href = "back/performance/company/show";
+		parent.window.iframeLoading(href);//调用主页面中的在iframe中加载内容的方法
+	 }else{
+		 alert("未知视角");
+	 }
+}
+
+/* performance.js */
+loadProgressPage();//初始化加载进度列表页面
+/**
+ * 进度列表
+ */
+function loadProgressPage(){
+	console.log("加载进度列表");
+	var url = BASE_CONTEXT_PATH + "/back/performance/get-sales-progress"; // 需要提交的 url
+	//var fullYear = getFullYear();
+	//年度条件
+	var fullYear=$("#select-year").val();
+	//用户/角色条件
+	var userId=$("#select-user").val();
+	var roleId=$("#select-role").val();
+	
+	var params = {"fullYear":fullYear, "userId":userId,"roleId":roleId};
+	loadProgressPageRequest(url, params);
+	
+}
+
+/**
+ * 加载进度列表页面
+ * @param url
+ * @param params
+ * @returns
+ */
+function loadProgressPageRequest(url, params){
+	$("#edit-body-progress").load(url, params, function(){
+		console.log("进度列表加载完成");
+		/* $("#edit-tab-performance").addClass("hide");
+		$("#edit-tab-progress").removeClass("hide");
+		$('#tabs-item a[href="#panel-6026792"]').tab('show'); */
+	});
+}
+
+/**
+ * 绑定查询按钮,点击查询按钮重新加载进度列表
+ */
+$("#select-btn").on("click", function(){
+	loadProgressPage();
+});
+</script>
+
+<!-- <script type="text/javascript"	th:src="@{/static/js/performance/performance.js}"></script> -->
+
+
+
+
+
+
+
+
+
+	<!-- <script>
+		/*function:加载页面 */
+		function loadOrder(parms, callback) {
+			var url = "/back/performance/ordertable";
+			var callbackFunc = callback;
+			var containerId = "#container";
+			loadPage(containerId, url, parms, callbackFunc);
+		}
+
+		/**
+			function:加载页面
+			parameters:
+				orderTimeCond:订单时间条件值
+				dealStateCond:处理状态条件值
+		 */
+		function defaultLoadOrder(orderTimeCond, dealStateCond) {
+			//var url = "/back/order/ordertable";
+
+			var parms = new Object(); //参数
+			parms.orderTimeCond = orderTimeCond; //时间段条件：近三个月订单
+			parms.dealStateCond = dealStateCond; //订单处理状态条件：全部状态
+			//分页
+			parms.pageNum = null;
+			parms.pageSize = null;
+			
+			//查询类型，查询条件值
+			parms.searchTypeValue=0;
+			parms.condValue="";
+
+			loadOrder(parms,null);
+		}
+		$(function() {
+			defaultLoadOrder(1, 0);
+		})
+
+		
+		/**
+		 * 重置选项卡
+		 */
+		function resetTab(){
+			$('#tabs-item a[href="#panel-150383"]').tab('show');
+			$("#edit-body").empty();
+			$("#edit-tab").addClass("hide");
+		}
+		
+	</script> -->
+
+
+</body>
+</html>

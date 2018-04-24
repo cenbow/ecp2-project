@@ -2,6 +2,7 @@ package com.ecp.back.controller;
 
 import java.math.BigDecimal;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
@@ -522,7 +523,7 @@ public class ContractController {
 	 */
 	@RequestMapping(value="/setstatus")
 	@ResponseBody
-	public Object contract_set_setatus(HttpServletRequest request, Model model, long orderId,long contractId,byte status, String bindUserJSON){
+	public Object contract_set_setatus(HttpServletRequest request, Model model, long orderId,long contractId,byte status, String bindUserJSON, String year, String month){
 		//HttpSession session = request.getSession();
 		//User user = (User) session.getAttribute(SessionConstants.USER);
 		Subject subject = SecurityUtils.getSubject();
@@ -532,8 +533,8 @@ public class ContractController {
 		
 		//如果设置合同状态为执行完毕，则记录账本（公司账本和个人账本）
 		if(Integer.valueOf(status)==ContractStateType.FINISHED){
-			this.addAccountCompany(orderId, contractId);//记录公司账本
-			this.addAccountPersonal(orderId, contractId, bindUserJSON);//记录个人账本
+			this.addAccountCompany(orderId, contractId, year, month);//记录公司账本
+			this.addAccountPersonal(orderId, contractId, bindUserJSON, year, month);//记录个人账本
 		}
 		
 		return RequestResultUtil.getResultUpdateSuccess();
@@ -552,6 +553,23 @@ public class ContractController {
 		roleCodeList.add(RoleCodeConstants.OS);
 		roleCodeList.add(RoleCodeConstants.IS);
 		List<Map<String,Object>> bindUserList=agentBindService.getSalesByAgentIdAndRoleCodes(agentId, roleCodeList);
+		
+		Contract contract = contractService.selectByPrimaryKey(contractId);
+		Date createDate = contract.getCreateDate();
+		Calendar calendar = Calendar.getInstance();
+		calendar.clear();
+		calendar.setTime(createDate);
+		//获取年
+		int year = calendar.get(Calendar.YEAR);
+		//获取月份，0表示1月份
+		int month = calendar.get(Calendar.MONTH) + 1;
+		String monthStr = null;
+		if(month<10){
+			monthStr = "0"+month;
+		}
+		
+		model.addAttribute("year", year);
+		model.addAttribute("month", monthStr);
 		
 		//查询合同的记帐状态
 		Orders order=orderService.selectByPrimaryKey(orderId);
@@ -987,7 +1005,7 @@ public class ContractController {
 	 * @param orderId
 	 * @param contractId
 	 */
-	private void addAccountCompany(long orderId,long contractId){
+	private void addAccountCompany(long orderId,long contractId, String year, String month){
 		
 		Orders order = orderService.selectByPrimaryKey(orderId);
 		Contract contract = contractService.selectByPrimaryKey(contractId);
@@ -996,15 +1014,15 @@ public class ContractController {
 		Date createTime = new Date();
 		//在账本中增加业绩
 		type = AccountItemType.PERFORMANCE_FEE;//业绩
-		AccountCompany accountCompany = this.getAccountCompanyEntity(order, contract, this.getAmount(contract.getContractNo(), type), type, createTime);
+		AccountCompany accountCompany = this.getAccountCompanyEntity(order, contract, this.getAmount(contract.getContractNo(), type), type, createTime, year, month);
 		accountCompanyService.insertSelective(accountCompany);
 		//在账本中增加差价
 		type = AccountItemType.PRICE_DIFFERENCE_FEE;//差价
-		accountCompany = this.getAccountCompanyEntity(order, contract, this.getAmount(contract.getContractNo(), type), type, createTime);
+		accountCompany = this.getAccountCompanyEntity(order, contract, this.getAmount(contract.getContractNo(), type), type, createTime, year, month);
 		accountCompanyService.insertSelective(accountCompany);
 		//在账本中增加纯利润
 		type = AccountItemType.NET_PROFIT_FEE;//纯利润
-		accountCompany = this.getAccountCompanyEntity(order, contract, this.getAmount(contract.getContractNo(), type), type, createTime);
+		accountCompany = this.getAccountCompanyEntity(order, contract, this.getAmount(contract.getContractNo(), type), type, createTime, year, month);
 		accountCompanyService.insertSelective(accountCompany);
 	}
 	/**
@@ -1038,6 +1056,7 @@ public class ContractController {
 				case AccountItemType.NET_PROFIT_FEE://纯利润
 					for(ContractItems temp : contractItemsList){
 						//支付总价-硬成本价格*商品数量
+						//TODO 硬成本价格改为折减后的硬成本价格
 						BigDecimal price = temp.getHardCostPrice().multiply(new BigDecimal(temp.getNum().toString()));
 						price = temp.getPayPriceTotal().subtract(price);
 						amount = amount.add(price);
@@ -1065,7 +1084,7 @@ public class ContractController {
 	 * @param createTime
 	 * @return
 	 */
-	private AccountCompany getAccountCompanyEntity(Orders order, Contract contract, BigDecimal amount, int type, Date createTime){
+	private AccountCompany getAccountCompanyEntity(Orders order, Contract contract, BigDecimal amount, int type, Date createTime, String year, String month){
 		Subject subject = SecurityUtils.getSubject();
 		UserBean user = (UserBean)subject.getPrincipal();
 		
@@ -1080,6 +1099,8 @@ public class ContractController {
 		accountCompany.setOperatorId(user.getId());
 		accountCompany.setOperatorName(user.getNickname());
 		accountCompany.setCreateTime(createTime);
+		accountCompany.setYear(year);
+		accountCompany.setMonth(month);
 		return accountCompany;
 	}
 	
@@ -1088,7 +1109,7 @@ public class ContractController {
 	 * @param orderId
 	 * @param contractId
 	 */
-	private void addAccountPersonal(long orderId, long contractId, String bindUserJSON){
+	private void addAccountPersonal(long orderId, long contractId, String bindUserJSON, String year, String month){
 		Orders order = orderService.selectByPrimaryKey(orderId);
 		Contract contract = contractService.selectByPrimaryKey(contractId);
 		
@@ -1102,11 +1123,11 @@ public class ContractController {
 			if(StringUtils.isNotBlank(userId) && StringUtils.isNotBlank(roleId)){
 				//在账本中增加业绩
 				type = AccountItemType.PERFORMANCE_FEE;//业绩
-				AccountPersonal accountPersonal = this.getAccountPersonalEntity(order, contract, this.getAmount(contract.getContractNo(), type), type, Long.parseLong(userId), Long.parseLong(roleId), createTime);
+				AccountPersonal accountPersonal = this.getAccountPersonalEntity(order, contract, this.getAmount(contract.getContractNo(), type), type, Long.parseLong(userId), Long.parseLong(roleId), createTime, year, month);
 				accountPersonalService.insertSelective(accountPersonal);
 				//在账本中增加差价
 				type = AccountItemType.PRICE_DIFFERENCE_FEE;//差价
-				accountPersonal = this.getAccountPersonalEntity(order, contract, this.getAmount(contract.getContractNo(), type), type, Long.parseLong(userId), Long.parseLong(roleId), createTime);
+				accountPersonal = this.getAccountPersonalEntity(order, contract, this.getAmount(contract.getContractNo(), type), type, Long.parseLong(userId), Long.parseLong(roleId), createTime, year, month);
 				accountPersonalService.insertSelective(accountPersonal);
 			}
 		}
@@ -1173,7 +1194,7 @@ public class ContractController {
 	 * @param createTime
 	 * @return
 	 */
-	private AccountPersonal getAccountPersonalEntity(Orders order, Contract contract, BigDecimal amount, int type, long bindUserId, long roleId, Date createTime){
+	private AccountPersonal getAccountPersonalEntity(Orders order, Contract contract, BigDecimal amount, int type, long bindUserId, long roleId, Date createTime, String year, String month){
 		Subject subject = SecurityUtils.getSubject();
 		UserBean user = (UserBean)subject.getPrincipal();
 		
@@ -1192,6 +1213,8 @@ public class ContractController {
 		accountPersonal.setOperatorId(user.getId());
 		accountPersonal.setOperatorName(user.getNickname());
 		accountPersonal.setCreateTime(createTime);
+		accountPersonal.setYear(year);
+		accountPersonal.setMonth(month);
 		return accountPersonal;
 	}
 	

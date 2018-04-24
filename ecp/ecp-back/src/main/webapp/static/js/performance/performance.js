@@ -209,12 +209,14 @@ function sendRequest(){
 $(function() {
 	//================INITIALIZE====================
 	
-	updateUIArea();
+	loadProgressPage();//初始化加载进度列表页面
+	
+	/*updateUIArea();
 	updateUserRole();
 	
 	updateUIDealState(g_dealstate_cond);
 	updateUIOrderTime(g_ordertime_cond);
-	updateUISearchCond(g_searchTypeValue);
+	updateUISearchCond(g_searchTypeValue);*/
 	
 
 	//===================BUSINESS业务处理==============
@@ -438,21 +440,20 @@ $(function() {
 	/**
 	 * 进度列表
 	 */
-	$("#sales-progress-btn").on("click", function(e) {
+	function loadProgressPage(){
+		console.log("加载进度列表");
 		var url = BASE_CONTEXT_PATH + "/back/performance/get-sales-progress"; // 需要提交的 url
-		var fullYear = getFullYear();
-		//区域条件
-		var provinceName=$("#provinceName").val();
-		var cityName=$("#cityName").val();
-		var countyName=$("#countyName").val();
+		//var fullYear = getFullYear();
+		//年度条件
+		var fullYear=$("#select-year").val();
 		//用户/角色条件
 		var userId=$("#select-user").val();
 		var roleId=$("#select-role").val();
 		
-		var params = {"fullYear":fullYear, "provinceName":provinceName, "cityName":cityName, "countyName":countyName, "userId":userId,"roleId":roleId};
+		var params = {"fullYear":fullYear, "userId":userId,"roleId":roleId};
 		loadProgressPage(url, params);
 		
-	});
+	}
 	
 	/**
 	 * 加载进度列表页面

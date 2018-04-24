@@ -322,10 +322,17 @@
 		trade_orders o
 	INNER JOIN contract c ON o.id = c.order_id
 	LEFT JOIN user_extends ue ON o.extend_id = ue.extend_id
+	LEFT JOIN cust_lock_rel l ON ue.extend_id=l.cust_id
 	WHERE 
-		o.deleted=1 AND o.yn=1 and o.extend_id is not NULL
+		o.deleted=1 AND o.yn=1 and o.extend_id is not NULL AND l.deleted=1
 		<!-- AND
   	 	o.create_time&gt;=DATE_ADD(now(),INTERVAL #{orderTimeCond} MONTH) -->
+  	 	<if test="role_id_list!=null and role_id_list.size>0">
+			AND l.role_id in
+			<foreach collection="role_id_list" index="index" item="item" open="(" separator="," close=")" >
+				#{item}
+			</foreach>
+		</if>
 		<if test="order_id!=null and order_id!=''">
 			and o.id = #{order_id}
 		</if>

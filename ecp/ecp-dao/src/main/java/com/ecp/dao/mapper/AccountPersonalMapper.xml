@@ -205,6 +205,43 @@
   		group by u.id
   	
   	</select>
-  	
+  	<!-- 查询指定时间,指定用户,指定分录类型的所有条目 -->
+  	<select id="getItemsByDateAndUser" resultType="map">
+		SELECT
+			*, u.username,
+			u.nickname,
+			r.role_code,
+			r.role_name
+		FROM
+			account_personal ap
+		LEFT JOIN `user` u ON ap.bind_user_id = u.id
+		LEFT JOIN role r ON ap.role_id = r.role_id
+		<where>
+			ap.deleted=1 AND
+			u.deleted = 1 AND 
+			r.deleted = 1 AND 
+			ap.year&gt;=#{startDateYear} AND
+			ap.month&gt;=#{startDateMonth} AND
+			ap.year&lt;=#{endDateYear}	AND
+			ap.month&lt;=#{endDateMonth}
+  			<!-- 分录类型条件 -->
+			<if test="itemTypeList!=null and itemTypeList.size&gt;0">
+				AND
+				ap.type in 	
+				<foreach close=")" collection="itemTypeList" index="index" item="itemType" open="(" separator=",">  
+					#{itemType}  
+				</foreach>  		
+			</if>
+			
+			<if test="userId!=null and userId>0">
+				AND ap.bind_user_id=#{userId}
+			</if>
+			<if test="roleId!=null and roleId>0">
+				AND ap.role_id=#{roleId}
+			</if>
+			
+		 </where>  	 
+  	 	 order by ap.create_time DESC  	 
+  	</select>
   	
 </mapper>

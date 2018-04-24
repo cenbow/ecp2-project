@@ -100,4 +100,26 @@ public List<AccountPersonal> selectItems(
 	//根据公司分录ID查询所对应的用户(在个人帐薄中查询)
 	public List<Map<String,Object>> getUserByAccountCompanyId(long accountCompanyId);
 	
+	/** 
+	* @Title: getItemsByDateAndUser 
+	* @Description: 根据时间及用户查询会计条目. 
+	* @param @param startDateYear
+	* @param @param startDateMonth
+	* @param @param endDateYear
+	* @param @param endDateMonth
+	* @param @param userId
+	* @param @param roleId 查询四项费用时角色为null
+	* @param @param itemTypeList  会计条目类型
+	* @param @return     
+	* @return List<Map<String,Object>>    返回类型 
+	* @throws 
+	*/
+	public List<Map<String,Object>> getItemsByDateAndUser(String startDateYear,
+		String startDateMonth,
+		String endDateYear,
+		String endDateMonth,
+		long   userId,
+		Long   roleId,
+		List<Integer> itemTypeList);
+	
 }
