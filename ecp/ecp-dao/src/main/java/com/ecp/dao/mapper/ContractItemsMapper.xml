@@ -37,6 +37,10 @@
     <result column="lowest_price" jdbcType="DECIMAL" property="lowestPrice" />
     <result column="hard_cost_price" jdbcType="DECIMAL" property="hardCostPrice" />
     <result column="is_plan_product" jdbcType="TINYINT" property="isPlanProduct" />
+    <result column="discount_hard_cost_price" jdbcType="DECIMAL" property="discountHardCostPrice" />
+    <result column="last_hard_cost_price" jdbcType="DECIMAL" property="lastHardCostPrice" />
+    
+    
   </resultMap>
   <sql id="Base_Column_List">
     <!--
@@ -46,7 +50,7 @@
     delivery_type, integral, integral_discount, item_id, num, order_id, pay_price, pay_price_total, 
     primitive_price, promotion_discount, promotion_id, promotion_type, shop_freight_template_id, 
     sku_id, sku_name, update_time, discount_price, deleted, brand_name, model, parms, 
-    highest_price, lowest_price, hard_cost_price, is_plan_product
+    highest_price, lowest_price, hard_cost_price, is_plan_product,discount_hard_cost_price,last_hard_cost_price
   </sql>
   <select id="selectItemsByContractNo" resultType="map">
   	 select * from contract_items as o left join item_sku_picture as p
