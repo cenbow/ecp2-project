@@ -112,7 +112,8 @@ public interface IAccountCompanyService extends IBaseService<AccountCompany, Lon
 			 List<Map<String,Object>> agentIdList,
 			 List<Integer>itemTypeList,
 			 long bindedUserId,
-			 List<Long> roleIdList
+			 List<Long> roleIdList,
+			 int totalPayFlag
 			 );
 	
 	/** 
@@ -173,7 +174,8 @@ public interface IAccountCompanyService extends IBaseService<AccountCompany, Lon
 			 List<Map<String,Object>> agentIdList,
 			 List<Integer>itemTypeList,
 			 long bindedUserId,
-			 List<Long> roleIdList
+			 List<Long> roleIdList,
+			 int totalPayFlag
 			 );
 	
 }

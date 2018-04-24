@@ -4,6 +4,7 @@ import java.math.BigDecimal;
 import java.util.List;
 import java.util.Map;
 
+import org.apache.ibatis.annotations.Param;
 import org.springframework.stereotype.Service;
 
 import com.ecp.dao.AccountCompanyMapper;
@@ -57,7 +58,7 @@ public class AccountCompanyServiceImpl extends AbstractBaseService<AccountCompan
 			List<Map<String, Object>> agentIdList, 
 			List<Integer> itemTypeList, 
 			long bindedUserId,
-			List<Long> roleIdList) {
+			List<Long> roleIdList,int totalPayFlag) {
 		
 		return accountCompanyMapper.selectItems(
 				-orderTimeCond, 
@@ -70,7 +71,7 @@ public class AccountCompanyServiceImpl extends AbstractBaseService<AccountCompan
 				agentIdList,				
 				itemTypeList, 
 				bindedUserId,
-				roleIdList
+				roleIdList,totalPayFlag
 				);
 	}
 
@@ -88,7 +89,7 @@ public class AccountCompanyServiceImpl extends AbstractBaseService<AccountCompan
 	public BigDecimal searchAccountItemAmount(int orderTimeCond, int dealStateCond, int searchTypeValue,
 			String condValue, String provinceName, String cityName, String countyName,
 			List<Map<String, Object>> agentIdList, List<Integer> itemTypeList, long bindedUserId,
-			List<Long> roleIdList) {
+			List<Long> roleIdList,int totalPayFlag) {
 		
 		return accountCompanyMapper.searchAccountItemAmount(
 				-orderTimeCond, 
@@ -101,7 +102,8 @@ public class AccountCompanyServiceImpl extends AbstractBaseService<AccountCompan
 				agentIdList,				
 				itemTypeList, 
 				bindedUserId,
-				roleIdList
+				roleIdList,
+				totalPayFlag
 				);
 	}
 

@@ -76,7 +76,38 @@ public class ContractItems {
     @Column(name = "discount_price")
     private BigDecimal discountPrice;
 
-    /**
+    
+    /** 
+    	* @Fields discountHardCostPrice : 硬成本价折减额度 
+    */
+    @Column(name = "discount_hard_cost_price")
+    private BigDecimal discountHardCostPrice;
+    
+    
+    /** 
+    	* @Fields lastHardCostPrice : 最终的硬成本价 
+    */
+    @Column(name = "last_hard_cost_price")
+    private BigDecimal lastHardCostPrice;
+    
+    
+    public BigDecimal getDiscountHardCostPrice() {
+		return discountHardCostPrice;
+	}
+
+	public void setDiscountHardCostPrice(BigDecimal discountHardCostPrice) {
+		this.discountHardCostPrice = discountHardCostPrice;
+	}
+
+	public BigDecimal getLastHardCostPrice() {
+		return lastHardCostPrice;
+	}
+
+	public void setLastHardCostPrice(BigDecimal lastHardCostPrice) {
+		this.lastHardCostPrice = lastHardCostPrice;
+	}
+
+	/**
      * 是否删除（1-未删除，2-删除，默认1）
      */
     private Integer deleted;

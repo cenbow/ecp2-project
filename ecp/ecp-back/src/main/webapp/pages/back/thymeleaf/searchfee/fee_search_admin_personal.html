@@ -2,7 +2,7 @@
 <html>
 <head>
 <meta charset="UTF-8">
-<title>费用查询页面:显示查询条件</title>
+<title>费用查询页面:显示查询条件(系统管理员---个人视角)</title>
 
 <style>
 a {
@@ -98,12 +98,9 @@ a i {
 						<span for="select-perspective" >视角:</span>
 						<select id="select-perspective" >
 							<span th:if="${perspectiveType}=='1'" th:remove="tag">
-								<option th:value ="1" th:text="'公司视角'" selected="selected">公司视角</option>
-								<option th:value ="2" th:text="'个人视角'" >个人视角</option>	
-							</span>					
-							<span th:if="${perspectiveType}=='2'" th:remove="tag">						
+								<option th:value ="1" th:text="'公司视角'" >公司视角</option>
 								<option th:value ="2" th:text="'个人视角'" selected="selected">个人视角</option>	
-							</span>					
+							</span>				
 						</select>
 						
 					</li>
@@ -277,13 +274,10 @@ a i {
 			$("#select-perspective").on("change",function(){
 				var perspectiveType=$(this).val();
 				if(perspectiveType==1){  //公司视角
-					//loadFeeSearch(null,null);
-					//console.log("company--------");
+					loadFeeSearch(null,null);
 				}
 				else if(perspectiveType==2){  //个人视角
-					console.log("personal-------------")
-					loadAdminPersonalFeeSearch(null,null);
-					
+					//loadAdminPersonalFeeSearch(null,null);
 				}
 			});
 			

@@ -11,7 +11,8 @@ function loadPage(containerId, url, parms, callbackFunc) {
 	url = BASE_CONTEXT_PATH + url;
 	if (callbackFunc == null) {
 		callbackFunc = defaultCallbackFunc();
-	}
+	}	
+	//console.log("loadpage---url:"+url);
 	$(containerId).load(url, parms, callbackFunc);
 }
 

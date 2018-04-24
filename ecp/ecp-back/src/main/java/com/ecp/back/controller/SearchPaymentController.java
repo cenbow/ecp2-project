@@ -448,7 +448,7 @@ public class SearchPaymentController {
 																provinceName,cityName,countyName,
 																agentIdList,														
 																itemTypeList,
-																unbindUserId,roleIdList);
+																unbindUserId,roleIdList,-1);
 		//PageInfo<Map<String,Object>> pageInfo = new PageInfo<Map<String,Object>>(orderList);// (使用了拦截器或是AOP进行查询的再次处理) 查询分页:结束
 		return accountList;
 	}

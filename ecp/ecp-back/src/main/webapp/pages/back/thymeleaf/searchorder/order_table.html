@@ -2,7 +2,7 @@
 <html>
 <head>
 <meta charset="UTF-8">
-<title>订单管理-订单列表</title>
+<title>订单合同查询-订单合同列表</title>
 
 <style>
 
@@ -183,7 +183,7 @@
 	<!-- 订单列表 -->
 	<div class="row clearfix">
 		<div class="col-md-12 column">
-			<h5>订单列表</h5>
+			<h5>订单/合同列表</h5>
 			<br />
 			
 			<!-- 区域查询条件 -->
@@ -239,7 +239,7 @@
 			</div>
 			
 			<!-- 视角 -->
-			<div  style="display:inline-block;  margin-left:150px;">
+			<!-- <div  style="display:inline-block;  margin-left:150px;">
 				<label for="select-perspective" >视角:</label>
 				<select id="select-perspective" >
 					<span th:if="${perspectiveType}=='company'" th:remove="tag">
@@ -251,7 +251,7 @@
 					</span>					
 															
 				</select>				
-			</div>
+			</div> -->
 			
 			
 			<hr style="height:1px;border:none;border-top:1px solid lightgray;">
@@ -296,7 +296,7 @@
 				</div>
 			</div>
 			<a id="refresh-item"
-						th:href="@{/back/fee/show}" title="刷新列表"	style="float: right; margin-right: 20px">
+						th:href="@{/back/searchorder/show}" title="刷新列表"	style="float: right; margin-right: 20px">
 						<i class="icon-refresh icon-large"></i>
 			</a>
 			
@@ -350,7 +350,7 @@
 							</div>
 						</th>
 						<th>公司名称</th>
-						<th>操作</th>
+						<!-- <th>操作</th> -->
 					</tr>
 				</thead>
 				<tbody>
@@ -388,8 +388,8 @@
 							</span>
 						</td>
 						<td th:text="${order.company_name}">公司名称</td>
-						<td>
-							<!-- <a type="button" th:href="@{/back/order/detail(id=${order.id})}" class="btn btn-primary show-detail" target="_blank">详情</a> -->
+						<!-- <td>
+							<a type="button" th:href="@{/back/order/detail(id=${order.id})}" class="btn btn-primary show-detail" target="_blank">详情</a>
 							<a type="button" th:attr="data-id=${order.id},
 													data-orderid=${order.order_id},
 													data-contractState=${order.contract_state},
@@ -398,24 +398,17 @@
 												title="订单费用">												
 								<i class=" icon-money icon-large" style="color:darkblue"></i>
 							</a>
-							<!-- <a type="button" th:attr="data-id=${order.id},
-													data-orderid=${order.order_id},
-													data-contractState=${order.contract_state}" 
-											class="edit-market-fee" 
-											title="市场费用管理">
-								<i class=" icon-coffee icon-large" style="color:darkblue"></i>
-							</a> -->
-						</td>
+						</td> -->
 
 					</tr>
-					<tr>						
+					<!-- <tr>						
 						<td colspan="8">
-							<!-- <a type="button" id="btn-user-role-fee-list" class="btn btn-primary" style="float:right;margin-left:10px;">人员费用列表</a>
-							<a type="button" id="btn-order-fee-list" class="btn btn-primary" style="float:right;margin-left:10px;">订单费用列表</a> -->
+							<a type="button" id="btn-user-role-fee-list" class="btn btn-primary" style="float:right;margin-left:10px;">人员费用列表</a>
+							<a type="button" id="btn-order-fee-list" class="btn btn-primary" style="float:right;margin-left:10px;">订单费用列表</a>
 							<a type="button" id="btn-all-fee-list" class="btn btn-primary" style="float:right;margin-left:10px;">费用列表</a>
 							
 						</td>
-					</tr>
+					</tr> -->
 
 				</tbody>
 			</table>
@@ -445,8 +438,8 @@
 		
 		//用于置界面状态
 		//TODO 
-		var ret_perspectiveType=[[${perspectiveType}]]   //视角类型
-		var ret_perspectiveValue=[[${perspectiveValue}]]  //视角值
+		/* var ret_perspectiveType=[[${perspectiveType}]]   //视角类型
+		var ret_perspectiveValue=[[${perspectiveValue}]]  //视角值 */
 		/*]]>*/  
 	</script>
 	
@@ -466,18 +459,18 @@
 	<!-- <div th:include="/thymeleaf/common/_footer::footer" class="footer"></div> -->
 
 	<!-- 当用户点击查询条件时，采用些隐藏表单提交 -->
-	<form method="post" id="searchform">
+	<div>
 		<!-- 保存页号与页大小 -->
 		<input type="hidden" name="pageNum" id="pageNum" th:value="${pageInfo.pageNum}"> 
 		<input type="hidden" name="pageSize" id="pageSize" th:value="${pageInfo.pageSize}">
-	</form>
+	</div>
 	
 	<!-- 地区选择 -->
 	<script type="text/javascript" th:src="@{/static/js/distpicker/distpicker.data.js}"></script>
 	<script type="text/javascript" th:src="@{/static/js/distpicker/distpicker.js}"></script>
 	
 	
-	<script type="text/javascript"	th:src="@{/static/js/searchfee/searchFee.js}"></script>
+	<script type="text/javascript"	th:src="@{/static/js/searchorder/searchorder.js}"></script>
 
 </body>
 </html>

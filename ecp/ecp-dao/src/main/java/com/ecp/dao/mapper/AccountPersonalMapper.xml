@@ -205,6 +205,7 @@
   		group by u.id
   	
   	</select>
+
   	<!-- 查询指定时间,指定用户,指定分录类型的所有条目 -->
   	<select id="getItemsByDateAndUser" resultType="map">
 		SELECT
@@ -242,6 +243,86 @@
 			
 		 </where>  	 
   	 	 order by ap.create_time DESC  	 
+  	</select>
+  	
+  	<!-- 查询指定时间,指定用户,指定分录类型的所有条目 -->
+  	<select id="getItemsByDateAndUser" resultType="map">
+		select * from account_personal ac 
+		<where>
+			ac.deleted=1 AND
+			ac.year&gt;=#{startDateYear} AND
+			ac.month&gt;=#{startDateMonth} AND
+			ac.year&lt;=#{endDateYear}	AND
+			ac.month&lt;=#{endDateMonth}
+  			<!-- 分录类型条件 -->
+			<if test="itemTypeList!=null and itemTypeList.size&gt;0">
+				AND
+				ac.type in 	
+				<foreach close=")" collection="itemTypeList" index="index" item="itemType" open="(" separator=",">  
+					#{itemType}  
+				</foreach>  		
+			</if>
+			
+			<!-- 用户ID条件:如果是-1时,查询所有用户 -->
+			<if test="userId!=-1">
+				AND ac.bind_user_id=#{userId}
+			</if>
+			
+		 </where>  	 
+  	 	 order by ac.create_time DESC  	 
+  	</select>
+  	
+  	<!-- 查询指定时间,指定用户,指定分录类型的所有条目  SUM-->
+  	<select id="getItemsSumByDateAndUser" resultType="map">
+		select IFNULL(SUM(ac.amount),0) as amountSum from account_personal ac 
+		<where>
+			ac.deleted=1 AND
+			ac.year&gt;=#{startDateYear} AND
+			ac.month&gt;=#{startDateMonth} AND
+			ac.year&lt;=#{endDateYear}	AND
+			ac.month&lt;=#{endDateMonth}
+  			<!-- 分录类型条件 -->
+			<if test="itemTypeList!=null and itemTypeList.size&gt;0">
+				AND
+				ac.type in 	
+				<foreach close=")" collection="itemTypeList" index="index" item="itemType" open="(" separator=",">  
+					#{itemType}  
+				</foreach>  		
+			</if>
+			
+			<!-- 用户ID条件:如果是-1时,查询所有用户 -->
+			<if test="userId!=-1">
+				AND ac.bind_user_id=#{userId}
+			</if>
+			
+		 </where>  	 
+  	 	 order by ac.create_time DESC  	 
+  	</select>
+  	
+  	<!-- 查询指定时间,指定用户,指定分录类型的所有条目  分组求和 SUM-->
+  	<select id="getItemsGroupSumByDateAndUser" resultType="map">
+		select IFNULL(SUM(ac.amount),0) as amountSum,type from account_personal ac 
+		<where>
+			ac.deleted=1 AND
+			ac.year&gt;=#{startDateYear} AND
+			ac.month&gt;=#{startDateMonth} AND
+			ac.year&lt;=#{endDateYear}	AND
+			ac.month&lt;=#{endDateMonth}
+  			<!-- 分录类型条件 -->
+			<if test="itemTypeList!=null and itemTypeList.size&gt;0">
+				AND
+				ac.type in 	
+				<foreach close=")" collection="itemTypeList" index="index" item="itemType" open="(" separator=",">  
+					#{itemType}  
+				</foreach>  		
+			</if>
+			
+			<!-- 用户ID条件:如果是-1时,查询所有用户 -->
+			<if test="userId!=-1">
+				AND ac.bind_user_id=#{userId}
+			</if>			
+		 </where>  	 
+  	 	 group by type   	 
   	</select>
   	
 </mapper>

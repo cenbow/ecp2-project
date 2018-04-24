@@ -72,6 +72,6 @@ public interface IContractItemsService extends IBaseService<ContractItems, Long>
 			 int dealStateCond,
 			 int searchTypeValue,String condValue,
 			 String provinceName,String cityName,String countyName,
-			 List<Map<String,Object>> agentIdList);
+			 List<Map<String,Object>> agentIdList,int totalPayFlag);
 	
 }

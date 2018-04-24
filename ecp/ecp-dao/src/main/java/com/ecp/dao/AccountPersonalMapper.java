@@ -62,4 +62,28 @@ public interface AccountPersonalMapper extends Mapper<AccountPersonal> {
 			@Param("roleId") Long roleId, 
 			@Param("itemTypeList") List<Integer> itemTypeList);
 	
+	public List<Map<String, Object>> getItemsByDateAndUser(
+			@Param("startDateYear") String startDateYear, 
+			@Param("startDateMonth") String startDateMonth,
+			@Param("endDateYear") String endDateYear, 
+			@Param("endDateMonth") String endDateMonth, 
+			@Param("userId") long userId, 
+			@Param("itemTypeList") List<Integer> itemTypeList);
+	
+	public List<Map<String, Object>> getItemsSumByDateAndUser(
+			@Param("startDateYear") String startDateYear, 
+			@Param("startDateMonth") String startDateMonth,
+			@Param("endDateYear") String endDateYear, 
+			@Param("endDateMonth") String endDateMonth, 
+			@Param("userId") long userId, 
+			@Param("itemTypeList") List<Integer> itemTypeList);
+	
+	public List<Map<String, Object>> getItemsGroupSumByDateAndUser(
+			@Param("startDateYear") String startDateYear, 
+			@Param("startDateMonth") String startDateMonth,
+			@Param("endDateYear") String endDateYear, 
+			@Param("endDateMonth") String endDateMonth, 
+			@Param("userId") long userId, 
+			@Param("itemTypeList") List<Integer> itemTypeList);
+	
 }

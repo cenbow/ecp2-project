@@ -47,9 +47,9 @@ public class ContractItemsServiceImpl extends AbstractBaseService<ContractItems,
 
 	@Override
 	public BigDecimal searchContractAmount(int orderTimeCond, int dealStateCond, int searchTypeValue, String condValue,
-			String provinceName, String cityName, String countyName, List<Map<String, Object>> agentIdList) {
+			String provinceName, String cityName, String countyName, List<Map<String, Object>> agentIdList,int totalPayFlag) {
 		return contractItemsMapper.searchContractAmount( -orderTimeCond,  dealStateCond,  searchTypeValue,  condValue,
-				 provinceName,  cityName,  countyName, agentIdList);
+				 provinceName,  cityName,  countyName, agentIdList,totalPayFlag);
 	}
 
 }

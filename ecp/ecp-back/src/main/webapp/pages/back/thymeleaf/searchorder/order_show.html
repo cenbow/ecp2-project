@@ -2,7 +2,7 @@
 <html>
 <head>
 <meta charset="UTF-8">
-<div th:include="/back/thymeleaf/common/_head2::headx('订单管理')"
+<div th:include="/back/thymeleaf/common/_head2::headx('订单/合同查询')"
 	th:remove="tag"></div>
 </head>
 <body>
@@ -27,7 +27,7 @@
 									<div class="panel panel-default">
 										<div class="panel-heading">
 											<h3 class="panel-title">
-												费用查询
+												订单/合同查询
 											</h3>
 										</div>
 										<div class="panel-body" id="container">
@@ -51,7 +51,7 @@
 	<script>
 		/*function:加载页面 */
 		function loadOrder(parms, callback) {
-			var url = "/back/fee/ordertable";
+			var url = "/back/searchorder/ordertable";
 			var callbackFunc = callback;
 			var containerId = "#container";
 			loadPage(containerId, url, parms, callbackFunc);
@@ -64,7 +64,6 @@
 				dealStateCond:处理状态条件值
 		 */
 		function defaultLoadOrder(orderTimeCond, dealStateCond) {
-			//var url = "/back/order/ordertable";
 
 			var parms = new Object(); //参数
 			parms.orderTimeCond = orderTimeCond; //时间段条件：近三个月订单

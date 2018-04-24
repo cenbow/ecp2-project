@@ -26,6 +26,7 @@ import com.ecp.common.util.RequestResultUtil;
 import com.ecp.entity.AccountCompany;
 import com.ecp.entity.AccountPersonal;
 import com.ecp.entity.Orders;
+import com.ecp.entity.Role;
 import com.ecp.entity.User;
 import com.ecp.entity.UserExtends;
 import com.ecp.service.back.IRoleService;
@@ -55,6 +56,10 @@ public class SearchFeeController {
 	
 	private static final String RESPONSE_THYMELEAF_BACK = "back/thymeleaf/searchfee/";
 	private static final int PAGE_SIZE = 8;
+	
+	//视角类型
+	private static final int PERSPECTIVE_TYPE_COMPANY=1;
+	private static final int PERSPECTIVE_TYPE_PERSONAL=2;
 	
 
 	@Autowired
@@ -87,7 +92,7 @@ public class SearchFeeController {
 	
 	/** 
 		* @Title: loadSearchFeeFrame 
-		* @Description: 显示四项费用"查询框架" 
+		* @Description: 显示费用"查询框架" 
 		* @param @param model
 		* @param @return     
 		* @return String    返回类型 
@@ -95,12 +100,176 @@ public class SearchFeeController {
 	*/
 	@RequestMapping(value = "/loadsearch")
 	public String loadSearchFeeFrame(Model model) {
-		//根据不同的用户查询
-		//查询IS/OS用户
-		List<Map<String,Object>> userList=getISAndOSUser();
+		//(1)根据不同的登录用户:查询查询IS/OS用户
+		//		系统管理员(经理级别):可以查询所有OS/IS用户
+		//		其它角色用户:查询自己的信息.
+		List<Map<String,Object>> userList=null;
+		//默认加载查询用户(admin-公司视角, OS/IS用户-个人视角)
+		userList=getUsersByLonginUserPermission();		
 		model.addAttribute("userList", userList);
 		
+		
+		//(2)根据登录用户权限确定视角列表.
+		//		系统管理员:两个视角;
+		//		其它用户:一个视角;
+		/*  
+		 *查询当前登录用户的角色权限,
+		 *	true:经理级别-两个视角
+		 *	false:个人帐号:一个视角 
+		 */
+		boolean manFlag=needSearchAll();
+		if(manFlag){
+			model.addAttribute("perspectiveType", PERSPECTIVE_TYPE_COMPANY);
+		}
+		else{
+			model.addAttribute("perspectiveType", PERSPECTIVE_TYPE_PERSONAL);
+		}
+				
+		
 		return RESPONSE_THYMELEAF_BACK + "fee_search";
+	}
+	
+	//admin:个人视角.            
+	@RequestMapping(value = "/loadAdminPersonalSearch")
+	public String loadAdminPersonalSearchFrame(Model model) {
+		//(1)根据不同的登录用户:查询查询IS/OS用户
+		//		系统管理员(经理级别):可以查询所有OS/IS用户
+		//		其它角色用户:查询自己的信息.
+		List<Map<String,Object>> userList=null;
+		userList=getISAndOSUser(); //admin:个人视角.
+		model.addAttribute("userList", userList);
+		
+		
+		//(2)根据登录用户权限确定视角列表.
+		//		系统管理员:两个视角;
+		//		其它用户:一个视角;
+		/*  
+		 *查询当前登录用户的角色权限,
+		 *	true:经理级别-两个视角
+		 *	false:个人帐号:一个视角 
+		 */
+		boolean manFlag=needSearchAll();
+		if(manFlag){
+			model.addAttribute("perspectiveType", PERSPECTIVE_TYPE_COMPANY);
+		}
+		else{
+			model.addAttribute("perspectiveType", PERSPECTIVE_TYPE_PERSONAL);
+		}
+				
+		
+		return RESPONSE_THYMELEAF_BACK + "fee_search_admin_personal";
+	}
+	
+	
+	/** 
+	* @Title: needSearchAll 
+	* @Description: 根据登录用户的角色查询:是否查询所有
+	* @param @return     
+	* @return boolean    返回类型 
+	* @throws 
+	*/
+	private boolean needSearchAll(){
+		//取得当前用户角色列表
+		Subject subject = SecurityUtils.getSubject();
+		UserBean user = (UserBean)subject.getPrincipal();
+		List<Role> roleList=user.getRoleList();
+		
+		//查询是否为经理级别
+		for(int i=0;i<roleList.size();i++){
+			Role role=roleList.get(i);
+			if(role.getRoleCode()==null || role.getRoleCode().equals("")){
+				continue;
+			}
+			switch(role.getRoleCode()){
+				case RoleCodeConstants.ADMIN:
+				case RoleCodeConstants.MANAGER:
+				case RoleCodeConstants.BUSSMAN:
+				case RoleCodeConstants.SALEMAN:				
+					return true;
+				default:
+					break;				
+			}
+		}
+		
+		//查询是否为OS/IS级别
+		//查询是否为经理级别
+		for(int i=0;i<roleList.size();i++){
+			Role role=roleList.get(i);
+			if(role.getRoleCode()==null || role.getRoleCode().equals("")){
+				continue;
+			}
+			
+			switch(role.getRoleCode()){
+				case RoleCodeConstants.OS:
+				case RoleCodeConstants.IS:
+				{
+					return false;
+				}
+				default:
+					break;
+			}
+		}
+		
+		return false;	
+		
+	}
+	
+	
+	/** 
+		* @Title: getUsersByLonginUserPermission 
+		* @Description: 根据登录用户ID获取用户列表,如果是系统管理员,获取所有的OS/IS用户,否则只有自己 
+		* @param @return     
+		* @return List<Map<String,Object>>    返回类型 
+		* @throws 
+	*/
+	private List<Map<String,Object>>  getUsersByLonginUserPermission(){
+		//取得当前用户角色列表
+		Subject subject = SecurityUtils.getSubject();
+		UserBean user = (UserBean)subject.getPrincipal();
+		List<Role> roleList=user.getRoleList();
+		
+		//查询是否为经理级别
+		for(int i=0;i<roleList.size();i++){
+			Role role=roleList.get(i);
+			if(role.getRoleCode()==null || role.getRoleCode().equals("")){
+				continue;
+			}
+			switch(role.getRoleCode()){
+			case RoleCodeConstants.ADMIN:
+			case RoleCodeConstants.MANAGER:
+			case RoleCodeConstants.BUSSMAN:
+			case RoleCodeConstants.SALEMAN:	
+				//查询所有的OS/IS列表  
+				//List<Map<String,Object>> userList=getISAndOSUser();
+				List<Map<String,Object>> userList=new ArrayList<>();
+				return userList;
+			default:
+				break;				
+			}
+		}
+		
+		//查询是否为OS/IS级别
+		//查询是否为经理级别
+		for(int i=0;i<roleList.size();i++){
+			Role role=roleList.get(i);
+			if(role.getRoleCode()==null || role.getRoleCode().equals("")){
+				continue;
+			}
+			
+			switch(role.getRoleCode()){
+			case RoleCodeConstants.OS:
+			case RoleCodeConstants.IS:
+			{
+				List<Map<String,Object>> userList=userService.getById(user.getId()); //登录用户自身.
+				return userList;
+			}
+			default:
+				break;
+			}
+		}
+		
+		return new ArrayList<Map<String,Object>>();
+		
 	}
 	
 	/** 
@@ -117,17 +286,23 @@ public class SearchFeeController {
 		* @throws 
 	*/
 	@RequestMapping(value = "/feetable")
-	public String searchFourFeeTable(String startDateYear,
+	public String searchFeeTable(String startDateYear,
 								String startDateMonth,
 								String endDateYear,
 								String endDateMonth,
 								long	userId,
 								Integer pageNum, 
 								Integer pageSize,
-								
+								int perspectiveType,  //视角
+								int accountItemType,  //费用类型
 								Model model) {
 		
-		searchFourFee(
+		//如果登录用户是OS/IS级别用户
+		if(!needSearchAll() && userId==-1){
+			userId=getLoginUser().getId();
+		}
+		
+		searchFee(
 				 startDateYear,
 				 startDateMonth,
 				 endDateYear,
@@ -135,6 +310,8 @@ public class SearchFeeController {
 				 userId,
 				 pageNum,
 				 pageSize,
+				 perspectiveType,
+				 accountItemType,
 				 model);
 		
 		model.addAttribute("startDateYear", startDateYear);
@@ -144,6 +321,12 @@ public class SearchFeeController {
 		model.addAttribute("userId", userId);
 		model.addAttribute("pageNum", pageNum);
 		model.addAttribute("pageSize", pageSize);
+		
+		model.addAttribute("perspectiveType", perspectiveType);  //视角条件
+		
+		model.addAttribute("accountItemType", accountItemType);	 //费用类型条件
+		
+		
 		
 		return RESPONSE_THYMELEAF_BACK + "fee_table";
 	}
@@ -163,7 +346,7 @@ public class SearchFeeController {
 		* @return List<Map<String,Object>>    返回类型 
 		* @throws 
 	*/
-	private List<Map<String,Object>> searchFourFee(
+	private List<Map<String,Object>> searchFee(
 			String startDateYear,
 			String startDateMonth,
 			String endDateYear,
@@ -171,6 +354,8 @@ public class SearchFeeController {
 			long	userId,
 			Integer pageNum,
 			Integer pageSize,
+			int perspectiveType,
+			int accountItemType,
 			Model model){
 		
 		if(pageNum==null || pageNum==0)
@@ -181,12 +366,71 @@ public class SearchFeeController {
 		
 		//费用类型
 		List<Integer> itemTypeList=new ArrayList<Integer>();
-		itemTypeList.add(AccountItemType.COMMUNICATION_FEE);
-		itemTypeList.add(AccountItemType.ENTERTAINMENT_FEE);
-		itemTypeList.add(AccountItemType.TRANSPORTATION_FEE);
-		itemTypeList.add(AccountItemType.TRAVEL_EXPENSE_FEE);
-		itemTypeList.add(AccountItemType.OTHER_FEE);
+		if(accountItemType==0){  //所有费用类型
+			itemTypeList.add(AccountItemType.COMMUNICATION_FEE);
+			itemTypeList.add(AccountItemType.ENTERTAINMENT_FEE);
+			itemTypeList.add(AccountItemType.TRANSPORTATION_FEE);
+			itemTypeList.add(AccountItemType.TRAVEL_EXPENSE_FEE);
+			itemTypeList.add(AccountItemType.OTHER_FEE);
+			itemTypeList.add(AccountItemType.MARKET_FEE);
+		}
+		else{
+			itemTypeList.add(accountItemType);
+		}
 		
+		switch(perspectiveType){
+		case PERSPECTIVE_TYPE_COMPANY:   //公司视角
+			 searchByPerspectiveCompany( startDateYear,
+					 startDateMonth,
+					 endDateYear,
+					 endDateMonth,
+					 userId,
+					 pageNum,
+					 pageSize,
+					 itemTypeList,
+					 model);
+			break;
+		case PERSPECTIVE_TYPE_PERSONAL:  //个人视角
+			searchByPerspectivePersonal( startDateYear,
+					 startDateMonth,
+					 endDateYear,
+					 endDateMonth,
+					 userId,
+					 pageNum,
+					 pageSize,
+					 itemTypeList,
+					 model);
+			break;			
+		}
+		
+		return null;
+	}
+	
+	/** 
+		* @Title: searchByPerspectiveCompany 
+		* @Description: 公司视角查询 
+		* @param @param startDateYear
+		* @param @param startDateMonth
+		* @param @param endDateYear
+		* @param @param endDateMonth
+		* @param @param userId
+		* @param @param pageNum
+		* @param @param pageSize
+		* @param @param perspectiveType
+		* @param @param accountItemType
+		* @param @param model     
+		* @return void    返回类型 
+		* @throws 
+	*/
+	private List<Map<String,Object>> searchByPerspectiveCompany(String startDateYear,
+			String startDateMonth,
+			String endDateYear,
+			String endDateMonth,
+			long	userId,
+			Integer pageNum,
+			Integer pageSize,
+			List<Integer> itemTypeList,
+			Model model){
 		// 查询 并分页		
 		PageHelper.startPage(pageNum, pageSize); // PageHelper
 		//查询公司帐薄
@@ -198,49 +442,113 @@ public class SearchFeeController {
 		PageInfo<Map<String,Object>> pageInfo = new PageInfo<Map<String,Object>>(accountList);// (使用了拦截器或是AOP进行查询的再次处理)
 		
 		//根据帐薄条目查询费用归属
-		List<Map<String,Object>> accountCompanyList=new ArrayList<Map<String,Object>>();
+		List<Map<String,Object>> accountItemList=new ArrayList<Map<String,Object>>();
 		for(int i=0;i<accountList.size();i++){
 			Map<String,Object> accountItem=new HashMap<String,Object>();
 			
 			
 			Long bindUserId=(Long)accountList.get(i).get("bind_user_id");
-			//Long roleId=(Long)accountList.get(i).get("role_id");
+			int companyFeeFlag=(int)accountList.get(i).get("company_fee_flag");  //是否是公司内部费用
+			int itemType=(int)accountList.get(i).get("type");  //分录类型
+			long accountItemId=(long)accountList.get(i).get("id");
 			
 			String bindUserName="";
-			//String bindUserRole="";
 			
-			if(bindUserId==null || bindUserId==0){		
+			if(companyFeeFlag==1){   
 				bindUserName="公司内部";
-				//bindUserRole="";
 			}
 			else{
-				bindUserName=userService.selectByPrimaryKey(bindUserId).getUsername();
-				//bindUserRole=roleService.selectByPrimaryKey(roleId).getRoleName();
+				if((bindUserId==null || bindUserId==0) && itemType==AccountItemType.MARKET_FEE ){		
+					//bindUserName="公司内部";  //查询市场费双计情况.
+					List<Map<String,Object>> userList=accountPersonalService.getUserByAccountCompanyId(accountItemId);
+					for(Map<String,Object> user:userList){
+						bindUserName=bindUserName+user.get("nickname")+';';
+					}
+				}
+				else{
+					bindUserName=userService.selectByPrimaryKey(bindUserId).getUsername();
+				}				
 			}
 			
 			accountItem.put("bindUserName", bindUserName);
-			//accountItem.put("bindUserRole", bindUserRole);
 			accountItem.put("accountItem", accountList.get(i));
 						
-			accountCompanyList.add(accountItem);
+			accountItemList.add(accountItem);
 			
 		}
 		
-		getItemsSum( startDateYear,
+		getItemsSumCompany( startDateYear,
 				 startDateMonth,
 				 endDateYear,
 				 endDateMonth,
 				 userId,
 				 itemTypeList,
 				 model);  //
-		model.addAttribute("accountCompanyList", accountCompanyList);
+		model.addAttribute("accountItemList", accountItemList);
 		model.addAttribute("pageInfo", pageInfo);  //分页
 		
-		return accountCompanyList;
+		return accountItemList;
+		
 	}
 	
-	//分录条目求和
-	private void getItemsSum(String startDateYear,
+	//个人视角查询
+	private List<Map<String,Object>> searchByPerspectivePersonal(String startDateYear,
+			String startDateMonth,
+			String endDateYear,
+			String endDateMonth,
+			long	userId,
+			Integer pageNum,
+			Integer pageSize,
+			List<Integer> itemTypeList,
+			Model model){
+		//查询 并分页		
+		PageHelper.startPage(pageNum, pageSize); // PageHelper
+		//查询公司帐薄
+		List<Map<String,Object>> accountList=accountPersonalService.getItemsByDateAndUser(startDateYear,
+				 startDateMonth,
+				 endDateYear,
+				 endDateMonth,
+				 userId, itemTypeList);
+		PageInfo<Map<String,Object>> pageInfo = new PageInfo<Map<String,Object>>(accountList);// (使用了拦截器或是AOP进行查询的再次处理)
+		
+		//根据帐薄条目查询费用归属
+		List<Map<String,Object>> accountItemList=new ArrayList<Map<String,Object>>();
+		for(int i=0;i<accountList.size();i++){
+			Map<String,Object> accountItem=new HashMap<String,Object>();
+			
+			Long bindUserId=(Long)accountList.get(i).get("bind_user_id");
+			String bindUserName="";
+			
+			if(bindUserId==null || bindUserId==0){		
+				bindUserName="公司内部";
+			}
+			else{
+				bindUserName=userService.selectByPrimaryKey(bindUserId).getUsername();
+			}
+			
+			accountItem.put("bindUserName", bindUserName);
+			accountItem.put("accountItem", accountList.get(i));
+			accountItemList.add(accountItem);
+			
+		}
+		
+		getItemsSumPersonal( startDateYear,
+				 startDateMonth,
+				 endDateYear,
+				 endDateMonth,
+				 userId,
+				 itemTypeList,
+				 model);  //
+		model.addAttribute("accountItemList", accountItemList);
+		model.addAttribute("pageInfo", pageInfo);  //分页
+		
+		return accountItemList;
+	}
+	
+	
+	
+	//分录条目求和(公司帐薄)
+	private void getItemsSumCompany(String startDateYear,
 			String startDateMonth,
 			String endDateYear,
 			String endDateMonth,
@@ -263,6 +571,35 @@ public class SearchFeeController {
 		model.addAttribute("amountGroupSum", accountGroupSumList);
 		
 	}
+	
+	//分录条目求和(公司帐薄)
+	private void getItemsSumPersonal(String startDateYear,
+			String startDateMonth,
+			String endDateYear,
+			String endDateMonth,
+			long	userId,
+			List<Integer> itemTypeList,
+			Model model
+			){
+		//查询到的所有分录条目合计
+		List<Map<String,Object>> accountSumList=accountPersonalService.getItemsSumByDateAndUser(startDateYear,
+				 startDateMonth,
+				 endDateYear,
+				 endDateMonth,
+				 userId, itemTypeList);
+		model.addAttribute("amountSum", accountSumList.get(0).get("amountSum"));
+		
+		//查询到的分录条目分类合计
+		List<Map<String,Object>> accountGroupSumList=accountPersonalService.getItemsGroupSumByDateAndUser(startDateYear,
+				 startDateMonth,
+				 endDateYear,
+				 endDateMonth,
+				 userId, itemTypeList);
+		model.addAttribute("amountGroupSum", accountGroupSumList);
+		
+	}
+	
+	
 	
 	
 	/** 
