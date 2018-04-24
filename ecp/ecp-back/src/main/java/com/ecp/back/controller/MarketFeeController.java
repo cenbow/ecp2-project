@@ -178,13 +178,13 @@ public class MarketFeeController {
 				provinceName,cityName,countyName,
 				agentIdList,														
 				itemTypeList,
-				searchUserId,roleIdList);
+				searchUserId,roleIdList,-1);
 		//(3)查询合同详情.
 		BigDecimal contractAmountSum=contractItemsService.searchContractAmount(
 				orderTimeCond,dealStateCond,
 				searchType,	condStr,
 				provinceName,cityName,countyName,
-				agentIdList);
+				agentIdList,-1);
 		
 		Map<String,Object> compositeObj=new HashMap<String,Object>();
 		compositeObj.put("marketFeeAmountSum", marketFeeAmountSum);

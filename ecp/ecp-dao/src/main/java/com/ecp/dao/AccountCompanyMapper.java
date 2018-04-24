@@ -31,7 +31,9 @@ public interface AccountCompanyMapper extends Mapper<AccountCompany> {
 			@Param("agentIdList") List<Map<String, Object>> agentIdList, 
 			@Param("itemTypeList") List<Integer> itemTypeList, 
 			@Param("userId") long userId,
-			@Param("roleIdList") List<Long> roleIdList);
+			@Param("roleIdList") List<Long> roleIdList,
+			@Param("totalPayFlag") int totalPayFlag
+			);
 	
 	/**
 	 * 根据Map参数查询公司账本
@@ -54,7 +56,8 @@ public interface AccountCompanyMapper extends Mapper<AccountCompany> {
 			@Param("agentIdList") List<Map<String, Object>> agentIdList, 
 			@Param("itemTypeList") List<Integer> itemTypeList, 
 			@Param("userId") long userId,
-			@Param("roleIdList") List<Long> roleIdList);
+			@Param("roleIdList") List<Long> roleIdList,
+			@Param("totalPayFlag") int totalPayFlag);
 	
 	
 	public List<Map<String, Object>> getItemsByDateAndUser(

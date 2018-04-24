@@ -126,7 +126,7 @@ function showAllOrderFee(){
 	var url = BASE_CONTEXT_PATH + REQUEST_MAPPING+"/showallfee"; //需要提交的 url
 	
 	//console.log("debug show order fee!");
-	parms=new Object(); //生成参数对象
+	var parms=new Object(); //生成参数对象
 	
 	//分页数据
 	/*parms.pageNum=$("#pageNum").val();

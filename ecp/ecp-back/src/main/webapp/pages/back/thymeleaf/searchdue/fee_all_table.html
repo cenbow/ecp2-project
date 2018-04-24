@@ -8,7 +8,7 @@
 	<table class="table">
 		<thead>
 			<tr>
-				<th class="col-md-1 column">ID</th>
+				<!-- <th class="col-md-1 column">ID</th> -->
 				<th class="col-md-1 column">订单号</th>
 				<th class="col-md-1 column">金额</th>
 				<th class="col-md-1 column">类型</th>
@@ -18,7 +18,7 @@
 		</thead>
 		<tbody>
 			<tr th:each="item: ${accountItemList}">
-				<td th:text="${item.id}">条目ID</td>
+				<!-- <td th:text="${item.id}">条目ID</td> -->
 				<td th:text="${item.orderNo}">订单号</td>
 				<td th:text="${item.amount}">金额</td>
 				<td><span th:switch="${item.type}" th:remove="tag">
@@ -48,6 +48,123 @@
 
 		</tbody>
 	</table>
+	<hr style="height:1px;border:none;border-top:1px solid lightgray;"> 
+	<!-- 加入 分页 -->
+	<div th:include="/back/thymeleaf/common/_pager::pager" class="pagerx" style="float: right; margin-right: 100px;"></div>	
+	
+	<!-- 订单选择条件  -->
+	<script th:inline="javascript">  
+		/*<![CDATA[*/
+			
+		var g_ordertime_cond = [[${orderTimeCond}]];  	 //回传的时间条件 		
+		var g_dealstate_cond=[[${dealStateCond}]];    	 //回传的合同处理状态条件
+		
+		var g_searchTypeValue = [[${searchTypeValue}]];  //查询类型值
+		var g_condValue=[[${condValue}]]; 				 //查询条件值
+		
+		var ret_provinceName=[[${provinceName}]];  		 //回传的区域条件
+		var ret_cityName=[[${cityName}]];
+		var ret_countyName=[[${countyName}]];
+		
+		var ret_userId=[[${userId}]];					 //回传的角色条件
+		var ret_roleId=[[${roleId}]];
+		
+		var curr_pageNnum=[[${pageNum}]];				//页号,页大小信息
+		var curr_pageSize[[${pageSize}]];				
+		
+		var ret_totalPayFlag=[[totalPayFlag]];			//回全款标志
+		
+		/*]]>*/  
+	</script>
+	
+	<script type="text/javascript">
+	/**
+	 * 加载所有订单的回款页面
+	 * @param url
+	 * @param userId 所绑定的内部用户ID(条件)
+	 * @param roleId 所绑定用户角色ID(条件)
+	 * @returns
+	 */
+	function loadAllOrderFeePager(){
+		var url = BASE_CONTEXT_PATH + REQUEST_MAPPING+"/showallfee"; //需要提交的 url
+		
+		//console.log("debug show order fee!");
+		var parms=new Object(); //生成参数对象
+		
+		//分页数据
+		/*parms.pageNum=$("#pageNum").val();
+		parms.pageSize=$("#pageSize").val();*/
+		
+		//分页条件暂时无效
+		parms.pageNum=curr_pageNum;
+		parms.pageSize=curr_pageSize;
+		
+		
+		//时间段、订单状态
+		var dealStateCond=g_dealstate_cond;
+		var orderTimeCond=g_ordertime_cond; 	
+		parms.dealStateCond=dealStateCond;
+		parms.orderTimeCond=orderTimeCond;
+		
+		//搜索类型，搜索条件值
+		var condType=g_searchTypeValue;
+		var condStr=g_condValue;	
+		parms.searchTypeValue=condType;
+		parms.condValue=condStr;
+		
+		//区域条件
+		var provinceName=ret_provinceName;
+		var cityName=ret_cityName;
+		var countyName=ret_countyName;	
+		parms.provinceName=provinceName;
+		parms.cityName=cityName;
+		parms.countyName=countyName;
+		
+		//用户/角色条件
+		//var option=$("#select-user-role option:selected");
+		var userId=ret_userId;
+		var roleId=ret_roleId;
+		
+		parms.userId=userId;
+		parms.roleId=roleId;
+		
+		//回欠款状态
+		var totalPayFlag=ret_totalPayFlag;
+		
+		parms.totalPayFlag=totalPayFlag;
+		
+		$("#fee-table").load(url,parms, function(){		
+		});	
+	}
+	
+	$(function(){
+		//------------------分页（页码导航）------------------
+		/*
+		 * 【分页】导航： 当点击页号时读取需要导航到的页码及每页记录数（pageNum,pageSize）
+		 * data-bind:pageNum-pageSize形式 
+		 * 		如果data-bind为空字符串，则不做动作 
+		 * 		当用户点击某页时，则发送与筛选相同的请求
+		 */
 
+		$(".pagination li a").on('click', function(e) {
+			console.log($(this).attr("data-bind"));
+			var dataBind = $(this).attr("data-bind");
+			// 当dataBind有数据时处理
+			if (dataBind != "") {
+				var pageArr = new Array();
+				pageArr = dataBind.split("-");
+				// 置隐藏表单数据
+				curr_pageNum.val(pageArr[0]);
+				curr_pageSize.val(pageArr[1]);			
+				loadAllOrderFeePager();  // 发送请求
+			}
+
+		});
+	});
+	
+	</script>
+	
+	
+	
 </body>
 </html>

@@ -50,6 +50,8 @@ public interface ContractItemsMapper extends Mapper<ContractItems> {
 			@Param("provinceName") String provinceName, 
 			@Param("cityName") String cityName, 
 			@Param("countyName") String countyName,
-			@Param("agentIdList") List<Map<String, Object>> agentIdList);
+			@Param("agentIdList") List<Map<String, Object>> agentIdList,
+			@Param("totalPayFlag") int totalPayFlag
+			);
 	
 }

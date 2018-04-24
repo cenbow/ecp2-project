@@ -551,7 +551,7 @@ public class SearchFeeController_Old {
 																agentIdList,														
 																itemTypeList,
 																userId,
-																roleIdList);
+																roleIdList,-1);
 		//PageInfo<Map<String,Object>> pageInfo = new PageInfo<Map<String,Object>>(orderList);// (使用了拦截器或是AOP进行查询的再次处理) 查询分页:结束
 		
 		//根据帐薄条目查询费用归属
@@ -669,7 +669,7 @@ public class SearchFeeController_Old {
 																agentIdList,														
 																itemTypeList,
 																unbindUserId,
-																roleIdList);
+																roleIdList,-1);
 		//PageInfo<Map<String,Object>> pageInfo = new PageInfo<Map<String,Object>>(orderList);// (使用了拦截器或是AOP进行查询的再次处理) 查询分页:结束
 		
 		//根据帐薄条目查询费用归属

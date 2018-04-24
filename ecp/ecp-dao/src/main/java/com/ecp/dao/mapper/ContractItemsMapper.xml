@@ -204,6 +204,11 @@
 					and (0&gt;1)
 				</if>
 							 
+			</if>
+			
+			<!-- 回款类型 -->
+			<if test="totalPayFlag!=-1">
+				AND o.total_pay_flag=#{totalPayFlag}
 			</if>  		
 			
 		 </where>  	 
