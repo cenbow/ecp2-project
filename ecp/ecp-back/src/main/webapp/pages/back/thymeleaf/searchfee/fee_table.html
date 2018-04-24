@@ -20,7 +20,7 @@
 				<th>费用归属</th>
 				<th>期间-年</th>
 				<th>期间-月</th>
-				<th>操作</th>
+				<!-- <th>操作</th> -->
 			</tr>
 		</thead>
 		<tbody>
@@ -49,20 +49,20 @@
 				<!-- 归属期间 -->	
 				<td th:text="${item.accountItem.year}">归属年份</td>
 				<td th:text="${item.accountItem.month}">归属月份</td>
-				<td>
-					<!-- 修改费用 -->
+				<!-- <td>
+					修改费用
 					<a type="button" class="modi-four-fee"
 					th:attr="bind-id=${item.accountItem.id}"><i
 						class=" icon-edit icon-large" style="color: darkblue"></i></a>
-					<!-- 删除费用 --> 
+					删除费用 
 					<a	type="button" class="del-four-fee"
 					th:attr="bind-id=${item.accountItem.id}"><i
 						class=" icon-remove-circle icon-large" style="color: darkblue"></i></a>
-				</td>
+				</td> -->
 			</tr>
 			<tr>
 				<td colspan="2"><span style="float:right;"><strong>合计:</strong></span></td>
-				<td colspan="6">
+				<td colspan="5">
 					<span style="float:left;">
 						<span style="margin-right:20px;">
 							<span th:text="${amountSum}"></span>

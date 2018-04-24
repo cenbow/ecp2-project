@@ -470,9 +470,6 @@ public class SearchFeeController {
 				}				
 			}
 			
-			
-			
-			
 			accountItem.put("bindUserName", bindUserName);
 			accountItem.put("accountItem", accountList.get(i));
 						
@@ -480,7 +477,7 @@ public class SearchFeeController {
 			
 		}
 		
-		getItemsSum( startDateYear,
+		getItemsSumCompany( startDateYear,
 				 startDateMonth,
 				 endDateYear,
 				 endDateMonth,
@@ -535,7 +532,7 @@ public class SearchFeeController {
 			
 		}
 		
-		getItemsSum( startDateYear,
+		getItemsSumPersonal( startDateYear,
 				 startDateMonth,
 				 endDateYear,
 				 endDateMonth,
@@ -550,8 +547,8 @@ public class SearchFeeController {
 	
 	
 	
-	//分录条目求和
-	private void getItemsSum(String startDateYear,
+	//分录条目求和(公司帐薄)
+	private void getItemsSumCompany(String startDateYear,
 			String startDateMonth,
 			String endDateYear,
 			String endDateMonth,
@@ -574,6 +571,35 @@ public class SearchFeeController {
 		model.addAttribute("amountGroupSum", accountGroupSumList);
 		
 	}
+	
+	//分录条目求和(公司帐薄)
+	private void getItemsSumPersonal(String startDateYear,
+			String startDateMonth,
+			String endDateYear,
+			String endDateMonth,
+			long	userId,
+			List<Integer> itemTypeList,
+			Model model
+			){
+		//查询到的所有分录条目合计
+		List<Map<String,Object>> accountSumList=accountPersonalService.getItemsSumByDateAndUser(startDateYear,
+				 startDateMonth,
+				 endDateYear,
+				 endDateMonth,
+				 userId, itemTypeList);
+		model.addAttribute("amountSum", accountSumList.get(0).get("amountSum"));
+		
+		//查询到的分录条目分类合计
+		List<Map<String,Object>> accountGroupSumList=accountPersonalService.getItemsGroupSumByDateAndUser(startDateYear,
+				 startDateMonth,
+				 endDateYear,
+				 endDateMonth,
+				 userId, itemTypeList);
+		model.addAttribute("amountGroupSum", accountGroupSumList);
+		
+	}
+	
+	
 	
 	
 	/** 
