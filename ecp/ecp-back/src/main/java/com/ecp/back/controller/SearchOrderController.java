@@ -41,12 +41,12 @@ import com.github.pagehelper.PageInfo;
 	* @version:       V1.0  
 	* @Date:          2018年3月27日 上午10:09:26 
 */
-/*@Controller*/
-@RequestMapping("/back/fee")
-public class SearchFeeController_Old {
+@Controller
+@RequestMapping("/back/searchorder")
+public class SearchOrderController {
 	private final Logger log = Logger.getLogger(getClass());
 	
-	private static final String RESPONSE_THYMELEAF_BACK = "back/thymeleaf/searchfee/";
+	private static final String RESPONSE_THYMELEAF_BACK = "back/thymeleaf/searchorder/";
 	private static final int PAGE_SIZE = 8;
 	private static final String PERSPECTIVE_TYPE_COMPANY="company";
 	private static final String PERSPECTIVE_TYPE_PERSONAL="personal";
@@ -118,8 +118,6 @@ public class SearchFeeController_Old {
 							  String countyName,
 							  long userId,
 							  long roleId,
-							  String perspectiveType,
-							  int perspectiveValue,
 							  Model model) {
 		if(pageNum==null || pageNum==0)
 		{
@@ -168,28 +166,6 @@ public class SearchFeeController_Old {
 		model.addAttribute("countyName", countyName);
 		model.addAttribute("userId", userId);
 		model.addAttribute("roleId", roleId);
-		
-		/*  
-		 *查询当前登录用户的角色权限,
-		 *	true:经理级别-两个视角
-		 *	false:个人帐号:一个视角 
-		 */
-		boolean manFlag=needSearchAll();
-		if(perspectiveValue==0){
-			if(manFlag){
-				model.addAttribute("perspectiveType", PERSPECTIVE_TYPE_COMPANY);
-				model.addAttribute("perspectiveValue",PERSPECTIVE_VALUE_COMPANY);
-			}
-			else{
-				model.addAttribute("perspectiveType", PERSPECTIVE_TYPE_PERSONAL);
-				model.addAttribute("perspectiveValue", PERSPECTIVE_VALUE_PERSONAL);
-			}
-		}
-		else{
-			model.addAttribute("perspectiveType", perspectiveType);
-			model.addAttribute("perspectiveValue", perspectiveValue);
-		}
-		
 				
 		return RESPONSE_THYMELEAF_BACK + "order_table";
 	}

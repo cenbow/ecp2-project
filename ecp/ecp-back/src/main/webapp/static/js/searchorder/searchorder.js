@@ -6,13 +6,82 @@
 		  };
 })(jQuery);
 
+//查询当前页
+function search(){
+	var parms=new Object(); //生成参数对象
+	
+	/*
+
+  		var g_ordertime_cond = [[${orderTimeCond}]];  	 //回传的时间条件 
+		
+		var g_dealstate_cond=[[${dealStateCond}]];    	 //回传的合同处理状态条件
+		var g_searchTypeValue = [[${searchTypeValue}]];  //查询类型值
+		var g_condValue=[[${condValue}]]; 				 //查询条件值
+		
+		var ret_provinceName=[[${provinceName}]];  		 //回传的区域条件
+		var ret_cityName=[[${cityName}]];
+		var ret_countyName=[[${countyName}]];
+		
+		var ret_userId=[[${userId}]];					 //回传的角色条件
+		var ret_roleId=[[${roleId}]];
+		
+	   */
+	
+	
+	//分页数据
+	parms.pageNum=$("#pageNum").val();
+	parms.pageSize=$("#pageSize").val();
+	
+	//时间段、订单状态
+	var dealStateCond=$("#dealstate-cond").val();
+	var orderTimeCond=$("#ordertime-cond").val(); 
+	
+	parms.dealStateCond=dealStateCond;
+	parms.orderTimeCond=orderTimeCond;
+	
+	//搜索类型，搜索条件值
+	var condType=g_searchTypeValue;
+	var condStr=g_condValue;
+	
+	parms.searchTypeValue=condType;
+	parms.condValue=condStr;
+	
+	//区域条件
+	var provinceName=ret_provinceName;
+	var cityName=ret_cityName;
+	var countyName=ret_countyName;
+	
+	parms.provinceName=provinceName;
+	parms.cityName=cityName;
+	parms.countyName=countyName;
+	
+	//用户/角色条件
+	/*var option=$("#select-user-role option:selected");*/
+	var userId=ret_userId;
+	var roleId=ret_roleId;
+	
+	parms.userId=userId;
+	parms.roleId=roleId;
+	
+	//查询视角类型及视角值
+	/*var option1=$("#select-perspective option:selected");
+	var perspectiveType=option1.attr("data-bind-perspective-type");
+	var perspectiveValue=option1.val();
+	
+	parms.perspectiveType=perspectiveType;
+	parms.perspectiveValue=perspectiveValue;*/
+	
+	
+	loadOrder(parms,null); //加载页面
+}
+
 /*查询-订单 */
 /**
  * 根据用户的输入条件查询（包括分页数据）
  * @returns
  */
 function search(){
-	parms=new Object(); //生成参数对象
+	var parms=new Object(); //生成参数对象
 	
 	//分页数据
 	parms.pageNum=$("#pageNum").val();
@@ -50,12 +119,12 @@ function search(){
 	parms.roleId=roleId;
 	
 	//查询视角类型及视角值
-	var option1=$("#select-perspective option:selected");
+	/*var option1=$("#select-perspective option:selected");
 	var perspectiveType=option1.attr("data-bind-perspective-type");
 	var perspectiveValue=option1.val();
 	
 	parms.perspectiveType=perspectiveType;
-	parms.perspectiveValue=perspectiveValue;
+	parms.perspectiveValue=perspectiveValue;*/
 	
 	
 	loadOrder(parms,null); //加载页面
@@ -91,7 +160,7 @@ var generateHideElement = function(name, value) {
  * @param roleId   所绑定用户角色ID(条件)
  * @returns
  */
-function showOrderFee(that){
+/*function showOrderFee(that){
 	var url = BASE_CONTEXT_PATH + "/back/fee/showfee"; //需要提交的 url
 	
 	var orderId = $(that).attr("data-id");  		//订单id(PK)
@@ -122,7 +191,7 @@ function showOrderFee(that){
 		$("#edit-tab-title").text("订单费用列表");
 		$('#tabs-14933 a[href="#panel-602679"]').tab('show');
 	});	
-}
+}*/
 
 /**
  * 加载所有订单的费用页面
@@ -131,15 +200,15 @@ function showOrderFee(that){
  * @param roleId 所绑定用户角色ID(条件)
  * @returns
  */
-function showAllOrderFee(){
+/*function showAllOrderFee(){
 	var url = BASE_CONTEXT_PATH + "/back/fee/showallfee"; //需要提交的 url
 	
 	//console.log("debug show order fee!");
 	parms=new Object(); //生成参数对象
 	
 	//分页数据
-	/*parms.pageNum=$("#pageNum").val();
-	parms.pageSize=$("#pageSize").val();*/
+	parms.pageNum=$("#pageNum").val();
+	parms.pageSize=$("#pageSize").val();
 	
 	//分页条件暂时无效
 	parms.pageNum=0;
@@ -189,7 +258,7 @@ function showAllOrderFee(){
 		$("#edit-tab-title").text("费用列表");
 		$('#tabs-14933 a[href="#panel-602679"]').tab('show');
 	});	
-}
+}*/
 
 
 //------------------查询界面更新------------------------
@@ -475,31 +544,6 @@ $(function() {
 	updateUISearchCondValue(g_condValue);
 	
 	//----------event binding--------------
-
-	/*
-	 * 订单列表中【费用】按钮:click event binding  显示此订单下的费用列表
-	 */
-	$(".show-order-fee").on("click", function(e) {
-		
-		showOrderFee(this);
-		
-		//如果此合同已经执行完毕后,不可以再录入四项费用		
-		//TODO 是否加入此业务规则约束?
-		//TODO 采有枚举类型对合同的状态进行描述.		
-		/*if(!contractState==6){  //如果是未建合同状态
-			//TODO
-		}
-		else{
-			//util.message("此合同已经执行完毕,不可以再录入四项费用！");
-		}*/
-	});
-	
-	//费用列表(所有)
-	$("#btn-all-fee-list").on("click",function(){
-		showAllOrderFee();
-	});
-	
-	
 	/* 搜索按钮 -click */
 	$(".start-search").on("click",function(){
 		/*
@@ -578,7 +622,7 @@ $(function() {
 			// 置隐藏表单数据
 			$("#pageNum").val(pageArr[0]);
 			$("#pageSize").val(pageArr[1]);			
-			search_normal();  // 发送请求
+			search_currPager();  // 发送请求
 		}
 
 	});
