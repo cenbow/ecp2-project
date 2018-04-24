@@ -1056,8 +1056,8 @@ public class ContractController {
 				case AccountItemType.NET_PROFIT_FEE://纯利润
 					for(ContractItems temp : contractItemsList){
 						//支付总价-硬成本价格*商品数量
-						//TODO 硬成本价格改为折减后的硬成本价格
-						BigDecimal price = temp.getHardCostPrice().multiply(new BigDecimal(temp.getNum().toString()));
+						//硬成本价格改为折减后的硬成本价格
+						BigDecimal price = temp.getLastHardCostPrice().multiply(new BigDecimal(temp.getNum().toString()));
 						price = temp.getPayPriceTotal().subtract(price);
 						amount = amount.add(price);
 					}
