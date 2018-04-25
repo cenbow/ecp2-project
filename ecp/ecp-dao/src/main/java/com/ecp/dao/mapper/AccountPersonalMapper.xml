@@ -207,7 +207,7 @@
   	</select>
 
   	<!-- 查询指定时间,指定用户,指定分录类型的所有条目 -->
-  	<select id="getItemsByDateAndUser" resultType="map">
+  	<select id="getItemsByDateAndUserOrRole" resultType="map">
 		SELECT
 			*, u.username,
 			u.nickname,

@@ -328,7 +328,7 @@ public class PerformanceController {
 		List<Integer> itemTypeList=new ArrayList<>();
 		itemTypeList.add(AccountItemType.PERFORMANCE_FEE);//业绩
 		
-		List<Map<String, Object>> performanceList = accountPersonalService.getItemsByDateAndUser(startDateYear, startDateMonth, endDateYear, endDateMonth, userId, roleId, itemTypeList);
+		List<Map<String, Object>> performanceList = accountPersonalService.getItemsByDateAndUserOrRole(startDateYear, startDateMonth, endDateYear, endDateMonth, userId, roleId, itemTypeList);
 
 		BigDecimal performanceTotalAmount = new BigDecimal("0.00");//业绩总金额
 		BigDecimal orderTotalAmount = new BigDecimal("0.00");//订单总金额
@@ -545,7 +545,7 @@ public class PerformanceController {
 			List<Integer> itemTypeList=new ArrayList<>();
 			itemTypeList.add(AccountItemType.PERFORMANCE_FEE);//业绩
 			
-			List<Map<String, Object>> performanceList = accountPersonalService.getItemsByDateAndUser(startDateYear, startDateMonth, endDateYear, endDateMonth, tempUserId, tempRoleId, itemTypeList);
+			List<Map<String, Object>> performanceList = accountPersonalService.getItemsByDateAndUserOrRole(startDateYear, startDateMonth, endDateYear, endDateMonth, tempUserId, tempRoleId, itemTypeList);
 			BigDecimal totalAmount = new BigDecimal("0.00");
 			for(Map<String, Object> temp : performanceList){
 				String amount = temp.get("amount").toString();
@@ -655,7 +655,7 @@ public class PerformanceController {
 			List<Integer> itemTypeList=new ArrayList<>();
 			itemTypeList.add(AccountItemType.PERFORMANCE_FEE);//业绩
 			
-			List<Map<String, Object>> accountPersonalList = accountPersonalService.getItemsByDateAndUser(startDateYear, startDateMonth, endDateYear, endDateMonth, userId, roleId, itemTypeList);
+			List<Map<String, Object>> accountPersonalList = accountPersonalService.getItemsByDateAndUserOrRole(startDateYear, startDateMonth, endDateYear, endDateMonth, userId, roleId, itemTypeList);
 			
 			for(Map<String, Object> temp : accountPersonalList){
 				int type = Integer.parseInt(temp.get("type").toString());
@@ -703,7 +703,7 @@ public class PerformanceController {
 			itemTypeList.add(AccountItemType.TRANSPORTATION_FEE);//交通费
 			itemTypeList.add(AccountItemType.TRAVEL_EXPENSE_FEE);//差旅费
 			
-			List<Map<String, Object>> accountPersonalList = accountPersonalService.getItemsByDateAndUser(startDateYear, startDateMonth, endDateYear, endDateMonth, userId, null, itemTypeList);
+			List<Map<String, Object>> accountPersonalList = accountPersonalService.getItemsByDateAndUserOrRole(startDateYear, startDateMonth, endDateYear, endDateMonth, userId, null, itemTypeList);
 			
 			for(Map<String, Object> temp : accountPersonalList){
 				int type = Integer.parseInt(temp.get("type").toString());
@@ -758,7 +758,7 @@ public class PerformanceController {
 			List<Integer> itemTypeList=new ArrayList<>();
 			itemTypeList.add(AccountItemType.MARKET_FEE);//市场费
 			
-			List<Map<String, Object>> accountPersonalList = accountPersonalService.getItemsByDateAndUser(startDateYear, startDateMonth, endDateYear, endDateMonth, userId, roleId, itemTypeList);
+			List<Map<String, Object>> accountPersonalList = accountPersonalService.getItemsByDateAndUserOrRole(startDateYear, startDateMonth, endDateYear, endDateMonth, userId, roleId, itemTypeList);
 			
 			for(Map<String, Object> temp : accountPersonalList){
 				int type = Integer.parseInt(temp.get("type").toString());
@@ -800,7 +800,7 @@ public class PerformanceController {
 		//费用类型
 		List<Integer> itemTypeList=new ArrayList<>();
 		itemTypeList.add(AccountItemType.PRICE_DIFFERENCE_FEE);//差价
-		List<Map<String, Object>> accountPersonalList = accountPersonalService.getItemsByDateAndUser(startDateYear, startDateMonth, endDateYear, endDateMonth, userId, roleId, itemTypeList);
+		List<Map<String, Object>> accountPersonalList = accountPersonalService.getItemsByDateAndUserOrRole(startDateYear, startDateMonth, endDateYear, endDateMonth, userId, roleId, itemTypeList);
 		
 		BigDecimal priceDifferenceTotal = new BigDecimal("0.00");//差价总金额
 		

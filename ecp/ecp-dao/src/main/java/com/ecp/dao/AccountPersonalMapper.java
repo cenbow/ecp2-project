@@ -53,7 +53,7 @@ public interface AccountPersonalMapper extends Mapper<AccountPersonal> {
 	* @return List<Map<String,Object>>    返回类型 
 	* @throws 
 	*/
-	public List<Map<String, Object>> getItemsByDateAndUser(
+	public List<Map<String, Object>> getItemsByDateAndUserOrRole(
 			@Param("startDateYear") String startDateYear, 
 			@Param("startDateMonth") String startDateMonth,
 			@Param("endDateYear") String endDateYear, 

@@ -154,7 +154,7 @@ public List<AccountPersonal> selectItems(
 	* @return List<Map<String,Object>>    返回类型 
 	* @throws 
 	*/
-	public List<Map<String,Object>> getItemsByDateAndUser(String startDateYear,
+	public List<Map<String,Object>> getItemsByDateAndUserOrRole(String startDateYear,
 		String startDateMonth,
 		String endDateYear,
 		String endDateMonth,

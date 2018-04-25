@@ -111,9 +111,9 @@ public class AccountPersonalServiceImpl extends AbstractBaseService<AccountPerso
 	}
 	
 	@Override
-	public List<Map<String, Object>> getItemsByDateAndUser(String startDateYear, String startDateMonth,
+	public List<Map<String, Object>> getItemsByDateAndUserOrRole(String startDateYear, String startDateMonth,
 			String endDateYear, String endDateMonth, long userId, Long roleId, List<Integer> itemTypeList) {
-		return accountPersonalMapper.getItemsByDateAndUser(startDateYear, startDateMonth,
+		return accountPersonalMapper.getItemsByDateAndUserOrRole(startDateYear, startDateMonth,
 				 endDateYear,  endDateMonth,  userId, roleId, itemTypeList);
 	}
 	
