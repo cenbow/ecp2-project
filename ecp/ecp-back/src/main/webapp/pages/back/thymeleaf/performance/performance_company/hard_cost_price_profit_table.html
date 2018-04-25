@@ -2,7 +2,7 @@
 <html>
 <head>
 <meta charset="UTF-8">
-<div th:include="/back/thymeleaf/common/_head2::headx('公司业绩列表')"	th:remove="tag"></div>
+<div th:include="/back/thymeleaf/common/_head2::headx('硬成本价利润列表')"	th:remove="tag"></div>
 </head>
 <body>
 	<div class="container-fluid" style="margin-top: 20px;">
@@ -12,7 +12,7 @@
 			<div class="col-md-12 column">
 				<div class="panel panel-success">
 					<div class="panel-heading">
-						<h3 class="panel-title" style="display:inline">业绩列表</h3>
+						<h3 class="panel-title" style="display:inline">硬成本价利润列表</h3>
 						
 					</div>
 					<div class="panel-body">
@@ -39,7 +39,10 @@
 								<th>合同编号</th>
 								<th>订单金额</th>
 								<th>合同金额</th>
-								<th>业绩</th>
+								<th>硬成本价差价</th>
+								<th>市场费</th>
+								<th>四项费</th>
+								<th>硬成本价利润</th>
 								<th>创建时间</th>
 							</thead>
 							<tbody>
@@ -52,24 +55,14 @@
 									<td th:text="${item.contract_no}">合同编号</td>
 									<td th:text="'￥'+${item.orderAmount}">订单金额</td>
 									<td th:text="'￥'+${item.contractAmount}">合同金额</td>
-									
-									<td th:text="'￥'+${item.amount}">业绩
-										<!-- <table>
-											<tbody>
-											
-											<span th:if="${#lists.isEmpty(item.order_account_company_list) && #lists.size(item.order_account_company_list)<=0}">
-												<tr>
-													<td th:text="'用户（角色）:￥0.00'">用户（角色）业绩</td>
-												</tr>
-											</span>
-											<span th:if="${not #lists.isEmpty(item.order_account_company_list) && #lists.size(item.order_account_company_list)>0}">
-												<tr th:each="accountPersonal:${item.order_account_company_list}">
-													<td th:text="${accountPersonal.nickname}+'（'+${accountPersonal.role_code}+'）：￥'+${accountPersonal.amount}">用户（角色）业绩</td>
-												</tr>
-											</span>
-											</tbody>
-										</table> -->
-									</td>
+									<td th:text="'￥'+${item.amount}">硬成本价差价</td>
+									<td th:text="'￥'+${item.marketFee}">市场费</td>
+									<span th:if="${iterState.first}" th:remove="tag">
+										<td style="display:table-cell; vertical-align:middle" th:attr="rowspan=${itemSize}" th:text="'￥'+${fourFeeTotalAmount}">四项费</td>
+									</span>
+									<span th:if="${iterState.first}" th:remove="tag">
+										<td style="display:table-cell; vertical-align:middle" th:attr="rowspan=${itemSize}" th:text="'￥'+${profitAmount}">硬成本价利润</td>
+									</span>
 									<td th:text="${item.create_time}">创建时间</td>
 																		
 								</tr>								
@@ -80,7 +73,8 @@
 									<td><b>总计</b></td>
 									<td><b>￥</b><b style="font-size:18px;color:red" id="" th:text="${orderTotalAmount}">订单金额总计</b></td>
 									<td><b>￥</b><b style="font-size:18px;color:red" id="" th:text="${contractTotalAmount}">合同金额总计</b></td>
-									<td colspan="3"><b>￥</b><b style="font-size:18px;color:red" id="" th:text="${performanceTotalAmount}">业绩总计</b></td>
+									<td><b>￥</b><b style="font-size:18px;color:red" id="" th:text="${hardCostPriceDifferTotalAmount}">硬成本价差价总计</b></td>
+									<td colspan="3"><b>￥</b><b style="font-size:18px;color:red" id="" th:text="${marketFeeTotalAmount}">市场费总计</b></td>
 								</tr>
 								</hr>					
 							</tbody>

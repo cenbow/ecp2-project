@@ -131,4 +131,17 @@ public class AccountCompanyServiceImpl extends AbstractBaseService<AccountCompan
 				 endDateYear,  endDateMonth,  userId, itemTypeList);
 	}
 
+	@Override
+	public List<Map<String, Object>> getItemsByDate(String startDateYear, String startDateMonth, String endDateYear,
+			String endDateMonth, List<Integer> itemTypeList) {
+		return accountCompanyMapper.getItemsByDate(startDateYear, startDateMonth, endDateYear, endDateMonth, itemTypeList);
+	}
+	
+	@Override
+	public BigDecimal getItemsSumByDateOrUser(String startDateYear, String startDateMonth,
+			String endDateYear, String endDateMonth, Long userId, List<Integer> itemTypeList) {
+		return accountCompanyMapper.getItemsSumByDateOrUser(startDateYear, startDateMonth,
+				 endDateYear,  endDateMonth,  userId, itemTypeList);
+	}
+
 }

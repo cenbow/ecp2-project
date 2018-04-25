@@ -2,7 +2,7 @@
 <html>
 <head>
 <meta charset="UTF-8">
-<div th:include="/back/thymeleaf/common/_head2::headx('销售进度')"
+<div th:include="/back/thymeleaf/common/_head2::headx('个人业绩')"
 	th:remove="tag"></div>
 <!-- 日期工具 -->
 <script type="text/javascript" th:src="@{/static/calendar/WdatePicker.js}"></script>
@@ -44,9 +44,11 @@
 								<div id="distpicker" style="display:inline-block; vertical-align:middle;">
 									<div class="col-md-6 column" style="padding-right:5px;">
 					  					<select class="form-control" id="select-user" onchange="javascript:functionChangeUser();" title="用户">
-					  						<option  value="" data-code="">—— 用户 ——</option>
+					  						<span th:if="${!isISOrOS}" th:remove="tag">
+					  							<option value="" data-code="">—— 用户 ——</option>
+					  						</span>
 					  						<span th:each="user:${userList}" th:remove="tag">
-					  							<option  th:attr="value=${user.id}" th:text="${user.nickname}">用户昵称</option>
+					  							<option th:attr="value=${user.id}" th:text="${user.nickname}">用户昵称</option>
 					  						</span>
 					  					</select>
 									</div>
@@ -54,7 +56,7 @@
 					   					<select class="form-control" id="select-role" title="角色">
 					   						<option value="" data-code="">—— 角色 ——</option>
 					   						<span th:each="role:${roleList}" th:remove="tag">
-					   							<option  th:attr="value=${role.roleId}, data-code=${role.roleCode}" th:text="${role.roleName}">角色名称</option>
+					   							<option th:attr="value=${role.roleId}, data-code=${role.roleCode}" th:text="${role.roleName}">角色名称</option>
 					   						</span>
 					   					</select>
 									</div>
@@ -66,7 +68,9 @@
 								</div>
 								<select class="btn btn-default btn-primary" id="change-view" onchange="javascript:changeViewFunction();" style="float: right; margin-right: 20px">
 									<option value="1" selected="selected">个人视角</option>
-									<option value="2">公司视角</option>
+									<span th:if="${!isISOrOS}" th:remove="tag">
+										<option value="2">公司视角</option>
+									</span>
 								</select>
 							</div>
 						</div>
@@ -112,11 +116,11 @@ function functionChangeUser(){
 				if(resp.result_code=="success"){
 					var roleList =resp.roleList;
 					$("#select-role").empty();
-					//var html = '<option value="" data-code="">—— 角色 ——</option>';
-					var html = '';
+					var html = '<option value="" data-code="" selected="selected">—— 角色 ——</option>';
+					//var html = '';
 					$.each(roleList, function(index){
 						if(index==0){
-							html += '<option value="'+this.roleId+'" data-code="'+this.roleCode+'" selected="selected">'+this.roleName+'</option>'
+							html += '<option value="'+this.roleId+'" data-code="'+this.roleCode+'">'+this.roleName+'</option>'
 						}else{
 							html += '<option value="'+this.roleId+'" data-code="'+this.roleCode+'">'+this.roleName+'</option>'
 						}
@@ -145,7 +149,7 @@ function changeViewFunction(){
 		var href = "back/performance/show";
 		parent.window.iframeLoading(href);//调用主页面中的在iframe中加载内容的方法
 	 }else if(changeView==2){
-		var href = "back/performance/company/show";
+		var href = "back/performance-company/show";
 		parent.window.iframeLoading(href);//调用主页面中的在iframe中加载内容的方法
 	 }else{
 		 alert("未知视角");
