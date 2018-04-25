@@ -16,7 +16,7 @@ function getContractAttrList() {
 
 // ==================对话框通用部分=START=================
 /*
- * 显示增加用户地址对话框
+ * 显示价格折减对话框
  */
 function showDialog() {
 	
@@ -24,9 +24,6 @@ function showDialog() {
 		backdrop : 'static',
 		keyboard : false
 	});
-	
-	
-	
 }
 
 /* close dialog */
@@ -38,6 +35,22 @@ function closeDialog() {
 function setDialogTitle(title) {
 	$("#myModalLabel").text(title);
 }
+
+//-----------------硬成本折减对话框----------------
+function openDiscountHardCostDialog() {
+	
+	$('#modal-container-273079').modal({
+		backdrop : 'static',
+		keyboard : false
+	});
+}
+
+/* close dialog */
+function closeDiscountHardCostDialog(){
+	$("#modal-container-273079").modal("hide");
+}
+
+
 
 /**
  * 设置价格限制信息
@@ -68,9 +81,8 @@ function displayDiscountDialog(e) {
 	var itemId = $(e).attr("data-bind"); // get orderItem'id
 	setContractItemId(itemId);
 
-	var sku_name = $("#sku_name_" + itemId).html(); // get sku_name and
-															// set dialog's
-															// title
+	// get sku_name and set dialog's title
+	var sku_name = $("#sku_name_" + itemId).html(); 
 	setDialogTitle("折减金额(" + sku_name + ")");
 
 	var item=getContractItemById(itemId);   //当前合同条目限价信息
@@ -80,6 +92,21 @@ function displayDiscountDialog(e) {
 	resetDialog();
 	showDialog();
 }
+
+function diaplayDiscountHardCostPriceDialog(that){
+	var url=BASE_CONTEXT_PATH+'/back/contract/loadDiscountHardCostDialog';
+	var itemId = $(that).attr("data-bind"); // get contract item's id
+	
+	var params=new Object();
+	params.itemId=itemId;	
+	
+	//加载对话框
+	$("#discount-hard-cost-price-container").load(url,params,function(){
+		openDiscountHardCostDialog();
+	});
+	
+}
+
 
 
 /**
