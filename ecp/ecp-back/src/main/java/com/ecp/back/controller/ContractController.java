@@ -583,6 +583,56 @@ public class ContractController {
 	}
 	
 	/** 
+		* @Title: loadDiscountHardCostDialog 
+		* @Description: 加载硬成本折减对话框 
+		* @param @param itemId  合同条目
+		* @param @param model
+		* @param @return     
+		* @return String    返回类型 
+		* @throws 
+	*/
+	@RequestMapping(value="/loadDiscountHardCostDialog")
+	public String loadDiscountHardCostDialog(long itemId,Model model){
+		ContractItems contractItem=contractItemsService.selectByPrimaryKey(itemId);
+		model.addAttribute("contractItem", contractItem);
+		
+		return RESPONSE_THYMELEAF_BACK_CONTRACT+"discount_hard_cost_dialog";
+	}
+	
+	/** 
+		* @Title: discountHardCostPrice 
+		* @Description: 更新硬成本 
+		* @param @param itemId
+		* @param @param discount
+		* @param @return     
+		* @return Object    返回类型 
+		* @throws 
+	*/
+	@RequestMapping(value="/discountHardCostPrice")
+	@ResponseBody
+	public Object discountHardCostPrice(long itemId,BigDecimal discount){
+		ContractItems item=contractItemsService.selectByPrimaryKey(itemId);
+		
+		item.setDiscountHardCostPrice(discount);
+		
+		//重新计算最后的硬成本.
+		BigDecimal hardCostPrice=item.getHardCostPrice();
+		if(hardCostPrice==null){
+			hardCostPrice=new BigDecimal(0.00);
+		}
+		BigDecimal lastHardCostPrice=hardCostPrice.subtract(discount);
+		item.setLastHardCostPrice(lastHardCostPrice);
+		
+		int row=contractItemsService.updateByPrimaryKeySelective(item);
+		if(row>0)
+			return RequestResultUtil.getResultUpdateSuccess();
+		else
+			return RequestResultUtil.getResultUpdateWarn();
+		
+	}
+	
+	
+	/** 
 	* @Title: searchAgentByOrder 
 	* @Description: 根据订单查询下单代理商 
 	* @param @param orderId
@@ -822,6 +872,10 @@ public class ContractController {
 			record.setHighestPrice(orderItem.getHighest_price());//最高限价
 			record.setLowestPrice(orderItem.getLowest_price());//最低限价
 			record.setHardCostPrice(orderItem.getHard_cost_price());//硬成本价格
+			
+			record.setLastHardCostPrice(orderItem.getHard_cost_price()); //初始化最终硬成本价格.
+			//record.setDiscountHardCostPrice(0.00);
+			
 			record.setIsPlanProduct(orderItem.getIs_plan_product());//是否是方案性产品（1：是；2：否；）
 			
 			record.setPrimitivePrice(orderItem.getPrimitivePrice());  //原始价

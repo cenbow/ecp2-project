@@ -6,8 +6,11 @@
 </head>
 <body>
 	<div class="container-fluid" style="margin-top: 20px;">
-		<!-- 对话框 -->
+		<!-- 交易金额对话框 -->
 		<div th:replace="back/thymeleaf/common/_discount_dialog::dialog" ></div>
+		<!-- 硬成本折减对话框 -->
+		<div id="discount-hard-cost-price-container"></div>
+		
 		<div class="row clearfix">
 			<div class="col-md-12 column">
 				<div class="panel panel-success">
@@ -51,7 +54,10 @@
 									<td th:text="'￥'+${item.pay_price}" th:attr="id='pay_price_'+${item.id}" >成交单价</td>
 									<td th:text="${item.num}" th:attr="id='num_'+${item.id}" >数量</td>
 									<td th:text="'￥'+${item.pay_price_total}" th:attr="id='amount_'+${item.id}">小计</td>									
-									<td><button type="button" class="btn btn-sm btn-primary" th:attr="data-bind=${item.id}"  onclick="displayDiscountDialog(this);" >折减</button></td>
+									<td>
+										<button type="button" class="btn btn-sm btn-primary" th:attr="data-bind=${item.id}"  onclick="displayDiscountDialog(this);" >折减</button>
+										<button type="button" class="btn btn-sm btn-primary" th:attr="data-bind=${item.id}"  onclick="diaplayDiscountHardCostPriceDialog(this);" >硬成本折减</button>
+									</td>
 								</tr>								
 								<tr>
 									<td>总计</td>
