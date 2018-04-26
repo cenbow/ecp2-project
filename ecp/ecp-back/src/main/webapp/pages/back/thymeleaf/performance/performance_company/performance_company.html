@@ -1,0 +1,201 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<div th:include="/back/thymeleaf/common/_head2::headx('公司业绩管理')"
+	th:remove="tag"></div>
+<!-- 日期工具 -->
+<script type="text/javascript" th:src="@{/static/calendar/WdatePicker.js}"></script>
+</head>
+<body>
+
+<div class="container-fluid" style="margin-top: 20px;">
+	<div class="row clearfix">
+		<div class="col-md-12 column">
+			<div class="panel panel-success">
+				<div class="panel-heading">
+					<h3 class="panel-title" style="display:inline">查询面板</h3>
+				</div>
+				<div class="panel-body">
+					<!-- 增加开始日期查询条件 -->
+					<div style="display:inline-block; vertical-align:middle;">
+						<input type="text" id="search-start-date" name="" title="开始日期"
+									class="datetimepicker datetime form-control"
+									readonly="readonly" placeholder="开始日期"
+									onClick="WdatePicker({dateFmt:'yyyy-MM'})" />
+									<!-- onClick="WdatePicker({dateFmt:'yyyy-MM-dd HH:mm:ss'})" /> -->
+					</div>
+					<!-- 增加结束日期查询条件 -->
+					<div style="display:inline-block; vertical-align:middle;">
+	 					<input type="text" id="search-end-date" name="" title="结束日期"
+									class="datetimepicker datetime form-control"
+									readonly="readonly" placeholder="结束日期"
+									onClick="WdatePicker({dateFmt:'yyyy-MM'})" />
+									<!-- onClick="WdatePicker({dateFmt:'yyyy-MM-dd HH:mm:ss'})" /> -->
+	 				</div>
+					<div style="display:inline-block; vertical-align:middle; padding-left:10px;">
+						<button type="button" class="btn btn-default btn-primary" id="search-btn">查询</button>
+					</div>
+					<select class="btn btn-default btn-primary" id="change-view" onchange="javascript:changeViewFunction();" style="float: right; margin-right: 20px">
+						<option value="1">个人视角</option>
+						<option value="2" selected="selected">公司视角</option>
+					</select>
+				</div>
+				<!-- <div class="panel-footer">Panel footer</div> -->
+			</div>
+			<br>
+			
+		</div>
+	</div>
+	<div class="row clearfix">
+		<div class="col-md-12 column">
+			<div class="tabbable" id="tabs-performance-company">
+				<ul class="nav nav-tabs">
+					<li class="active">
+						 <a href="#panel-performance-company" data-toggle="tab">公司业绩列表</a>
+					</li>
+					<li id="load-lowest-price-profit-item">
+						 <a href="#panel-lowest-price-profit" data-toggle="tab">最低限价利润列表</a>
+					</li>
+					<li id="load-hard-cost-price-profit-item">
+						 <a href="#panel-hard-cost-price-profit" data-toggle="tab">硬成本价利润列表</a>
+					</li>
+				</ul>
+				<div class="tab-content">
+					<div class="tab-pane active" id="panel-performance-company">
+						<div id="load-performance-company-page">
+							<!-- 公司业绩列表 -->
+						</div>
+						<!-- <div class="container-fluid" style="margin-top: 20px;">
+							<div class="row clearfix">
+								<div class="col-md-12 column">
+									<div class="panel panel-default">
+										<div class="panel-heading">
+											<h3 class="panel-title">
+												订单管理列表
+											</h3>
+										</div>
+										<div class="panel-body" id="container">
+											content
+										</div>
+									</div>
+								</div>
+							</div>
+						</div> -->
+					</div>
+					<div class="tab-pane" id="panel-lowest-price-profit">
+						<div id="load-lowest-price-profit-page">
+							<!-- 最低限价利润列表 -->
+						</div>
+					</div>
+					<div class="tab-pane" id="panel-hard-cost-price-profit">
+						<div id="load-hard-cost-price-profit-page">
+							<!-- 硬成本价利润 -->
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>
+<script type="text/javascript">
+var global_is_reload = false;//点击查询按钮重新加载公司业绩选项卡标识
+/**
+ * 点击查询按钮重新，加载公司业绩选项卡
+ */
+$("#search-btn").on("click", function(){
+	global_is_reload = true;//点击查询按钮，重新加载公司业绩选项卡标识
+	loadPerformanceCompanyItem();//加载公司业绩列表
+});
+/**
+ * 点击最低限价列表选项卡，加载最低限价列表
+ */
+$("#load-lowest-price-profit-item").on("click", function(){
+	loadLowestPriceProfitItem();//加载最低限价列表
+});
+/**
+ * 点击硬成本价列表选项卡，加载硬成本价列表
+ */
+$("#load-hard-cost-price-profit-item").on("click", function(){
+	loadHardCostPriceProfitItem();//加载硬成本价列表
+});
+
+loadPerformanceCompanyItem();//加载公司业绩列表
+
+/**
+ * 【公司业绩列表】
+ */
+function loadPerformanceCompanyItem(){
+	var url = BASE_CONTEXT_PATH + "/back/performance-company/get-performance-company"; // 需要提交的 url
+	
+	//开始日期条件
+	var startDate=$("#search-start-date").val();
+	//结束日期条件
+	var endDate=$("#search-end-date").val();
+
+	var params = {"startDate":startDate,"endDate":endDate};
+	loadPagesFun("#load-performance-company-page", url, params);
+}
+/**
+ * 【最低限价利润列表】
+ */
+function loadLowestPriceProfitItem(){
+	var url = BASE_CONTEXT_PATH + "/back/performance-company/get-lowest-price-profit"; // 需要提交的 url
+	
+	//开始日期条件
+	var startDate=$("#search-start-date").val();
+	//结束日期条件
+	var endDate=$("#search-end-date").val();
+
+	var params = {"startDate":startDate,"endDate":endDate};
+	loadPagesFun("#load-lowest-price-profit-page", url, params);
+}
+/**
+ * 【硬成本价利润列表】
+ */
+function loadHardCostPriceProfitItem(){
+	var url = BASE_CONTEXT_PATH + "/back/performance-company/get-hard-cost-price-profit"; // 需要提交的 url
+	
+	//开始日期条件
+	var startDate=$("#search-start-date").val();
+	//结束日期条件
+	var endDate=$("#search-end-date").val();
+
+	var params = {"startDate":startDate,"endDate":endDate};
+	loadPagesFun("#load-hard-cost-price-profit-page", url, params);
+}
+/**
+ * 加载公司业绩、最低限价利润、硬成本价利润列表页面
+ * @param id
+ * @param url
+ * @param params
+ */
+function loadPagesFun(id, url, params){
+	$(id).load(url, params, function(){
+		if(global_is_reload){
+			global_is_reload = false;//点击查询按钮重新加载公司业绩选项卡标识
+			$('#tabs-performance-company a[href="#panel-performance-company"]').tab('show');//显示公司业绩选项卡
+		}
+		console.log("加载完成！");
+	});
+}
+
+/**
+ * 切换视角	1：个人视角；2：公司视角
+ */
+function changeViewFunction(){
+	 var changeView = $("#change-view").val();
+	 if(changeView==1){
+		var href = "back/performance/show";
+		parent.window.iframeLoading(href);//调用主页面中的在iframe中加载内容的方法
+	 }else if(changeView==2){
+		var href = "back/performance-company/show";
+		parent.window.iframeLoading(href);//调用主页面中的在iframe中加载内容的方法
+	 }else{
+		 alert("未知视角");
+	 }
+}
+
+</script>
+</body>
+</html>

@@ -178,4 +178,37 @@ public interface IAccountCompanyService extends IBaseService<AccountCompany, Lon
 			 int totalPayFlag
 			 );
 	
+	/**
+	 * 根据时间查询
+	 * @param startDateYear
+	 * @param startDateMonth
+	 * @param endDateYear
+	 * @param endDateMonth
+	 * @param itemTypeList
+	 * @return
+	 */
+	public List<Map<String,Object>> getItemsByDate(String startDateYear,
+			String startDateMonth,
+			String endDateYear,
+			String endDateMonth,
+			List<Integer> itemTypeList);
+	
+	/**
+	 * 查询范围内的指定分类类型的总金额 
+	 * @param startDateYear
+	 * @param startDateMonth
+	 * @param endDateYear
+	 * @param endDateMonth
+	 * @param userId
+	 * 		userId可以为空
+	 * @param itemTypeList
+	 * @return
+	 */
+	public BigDecimal getItemsSumByDateOrUser(String startDateYear,
+			String startDateMonth,
+			String endDateYear,
+			String endDateMonth,
+			Long   userId,
+			List<Integer> itemTypeList);
+	
 }

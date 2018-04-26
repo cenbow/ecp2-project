@@ -11,6 +11,7 @@ import com.ecp.entity.AccountCompany;
 import tk.mybatis.mapper.common.Mapper;
 
 public interface AccountCompanyMapper extends Mapper<AccountCompany> {
+	
 	public List<AccountCompany> getItemsByOrder(@Param("orderId") long orderId, 
 												@Param("orderNo") String orderNo,
 												@Param("itemTypeList") List<Integer> itemTypeList);
@@ -82,6 +83,21 @@ public interface AccountCompanyMapper extends Mapper<AccountCompany> {
 			@Param("endDateYear") String endDateYear, 
 			@Param("endDateMonth") String endDateMonth, 
 			@Param("userId") long userId, 
+			@Param("itemTypeList") List<Integer> itemTypeList);
+	
+	public List<Map<String,Object>> getItemsByDate(
+			@Param("startDateYear") String startDateYear, 
+			@Param("startDateMonth") String startDateMonth,
+			@Param("endDateYear") String endDateYear, 
+			@Param("endDateMonth") String endDateMonth, 
+			@Param("itemTypeList") List<Integer> itemTypeList);
+	
+	public BigDecimal getItemsSumByDateOrUser(
+			@Param("startDateYear") String startDateYear, 
+			@Param("startDateMonth") String startDateMonth,
+			@Param("endDateYear") String endDateYear, 
+			@Param("endDateMonth") String endDateMonth, 
+			@Param("userId") Long userId, 
 			@Param("itemTypeList") List<Integer> itemTypeList);
 	
 }
