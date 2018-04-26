@@ -122,7 +122,7 @@ public class ViewItemController {
 			param.put("search_keywords", search_keywords);
 		}
 		
-		PageHelper.startPage(pageBean.getPageNum(), pageBean.getPageSize());
+		PageHelper.startPage(pageBean.getPageNum(), 10);
 		List<Map<String, Object>> itemList = iItemService.selectItemsByCondition(param);
 		PageInfo<Map<String, Object>> pagehelper = new PageInfo<>(itemList);
 		mav.addObject("pagehelper", pagehelper);
