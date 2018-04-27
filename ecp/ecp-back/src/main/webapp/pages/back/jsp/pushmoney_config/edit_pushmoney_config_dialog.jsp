@@ -3,7 +3,7 @@
 
 <div class="modal fade" id="edit-pushmoney-config-modal" role="dialog"
 	aria-labelledby="addCheckCycleModalLabel" aria-hidden="true">
-	<div class="modal-dialog" style="width:80%;">
+	<div class="modal-dialog">
 		<div class="modal-content">
 			<div class="modal-header">
 				<button type="button" class="close" data-dismiss="modal"
@@ -14,8 +14,8 @@
 				<form class="form-horizontal" role="form" id="save-form">
 					<input type="hidden" id="config-id" name="id" value="" />
 					<div class="form-group">
-						<label for="name" class="col-sm-2 control-label">角色</label>
-						<div class="col-sm-10" id="">
+						<label for="name" class="col-sm-4 control-label">角色</label>
+						<div class="col-sm-8" id="">
 							<select class="form-control" id="role-id" name="roleId">
 								<c:forEach items="${roleList}" var="role">
 									<option value="${role.roleId}">${role.roleName}</option>
@@ -24,22 +24,22 @@
 						</div>
 					</div>
 					<div class="form-group">
-						<label class="col-sm-2 control-label">销售额完成比例（%）</label>
-						<div class="col-sm-10">
+						<label class="col-sm-4 control-label">销售额完成比例（%）</label>
+						<div class="col-sm-8">
 							<input type="text" id="config-completion-rate" name="completionRate"
 								class="form-control" placeholder="销售额完成比例（%）" />
 						</div>
 					</div>
 					<div class="form-group">
-						<label class="col-md-2 control-label">提成比例（%）</label>
-						<div class="col-md-10">
+						<label class="col-md-4 control-label">提成比例（%）</label>
+						<div class="col-md-8">
 							<input type="text" id="config-pushmoney-rate" name="pushmoneyRate"
 								class="form-control" placeholder="提成比例（%）" />
 						</div>
 					</div>
 					<div class="form-group">
-						<label for="name" class="col-sm-2 control-label">备注</label>
-						<div class="col-sm-10">
+						<label for="name" class="col-sm-4 control-label">备注</label>
+						<div class="col-sm-8">
 							<input type="text" id="config-comment" name="comment"
 								class="form-control" placeholder="备注" />
 						</div>
