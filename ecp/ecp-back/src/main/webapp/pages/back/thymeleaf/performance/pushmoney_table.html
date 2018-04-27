@@ -18,6 +18,9 @@
     font-weight: bold;
     text-shadow: 1px 1px 0 #fff;
   }
+  .background-color{
+  	background-color:yellow;
+  }
   </style>
 </head>
 <body>
@@ -41,8 +44,8 @@
 							</thead>
 							<tbody>
 								<span th:each="item,iterState:${pushmoneyConfigList}" th:remove="tag">
-									<tr th:class="${item.class_active!=null && item.class_active} ? 'active' : ''" th:title="${item.class_active!=null && item.class_active} ? '当前计算提成的比例' : ''">
-										<td th:text="${item.class_active}+'-'+${iterState.count}">序号</td>
+									<tr th:class="${item.class_active!=null && item.class_active} ? 'background-color' : ''" th:title="${item.class_active!=null && item.class_active} ? '当前计算提成的比例' : ''">
+										<td th:text="${iterState.count}">序号</td>
 										<td th:text="${item.role_name}">角色</td>
 										<td th:text="'>='+${item.completion_rate}">销售额完成比例</td>
 										<td th:text="${item.pushmoney_rate}">提成比例</td>
@@ -53,7 +56,7 @@
 						</table>
 					</div>
 					<!-- <div class="panel-footer">Panel footer</div> -->
-					<div class="panel-footer"><b>注：</b>提成比例列表中颜色突出的为本次提成的提成比例。</div>
+					<div class="panel-footer"><b>注：</b>提成比例列表中<i class="background-color">黄色背景</i>的为本次提成的提成比例；如果列表中没有黄色背景的条目，则提成比例为零.</div>
 				</div>
 				<br>
 				
