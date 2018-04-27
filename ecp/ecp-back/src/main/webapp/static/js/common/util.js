@@ -350,7 +350,7 @@
 			'			</div>'+
 			'			<div class="clearfix"></div>';
 		var footer = 
-			'			<button type="button" class="btn btn-default" data-dismiss="modal">确认</button>';
+			'			<button type="button" class="btn btn-default" data-dismiss="modal" onclick="removeModal(this);">确认</button>';
 		var modalobj = util.dialog('系统提示', content, footer, {'containerName' : 'modal-message'});
 		modalobj.find('.modal-content').addClass('alert alert-'+type);
 		if(redirect) {
@@ -379,6 +379,10 @@
 		modalobj.modal('show');
 		return modalobj;
 	};
+	function removeFun(obj){
+		console.log("remove");
+		$(obj).remove();
+	}
 	util.messageAll = function(msg, redirect, type){
 		if(!redirect && !type){
 			type = 'info';

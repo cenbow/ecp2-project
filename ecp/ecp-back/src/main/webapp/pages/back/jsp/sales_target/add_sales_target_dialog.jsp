@@ -17,17 +17,19 @@
 						&nbsp;
 						</div>
 						<div class="col-sm-3">
-							<select class="form-control" id="add-sales-target-check-cycle-id" name="">
+							<select class="form-control" id="add-sales-target-check-cycle-id" name="" data-trigger="manual" data-container="body" data-toggle="popover" data-placement="bottom" 
+			data-content="请选择考核周期！">
 								<option value="">请选择考核周期</option>
 								<c:forEach items="${checkCycleList}" var="checkCycle">
-									<option value="${checkCycle.id}">${checkCycle.yearName}&nbsp;-&nbsp;${checkCycle.cycleName}</option>
+									<option value="${checkCycle.id}">${checkCycle.yearName}&nbsp;-&nbsp;年度</option>
 								</c:forEach>
 							</select>
 						</div>
 						<div class="col-sm-3">
 							<input type="hidden" id="add-sales-target-user-id" name="userId" value="" />
 							<input type="hidden" id="add-sales-target-role-id" name="roleId" value="" />
-							<select class="form-control" id="add-sales-target-is-os" title="人员（角色）">
+							<select class="form-control" id="add-sales-target-is-os" data-trigger="manual" data-container="body" data-toggle="popover" data-placement="bottom" 
+			data-content="请选择人员（角色）！">
 								<option value="">请选择人员（角色）</option>
 								<c:forEach items="${userList}" var="user">
 									<option value="${user.id}-${user.role_id}">${user.nickname}（${user.role_name}）</option>
@@ -35,7 +37,7 @@
 							</select>
 						</div>
 						<div class="col-sm-4">
-							<button type="button" class="btn btn-primary" id="creat-sales-target-html">生成考核指标</button>
+							<button type="button" class="btn btn-primary" id="creat-sales-target-html" disabled="disabled">生成考核指标</button>
 						</div>
 					</div>
 					<div class="form-group" id="load-sales-target-table">
@@ -55,7 +57,48 @@
 	</div>
 
 </div>
+<script>
+$(function () { 
+	//$("[data-toggle='popover']").popover();
+	//$("#creat-sales-target-html").popover('show');
+});
+</script>
 <script type="text/javascript">
+
+/**
+ * 绑定考核周期的change事件，用于显示提示信息
+ */
+$("#add-sales-target-check-cycle-id").on("change", function(){
+	var targetIsOs = $("#add-sales-target-is-os").val();
+	var val = $(this).val();
+	if(val==null || val==""){
+		$("#add-sales-target-check-cycle-id").popover('show');
+	}else{
+		$("#add-sales-target-check-cycle-id").popover('hide');
+	}
+	if(val==null || val=="" || targetIsOs==null || targetIsOs==""){
+		$("#creat-sales-target-html").attr("disabled", true);
+	}else{
+		$("#creat-sales-target-html").attr("disabled", false);
+	}
+});
+/**
+ * 绑定人员（角色）的change事件，用于显示提示信息
+ */
+$("#add-sales-target-is-os").on("change", function(){
+	var checkCycleId = $("#add-sales-target-check-cycle-id").val();
+	var val = $(this).val();
+	if(val==null || val=="" ){
+		$("#add-sales-target-is-os").popover('show');
+	}else{
+		$("#add-sales-target-is-os").popover('hide');
+	}
+	if(checkCycleId==null || checkCycleId=="" || val==null || val==""){
+		$("#creat-sales-target-html").attr("disabled", true);
+	}else{
+		$("#creat-sales-target-html").attr("disabled", false);
+	}
+});
 
 /**
  * 点击生成考核指标html
@@ -69,13 +112,19 @@ $("#creat-sales-target-html").on("click", function(){
 	var roleId = $("#add-sales-target-role-id").val();
 	
 	if(checkCycleId==null || checkCycleId==""){
-		util.message("请选择考核周期！");
+		//util.message("请选择考核周期！");
+		$("#add-sales-target-check-cycle-id").popover('show');
 		return false;
+	}else{
+		$("#add-sales-target-check-cycle-id").popover('hide');
 	}
 	
 	if(userId==null || userId=="" || roleId==null || roleId==""){
-		util.message("请选择人员（角色）！");
+		//util.message("请选择人员（角色）！");
+		$("#add-sales-target-is-os").popover('show');
 		return false;
+	}else{
+		$("#add-sales-target-is-os").popover('hide');
 	}
 	
 	var url = "back/sales-target/create-sales-target-table";

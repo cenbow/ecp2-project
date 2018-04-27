@@ -233,7 +233,8 @@ $("#add-sales-target-btn").click(function(){
 	//$('#tabs-sales-target a[href="#tab-sales-target-edit"]').tab('show');
 	var url = "back/sales-target/load-add-sales-target-dialog";
 	$("#load-add-dialog-div").load(url, function(){
-		openAddSalesTargetDialog();
+		//openAddSalesTargetDialog();
+		$('#add-sales-target-modal').modal("show");
 	});
 });
 
@@ -242,7 +243,7 @@ $("#add-sales-target-btn").click(function(){
  */
 function openAddSalesTargetDialog() {
 	$('#add-sales-target-modal').modal({
-		backdrop : 'static',
+		//backdrop : 'static',
 		keyboard : false
 	});
 }

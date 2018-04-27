@@ -40,7 +40,8 @@
 								<th>订单金额</th>
 								<th>合同金额</th>
 								<th>业绩</th>
-								<th>创建时间</th>
+								<th>年份</th>
+								<th>月份</th>
 							</thead>
 							<tbody>
 								<tr th:each="item,iterState:${performanceList}">
@@ -70,7 +71,8 @@
 											</tbody>
 										</table> -->
 									</td>
-									<td th:text="${item.create_time}">创建时间</td>
+									<td th:text="${item.year}+'年'">年份</td>
+									<td th:text="${item.month}+'月'">月份</td>
 																		
 								</tr>								
 								<tr>

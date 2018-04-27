@@ -171,7 +171,7 @@ function loadProgressPage(){
 	var userId=$("#select-user").val();
 	var roleId=$("#select-role").val();
 	
-	var params = {"fullYear":fullYear, "userId":userId,"roleId":roleId};
+	var params = {"fullYear":fullYear, "userId":userId,"roleId":roleId, "pagehelperFun":"clickPageBtnRequestFun"};
 	loadProgressPageRequest(url, params);
 	
 }
@@ -189,6 +189,28 @@ function loadProgressPageRequest(url, params){
 		$("#edit-tab-progress").removeClass("hide");
 		$('#tabs-item a[href="#panel-6026792"]').tab('show'); */
 	});
+}
+
+/*
+ * 点击页面中的页码执行此函数，查询结果分页
+ * 		函数功能：根据页码数请求当前页内容
+ */
+function clickPageBtnRequestFun(params){
+	
+	var url = BASE_CONTEXT_PATH + "/back/performance/get-sales-progress"; // 需要提交的 url
+	
+	//年度条件
+	var fullYear=$("#select-year").val();
+	//用户/角色条件
+	var userId=$("#select-user").val();
+	var roleId=$("#select-role").val();
+	
+	params.clickPageBtn = true;
+	params.fullYear = fullYear;
+	params.userId = userId;
+	params.roleId = roleId;
+	
+	loadProgressPageRequest(url, params);
 }
 
 /**
