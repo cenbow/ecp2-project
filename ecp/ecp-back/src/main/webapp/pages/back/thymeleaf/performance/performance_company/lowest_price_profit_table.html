@@ -43,7 +43,8 @@
 								<th>市场费</th>
 								<th>四项费</th>
 								<th>最低限价利润</th>
-								<th>创建时间</th>
+								<th>年份</th>
+								<th>月份</th>
 							</thead>
 							<tbody>
 								<tr th:each="item,iterState:${performanceList}">
@@ -58,12 +59,13 @@
 									<td th:text="'￥'+${item.amount}">最低限价差价</td>
 									<td th:text="'￥'+${item.marketFee}">市场费</td>
 									<span th:if="${iterState.first}" th:remove="tag">
-										<td style="display:table-cell; vertical-align:middle" th:attr="rowspan=${itemSize}" th:text="'￥'+${fourFeeTotalAmount}">四项费</td>
+										<td style="border-right: 1px solid #ccc; border-left: 1px solid #ccc; vertical-align: middle;" th:attr="rowspan=${itemSize}" th:text="'￥'+${fourFeeTotalAmount}">四项费</td>
 									</span>
 									<span th:if="${iterState.first}" th:remove="tag">
-										<td style="display:table-cell; vertical-align:middle" th:attr="rowspan=${itemSize}" th:text="'￥'+${profitAmount}">最低限价利润</td>
+										<td style="border-right: 1px solid #ccc; border-left: 1px solid #ccc; vertical-align: middle;" th:attr="rowspan=${itemSize}" th:text="'￥'+${profitAmount}">最低限价利润</td>
 									</span>
-									<td th:text="${item.create_time}">创建时间</td>
+									<td th:text="${item.year}+'年'">年份</td>
+									<td th:text="${item.month}+'月'">月份</td>
 								</tr>								
 								<tr>
 									<td></td>
@@ -73,7 +75,7 @@
 									<td><b>￥</b><b style="font-size:18px;color:red" id="" th:text="${orderTotalAmount}">订单金额总计</b></td>
 									<td><b>￥</b><b style="font-size:18px;color:red" id="" th:text="${contractTotalAmount}">合同金额总计</b></td>
 									<td><b>￥</b><b style="font-size:18px;color:red" id="" th:text="${lowestPriceDifferTotalAmount}">最低限价差价总计</b></td>
-									<td colspan="4"><b>￥</b><b style="font-size:18px;color:red" id="" th:text="${marketFeeTotalAmount}">市场费总计</b></td>
+									<td colspan="5"><b>￥</b><b style="font-size:18px;color:red" id="" th:text="${marketFeeTotalAmount}">市场费总计</b></td>
 								</tr>
 								</hr>					
 							</tbody>
