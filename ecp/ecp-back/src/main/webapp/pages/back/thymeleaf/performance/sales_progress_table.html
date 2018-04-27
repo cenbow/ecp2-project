@@ -57,7 +57,7 @@
 								<th>操作</th>
 							</thead>
 							<tbody>
-								<tr th:each="progress,iterState:${salesProgressList}">
+								<tr th:each="progress,iterState:${pagehelper.list}">
 									<td th:text="${iterState.count}">序号</td>
 									<td th:text="${progress.nickname}">用户昵称</td>
 									<td th:text="${progress.role_name}">用户角色</td>
@@ -77,6 +77,7 @@
 						</table>
 					</div>
 					<!-- <div class="panel-footer">Panel footer</div> -->
+					<div th:include="/back/thymeleaf/common/pagehelper::headx('分页')" th:remove="tag"></div>
 				</div>
 				<br>
 				

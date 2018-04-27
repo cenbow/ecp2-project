@@ -25,6 +25,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 
 import com.ecp.back.commons.RoleCodeConstants;
 import com.ecp.bean.AccountItemType;
+import com.ecp.bean.PageBean;
 import com.ecp.bean.UserBean;
 import com.ecp.entity.CustLockRel;
 import com.ecp.entity.Role;
@@ -41,6 +42,8 @@ import com.ecp.service.front.IContractService;
 import com.ecp.service.front.IOrderItemService;
 import com.ecp.service.front.IOrderService;
 import com.ecp.service.front.IUserAgentService;
+import com.github.pagehelper.PageHelper;
+import com.github.pagehelper.PageInfo;
 
 import tk.mybatis.mapper.entity.Example;
 
@@ -383,7 +386,7 @@ public class PerformanceController {
 		//费用类型
 		List<Integer> itemTypeList=new ArrayList<>();
 		itemTypeList.add(AccountItemType.PERFORMANCE_FEE);//业绩
-		
+
 		List<Map<String, Object>> performanceList = accountPersonalService.getItemsByDateAndUserOrRole(startDateYear, startDateMonth, endDateYear, endDateMonth, userId, roleId, itemTypeList);
 
 		BigDecimal performanceTotalAmount = new BigDecimal("0.00");//业绩总金额
@@ -547,7 +550,7 @@ public class PerformanceController {
 	 * @return
 	 */
 	@RequestMapping(value = "/get-sales-progress")
-	public String getSalesProgress(Model model, HttpServletRequest request, Long userId, Long roleId, String fullYear) {
+	public String getSalesProgress(Model model, HttpServletRequest request, PageBean pageBean, Long userId, Long roleId, String fullYear, String pagehelperFun) {
 
 		Subject subject = SecurityUtils.getSubject();
 		UserBean user = (UserBean)subject.getPrincipal();
@@ -574,9 +577,14 @@ public class PerformanceController {
 		params.put("user_id", userId);
 		params.put("role_id_list", roleIdList);
 		params.put("year_name", fullYear);
-		List<Map<String, Object>> salesProgressList = salesTargetService.selectSalesTargetMap(params);
 		
-		Iterator<Map<String, Object>> it = salesProgressList.iterator();
+		// 查询 并分页
+		PageHelper.startPage(pageBean.getPageNum(), 10); // PageHelper
+		List<Map<String, Object>> salesProgressList = salesTargetService.selectSalesTargetMap(params);
+		PageInfo<Map<String, Object>> pagehelper = new PageInfo<>(salesProgressList);// (使用了拦截器或是AOP进行查询的再次处理)
+		
+		
+		Iterator<Map<String, Object>> it = pagehelper.getList().iterator();
 		while (it.hasNext()) {
 			Map<String, Object> map = it.next();
 			String tempUserId1 = map.get("user_id").toString();
@@ -623,7 +631,9 @@ public class PerformanceController {
 			map.put("total_price", totalPrice);*/
 		}
 
-		model.addAttribute("salesProgressList", salesProgressList);
+		model.addAttribute("pagehelper", pagehelper);
+		model.addAttribute("pagehelperFun", pagehelperFun);
+		//model.addAttribute("salesProgressList", salesProgressList);
 
 		return RESPONSE_THYMELEAF_BACK + "sales_progress_table";
 	}

@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<th:block th:fragment="headx(title)">
+<meta charset="UTF-8">
+<meta name="context-path" th:content="@{/}" />
+<meta  HTTP-EQUIV="nocache"   CONTENT="no-cache">
+
+<script type="text/javascript">
+	/*
+	 * 点击页码时调用此函数
+	 */
+	/* function loadSelectPageFun(action, params) {
+		$("#content_div_id").load(action, params);
+	} */
+</script>
+<div class="panel-footer">
+	<!-- 页数 -->
+	<input type="hidden" id="pageNum" value="${pagehelper.pageNum }" />
+	<!-- 总条数 -->
+	<input type="hidden" id="total-s" value="${pagehelper.total}" />
+	<div class="message">
+		共<i class="blue" th:text="${pagehelper.total}">pagehelper.total</i>条记录，当前显示第&nbsp;<i class="blue" th:text="${pagehelper.pageNum}+'/'+${pagehelper.pages}">pagehelper.pageNum/pagehelper.pages</i>&nbsp;页
+	</div>
+	<!-- 分页 -->
+	<div class="row clearfix">
+		<div class="col-md-12 column">
+			<ul class="pagination pull-right">
+				<div th:if="${!pagehelper.isFirstPage && pagehelper.total&gt;0}" th:remove="tag">
+				<!-- <c:if test="${!pagehelper.isFirstPage && pagehelper.total>0}"> -->
+					<li><a th:href="'javascript:'+${pagehelperFun}+'({&quot;pageNum&quot;:1,&quot;pageSize&quot;:'+${pagehelper.pageSize}+',&quot;pagehelperFun&quot;:&quot;'+${pagehelperFun}+'&quot;});'">首页<!-- &lt;&lt; --></a></li>
+					<li><a th:href="'javascript:'+${pagehelperFun}+'({&quot;pageNum&quot;:'+${pagehelper.prePage}+',&quot;pageSize&quot;:'+${pagehelper.pageSize}+',&quot;pagehelperFun&quot;:&quot;'+${pagehelperFun}+'&quot;});'">上一页<!-- &lt; --></a></li>
+				<!-- </c:if> -->
+				</div>
+				<div th:each="navigatepageNum,iterStat:${pagehelper.navigatepageNums}" th:remove="tag">
+				<!-- <c:forEach items="${pagehelper.navigatepageNums}"
+					var="navigatepageNum"> -->
+					<div th:if="${navigatepageNum==pagehelper.pageNum}" th:remove="tag">
+					<!-- <c:if test="${navigatepageNum==pagehelper.pageNum}"> -->
+						<li class="active"><a th:href="'javascript:'+${pagehelperFun}+'({&quot;pageNum&quot;:'+${navigatepageNum}+',&quot;pageSize&quot;:'+${pagehelper.pageSize}+',&quot;pagehelperFun&quot;:&quot;'+${pagehelperFun}+'&quot;});'" th:text="${navigatepageNum}">当前页</a></li>
+					<!-- </c:if> -->
+					</div>
+					<div th:if="${navigatepageNum!=pagehelper.pageNum}" th:remove="tag">
+					<!-- <c:if test="${navigatepageNum!=pagehelper.pageNum}"> -->
+						<li><a th:href="'javascript:'+${pagehelperFun}+'({&quot;pageNum&quot;:'+${navigatepageNum}+',&quot;pageSize&quot;:'+${pagehelper.pageSize}+',&quot;pagehelperFun&quot;:&quot;'+${pagehelperFun}+'&quot;});'" th:text="${navigatepageNum}">非当前页</a></li>
+					<!-- </c:if> -->
+					</div>
+				<!-- </c:forEach> -->
+				</div>
+				<div th:if="${!pagehelper.isLastPage && pagehelper.total&gt;0}" th:remove="tag">
+				<!-- <c:if test="${!pagehelper.isLastPage && pagehelper.total>0}"> -->
+					<li><a th:href="'javascript:'+${pagehelperFun}+'({&quot;pageNum&quot;:'+${pagehelper.nextPage}+',&quot;pageSize&quot;:'+${pagehelper.pageSize}+',&quot;pagehelperFun&quot;:&quot;'+${pagehelperFun}+'&quot;});'">下一页<!-- &gt; --></a></li>
+					<li><a th:href="'javascript:'+${pagehelperFun}+'({&quot;pageNum&quot;:'+${pagehelper.pages}+',&quot;pageSize&quot;:'+${pagehelper.pageSize}+',&quot;pagehelperFun&quot;:&quot;'+${pagehelperFun}+'&quot;});'">尾页<!-- &gt;&gt; --></a></li>
+				<!-- </c:if> -->
+				</div>
+			</ul>
+		</div>
+	</div>
+</div>
+</th:block>
