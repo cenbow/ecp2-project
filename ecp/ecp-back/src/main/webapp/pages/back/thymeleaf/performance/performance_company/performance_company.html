@@ -99,6 +99,20 @@
 	</div>
 </div>
 <script type="text/javascript">
+
+/* 初始化查询条件：开始日期和结束日期 */
+var date = new Date();
+var currFullYear = date.getFullYear();
+var currMonth = date.getMonth()+1;
+if(currMonth<=9){
+	currMonth = "0"+currMonth;
+}
+//开始日期条件
+$("#search-start-date").val(currFullYear+"-01");
+//结束日期条件
+$("#search-end-date").val(currFullYear+"-"+currMonth);
+/* 初始化查询条件：开始日期和结束日期	结束 */
+
 var global_is_reload = false;//点击查询按钮重新加载公司业绩选项卡标识
 /**
  * 点击查询按钮重新，加载公司业绩选项卡
