@@ -228,8 +228,19 @@ $("#search-check-cycle-btn").on("click", function(){
 	params.pagehelperFun = "clickPageBtnRequestFun";
 	clickPageBtnRequestFun(params);
 })
+/**
+ * 点击删除全年按钮时执行，根据考核年度删除考核周期
+ */
 $("#delete-check-cycle-btn").on("click", function(){
 	var yearName = $("#search-check-cycle-year").val();
+	util.delConfirm("确认删除？", yearName, "DelAllByYearNameAjax");
+})
+/**
+ * 根据考核年度删除考核周期Ajax请求
+ * @returns
+ */
+function DelAllByYearNameAjax(yearName){
+	//var yearName = $("#search-check-cycle-year").val();
 	var url = "back/check-cycle/deleteByYearName";
 	var params = {"yearName":yearName};
 	//util.loading();
@@ -243,9 +254,8 @@ $("#delete-check-cycle-btn").on("click", function(){
 				util.message(obj.result_err_msg);
 			}
 		}
-		
 	});
-})
+}
 
 /*
  * 点击列表中某个复选框时，全选或反选

@@ -216,10 +216,24 @@ public class CheckCycleController {
 	@RequestMapping("/delete")
 	@ResponseBody
 	public Map<String, Object> deleteById(HttpServletRequest request, HttpServletResponse response, Long id) {
-		int rows = checkCycleService.deleteByPrimaryKey(id);
-		if(rows>0){
-			return RequestResultUtil.getResultDeleteSuccess();
+		CheckCycle cycle = checkCycleService.selectByPrimaryKey(id);
+		if(cycle!=null){
+			String yearName = cycle.getYearName();
+			if(StringUtils.isNotBlank(yearName)){
+				SalesTarget target = new SalesTarget();
+				target.setYearName(yearName);
+				List<SalesTarget> targetList = salesTargetService.select(target);
+				if(targetList!=null && !targetList.isEmpty()){
+					return RequestResultUtil.getResultFail(yearName+" 年 "+cycle.getCycleName()+" 考核指标已创建，不允许删除考核周期！");
+				}
+			}
+			
+			int rows = checkCycleService.deleteByPrimaryKey(id);
+			if(rows>0){
+				return RequestResultUtil.getResultDeleteSuccess();
+			}
 		}
+		
 		return RequestResultUtil.getResultDeleteWarn();
 	}
 	
