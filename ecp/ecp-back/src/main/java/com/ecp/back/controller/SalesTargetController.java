@@ -220,6 +220,29 @@ public class SalesTargetController {
 	}
 	
 	/**
+	 * 方法功能：物理删除全年
+	 * @param request
+	 * @param response
+	 * @param yearName
+	 * @param userId
+	 * @param roleId
+	 * @return
+	 */
+	@RequestMapping("/delete-all-year")
+	@ResponseBody
+	public Map<String, Object> deleteById(HttpServletRequest request, HttpServletResponse response, String yearName, Long userId, Long roleId) {
+		SalesTarget target = new SalesTarget();
+		target.setYearName(yearName);
+		target.setUserId(userId);
+		target.setRoleId(roleId);
+		int rows = salesTargetService.delete(target);
+		if(rows>0){
+			return RequestResultUtil.getResultDeleteSuccess();
+		}
+		return RequestResultUtil.getResultDeleteWarn();
+	}
+	
+	/**
 	 * 方法功能：物理删除
 	 * @param request
 	 * @param response

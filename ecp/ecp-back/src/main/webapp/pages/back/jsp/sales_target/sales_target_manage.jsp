@@ -47,6 +47,7 @@
 									</div>
 									<div class="col-md-2 column">
 										<button type="button" class="btn btn-default btn-primary" id="search-sales-target-btn">查询</button>
+										<button type="button" class="btn btn-default btn-primary" id="del-sales-target-btn">删除</button>
 									</div>
 								</div>
 							</div>
@@ -65,6 +66,8 @@
 		</div>
 	</div>
 
+<%@ include file="../../../common/headJs.jsp"%>
+
 <div id="load-add-dialog-div">
 <!-- 此处加载增加考核指标对话框 -->
 </div>
@@ -73,7 +76,58 @@
 <%@ include file="edit_sales_target_dialog.jsp"%>
 </div>
 
-		<%@ include file="../../../common/headJs.jsp"%>
-		<script type="text/javascript" src="static/js/sales_target.js"></script>
+<script type="text/javascript" src="static/js/sales_target.js"></script>
+<script type="text/javascript">
+/**
+ * 点击删除按钮
+ */
+$("#del-sales-target-btn").on("click", function(){
+	var yearName = $("#search-check-cycle-year").val();
+	if(yearName==null || yearName==""){
+		util.message("请选择考核年度！");
+		return false;
+	}
+	var userId = $("#search-user-id").val();
+	var roleId = $("#search-role-id").val();
+	if(userId==null || userId=="" || roleId==null || roleId==""){
+		util.message("请选择人员（角色）！");
+		return false;
+	}
+	util.delConfirm("确认删除？", 1, "deleteSalesTargetAjax");
+});
+/**
+ * 根据条件删除考核指标ajax请求
+ * @param id
+ * @returns
+ */
+function deleteSalesTargetAjax(id){
+	var yearName = $("#search-check-cycle-year").val();
+	if(yearName==null || yearName==""){
+		util.message("请选择考核年度！");
+		return false;
+	}
+	var userId = $("#search-user-id").val();
+	var roleId = $("#search-role-id").val();
+	if(userId==null || userId=="" || roleId==null || roleId==""){
+		util.message("请选择人员（角色）！");
+		return false;
+	}
+	var url = "back/sales-target/delete-all-year";
+	var params = {"yearName":yearName, "userId":userId, "roleId":roleId};
+	//util.loading();
+	$.post(url, params, function(res){
+		console.log(res);
+		if(res!=null && res!=""){
+			var obj = $.parseJSON(res);
+			if(obj.result_code=="success"){
+				reloadInfoFun();
+			}else{
+				util.message(obj.result_err_msg);
+			}
+		}
+		
+	});
+}
+</script>
 </body>
 </html>

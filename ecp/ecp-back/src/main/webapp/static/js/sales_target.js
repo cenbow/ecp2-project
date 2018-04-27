@@ -264,6 +264,8 @@ $("#search-sales-target-btn").on("click", function(){
 	searchClickPageBtnRequestFun(params);
 });
 
+//TODO 删除见jsp
+
 /*
  * 点击页面中的页码执行此函数，查询结果分页
  * 		函数功能：根据页码数请求当前页内容

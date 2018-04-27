@@ -2,7 +2,7 @@
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c"%>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/fmt" prefix="fmt"%>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/functions" prefix="fn"%>
-
+<!-- 此页面是点击生成考核指标按钮时所显示的列表页面，未保存时 -->
 <div class="row clearfix">
 	<div class="col-md-12 column">
 		<div class="panel panel-default">
