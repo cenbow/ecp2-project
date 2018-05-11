@@ -5,6 +5,7 @@ import javax.persistence.*;
 
 import org.springframework.format.annotation.DateTimeFormat;
 
+@Table(name = "linkman")
 public class Linkman {
     /**
      * 联系人表自增ID

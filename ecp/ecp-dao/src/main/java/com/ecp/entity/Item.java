@@ -4,6 +4,7 @@ import java.math.BigDecimal;
 import java.util.Date;
 import javax.persistence.*;
 
+@Table(name = "item")
 public class Item {
     @Id
     @Column(name = "item_id")
