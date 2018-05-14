@@ -2,6 +2,7 @@ package com.ecp.back.controller;
 
 import java.math.BigDecimal;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
@@ -26,8 +27,11 @@ import com.ecp.bean.PageBean;
 import com.ecp.bean.UserBean;
 import com.ecp.common.util.RequestResultUtil;
 import com.ecp.entity.CheckCycle;
+import com.ecp.entity.Role;
 import com.ecp.entity.SalesTarget;
+import com.ecp.entity.User;
 import com.ecp.service.back.ICheckCycleService;
+import com.ecp.service.back.IRoleService;
 import com.ecp.service.back.ISalesTargetService;
 import com.ecp.service.back.IUserService;
 import com.github.pagehelper.PageHelper;
@@ -50,6 +54,8 @@ public class SalesTargetController {
 	private ICheckCycleService checkCycleService;
 	@Resource(name="userServiceBean")
 	private IUserService userService;
+	@Resource(name="roleServiceBean")
+	private IRoleService roleService;
 	
 	/**
 	 * 方法功能：查询列表
@@ -73,6 +79,15 @@ public class SalesTargetController {
 		}else{
 			roleIdList = null;
 		}
+		
+		if(StringUtils.isBlank(searchYearName)){
+			Calendar now = Calendar.getInstance();
+			int currYear = now.get(Calendar.YEAR);
+	        System.out.println("年: " + currYear); 
+	        searchYearName = String.valueOf(currYear);
+		}
+		
+		mav.addObject("searchYearName", searchYearName);
 		
 		PageHelper.startPage(pageBean.getPageNum(), pageBean.getPageSize());
 		Map<String, Object> map = new HashMap<>();
@@ -116,7 +131,24 @@ public class SalesTargetController {
 			
 			Map<String, Object> respM = RequestResultUtil.getResultSelectSuccess();
 			if(salesTargetList!=null && !salesTargetList.isEmpty()){
-				respM.put("salesTarget", salesTargetList.get(0));
+				Map<String, Object> salesTarget = salesTargetList.get(0);
+				respM.put("salesTarget", salesTarget);
+				
+				Long pid = Long.parseLong(salesTarget.get("pid").toString());
+				
+				//获取指标总金额
+				if(pid!=null && pid>0){
+					SalesTarget temp = new SalesTarget();
+					temp.setCheckCycleId(pid);
+					List<SalesTarget> targetList = salesTargetService.select(temp);
+					if(targetList!=null && !targetList.isEmpty()){
+						SalesTarget target = targetList.get(0);
+						salesTarget.put("total_amount", target.getTargetAmount());
+					}
+				}else{
+					salesTarget.put("total_amount", salesTarget.get("target_amount").toString());
+				}
+				
 				return respM;
 			}
 		} catch (Exception e) {
@@ -139,7 +171,20 @@ public class SalesTargetController {
 		Subject subject = SecurityUtils.getSubject();
 		UserBean userBean = (UserBean)subject.getPrincipal();
 		if(userBean!=null){
-
+			CheckCycle cycle = checkCycleService.selectByPrimaryKey(checkCycleId);
+			
+			SalesTarget target = new SalesTarget();
+			target.setYearName(cycle.getYearName());
+			target.setUserId(userId);
+			target.setRoleId(roleId);
+			List<SalesTarget> targetList = salesTargetService.select(target);
+			if(targetList!=null && !targetList.isEmpty()){
+				
+				User user = userService.selectByPrimaryKey(userId);
+				Role role = roleService.selectByPrimaryKey(roleId);
+				return RequestResultUtil.getResultFail(user.getNickname()+"（"+role.getRoleName()+"）"+cycle.getYearName()+" 年度考核指标已存在，不能重复增加。");
+			}
+			
 			List<SalesTarget> salesTargetList = this.getSalesTargetData(checkCycleId, userId, roleId);
 			
 			List<Map> mapList = JSONArray.parseArray(targetArrJSON, Map.class);
@@ -166,7 +211,7 @@ public class SalesTargetController {
 			}
 			
 			if(!isContinue){
-				RequestResultUtil.getResultFail("参数错误");
+				return RequestResultUtil.getResultFail("参数错误");
 			}
 			
 			int rows = salesTargetService.save(salesTargetList);
@@ -175,6 +220,35 @@ public class SalesTargetController {
 			}
 		}
 		return RequestResultUtil.getResultAddWarn();
+	}
+	
+	/**
+	 * 创建考核指标时检查选择的年度和用户角色数据库中是否已存在
+	 * @param request
+	 * @param response
+	 * @param checkCycleId
+	 * @param userId
+	 * @param roleId
+	 * @return
+	 */
+	@RequestMapping("/check-exist")
+	@ResponseBody
+	public Map<String, Object> checkExist(HttpServletRequest request, HttpServletResponse response, Long checkCycleId, Long userId, Long roleId) {
+		
+		CheckCycle cycle = checkCycleService.selectByPrimaryKey(checkCycleId);
+		
+		SalesTarget target = new SalesTarget();
+		target.setYearName(cycle.getYearName());
+		target.setUserId(userId);
+		target.setRoleId(roleId);
+		List<SalesTarget> targetList = salesTargetService.select(target);
+		if(targetList!=null && !targetList.isEmpty()){
+			
+			User user = userService.selectByPrimaryKey(userId);
+			Role role = roleService.selectByPrimaryKey(roleId);
+			return RequestResultUtil.getResultFail(user.getNickname()+"（"+role.getRoleName()+"）"+cycle.getYearName()+" 年度考核指标已存在，不能重复增加。");
+		}
+		return RequestResultUtil.getResultSelectSuccess();
 	}
 	
 	/**
@@ -207,6 +281,25 @@ public class SalesTargetController {
 					salesTarget.setEndDate(checkCycle.getEndDate());
 				}
 			}*/
+			
+			SalesTarget target = salesTargetService.selectByPrimaryKey(salesTarget.getId());
+			if(target!=null && target.getPid().equals(0l)){
+				if(salesTarget.getTargetAmount().compareTo(target.getTargetAmount())==0){//compareTo方法比较大小，数字上小于、等于或大于 val 时，返回 -1、0 或 1。
+					
+				}else{
+					SalesTarget temp = new SalesTarget();
+					temp.setPid(target.getCheckCycleId());
+					List<SalesTarget> targetList = salesTargetService.select(temp);
+					for(SalesTarget entity : targetList){
+						BigDecimal totalAmount = salesTarget.getTargetAmount();
+						BigDecimal targetRate = new BigDecimal(entity.getTargetRate());
+						targetRate = targetRate.divide(new BigDecimal("100"));
+						BigDecimal targetAmount = totalAmount.multiply(targetRate);
+						entity.setTargetAmount(targetAmount.setScale(2, BigDecimal.ROUND_HALF_UP));
+						salesTargetService.updateByPrimaryKeySelective(entity);
+					}
+				}
+			}
 			
 			int rows = salesTargetService.updateByPrimaryKeySelective(salesTarget);
 			if(rows>0){

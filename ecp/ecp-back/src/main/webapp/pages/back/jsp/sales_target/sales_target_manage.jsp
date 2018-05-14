@@ -75,7 +75,10 @@
 <!-- 此处加载编辑考核指标对话框 -->
 <%@ include file="edit_sales_target_dialog.jsp"%>
 </div>
-
+<script type="text/javascript">
+	var currYear = ${searchYearName};
+	$("#search-check-cycle-year").val(currYear);
+</script>
 <script type="text/javascript" src="static/js/sales_target.js"></script>
 <script type="text/javascript">
 /**

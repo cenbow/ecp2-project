@@ -104,8 +104,6 @@ $("#add-sales-target-is-os").on("change", function(){
  * 点击生成考核指标html
  */
 $("#creat-sales-target-html").on("click", function(){
-	var checkCycleText = $("#add-sales-target-check-cycle-id").find("option:selected").text();
-	var userText = $("#add-sales-target-is-os").find("option:selected").text();
 	
 	var checkCycleId = $("#add-sales-target-check-cycle-id").val();
 	var userId = $("#add-sales-target-user-id").val();
@@ -127,6 +125,29 @@ $("#creat-sales-target-html").on("click", function(){
 		$("#add-sales-target-is-os").popover('hide');
 	}
 	
+	var url = "back/sales-target/check-exist";
+	var params = {"checkCycleId":checkCycleId, "userId":userId, "roleId":roleId};
+	$.post(url, params, function(res){
+		console.log(res);
+		if(res!=null){
+			var obj = $.parseJSON(res);
+			if(obj.result_code=="success"){
+				//操作成功后重新加载当前菜单内容
+				ajaxCreateHtml(checkCycleId, userId, roleId);
+			}else{
+				util.message(obj.result_err_msg);
+			}
+		}
+	});
+	
+});
+/**
+ * AJAX请求创建考核指标HTML并返回创建考核指标HTML页面
+ */
+function ajaxCreateHtml(checkCycleId, userId, roleId){
+	var checkCycleText = $("#add-sales-target-check-cycle-id").find("option:selected").text();
+	var userText = $("#add-sales-target-is-os").find("option:selected").text();
+	
 	var url = "back/sales-target/create-sales-target-table";
 	var params = {"checkCycleId":checkCycleId, "userId":userId, "roleId":roleId};
 	$("#load-sales-target-table").load(url, params, function(){
@@ -135,7 +156,7 @@ $("#creat-sales-target-html").on("click", function(){
 		console.log("加载完成");
 		//openAddSalesTargetDialog();
 	});
-});
+}
 
 /**
  * 点击对话框中的保存按钮时执行

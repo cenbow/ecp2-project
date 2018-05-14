@@ -8,7 +8,7 @@
 			<div class="modal-header">
 				<button type="button" class="close" data-dismiss="modal"
 					aria-hidden="true">×</button>
-				<h5 class="modal-title" id="editSalesTargetModalLabel">增加考核指标 </h5>
+				<h5 class="modal-title" id="editSalesTargetModalLabel">编辑考核指标 </h5>
 			</div>
 			<div class="modal-body">
 				<form class="form-horizontal" role="form" id="save-form">
@@ -49,6 +49,8 @@
 							角色
 						</div>
 					</div>
+					<!-- 用于保存指标总金额，指标比例和指标金额自动计算时用 -->
+					<input type="hidden" id="sales-target-total-amount" value="" />
 					<div class="form-group">
 						<label class="col-sm-2 control-label">指标比例（%）</label>
 						<div class="col-sm-10">
@@ -77,11 +79,38 @@
 
 </div>
 <script type="text/javascript">
+/**
+ * 绑定指标比例的input事件
+ */
+$("#sales-target-rate").on("input", function(){
+	var totalAmount = $("#sales-target-total-amount").val();//指标总金额
+	var targetRate = $("#sales-target-rate").val();//指标比例
+	
+	var rate = Number(targetRate)/100;
+	var amount = Number(totalAmount);
+	var targetAmount = amount*rate;
+	$("#sales-target-amount").val(targetAmount.toFixed(2));//指标金额
+});
+/**
+ * 绑定指标金额的input事件
+ */
+$("#sales-target-amount").on("input", function(){
+	var totalAmount = $("#sales-target-total-amount").val();//指标总金额
+	var targetAmount = $("#sales-target-amount").val();//指标金额
+	
+	var tempRate = $("#sales-target-rate").val();//指标比例
+	if(Number(tempRate)==100){
+		return false;
+	}
+	var rate = Number(targetAmount)/Number(totalAmount);
+	var targetRate = rate*100;
+	$("#sales-target-rate").val(targetRate.toFixed(2));//指标比例
+});
 
 /**
  * 点击生成考核指标html
  */
-$("#creat-sales-target-html").on("click", function(){
+/* $("#creat-sales-target-html").on("click", function(){
 	var checkCycleText = $("#add-sales-target-check-cycle-id").find("option:selected").text();
 	var userText = $("#add-sales-target-is-os").find("option:selected").text();
 	
@@ -107,13 +136,13 @@ $("#creat-sales-target-html").on("click", function(){
 		console.log("加载完成");
 		//openAddSalesTargetDialog();
 	});
-});
+}); */
 
 /**
  * 点击对话框中的保存按钮时执行
  * 		保存选择的内容到DB
  */
-$("#save-sales-target-btn").on("click", function(){
+/* $("#save-sales-target-btn").on("click", function(){
 	var targetArr = new Array();
 	$("#load-sales-target-table .check-cycle-id").each(function(index){
 		var checkCycleId = $(this).val();
@@ -155,11 +184,11 @@ $("#save-sales-target-btn").on("click", function(){
 			}
 		}
 	});
-})
+}) */
 /**
  * 绑定增加考核指标的用户角色change事件
  */
-$("#add-sales-target-is-os").on("change", function(){
+/* $("#add-sales-target-is-os").on("change", function(){
 	var userIdRoleId = $(this).val();
 	console.log("value:"+userIdRoleId);
 	if(userIdRoleId!=null && userIdRoleId!=""){
@@ -172,5 +201,5 @@ $("#add-sales-target-is-os").on("change", function(){
 		$("#add-sales-target-user-id").val("");
 		$("#add-sales-target-role-id").val("");
 	}
-});
+}); */
 </script>

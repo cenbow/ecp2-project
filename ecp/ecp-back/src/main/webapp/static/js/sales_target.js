@@ -96,7 +96,13 @@ function selectDetails(id){
 				$("#show-role-name").text(target.role_name);//角色
 				$("#show-start-date").text(new Date(target.start_date).format('yyyy-MM-dd hh:mm:ss'));//开始时间
 				$("#show-end-date").text(new Date(target.end_date).format('yyyy-MM-dd hh:mm:ss'));//结束时间
+				$("#sales-target-total-amount").val(target.total_amount);//隐藏域指标总金额
 				$("#sales-target-rate").val(target.target_rate);//指标比例
+				if(target.pid==0){
+					$("#sales-target-rate").prop("readonly", true);
+				}else{
+					$("#sales-target-rate").prop("readonly", false);
+				}
 				$("#sales-target-amount").val(target.target_amount);//指标金额
 				
 				$('#edit-sales-target-modal').modal({

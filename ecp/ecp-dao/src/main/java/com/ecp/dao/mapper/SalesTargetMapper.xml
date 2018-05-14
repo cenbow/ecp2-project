@@ -41,6 +41,9 @@
 			u.deleted = 1
 		AND u.type = 1
 		AND r.deleted = 1
+		<if test="year_name!=null and year_name!=''">
+			and st.year_name = #{year_name}
+		</if>
 		<if test="user_id!=null">
 			and st.user_id = #{user_id}
 		</if>
@@ -51,6 +54,7 @@
 				#{item}
 			</foreach>
 		</if>
+		ORDER BY st.user_id, st.role_id, st.year_name, st.sort
 	</select>
 	
 	<select id="selectSalesTargetMap" resultType="map">
@@ -81,6 +85,6 @@
 			<if test="year_name!=null and year_name!=''">
 				and st.year_name = #{year_name}
 			</if>
-			ORDER BY u.id,st.sort
+			ORDER BY st.user_id, st.role_id, st.year_name, st.sort
 	</select>
 </mapper>
