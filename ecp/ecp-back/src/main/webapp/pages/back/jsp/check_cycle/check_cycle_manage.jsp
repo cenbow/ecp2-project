@@ -62,6 +62,10 @@
 </div>
 
 		<%@ include file="../../../common/headJs.jsp"%>
+		<script type="text/javascript">
+			var currYear = ${yearName};
+			$("#search-check-cycle-year").val(currYear);
+		</script>
 		<script type="text/javascript" src="static/js/check_cycle.js"></script>
 </body>
 </html>

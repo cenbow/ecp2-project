@@ -312,10 +312,6 @@ function closeAddCheckCycleDialog() {
 	$("#add-check-cycle-modal").modal("hide");
 }
 
-var currDate = new Date();
-var currYear = currDate.getFullYear();
-$("#search-check-cycle-year").val(currYear);
-
 //$(function(){
 	/*$(".checkbox-all").on("click", function(){
 		var flag = $(this).prop("checked");

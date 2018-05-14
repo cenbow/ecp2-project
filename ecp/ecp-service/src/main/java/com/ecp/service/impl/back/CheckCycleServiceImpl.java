@@ -59,6 +59,7 @@ public class CheckCycleServiceImpl extends AbstractBaseService<CheckCycle, Long>
 	@Override
 	public List<CheckCycle> getListByYearName(String yearName) {
 		Example example = new Example(CheckCycle.class);
+		example.setOrderByClause("year_name, sort");
 		example.createCriteria().andEqualTo("yearName", yearName);
 		List<CheckCycle> list = checkCycleMapper.selectByExample(example);
 		return list;
@@ -93,12 +94,12 @@ public class CheckCycleServiceImpl extends AbstractBaseService<CheckCycle, Long>
 			cycle.setSort(0);
 			rows = checkCycleMapper.insertSelective(cycle);
 		}
-		if(rows>0){
-			rows = this.save(cycle.getId(), yearName, cycleArrJSON);
-			if(rows>0){
-				return rows;
-			}
+		
+		rows = this.save(cycle.getId(), yearName, cycleArrJSON);
+		if(rows==-1 || rows>0){
+			return rows;
 		}
+		
 		TransactionAspectSupport.currentTransactionStatus().setRollbackOnly();
 		return 0;
 	}
@@ -146,6 +147,7 @@ public class CheckCycleServiceImpl extends AbstractBaseService<CheckCycle, Long>
 			
 			CheckCycle cycle = this.getDB(yearName, cycleName);
 			if(cycle!=null){//如果数据库中有考核年度为yearName，且周期名称为cycleName的数据，则直接跳过并继续
+				rows = -1;//如果返回-1，则此考核指标已存在
 				continue;
 			}
 			

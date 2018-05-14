@@ -85,7 +85,7 @@ $(".checkbox-all").on("click", function(){
  * 绑定单个复选框click事件
  * 		当前单个复选框全部选择后，设置全选复选框为选择状态；否则设置全选复选框非选择状态
  */
-$(".checkbox-one").on("click", function(){
+$("#add-check-cycle-form .checkbox-one").on("click", function(){
 	var flag = false;
 	$(this).parent().parent().find(".checkbox-one").each(function(){
 		flag = $(this).prop("checked");
@@ -102,7 +102,8 @@ $(".checkbox-one").on("click", function(){
 $("#save-check-cycle-btn").on("click", function(){
 	var yearName = $("#check-cycle-year").val();
 	var cycleArr = new Array();
-	$(".checkbox-one").each(function(){
+	//$(".checkbox-one").each(function(){
+	$("#add-check-cycle-form .curr-checkbox-all input[type='checkbox']:checked").each(function(){
 		var currChckbox = $(this).val();
 		cycleArr.push(currChckbox);
 	});
@@ -117,7 +118,9 @@ $("#save-check-cycle-btn").on("click", function(){
 			var obj = $.parseJSON(res);
 			if(obj.result_code=="success"){
 				//操作成功后重新加载当前菜单内容
-				reloadInfoFun();
+				//reloadInfoFun();
+				var href = "back/check-cycle/select-items?pagehelperFun=clickPageBtnRequestFun&yearName="+yearName;
+				parent.window.iframeLoading(href);//调用主页面中的在iframe中加载内容的方法
 			}else{
 				util.message(obj.result_err_msg);
 			}

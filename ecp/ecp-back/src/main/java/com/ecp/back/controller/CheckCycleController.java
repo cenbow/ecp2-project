@@ -66,6 +66,8 @@ public class CheckCycleController {
 			yearName = String.valueOf(currYear);
 		}
 		
+		mav.addObject("yearName", yearName);
+		
 		PageHelper.startPage(pageBean.getPageNum(), pageBean.getPageSize());
 		List<CheckCycle> cycleList = checkCycleService.getListByYearName(yearName);
 		PageInfo<CheckCycle> pagehelper = new PageInfo<>(cycleList);
@@ -166,6 +168,9 @@ public class CheckCycleController {
 			int rows = checkCycleService.save(yearName, cycleArrJSON);
 			if(rows>0){
 				return RequestResultUtil.getResultAddSuccess();
+			}
+			if(rows==-1){
+				return RequestResultUtil.getResultFail(yearName+" 年度考核周期已存在，不能重复增加。");
 			}
 		}
 		return RequestResultUtil.getResultAddWarn();
