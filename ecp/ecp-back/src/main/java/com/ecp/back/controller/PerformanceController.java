@@ -761,6 +761,7 @@ public class PerformanceController {
 		BigDecimal entertainmentFee = new BigDecimal("0.00");//招待费
 		BigDecimal transportationFee = new BigDecimal("0.00");//交通费
 		BigDecimal travelExpenseFee = new BigDecimal("0.00");//差旅费
+		BigDecimal otherFee = new BigDecimal("0.00");//其他费用
 		try {
 			//费用类型
 			List<Integer> itemTypeList=new ArrayList<>();
@@ -768,6 +769,7 @@ public class PerformanceController {
 			itemTypeList.add(AccountItemType.ENTERTAINMENT_FEE);//招待费
 			itemTypeList.add(AccountItemType.TRANSPORTATION_FEE);//交通费
 			itemTypeList.add(AccountItemType.TRAVEL_EXPENSE_FEE);//差旅费
+			itemTypeList.add(AccountItemType.OTHER_FEE);//其它费用
 			
 			List<Map<String, Object>> accountPersonalList = accountPersonalService.getItemsByDateAndUserOrRole(startDateYear, startDateMonth, endDateYear, endDateMonth, userId, null, itemTypeList);
 			
@@ -787,6 +789,9 @@ public class PerformanceController {
 				case AccountItemType.TRAVEL_EXPENSE_FEE://差旅费
 					travelExpenseFee = travelExpenseFee.add(amount);
 					break;
+				case AccountItemType.OTHER_FEE://其它费用
+					otherFee = otherFee.add(amount);
+					break;
 
 				default:
 					
@@ -798,6 +803,7 @@ public class PerformanceController {
 			fourFeeTotalAmount = fourFeeTotalAmount.add(entertainmentFee);
 			fourFeeTotalAmount = fourFeeTotalAmount.add(transportationFee);
 			fourFeeTotalAmount = fourFeeTotalAmount.add(travelExpenseFee);
+			fourFeeTotalAmount = fourFeeTotalAmount.add(otherFee);
 			return fourFeeTotalAmount;
 		} catch (Exception e) {
 			e.printStackTrace();

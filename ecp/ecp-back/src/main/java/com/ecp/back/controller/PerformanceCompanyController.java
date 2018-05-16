@@ -272,11 +272,11 @@ public class PerformanceCompanyController {
 		
 		//费用类型
 		List<Integer> accountItemTypeList=new ArrayList<>();
-		itemTypeList.add(AccountItemType.TRANSPORTATION_FEE);//交通费
-		itemTypeList.add(AccountItemType.COMMUNICATION_FEE);//通讯费
-		itemTypeList.add(AccountItemType.ENTERTAINMENT_FEE);//招待费
-		itemTypeList.add(AccountItemType.TRAVEL_EXPENSE_FEE);//差旅费
-		itemTypeList.add(AccountItemType.OTHER_FEE);//其它费用
+		accountItemTypeList.add(AccountItemType.TRANSPORTATION_FEE);//交通费
+		accountItemTypeList.add(AccountItemType.COMMUNICATION_FEE);//通讯费
+		accountItemTypeList.add(AccountItemType.ENTERTAINMENT_FEE);//招待费
+		accountItemTypeList.add(AccountItemType.TRAVEL_EXPENSE_FEE);//差旅费
+		accountItemTypeList.add(AccountItemType.OTHER_FEE);//其它费用
 		
 		BigDecimal fourFeeTotalAmount = accountCompanyService.getItemsSumByDateOrUser(startDateYear, startDateMonth, endDateYear, endDateMonth, null, accountItemTypeList);
 		model.addAttribute("fourFeeTotalAmount", fourFeeTotalAmount);
@@ -389,11 +389,11 @@ public class PerformanceCompanyController {
 		
 		//费用类型
 		List<Integer> accountItemTypeList=new ArrayList<>();
-		itemTypeList.add(AccountItemType.TRANSPORTATION_FEE);//交通费
-		itemTypeList.add(AccountItemType.COMMUNICATION_FEE);//通讯费
-		itemTypeList.add(AccountItemType.ENTERTAINMENT_FEE);//招待费
-		itemTypeList.add(AccountItemType.TRAVEL_EXPENSE_FEE);//差旅费
-		itemTypeList.add(AccountItemType.OTHER_FEE);//其它费用
+		accountItemTypeList.add(AccountItemType.TRANSPORTATION_FEE);//交通费
+		accountItemTypeList.add(AccountItemType.COMMUNICATION_FEE);//通讯费
+		accountItemTypeList.add(AccountItemType.ENTERTAINMENT_FEE);//招待费
+		accountItemTypeList.add(AccountItemType.TRAVEL_EXPENSE_FEE);//差旅费
+		accountItemTypeList.add(AccountItemType.OTHER_FEE);//其它费用
 		
 		BigDecimal fourFeeTotalAmount = accountCompanyService.getItemsSumByDateOrUser(startDateYear, startDateMonth, endDateYear, endDateMonth, null, accountItemTypeList);
 		model.addAttribute("fourFeeTotalAmount", fourFeeTotalAmount);
