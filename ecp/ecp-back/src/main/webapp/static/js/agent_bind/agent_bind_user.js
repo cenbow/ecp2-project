@@ -21,7 +21,7 @@
 			// dataType : "html", //表示返回值类型，不必须,如果返回的是面页，则必须
 			data : JSON.stringify(params),
 			success : function(res) { // data 保存提交后返回的数据，一般为 json 数据
-				console.log(res);
+				//console.log(res);
 				if (res != null && res != "") {
 					var obj = $.parseJSON(res);
 					if (obj.result_code == "success") {
@@ -86,12 +86,12 @@
 			},
 			error : function(jqXHR, textStatus, errorThrown) {
 				util.message("AJAX请求时发生错误!");
-				弹出jqXHR对象的信息
+				//弹出jqXHR对象的信息
 				console.log(jqXHR.responseText);
 				console.log(jqXHR.status);
 				console.log(jqXHR.readyState);
 				console.log(jqXHR.statusText);
-				弹出其他两个参数的信息
+				//弹出其他两个参数的信息
 				console.log(textStatus);
 				console.log(errorThrown);
 
@@ -202,19 +202,50 @@
 		var userArr=new Array();
 		$(selector).each(function(index){
 			
-			var userId=$(this).attr("bind-id");
-			var roleId=$(this).attr("role-id");
+			var userId=$(this).attr("bind-id");  		//用户ID
+			var roleId=$(this).attr("role-id");			//角色ID
+			var roleCode=$(this).attr("role-code");  	//角色代码
+			
 			
 			var checkStatus=$(this).is(':checked');
 			if(checkStatus==true){
 				var user=new Object();
 				user.userId=userId;
 				user.roleId=roleId;
+				user.roleCode=roleCode;
 				userArr.push(user);				
 				}			
 			});
 		
 		return userArr;
+	}
+	
+	//------------------------validation--------------------
+	
+	/**
+	 * function:
+	 * 	 判定所选择的销售(包含角色)是否已经存在于原来绑定的列表中.
+	 * 	 如果包括则返回true,否则返回false
+	 * */
+	function containSelectedSales(selectedSalesArr,originSalesArr){
+		//alert("execute");
+		//console.log("selectedSalesArr.length:"+selectedSalesArr.length);
+		for(var i=0;i<selectedSalesArr.length;i++){
+			var selectedSale=selectedSalesArr[i];
+			//console.log("originsalearr.length:"+originSalesArr.length);
+			for(var j=0;j<originSalesArr.length;j++){
+				var originSale=originSalesArr[j];
+				//console.log("selected.userId"+selectedSale.userId);
+				//console.log("originSale.userId"+originSale.user.id);
+				
+				if(selectedSale.userId==originSale.user.id && selectedSale.roleId==originSale.user.role_id){
+					return true;
+				}
+			}
+		}
+		
+		return false;
+		
 	}
 	
 	
@@ -245,10 +276,21 @@
 				userArr.push(tempArr[i]);
 			}		
 		
+			//有效性验证1,如果用户没有选择OS成员或是IS成员时,则提示操作用户并返回
 			if(userArr.length==0){
 				util.message("请先选择外部销售与内部销售!");
 				return;
 			}
+			
+			//有效性验证,如果所选择的OS或是IS已经位于BIND列表中,则提示用户并返回
+			//added by jch 2018/06/11
+			if (containSelectedSales(userArr,g_agentBindList)){
+				util.message("所选择的外部销售或是内部销售人员已经存在于绑定列表中!");
+				return;
+			}
+			
+			
+			
 			bindAgentAndSales(agentId,userArr);
 			
 		});

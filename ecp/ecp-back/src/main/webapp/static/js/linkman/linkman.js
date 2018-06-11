@@ -90,7 +90,8 @@ function addLinkmanItem(){
 			if (res != null) {
 				var obj = $.parseJSON(res);
 				if (obj.result_code == "success") {					
-					reloadLinkmanTable();
+					reloadLinkmanTable();  //刷新指定订单下的联系人列表
+					loadCurrentPage();  //刷新订单列表下的联系人信息
 					closeLinkmanDialog();
 				} else {
 					util.message(obj.result_msg);
@@ -134,6 +135,7 @@ function deleteLinkmanAjaxRequest(id){
 			var obj = $.parseJSON(res);
 			if(obj.result_code=="success"){
 				reloadLinkmanTable();
+				loadCurrentPage();
 			}else{
 				util.message(obj.result_err_msg);
 			}
@@ -160,6 +162,7 @@ function saveDetailLinkmanItem(){
 				var obj = $.parseJSON(res);
 				if (obj.result_code == "success") {					
 					reloadLinkmanTable();
+					loadCurrentPage();
 					closeLinkmanDialog();
 				} else {
 					util.message(obj.result_msg);

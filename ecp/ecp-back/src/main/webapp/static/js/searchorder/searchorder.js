@@ -6,8 +6,8 @@
 		  };
 })(jQuery);
 
-//查询当前页
-function search(){
+//刷新当前页
+function refreshCurrPage(){
 	var parms=new Object(); //生成参数对象
 	
 	/*
@@ -536,7 +536,7 @@ $(function() {
 	
 	updateUIArea();
 	updateUserRole();
-	updatePerspective();
+	//updatePerspective();
 	
 	updateUIDealState(g_dealstate_cond);
 	updateUIOrderTime(g_ordertime_cond);

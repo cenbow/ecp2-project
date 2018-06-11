@@ -179,6 +179,8 @@
 <body>
 	<!-- 对话框 -->
 	<!-- <div th:replace="thymeleaf/common/_dispatch_account_dialog::dialog" class="header"></div> -->
+	<!-- 编辑对话框(add):dialog  -->
+	<div class="edit-paymentcomment-dialog"></div>
 	
 	<!-- 订单列表 -->
 	<div class="row clearfix">
@@ -281,6 +283,7 @@
 								</div>
 							</div>
 						</th>
+						<th>备注(财务)</th>
 						<th>操作</th>
 					</tr>
 				</thead>
@@ -322,6 +325,11 @@
 								<span th:case='6' th:remove="tag"><span class="order-status"> 执行完毕 </span> <br></span>										
 							</span>
 						</td>
+						<!-- 回款备注显示 -->
+						<td>
+							<!-- 如果备注不为空时,则显示备注 -->
+							<span th:if="${not (order.payment_comment==null)}" th:text="${order.payment_comment}">  </span>
+						</td>
 						<td>
 							<!-- <a type="button" th:href="@{/back/order/detail(id=${order.id})}" class="btn btn-primary show-detail" target="_blank">详情</a> -->
 							<a type="button" th:attr="data-id=${order.id},
@@ -332,7 +340,18 @@
 												class="edit-payment" 
 												title="回款管理">												
 								<i class=" icon-money icon-large" style="color:darkblue"></i>
-							</a>							
+							</a>
+							<a type="button" th:attr="data-id=${order.id},
+													data-orderid=${order.order_id},
+													data-contractState=${order.contract_state},
+													data-contract-id=${order.contract_id},
+													data-companyname=${order.company_name}"													
+												class="edit-payment-comment" 
+												title="回款备注">												
+								<i class=" icon-coffee icon-large" style="color:darkblue"></i>
+							</a>
+							
+														
 						</td>
 
 					</tr>
@@ -348,7 +367,7 @@
 						<td><strong><span th:text="${paymentAmountSum}"></span></strong></td>
 						<!-- 欠款合计 -->
 						<td><strong><span th:text="${contractAmountSum-paymentAmountSum}"></span></strong></td>
-						<td colspan="3"></td>						
+						<td colspan="4"></td>						
 					</tr>
 					</tr>
 					

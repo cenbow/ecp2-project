@@ -93,12 +93,14 @@ public class AgentBindController {
 			Map<String,Object> map=new HashMap<String,Object>();
 			map.put("user", agentBindedOS.get(i));
 			map.put("type", "外部销售");
+			map.put("roleCode", RoleCodeConstants.OS);
 			agentBindList.add(map);
 		}
 		for(int i=0;i<agentBindedIS.size();i++){
 			Map<String,Object> map=new HashMap<String,Object>();
 			map.put("user", agentBindedIS.get(i));
 			map.put("type", "内部销售");
+			map.put("roleCode", RoleCodeConstants.IS);
 			agentBindList.add(map);
 		}		
 		
@@ -197,6 +199,7 @@ public class AgentBindController {
 	/** 
 		* @Title: batchUnbind 
 		* @Description: 批量绑定 
+		* 	批量绑定过程中,如果某个sale(包含角色)已经绑定到此代理商,则不再绑定.
 		* @param @param parms
 		* @param @return     
 		* @return Object    返回类型 
@@ -233,10 +236,15 @@ public class AgentBindController {
 		
 		for(UserExtends agent:agentList){
 			for(int i=0;i<userArr.size();i++){
-				agentBindService.addBindAgentToUser(agent.getExtendId(), 
-													 userArr.getJSONObject(i).getLongValue("userId"),
-													 userArr.getJSONObject(i).getLongValue("roleId")
-													 );
+				boolean hasBind=agentBindService.hasBind(agent.getExtendId(), 
+						 userArr.getJSONObject(i).getLongValue("userId"),
+						 userArr.getJSONObject(i).getLongValue("roleId"));
+				if(!hasBind){
+					agentBindService.addBindAgentToUser(agent.getExtendId(), 
+							 userArr.getJSONObject(i).getLongValue("userId"),
+							 userArr.getJSONObject(i).getLongValue("roleId")
+							 );
+				}				
 			}
 		}
 		

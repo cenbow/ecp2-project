@@ -49,6 +49,9 @@ public class Orders {
     private Byte totalPayFlag;
     
     
+    
+    
+    
 
 	public Byte getTotalPayFlag() {
 		return totalPayFlag;
@@ -115,8 +118,38 @@ public class Orders {
 
     @Column(name = "logistics_remark")
     private String logisticsRemark;
+    
+    
+    /** 
+    * @Fields marketFeeComment : 预计市场费备注 
+    */
+    @Column(name = "market_fee_comment")
+    private String marketFeeComment;
+    
+    /** 
+    * @Fields paymentComment : 付全款备注 
+    */
+    @Column(name = "payment_comment")
+    private String paymentComment;    
+    
 
-    private String memo;
+    public String getMarketFeeComment() {
+		return marketFeeComment;
+	}
+
+	public void setMarketFeeComment(String marketFeeComment) {
+		this.marketFeeComment = marketFeeComment;
+	}
+
+	public String getPaymentComment() {
+		return paymentComment;
+	}
+
+	public void setPaymentComment(String paymentComment) {
+		this.paymentComment = paymentComment;
+	}
+
+	private String memo;
 
     private String mobile;
 

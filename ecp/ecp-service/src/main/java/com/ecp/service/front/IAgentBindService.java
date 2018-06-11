@@ -107,7 +107,19 @@ public interface IAgentBindService extends IBaseService<CustLockRel, Long> {
 	* @return int    返回类型 
 	* @throws 
 	*/
-	public int addBindAgentToUser(long agentId,long userId,long roleId); 
+	public int addBindAgentToUser(long agentId,long userId,long roleId);
+	
+	/** 
+		* @Title: hasBind 
+		* @Description: TODO(这里用一句话描述这个方法的作用) 
+		* @param @param agentId
+		* @param @param userId
+		* @param @param roleId
+		* @param @return     
+		* @return boolean    返回类型 
+		* @throws 
+	*/
+	public boolean hasBind(long agentId,long userId,long roleId);
 	
 	/** 
 		* @Title: getAgentByUserIdListAndRoleCode 
