@@ -77,9 +77,20 @@
 														<input type="hidden" id="role-id" name="roleId" value="" />
 														<div class="form-group">
 															<label class="col-sm-2 control-label">角色编码</label>
-															<div class="col-sm-10">
+															<div class="col-sm-5">
 																<input type="text" id="role-code" name="roleCode"
-																	class="form-control" placeholder="角色编码" />
+																	class="form-control" placeholder="选择角色编码/输入角色编码" />
+															</div>
+															<div class="col-sm-5">
+																<select class="form-control" id="choose-role-code">
+																	<option value="">--请选择角色编码--</option>
+																	<option value="ADMIN">系统管理员</option>
+																	<option value="MANAGER">总经理</option>
+																	<option value="BUSSMAN">商务经理</option>
+																	<option value="SALEMAN">销售经理</option>
+																	<option value="OS">外部销售</option>
+																	<option value="IS">内部销售</option>
+																</select>
 															</div>
 														</div>
 														<div class="form-group">
@@ -320,6 +331,17 @@
 					}
 					return flag;
 				}
+			/**
+			 * 角色编码选择输入change事件
+			 */
+			$("#choose-role-code").on("change", function(){
+				var roleCode = $(this).val();
+				if(roleCode!=null && roleCode!=""){
+					$("#role-code").val(roleCode);
+				}else{
+					$("#role-code").val("");
+				}
+			});
 		</SCRIPT>
 		
 </body>
