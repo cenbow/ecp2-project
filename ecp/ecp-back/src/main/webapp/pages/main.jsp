@@ -33,6 +33,15 @@ body {
      overflow-x : hidden;   /* 去掉横条 */
      overflow-y : auto;   /* 去掉竖条 */
 }
+/* 主页面左侧导航二级菜单去掉下划线和虚线边框 */
+a{text-decoration:none;}
+a:link{text-decoration:none;}
+a:visited{text-decoration:none;}
+a:hover{text-decoration:none;}
+a:active{text-decoration:none;}
+a{blr:expression(this.onFocus=this.blur());}/* IE下 */    
+a:focus{outline:none;}/* FF下 */
+a.hidefocus{outline:none}
 </style>
 
 </head>
@@ -120,8 +129,11 @@ body {
 		$(".leftSide .panel-collapse .panel-body").on("click", function(){
 			/* $(".leftSide .panel-collapse .panel-body").removeClass("curr");
 			$(this).addClass("curr"); */
-			$(".leftSide .panel-collapse .panel-body").css({"background-color": "","font-weight":"400"});
-			$(this).css({"background-color": "#1C2B36","font-weight":"700"});
+			$(".leftSide .panel-collapse .panel-body").css({"background-color": "","font-weight":"400","color":""});
+			$(this).css({"background-color": "","font-weight":"700","color":"#FFFF00"});
+			
+			$(".leftSide .panel-collapse .panel-body").find("a").css({"color":""});
+			$(this).find("a").css({"color":"#FFFF00"});
 		});
 	</script>
 </body>
