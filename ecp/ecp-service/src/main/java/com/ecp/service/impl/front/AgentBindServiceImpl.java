@@ -5,6 +5,7 @@ import java.util.Map;
 
 import org.springframework.stereotype.Service;
 
+import com.ecp.bean.DeletedType;
 import com.ecp.dao.CustLockRelMapper;
 import com.ecp.entity.CustLockRel;
 import com.ecp.entity.User;
@@ -51,6 +52,32 @@ public class AgentBindServiceImpl extends AbstractBaseService<CustLockRel, Long>
 		rec.setRoleId(roleId);
 		return custLockRelMapper.insertSelective(rec);		
 	}
+	
+	/** 
+		* @Title: hasBind 
+		* @Description: 判定一个用户(包含角色)是否已经绑定到相应的代理商 
+		* @param @param agentId
+		* @param @param userId
+		* @param @param roleId
+		* @param @return     
+		* @return boolean    返回类型 
+		* 		如果已经绑定则返回true; 
+		* 		否则返回false;
+		* @throws 
+	*/
+	@Override
+	public boolean hasBind(long agentId,long userId,long roleId){
+		CustLockRel rec=new CustLockRel();
+		rec.setCustId(agentId);
+		rec.setBindUserId(userId);
+		rec.setRoleId(roleId);
+		rec.setDeleted(DeletedType.NO);
+		CustLockRel bindedSale=custLockRelMapper.selectOne(rec);
+		if(bindedSale==null)		
+			return false;
+		else
+			return true;
+	}
 
 
 	@Override
@@ -95,7 +122,6 @@ public class AgentBindServiceImpl extends AbstractBaseService<CustLockRel, Long>
 		return custLockRelMapper.deleteByAgentId(agentIdList);
 		
 	}
-
 	
 
 }

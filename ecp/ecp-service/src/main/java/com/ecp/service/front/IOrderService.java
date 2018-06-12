@@ -162,4 +162,29 @@ public interface IOrderService extends IBaseService<Orders, Long> {
 			  List<Map<String,Object>> agentIdList,
 			  int totalPayFlag);
 	
+	
+	/** 
+		* @Title: saveMarketFeeComment 
+		* @Description: 保存订单预付市场费备注 
+		* @param @param orderId  订单的Id--对应--实体类的id    orders中的属性orderId是订单的序列号
+		* @param @param marketFeeComment
+		* @param @return     
+		* @return int    返回类型 
+		* @throws 
+	*/
+	public int saveMarketFeeComment(long orderId,String marketFeeComment);
+	
+	/** 
+		* @Title: savePaymentComment 
+		* @Description: 保存回款备注 
+		* @param @param orderId
+		* @param @param paymentComment
+		* @param @return     
+		* @return int    返回类型 
+		* @throws 
+	*/
+	public int savePaymentComment(long orderId,String paymentComment);
+	
+	
+	
 }

@@ -68,6 +68,8 @@
     <result column="contract_state" jdbcType="TINYINT" property="contractState" />
     <result column="account_state" jdbcType="TINYINT" property="accountState" />
     <result column="total_pay_flag" jdbcType="TINYINT" property="totalPayFlag" />
+    <result column="market_fee_comment" jdbcType="VARCHAR" property="marketFeeComment" />
+    <result column="payment_comment" jdbcType="VARCHAR" property="paymentComment" />
   </resultMap>
   <sql id="Base_Column_List">
     <!--
@@ -81,7 +83,7 @@
     order_jfs_key, order_time, order_type, paid, parent_order_id, pay_period, payment_method, 
     payment_price, payment_time, payment_type, phone, promo_code, province_id, refund, 
     refund_time, seller_evaluate, shipment_type, state, total_discount, total_price, 
-    update_time, yn, contract_no, contract_id, contract_state, account_state,extend_id,totalPayFlag
+    update_time, yn, contract_no, contract_id, contract_state, account_state,extend_id,totalPayFlag,market_fee_comment,payment_comment
   </sql>
   
   <select id="selectOrderByOrderTimeAndDealState" resultMap="BaseResultMap">
@@ -197,10 +199,12 @@
   	 
   </select>
   
+  <!-- 订单管理,市场费用管理,回款管理  列表显示查询 -->
   <select id="selectOrders" resultType="map">
   	 select o.*,a.company_name,a.artificial_person_name,a.contact_phone from trade_orders o LEFT JOIN   user_extends a on(o.extend_id=a.extend_id) <where>
   	 	o.deleted=1 AND o.yn=1 and o.extend_id is not NULL
-  	 	
+  	 	AND
+  	 	o.create_time&gt;=DATE_ADD(now(),INTERVAL #{orderTimeCond} MONTH)
   	 	<if test="dealStateCond!=null and dealStateCond!='' and dealStateCond!='0'.toString()">
   			AND 
   			o.contract_state=#{dealStateCond}	

@@ -37,6 +37,8 @@ import com.ecp.service.front.IUserAgentService;
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
 
+import tk.mybatis.mapper.util.StringUtil;
+
 /**
  * Copyright (c) 2018 by [个人或者公司信息]
  * @ClassName:     MarketFeeController.java
@@ -300,6 +302,31 @@ public class MarketFeeController {
 		return RESPONSE_THYMELEAF_BACK + "marketfee_edit";
 	}
 	
+	
+	/** 
+		* @Title: showMarketFeeCommentEditUI 
+		* @Description: 显示编辑预计市场费
+		* @param @param orderId  	订单ID
+		* @param @param orderNo	 	订单号
+		* @param @param model
+		* @param @return     
+		* @return String    返回类型 
+		* @throws 
+	*/
+	/*@RequestMapping(value="/editcomment")
+	public String showMarketFeeCommentEditUI(long orderId,String orderNo,Model model){
+		model.addAttribute("orderId", orderId);
+		model.addAttribute("orderNo",orderNo);
+		
+		//查询订单的记帐状态
+		Orders order=orderService.selectByPrimaryKey(orderId);
+		model.addAttribute("currOrder", order);  //订单的记帐状态
+		
+		return RESPONSE_THYMELEAF_BACK + "marketfeecomment_edit";
+	}*/
+	
+	
+	
 	private void prepareMarketFee(long orderId,String orderNo,Model model){
 		//费用类型
 		List<Integer> itemTypeList=new ArrayList<>();		
@@ -412,6 +439,19 @@ public class MarketFeeController {
 	}
 	
 	
+	@RequestMapping(value="/loadmarketfeecommentdialog")
+	public String loadModiMarketFeeCommentDialog(long orderId,String orderNo,Model model){
+		model.addAttribute("orderId", orderId);
+		model.addAttribute("orderNo",orderNo);
+		
+		//查询订单的记帐状态
+		Orders order=orderService.selectByPrimaryKey(orderId);
+		model.addAttribute("currOrder", order);  //当前订单
+		
+		return RESPONSE_THYMELEAF_BACK+"modi_marketfeecomment_dialog";
+	}
+	
+	
 	/** 
 		* @Title: addFeeItem 
 		* @Description: 增加市场费(Create)
@@ -483,6 +523,33 @@ public class MarketFeeController {
 		
 		
 		return RequestResultUtil.getResultAddSuccess();
+		
+		//return RequestResultUtil.getResultAddWarn();
+	}
+	
+	/** 
+		* @Title: saveMarketFeeComment 
+		* @Description: 保存预计市场费备注
+		* @param @param orderId  订单的ID 对应实体类中的id
+		* @param @param orderNo  订单号	对应实体类中的orderId
+		* @param @param marketFeeComment
+		* @param @param model
+		* @param @return     
+		* @return Object    返回类型 
+		* @throws 
+	*/
+	@RequestMapping(value="/savemarketfeecomment")
+	@ResponseBody
+	public Object saveMarketFeeComment(long orderId,
+							 String orderNo,							 
+							 String marketFeeComment,							 
+							 Model model){
+		if(StringUtil.isEmpty(marketFeeComment))
+			marketFeeComment="";
+		orderService.saveMarketFeeComment(orderId,marketFeeComment);
+		
+		
+		return RequestResultUtil.getResultSaveSuccess();
 		
 		//return RequestResultUtil.getResultAddWarn();
 	}

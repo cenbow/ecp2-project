@@ -33,6 +33,8 @@ import com.ecp.service.front.IUserAgentService;
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
 
+import tk.mybatis.mapper.util.StringUtil;
+
 /**
  * Copyright (c) 2018 by [个人或者公司信息]
  * @ClassName:     PaymentController.java
@@ -470,6 +472,42 @@ public class PaymentController {
 		}
 		else
 			return RequestResultUtil.getResultAddWarn();
+	}
+	
+	@RequestMapping(value="/loadpaymentcommentdialog")
+	public String loadModiPaymentCommentDialog(long orderId,String orderNo,Model model){
+		model.addAttribute("orderId", orderId);
+		model.addAttribute("orderNo",orderNo);
+		
+		//查询订单的记帐状态
+		Orders order=orderService.selectByPrimaryKey(orderId);
+		model.addAttribute("currOrder", order);  //当前订单
+		
+		return RESPONSE_THYMELEAF_BACK+"modi_paymentcomment_dialog";
+	}
+	
+	/** 
+	* @Title: savePaymentComment 
+	* @Description: 保存预计市场费备注
+	* @param @param orderId  订单的ID 对应实体类中的id
+	* @param @param orderNo  订单号	对应实体类中的orderId
+	* @param @param paymentComment
+	* @param @param model
+	* @param @return     
+	* @return Object    返回类型 
+	* @throws 
+	*/
+	@RequestMapping(value="/savepaymentcomment")
+	@ResponseBody
+	public Object savePaymentComment(long orderId,
+							 String orderNo,							 
+							 String paymentComment,							 
+							 Model model){
+		if(StringUtil.isEmpty(paymentComment))
+			paymentComment="";
+		orderService.savePaymentComment(orderId,paymentComment);
+		
+		return RequestResultUtil.getResultSaveSuccess();
 	}
 	
 	

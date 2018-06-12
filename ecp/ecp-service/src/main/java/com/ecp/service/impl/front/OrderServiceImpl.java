@@ -100,7 +100,7 @@ public class OrderServiceImpl extends AbstractBaseService<Orders, Long> implemen
 	@Override
 	public List<Map<String, Object>> selectOrders(List<Long> agentIdList, int orderTimeCond, int dealStateCond,
 			int searchTypeValue, String condValue) {
-		return ordersMapper.selectOrders(agentIdList, orderTimeCond, dealStateCond, searchTypeValue, condValue);
+		return ordersMapper.selectOrders(agentIdList, -orderTimeCond, dealStateCond, searchTypeValue, condValue);
 	}
 	
 	public List<Map<String, Object>> selectOrder(int orderTimeCond, int dealStateCond, int searchTypeValue,
@@ -155,6 +155,22 @@ public class OrderServiceImpl extends AbstractBaseService<Orders, Long> implemen
 			List<Map<String, Object>> agentIdList,List<Map<String, Object>> orderIdList) {
 		List<Map<String,Object>> resultList=null;
 		return ordersMapper.selectOrderByOrderScope(-orderTimeCond, dealStateCond, searchTypeValue,condValue,provinceName,cityName,countyName,agentIdList,orderIdList);
+	}
+
+	@Override
+	public int saveMarketFeeComment(long orderId, String marketFeeComment) {
+		Orders record = new Orders();
+		record.setId(orderId);
+		record.setMarketFeeComment(marketFeeComment);
+		return ordersMapper.updateByPrimaryKeySelective(record);		
+	}
+
+	@Override
+	public int savePaymentComment(long orderId, String paymentComment) {
+		Orders record = new Orders();
+		record.setId(orderId);
+		record.setPaymentComment(paymentComment);
+		return ordersMapper.updateByPrimaryKeySelective(record);	
 	}
 	
 	

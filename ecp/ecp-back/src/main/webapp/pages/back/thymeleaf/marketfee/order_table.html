@@ -179,6 +179,8 @@
 <body>
 	<!-- 对话框 -->
 	<!-- <div th:replace="thymeleaf/common/_dispatch_account_dialog::dialog" class="header"></div> -->
+	<!-- 编辑对话框(add):dialog  -->
+	<div class="edit-marketfeecomment-dialog"></div>
 	
 	<!-- 订单列表 -->
 	<div class="row clearfix">
@@ -280,6 +282,7 @@
 								</div>
 							</div>
 						</th>
+						<th>备注(财务)</th>
 						<th>操作</th>
 					</tr>
 				</thead>
@@ -320,6 +323,11 @@
 								<span th:case='6' th:remove="tag"><span class="order-status"> 执行完毕 </span> <br></span>										
 							</span>
 						</td>
+						<!-- 市场费用备注显示 -->
+						<td>
+							<!-- 如果备注不为空时,则显示备注 -->
+							<span th:if="${not (order.market_fee_comment==null)}" th:text="${order.market_fee_comment}">  </span>
+						</td>
 						<td>
 							<!-- <a type="button" th:href="@{/back/order/detail(id=${order.id})}" class="btn btn-primary show-detail" target="_blank">详情</a> -->
 							<a type="button" th:attr="data-id=${order.id},
@@ -331,13 +339,14 @@
 												title="市场费用管理">												
 								<i class=" icon-money icon-large" style="color:darkblue"></i>
 							</a>
-							<!-- <a type="button" th:attr="data-id=${order.id},
+							<!-- 2018/06/11 预计市场费备注 -->							
+							<a type="button" th:attr="data-id=${order.id},
 													data-orderid=${order.order_id},
 													data-contractState=${order.contract_state}" 
-											class="edit-market-fee" 
-											title="市场费用管理">
+											class="edit-market-fee-comment" 
+											title="预计市场费备注">
 								<i class=" icon-coffee icon-large" style="color:darkblue"></i>
-							</a> -->
+							</a>
 						</td>
 					</tr>
 					<tr>
@@ -348,7 +357,7 @@
 						<td><strong><span th:text="${contractAmountSum}"></span></strong></td>
 						<!-- 市场费用金额合计 -->
 						<td><strong><span th:text="${marketFeeAmountSum}"></span></strong></td>
-						<td colspan="3"></td>						
+						<td colspan="4"></td>						
 					</tr>
 					
 					<!-- <tr>

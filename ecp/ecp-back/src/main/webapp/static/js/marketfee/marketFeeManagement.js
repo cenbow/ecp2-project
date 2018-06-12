@@ -35,6 +35,44 @@ function search(){
 	loadOrder(parms,null); // 加载页面
 }
 
+/**
+ * 刷新当前页
+ * @returns
+ */
+function reloadCurrPage(){
+	var parms=new Object(); //生成参数对象
+	
+	/*
+	 
+	 	var g_ordertime_cond = [[${orderTimeCond}]];  //回传的时间条件 
+		var g_dealstate_cond=[[${dealStateCond}]];    //回传的合同处理状态条件
+		var g_searchTypeValue = [[${searchTypeValue}]];  //查询类型值
+		var g_condValue=[[${condValue}]]; //查询条件值
+	 
+	 */
+	
+	
+	//分页数据
+	parms.pageNum=$("#pageNum").val();
+	parms.pageSize=$("#pageSize").val();
+	
+	//时间段、订单状态
+	var dealStateCond=g_dealstate_cond;
+	var orderTimeCond=g_ordertime_cond; 
+	
+	parms.dealStateCond=dealStateCond;
+	parms.orderTimeCond=orderTimeCond;
+	
+	//搜索类型，搜索条件值
+	var condType=g_searchTypeValue;
+	var condStr=g_condValue;
+	
+	parms.searchTypeValue=condType;
+	parms.condValue=condStr;
+	
+	loadOrder(parms,null); // 加载页面
+}
+
 function search_normal() {
 	search();
 }
@@ -144,6 +182,26 @@ function updateUISearchCond(condType){
 	});
 }
 
+//------------------UI 交互------------------------
+//---------------------对话框打开/关闭----------------------
+/**
+* 打开增加市场费用备注窗口
+* @returns
+*/
+function openModiMarketFeeCommentDialog() {
+	//modal-container-306690
+	//console.log("debug!");
+	$('#modal-container-306691').modal({
+		backdrop : 'static',
+		keyboard : false
+	});
+}
+
+/* close dialog :关闭市场费用备注窗口*/
+function closeModiMarketFeeCommentDialog() {	
+	$("#modal-container-306691").modal("hide");
+}
+
 //-------------------数据交互----------------------
 
 /**
@@ -221,6 +279,35 @@ $(function() {
 			//util.message("此合同已经执行完毕,不可以再录入四项费用！");
 		}
 
+		
+	});
+	
+	/*
+	 * 【预计市场费用备注管理】按钮
+	 */
+	$(".edit-market-fee-comment").on("click", function(e) {
+		//var url = BASE_CONTEXT_PATH + "/back/marketfee/editcomment"; //需要提交的 url
+		
+		var orderId = $(this).attr("data-id");  //订单id(PK)
+		var orderNo = $(this).attr("data-orderid");  //订单号
+		var contractState=$(this).attr("data-contractState"); //合同状态
+		var agentName=$(this).attr("data-companyname");
+		
+		var url=BASE_CONTEXT_PATH+'/back/marketfee/loadmarketfeecommentdialog';
+		var params=new Object();
+		params.orderId=orderId;
+		params.orderNo=orderNo;
+		//动态加载增加dialog
+		$(".edit-marketfeecomment-dialog").load(url,params,function(){
+			//加载完毕后自动打开增加对话框.
+			openModiMarketFeeCommentDialog();
+			//当对话框完全关闭后刷新当前页
+			$('#modal-container-306691').on('hidden.bs.modal', function () {
+				  // 执行一些动作...
+				reloadCurrPage();
+				})
+		});
+		
 		
 	});
 	

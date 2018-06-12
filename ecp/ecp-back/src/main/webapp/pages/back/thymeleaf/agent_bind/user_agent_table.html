@@ -232,7 +232,7 @@ tr:hover{
 	</div>
 	</div>
 	<!-- 当用户点击查询条件时，采用些隐藏表单提交 -->
-	<form th:action="@{/back/agent/show}" method="post" id="searchform">
+	<form  id="searchform">
 		<!-- 保存页号与页大小 -->
 		<input type="hidden" name="pageNum" id="pageNum" th:value="${pageInfo.pageNum}"> 
 		<input type="hidden" name="pageSize" id="pageSize" th:value="${pageInfo.pageSize}">
