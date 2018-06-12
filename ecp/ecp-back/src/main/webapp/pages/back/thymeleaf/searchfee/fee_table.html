@@ -35,6 +35,7 @@
 					</span> <span th:case=3 th:remove="tag"> <span>招待费</span>
 					</span> <span th:case=4 th:remove="tag"> <span>差旅费</span>
 					</span> <span th:case="10" th:remove="tag"> <span>其它费</span>
+					</span> <span th:case="11" th:remove="tag"> <span>工资薪金</span>
 					</span> <span th:case="5" th:remove="tag"> <span>市场费</span>
 					</span> <span th:case="*" th:remove="tag"> <span>未知类型条目</span>
 					</span>
@@ -74,7 +75,8 @@
 								<span th:case=2 th:remove="tag"> <span><strong>通讯费:</strong></span></span> 
 								<span th:case=3 th:remove="tag"> <span><strong>招待费:</strong></span></span> 
 								<span th:case=4 th:remove="tag"> <span><strong>差旅费:</strong></span></span> 
-								<span th:case="10" th:remove="tag"> <span><strong>其它费:</strong></span></span> 
+								<span th:case="11" th:remove="tag"> <span><strong>工资薪金</strong></span></span>
+								<span th:case="10" th:remove="tag"> <span><strong>其它费:</strong></span></span>								 
 								<span th:case="5" th:remove="tag"> <span><strong>市场费:</strong></span></span>
 								<span th:case="*" th:remove="tag"> <span><strong>未知类型费用:</strong></span></span>
 							</span>

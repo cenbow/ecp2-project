@@ -372,6 +372,7 @@ public class SearchFeeController {
 			itemTypeList.add(AccountItemType.TRANSPORTATION_FEE);
 			itemTypeList.add(AccountItemType.TRAVEL_EXPENSE_FEE);
 			itemTypeList.add(AccountItemType.OTHER_FEE);
+			itemTypeList.add(AccountItemType.SALARY);
 			itemTypeList.add(AccountItemType.MARKET_FEE);
 		}
 		else{
