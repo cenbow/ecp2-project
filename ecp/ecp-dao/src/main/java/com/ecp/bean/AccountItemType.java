@@ -16,6 +16,7 @@ public class AccountItemType {
 	public static final int ENTERTAINMENT_FEE=3;		//招待费
 	public static final int TRAVEL_EXPENSE_FEE=4;		//差旅费
 	public static final int OTHER_FEE=10;				//其它费用
+	public static final int SALARY=11;					//薪金
 	
 	
 	public static final int MARKET_FEE=5;				//市场费
