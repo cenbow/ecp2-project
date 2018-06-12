@@ -79,4 +79,9 @@ public class StaticConstants {
 	public static final String VIEW_PUSHMONEY_CONFIG_MANAGE_PAGE = "back/jsp/view/pushmoney_config/pushmoney_config_manage";//提成比例配置页面
 	public static final String VIEW_PUSHMONEY_CONFIG_MANAGE_TABLE_PAGE = "back/jsp/view/pushmoney_config/pushmoney_config_table";//提成比例配置列表页面
 	
+	public static final String VAT_RATES_PAGE = "back/jsp/system_config/system_config_manage";//系统配置页面
+	
+	public static final String ITEM_SALES_STATS_PAGE = "back/jsp/stats/statsManage";//产品销售清单页面
+	public static final String ITEM_SALES_STATS_TABLE_PAGE = "back/jsp/stats/statsManageTable";//产品销售清单列表页面
+	
 }
