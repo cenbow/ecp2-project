@@ -454,7 +454,7 @@
 			<generatedKey column="extend_id" sqlStatement="MySql" identity="true"/>
 		</table> --> 
 		
-		<table tableName="sales_target" domainObjectName="SalesTarget" enableCountByExample="false" enableUpdateByExample="false" enableDeleteByExample="false" enableSelectByExample="false" selectByExampleQueryId="false">
+		<table tableName="system_config" domainObjectName="SystemConfig" enableCountByExample="false" enableUpdateByExample="false" enableDeleteByExample="false" enableSelectByExample="false" selectByExampleQueryId="false">
 			<generatedKey column="id" sqlStatement="MySql" identity="true"/>
 		</table>
 		
