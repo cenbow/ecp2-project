@@ -131,14 +131,14 @@
 															class="form-control" placeholder="商城价格">
 													</div>
 												</div>
-												<!-- <div class="form-group">
-													<label class="col-sm-2 control-label">成本价格<b style="color:red;">&nbsp;*</b></label>
+												<div class="form-group">
+													<label class="col-sm-2 control-label">销售成本价格<b style="color:red;">&nbsp;*</b></label>
 													<div class="col-sm-10">
 														<input type="text" id="market-price2" name="marketPrice2"
-															class="form-control" placeholder="成本价格">
+															class="form-control" placeholder="销售成本价格">
 													</div>
 												</div>
-												<div class="form-group">
+												<!-- <div class="form-group">
 													<label class="col-sm-2 control-label">硬成本价格<b style="color:red;">&nbsp;*</b></label>
 													<div class="col-sm-10">
 														<input type="text" id="hard-cost-price" name="hardCostPrice"

@@ -449,8 +449,8 @@ function ajaxRequestGetItemInfo(id){
 				$("#highest-price").val(item.highestPrice);//最高价格
 				$("#lowest-price").val(item.lowestPrice);//最低价格
 				$("#market-price").val(item.marketPrice);//市场价格
-				/*$("#market-price2").val(item.marketPrice2);//成本价格
-				$("#hard-cost-price").val(item.hardCostPrice);//硬成本价格*/
+				$("#market-price2").val(item.marketPrice2);//销售成本价格
+				/*$("#hard-cost-price").val(item.hardCostPrice);//硬成本价格*/
 				$("#inventory").val(item.inventory);//库存数量
 				$("#origin").val(item.origin);//商品产地
 				$("#packing-list").val(item.packingList);//包装清单

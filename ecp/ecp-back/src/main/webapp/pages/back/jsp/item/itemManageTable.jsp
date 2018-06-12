@@ -17,8 +17,8 @@
 			<th>状态</th>
 			<th>预算价格</th>
 			<th>商城价格</th>
-			<th>成本价格</th>
-			<th>库存量</th>
+			<th>销售成本价格</th>
+			<!-- <th>库存量</th> -->
 			<th>操作</th>
 		</tr>
 	</thead>
@@ -50,7 +50,7 @@
 				<td>￥${item.guide_price}</td>
 				<td>￥${item.market_price}</td>
 				<td>￥${item.market_price2}</td>
-				<td>${item.inventory}</td>
+				<%-- <td>${item.inventory}</td> --%>
 				<td class="center">
 					<button type="button" class="btn btn-default btn-info" onclick="javascript:selectDetails(${item.item_id}, ${item.cid});">详情</button>
 					<c:if test="${not empty item.item_status && item.item_status==4}">
