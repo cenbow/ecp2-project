@@ -39,6 +39,7 @@ html, body {
   color: #869FB1;
   padding: 0;
 }
+
 .leftSide .sidelist .panel-heading a {
   display: block;
   padding: 15px;
@@ -47,6 +48,7 @@ html, body {
 .leftSide .sidelist .panel-heading a > span {
   margin-right: 4px;
 }
+
 .leftSide .sidelist .subtitle .panel-body {
   background-color: #30404c;
   border-top: 1px solid #131E26;
@@ -64,6 +66,12 @@ html, body {
 
 .leftSide .panel-group a:hover{
 	text-decoration: none;
+}
+/**
+ * 鼠标划过二级菜单显示背景色
+ */
+.leftSide .panel-collapse .panel-body:hover{
+	background-color: #1C2B36;
 }
 
 .rightSide {

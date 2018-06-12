@@ -34,6 +34,7 @@ body {
      overflow-y : auto;   /* 去掉竖条 */
 }
 </style>
+
 </head>
 
 <body style="overflow: hidden">
@@ -112,6 +113,16 @@ body {
 		}
 		
 		$(window).on("resize",setScroll);
+		
+		/**
+		 * 绑定二级菜单的点击事件，设置选中的样式
+		 */
+		$(".leftSide .panel-collapse .panel-body").on("click", function(){
+			/* $(".leftSide .panel-collapse .panel-body").removeClass("curr");
+			$(this).addClass("curr"); */
+			$(".leftSide .panel-collapse .panel-body").css({"background-color": "","font-weight":"400"});
+			$(this).css({"background-color": "#1C2B36","font-weight":"700"});
+		});
 	</script>
 </body>
 </html>
