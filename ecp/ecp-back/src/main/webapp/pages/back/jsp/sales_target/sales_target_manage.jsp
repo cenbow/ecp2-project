@@ -45,9 +45,10 @@
 											</c:forEach>
 										</select>
 									</div>
-									<div class="col-md-2 column">
+									<div class="col-md-4 column">
 										<button type="button" class="btn btn-default btn-primary" id="search-sales-target-btn">查询</button>
 										<button type="button" class="btn btn-default btn-primary" id="del-sales-target-btn">删除</button>
+										<button type="button" class="btn btn-default btn-primary" id="export-sales-target-excel-btn">导出EXCEL</button>
 									</div>
 								</div>
 							</div>
@@ -131,6 +132,34 @@ function deleteSalesTargetAjax(id){
 		
 	});
 }
+/**
+ * 导出EXCEL
+ */
+$("#export-sales-target-excel-btn").on("click", function(){
+	var yearName = $("#search-check-cycle-year").val();
+	var userId = $("#search-user-id").val();
+	var roleId = $("#search-role-id").val();
+	var url = "back/sales-target/export-excel";
+
+	var params = "?searchYearName="+yearName+"&searchUserId="+userId+"&searchRoleId="+roleId;
+	
+	window.location.href = encodeURI(url+params);
+	
+	/* $.post(url, params, function(res){
+		console.log(res);
+		if(res!=null && res!=""){
+			var obj = $.parseJSON(res);
+			if(obj.result_code=="success"){
+				//window.location.href = obj.result_msg;
+				util.message(obj.result_msg);
+				window.location.href = encodeURI(obj.result_msg);
+			}else{
+				util.message(obj.result_err_msg);
+			}
+		}
+	}); */
+	
+});
 </script>
 </body>
 </html>

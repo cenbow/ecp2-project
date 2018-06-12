@@ -54,7 +54,7 @@
 				#{item}
 			</foreach>
 		</if>
-		ORDER BY st.user_id, st.role_id, st.year_name, st.sort
+		ORDER BY st.year_name, st.user_id, st.role_id, st.sort
 	</select>
 	
 	<select id="selectSalesTargetMap" resultType="map">
