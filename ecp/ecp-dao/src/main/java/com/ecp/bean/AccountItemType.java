@@ -15,11 +15,10 @@ public class AccountItemType {
 	public static final int COMMUNICATION_FEE=2;		//通讯费
 	public static final int ENTERTAINMENT_FEE=3;		//招待费
 	public static final int TRAVEL_EXPENSE_FEE=4;		//差旅费
-	public static final int OTHER_FEE=10;				//其它费用
-	public static final int SALARY=11;					//薪金
-	
-	
 	public static final int MARKET_FEE=5;				//市场费
+	public static final int OTHER_FEE=10;				//其它费用
+	public static final int SALARY=11;					//工资薪金
+	
 	public static final int PAYMENT=6;					//回款
 	public static final int PERFORMANCE_FEE=7;			//业绩
 	public static final int PRICE_DIFFERENCE_FEE=8;		//最低限价差价
