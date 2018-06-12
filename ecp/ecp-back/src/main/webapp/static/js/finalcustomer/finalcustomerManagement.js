@@ -52,6 +52,66 @@ function search(){
 	loadOrder(parms,null); // 加载页面
 }
 
+/*功能: 加载当前页
+ * 	采用回传的参数进行查询.
+ * 	所回传的参数保存在页面 order_table.html中
+ */
+function loadCurrentPage(){
+	var parms=new Object(); //生成参数对象
+	//分页数据
+	parms.pageNum=$("#pageNum").val();
+	parms.pageSize=$("#pageSize").val();
+	
+	/*
+	 	var g_ordertime_cond = [[${orderTimeCond}]];  			//回传的时间条件 
+		var g_dealstate_cond=[[${dealStateCond}]];    		//回传的合同处理状态条件
+		var g_searchTypeValue = [[${searchTypeValue}]];  	//查询类型值
+		var g_condValue=[[${condValue}]]; 					//查询条件值
+		
+		var ret_provinceName=[[${provinceName}]];  		 	//回传的区域条件
+		var ret_cityName=[[${cityName}]];
+		var ret_countyName=[[${countyName}]];
+		
+		var ret_userId=[[${userId}]];					 	//回传的角色条件
+		var ret_roleId=[[${roleId}]];
+	 */
+	
+	//时间段、订单状态
+	var dealStateCond=g_dealstate_cond;
+	var orderTimeCond=g_ordertime_cond; 
+	
+	parms.dealStateCond=dealStateCond;
+	parms.orderTimeCond=orderTimeCond;
+	
+	//搜索类型，搜索条件值
+	var condType=g_searchTypeValue;
+	var condStr=g_condValue;
+	
+	parms.searchTypeValue=condType;
+	parms.condValue=condStr;
+	
+	//区域条件
+	var provinceName=ret_provinceName;
+	var cityName=ret_cityName;
+	var countyName=ret_countyName;
+	
+	parms.provinceName=provinceName;
+	parms.cityName=cityName;
+	parms.countyName=countyName;
+	
+	//用户/角色条件
+	//var option=$("#select-user-role option:selected");
+	var userId=ret_userId;
+	var roleId=ret_roleId;
+	
+	parms.userId=userId;
+	parms.roleId=roleId;
+	
+	
+	
+	loadOrder(parms,null); // 加载页面
+}
+
 function search_normal() {
 	search();
 }
@@ -148,7 +208,6 @@ function updateUIDealState(dealStateCond){
 			
 			//console.log("state value:"+value);
 			setDealStateCond(selectedTxt,value);
-			
 			
 		}
 	});
