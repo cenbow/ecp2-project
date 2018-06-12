@@ -10,7 +10,7 @@
 			<th>订单号</th>
 			<th>商品名称</th>
 			<th>商品价格</th>
-			<th>商品数据</th>
+			<th>商品数量</th>
 			<th>商品总金额</th>
 			<th>订单时间</th>
 		</tr>
@@ -20,9 +20,9 @@
 			<tr>
 				<td>${item.order_id}</td>
 				<td>${item.sku_name}</td>
-				<td>${item.primitive_price}</td>
+				<td>￥${item.primitive_price}</td>
 				<td>${item.sum_num}</td>
-				<td>${item.pay_price_total}</td>
+				<td>￥${item.pay_price_total}</td>
 				<td>${item.create_time}</td>
 			</tr>
 		</c:forEach>

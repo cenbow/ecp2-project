@@ -4,6 +4,7 @@ import java.io.BufferedInputStream;
 import java.io.BufferedOutputStream;
 import java.io.File;
 import java.io.FileInputStream;
+import java.io.OutputStream;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -56,6 +57,10 @@ public class DownLoadFileUtil {
 	 */
 	public static boolean downLoad(String fileName, String fileType, String realPath, HttpServletResponse response)
 			throws Exception {
+		
+		OutputStream os = response.getOutputStream();// 取得输出流
+		response.reset();// 清空输出流
+		
 		File file = new File(realPath); // 根据文件路径获得File文件
 		// 设置文件类型
 		if ("pdf".equals(fileType)) {
@@ -76,7 +81,7 @@ public class DownLoadFileUtil {
 		BufferedOutputStream output = null;
 		BufferedInputStream input = null;
 		try {
-			output = new BufferedOutputStream(response.getOutputStream());
+			output = new BufferedOutputStream(os);
 			input = new BufferedInputStream(new FileInputStream(file));
 			int n = -1;
 			// 遍历，开始下载
