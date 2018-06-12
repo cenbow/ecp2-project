@@ -183,6 +183,7 @@ public class FourFeeController {
 		itemTypeList.add(AccountItemType.ENTERTAINMENT_FEE);
 		itemTypeList.add(AccountItemType.TRANSPORTATION_FEE);
 		itemTypeList.add(AccountItemType.TRAVEL_EXPENSE_FEE);
+		itemTypeList.add(AccountItemType.SALARY);
 		itemTypeList.add(AccountItemType.OTHER_FEE);
 		
 		// 查询 并分页		
