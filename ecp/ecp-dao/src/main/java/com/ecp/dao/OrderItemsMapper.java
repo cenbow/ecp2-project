@@ -22,4 +22,11 @@ public interface OrderItemsMapper extends Mapper<OrderItems> {
 	 */
 	public BigDecimal getOrderAmountByNo(@Param("orderNo") String orderNo);
 	
+	/**
+	 * 查询产品销售清单统计
+	 * @param params
+	 * @return
+	 */
+	public List<Map<String, Object>> getItemSalesStats(Map<String, Object> params);
+	
 }

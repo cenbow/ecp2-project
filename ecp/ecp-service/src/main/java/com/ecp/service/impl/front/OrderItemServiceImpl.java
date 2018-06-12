@@ -109,4 +109,9 @@ public class OrderItemServiceImpl extends AbstractBaseService<OrderItems, Long> 
 		return orderItemsMapper.getOrderAmountByNo(orderNo);
 	}
 
+	@Override
+	public List<Map<String, Object>> getItemSalesStats(Map<String, Object> params) {
+		return orderItemsMapper.getItemSalesStats(params);
+	}
+
 }

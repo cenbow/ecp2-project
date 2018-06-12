@@ -196,6 +196,13 @@ public class RequestResultUtil {
 		return respMap;
 	}
 	
+	public static Map<String, Object> getResultSuccess(String msg){
+		respMap.clear();
+		respMap.put(RESULT_CODE, RESULT_CODE_SUCCESS);
+		respMap.put(RESULT_MSG, msg);
+		return respMap;
+	}
+	
 	/**
 	 * 方法功能：获取删除成功结果集
 	 * @return

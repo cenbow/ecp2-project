@@ -60,5 +60,48 @@
 	WHERE
 		oi.order_id = #{orderNo}		  	 
   </select>
+  <!-- 查询产品销售清单统计 -->
+  <select id="getItemSalesStats" resultType="map" parameterType="map">
+	SELECT
+		o.order_id,
+		o.extend_id,
+		oi.id,
+		oi.item_id,
+		oi.sku_id,
+		oi.sku_name,
+		SUM(oi.num) AS sum_num,
+		oi.primitive_price,
+		SUM(oi.pay_price_total) AS pay_price_total,
+		o.contract_state,
+		oi.promotion_discount,
+		SUM(
+			oi.promotion_discount * oi.num
+		) AS promotion_discount_total,
+		o.create_time
+	FROM
+		trade_order_items oi
+	LEFT JOIN trade_orders o ON oi.order_id = o.order_id
+	LEFT JOIN user_extends ue ON o.extend_id = ue.extend_id
+	LEFT JOIN cust_lock_rel l ON ue.extend_id = l.cust_id
+	WHERE
+		o.contract_state = 6<!-- 合同状态=执行完毕 -->
+	AND o.extend_id IS NOT NULL
+	<if test="start_time!=null and start_time!=''">
+		and o.create_time &gt;= #{start_time}
+	</if>
+	<if test="end_time!=null and end_time!=''">
+		and o.create_time &lt;= #{end_time}
+	</if>
+	<if test="user_id!=null and user_id>0">
+		and l.bind_user_id = #{user_id}
+	</if>
+	<if test="role_id!=null and role_id>0">
+		and l.role_id = #{role_id}
+	</if>
+	GROUP BY
+		sku_id
+	ORDER BY
+		sum_num DESC	  	 
+  </select>
   
 </mapper>
