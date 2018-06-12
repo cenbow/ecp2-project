@@ -24,15 +24,18 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestMapping;
 
 import com.ecp.back.commons.RoleCodeConstants;
+import com.ecp.back.commons.SystemConfigConstants;
 import com.ecp.bean.AccountItemType;
 import com.ecp.bean.PageBean;
 import com.ecp.bean.UserBean;
 import com.ecp.entity.CustLockRel;
 import com.ecp.entity.Role;
+import com.ecp.entity.SystemConfig;
 import com.ecp.entity.UserExtends;
 import com.ecp.service.back.IPushmoneyConfigService;
 import com.ecp.service.back.IRoleService;
 import com.ecp.service.back.ISalesTargetService;
+import com.ecp.service.back.ISystemConfigService;
 import com.ecp.service.back.IUserService;
 import com.ecp.service.front.IAccountCompanyService;
 import com.ecp.service.front.IAccountPersonalService;
@@ -87,6 +90,8 @@ public class PerformanceController {
 	private IPushmoneyConfigService pushmoneyConfigService;
 	@Resource(name="roleServiceBean")
 	private IRoleService roleService;
+	@Resource(name="systemConfigServiceBean")
+	private ISystemConfigService systemConfigService;
 
 	/**
 	 * @Description 显示-订单列表
@@ -653,6 +658,20 @@ public class PerformanceController {
 	@RequestMapping(value = "/get-pushmoney")
 	public String getPushmoney(Model model, HttpServletRequest request, String fullYear, Long userId, Long roleId, String startTime, String endTime, BigDecimal completionRate, String provinceName, String cityName, String countyName) {
 
+		Subject subject = SecurityUtils.getSubject();
+		UserBean user = (UserBean)subject.getPrincipal();
+		List<Role> roleList = user.getRoleList();
+		boolean isShowPushmoneyAmount = false;//是否显示提成金额
+		for(Role role : roleList){
+			String roleCode = role.getRoleCode();
+			//如果登录用户角色包含管理员、经理角色，则显示提成金额；否则不显示
+			if(roleCode.equalsIgnoreCase(RoleCodeConstants.ADMIN) || roleCode.equalsIgnoreCase(RoleCodeConstants.MANAGER)){
+				isShowPushmoneyAmount = true;//是否显示提成金额
+				break;
+			}
+		}
+		model.addAttribute("isShowPushmoneyAmount", isShowPushmoneyAmount);
+		
 		//获取提成比例列表并计算当前的提成比例
 		List<Long> roleIdList = new ArrayList<>();
 		roleIdList.add(roleId);
@@ -692,13 +711,25 @@ public class PerformanceController {
 		BigDecimal fourFeeTotalAmount = this.getFourFeeTotalAmount(startDateYear, startDateMonth, endDateYear, endDateMonth, userId);
 		//获取市场费用总和
 		BigDecimal marketFeeTotalAmount = this.getMarketFeeTotalAmount(startDateYear, startDateMonth, endDateYear, endDateMonth, userId, roleId);
+		
+		SystemConfig systemConfig = systemConfigService.getByConfigName(SystemConfigConstants.VAT_RATES);
+		Double vatRates = Double.valueOf(systemConfig.getConfigValue());
+		vatRates = vatRates/100;
+		
+		BigDecimal tax = BigDecimal.valueOf(vatRates);//增值税后
+		tax = tax.setScale(2,BigDecimal.ROUND_HALF_UP);//增值税率保留两位小数
 		//获取提成金额
-		BigDecimal pushmoneyTotalAmount = this.getPushmoneyPrice(userId, roleId, startTime, endTime, marketFeeTotalAmount, fourFeeTotalAmount, pushmoneyRate);
+		BigDecimal pushmoneyTotalAmount = this.getPushmoneyPrice(userId, roleId, startTime, endTime, marketFeeTotalAmount, fourFeeTotalAmount, pushmoneyRate, tax);
+		
+		//薪金
+		BigDecimal salaryTotalAmount = this.getSalaryAmount(startDateYear, startDateMonth, endDateYear, endDateMonth, userId, roleId);
 		
 		model.addAttribute("performance_total_amount", performanceTotalAmount);
 		model.addAttribute("four_fee_total_amount", fourFeeTotalAmount);
 		model.addAttribute("market_fee_total_amount", marketFeeTotalAmount);
+		model.addAttribute("performance_vat_rates", tax);
 		model.addAttribute("pushmoney_total_amount", pushmoneyTotalAmount);
+		model.addAttribute("salary_total_amount", salaryTotalAmount);
 		
 		return RESPONSE_THYMELEAF_BACK + "pushmoney_table";
 	}
@@ -896,11 +927,17 @@ public class PerformanceController {
 	 * @param pushmoneyRate
 	 * @return
 	 */
-	private BigDecimal getPushmoneyPrice(Long userId, Long roleId, String startTime, String endTime, BigDecimal marketFeeTotalAmount, BigDecimal fourFeeTotalAmount, double pushmoneyRate){
+	private BigDecimal getPushmoneyPrice(Long userId, Long roleId, String startTime, String endTime, BigDecimal marketFeeTotalAmount, BigDecimal fourFeeTotalAmount, double pushmoneyRate, BigDecimal tax){
 		//差价总和
 		BigDecimal priceDifferenceTotal = this.getPriceDifferenceTotalAmount(userId, roleId, startTime, endTime);
 		
-		BigDecimal tax = new BigDecimal("0.83");//增值税后
+		//SystemConfig systemConfig = systemConfigService.getByConfigName(SystemConfigConstants.VAT_RATES);
+		//Double vatRates = Double.valueOf(systemConfig.getConfigValue());
+		//vatRates = vatRates/100;
+		
+		//BigDecimal tax = BigDecimal.valueOf(vatRates);//增值税后
+		//tax = tax.setScale(2,BigDecimal.ROUND_HALF_UP);//增值税率保留两位小数
+		//BigDecimal tax = new BigDecimal("0.83");//增值税后
 		BigDecimal pushmoney = null;//提成
 		//毛利=（订单总金额-订单市场费用-订单中商品最低限价总额）* （1-17%）
 		pushmoney = priceDifferenceTotal.subtract(marketFeeTotalAmount);//减市场费
@@ -911,6 +948,49 @@ public class PerformanceController {
 		BigDecimal pushmoneyPrice = pushmoney.multiply(BigDecimal.valueOf(pushmoneyRate));//提成金额
 		pushmoneyPrice = pushmoneyPrice.setScale(2,BigDecimal.ROUND_HALF_UP);//提成金额保留两位小数
 		return pushmoneyPrice;
+	}
+	
+	/**
+	 * 获取薪金
+	 * @param startDateYear
+	 * @param startDateMonth
+	 * @param endDateYear
+	 * @param endDateMonth
+	 * @param userId
+	 * @param roleId
+	 * @return
+	 */
+	private BigDecimal getSalaryAmount(String startDateYear, String startDateMonth, String endDateYear, String endDateMonth, Long userId, Long roleId){
+		BigDecimal salaryTotalAmount = new BigDecimal("0.00");//薪金总和
+		BigDecimal salary = new BigDecimal("0.00");//薪金
+		try {
+			//费用类型
+			List<Integer> itemTypeList=new ArrayList<>();
+			itemTypeList.add(AccountItemType.SALARY);//薪金
+			
+			List<Map<String, Object>> accountPersonalList = accountPersonalService.getItemsByDateAndUserOrRole(startDateYear, startDateMonth, endDateYear, endDateMonth, userId, roleId, itemTypeList);
+			
+			for(Map<String, Object> temp : accountPersonalList){
+				int type = Integer.parseInt(temp.get("type").toString());
+				BigDecimal amount = new BigDecimal(temp.get("amount").toString());
+				switch (type) {
+				case AccountItemType.SALARY://薪金
+					salary = salary.add(amount);
+					break;
+
+				default:
+					
+					break;
+				}
+			}
+			salaryTotalAmount = salaryTotalAmount.add(salary);
+			return salaryTotalAmount;
+			
+		} catch (Exception e) {
+			e.printStackTrace();
+			System.out.println("计算市场费用总和异常");
+		}
+		return new BigDecimal("0.00");
 	}
 	
 	/**

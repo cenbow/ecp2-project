@@ -19,7 +19,8 @@
     text-shadow: 1px 1px 0 #fff;
   }
   .background-color{
-  	background-color:yellow;
+  	background-color:#00CC00;
+  	font-weight:900;
   }
   </style>
 </head>
@@ -56,7 +57,7 @@
 						</table>
 					</div>
 					<!-- <div class="panel-footer">Panel footer</div> -->
-					<div class="panel-footer"><b>注：</b>提成比例列表中<i class="background-color">黄色背景</i>的为本次提成的提成比例；如果列表中没有黄色背景的条目，则提成比例为零.</div>
+					<div class="panel-footer"><b>注：</b>提成比例列表中<i class="background-color">绿色背景</i>且加粗显示的为本次提成的提成比例；如果列表中没有<i class="background-color">绿色背景</i>的条目，则提成比例为零.</div>
 				</div>
 				<br>
 				
@@ -96,6 +97,10 @@
 									<td th:text="'￥'+${market_fee_total_amount}">市场费用</td>
 								</tr>
 								<tr>
+									<th>薪金</th>
+									<td th:text="'￥'+${salary_total_amount}">薪金</td>
+								</tr>
+								<tr th:class="${isShowPushmoneyAmount} ? '' : 'hide'">
 									<th>提成</th>
 									<td th:text="'￥'+${pushmoney_total_amount}">提成</td>
 								</tr>								
@@ -111,7 +116,7 @@
 							</tbody>
 						</table>
 					</div>
-					<div class="panel-footer"><b>计算方式：</b>毛利=（合同支付总金额-市场费用-合同中商品最低限价总额）*（1-17%）；提成基数=销售毛利-四项费用；提成金额=提成基数*提成比例。</div>
+					<div class="panel-footer"><b>计算方式：</b>毛利=（合同支付总金额-市场费用-合同中商品最低限价总额）*&nbsp;<b th:text="${performance_vat_rates}">增值税率后</b>；提成基数=销售毛利-四项费用；提成金额=提成基数*提成比例。</div>
 				</div>
 				<br>
 				
