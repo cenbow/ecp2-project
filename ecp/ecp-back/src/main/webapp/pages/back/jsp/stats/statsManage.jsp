@@ -113,11 +113,11 @@
 						if(resp.result_code=="success"){
 							var roleList =resp.roleList;
 							$("#select-role").empty();
-							var html = '<option value="" data-code="" selected="selected">—— 角色 ——</option>';
+							var html = '';//'<option value="" data-code="" selected="selected">—— 角色 ——</option>';
 							//var html = '';
 							$.each(roleList, function(index){
 								if(index==0){
-									html += '<option value="'+this.roleId+'" data-code="'+this.roleCode+'">'+this.roleName+'</option>'
+									html += '<option value="'+this.roleId+'" data-code="'+this.roleCode+'" selected="selected">'+this.roleName+'</option>'
 								}else{
 									html += '<option value="'+this.roleId+'" data-code="'+this.roleCode+'">'+this.roleName+'</option>'
 								}

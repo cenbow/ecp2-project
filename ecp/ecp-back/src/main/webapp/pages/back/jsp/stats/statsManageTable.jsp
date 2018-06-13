@@ -7,23 +7,19 @@
 	style="width: 100%;"center">
 	<thead style="width: 98%; padding-top: 80px;">
 		<tr role="row">
-			<th>订单号</th>
 			<th>商品名称</th>
 			<th>商品价格</th>
 			<th>商品数量</th>
 			<th>商品总金额</th>
-			<th>订单时间</th>
 		</tr>
 	</thead>
 	<tbody>
 		<c:forEach items="${pagehelper.list}" var="item">
 			<tr>
-				<td>${item.order_id}</td>
 				<td>${item.sku_name}</td>
 				<td>￥${item.primitive_price}</td>
 				<td>${item.sum_num}</td>
 				<td>￥${item.pay_price_total}</td>
-				<td>${item.create_time}</td>
 			</tr>
 		</c:forEach>
 	</tbody>
