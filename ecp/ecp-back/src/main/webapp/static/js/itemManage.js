@@ -460,11 +460,13 @@ function ajaxRequestGetItemInfo(id){
 				$("#create-time-str").val(new Date(item.created).format('yyyy-MM-dd HH:mm:ss'));//创建时间
 				
 				var describe = item.describeUrl;
+				//console.log("describe:"+describe);
 				if(describe!=null && describe!=""){
 					setContent("item-ueditor", describe);//商品详情（描述）
 				}
 				
 				var afterService = item.afterService;
+				//console.log("afterService:"+afterService);
 				if(afterService!=null && afterService!=""){
 					setContent("after-service", afterService);//售后服务
 				}

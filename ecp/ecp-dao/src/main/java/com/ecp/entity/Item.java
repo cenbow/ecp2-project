@@ -617,46 +617,35 @@ public class Item {
 		this.isPlanProduct = isPlanProduct;
 	}
 
+	public String getAfterService() {
+		return afterService;
+	}
+
+	public void setAfterService(String afterService) {
+		this.afterService = afterService;
+	}
+
+	public String getDescribeUrl() {
+		return describeUrl;
+	}
+
+	public void setDescribeUrl(String describeUrl) {
+		this.describeUrl = describeUrl;
+	}
+
 	@Override
-    public String toString() {
-        StringBuilder sb = new StringBuilder();
-        sb.append(getClass().getSimpleName());
-        sb.append(" [");
-        sb.append("Hash = ").append(hashCode());
-        sb.append(", itemId=").append(itemId);
-        sb.append(", ad=").append(ad);
-        sb.append(", attrSale=").append(attrSale);
-        sb.append(", attributes=").append(attributes);
-        sb.append(", brand=").append(brand);
-        sb.append(", cid=").append(cid);
-        sb.append(", created=").append(created);
-        sb.append(", delistingTime=").append(delistingTime);
-        sb.append(", guidePrice=").append(guidePrice);
-        sb.append(", hasPrice=").append(hasPrice);
-        sb.append(", inventory=").append(inventory);
-        sb.append(", itemName=").append(itemName);
-        sb.append(", itemStatus=").append(itemStatus);
-        sb.append(", keywords=").append(keywords);
-        sb.append(", listtingTime=").append(listtingTime);
-        sb.append(", marketPrice=").append(marketPrice);
-        sb.append(", marketPrice2=").append(marketPrice2);
-        sb.append(", modified=").append(modified);
-        sb.append(", operator=").append(operator);
-        sb.append(", origin=").append(origin);
-        sb.append(", packingList=").append(packingList);
-        sb.append(", platLinkStatus=").append(platLinkStatus);
-        sb.append(", productId=").append(productId);
-        sb.append(", statusChangeReason=").append(statusChangeReason);
-        sb.append(", timingListing=").append(timingListing);
-        sb.append(", volume=").append(volume);
-        sb.append(", weight=").append(weight);
-        sb.append(", weightUnit=").append(weightUnit);
-        sb.append(", deleted=").append(deleted);
-        sb.append(", model=").append(model);
-        sb.append(", highestPrice=").append(highestPrice);
-        sb.append(", lowestPrice=").append(lowestPrice);
-        sb.append(", hardCostPrice=").append(hardCostPrice);
-        sb.append("]");
-        return sb.toString();
-    }
+	public String toString() {
+		return "Item [itemId=" + itemId + ", ad=" + ad + ", attrSale=" + attrSale + ", attributes=" + attributes
+				+ ", brand=" + brand + ", cid=" + cid + ", created=" + created + ", delistingTime=" + delistingTime
+				+ ", guidePrice=" + guidePrice + ", hasPrice=" + hasPrice + ", inventory=" + inventory + ", itemName="
+				+ itemName + ", itemStatus=" + itemStatus + ", keywords=" + keywords + ", listtingTime=" + listtingTime
+				+ ", marketPrice=" + marketPrice + ", marketPrice2=" + marketPrice2 + ", modified=" + modified
+				+ ", operator=" + operator + ", origin=" + origin + ", packingList=" + packingList + ", platLinkStatus="
+				+ platLinkStatus + ", productId=" + productId + ", statusChangeReason=" + statusChangeReason
+				+ ", timingListing=" + timingListing + ", volume=" + volume + ", weight=" + weight + ", weightUnit="
+				+ weightUnit + ", afterService=" + afterService + ", describeUrl=" + describeUrl + ", deleted="
+				+ deleted + ", model=" + model + ", highestPrice=" + highestPrice + ", lowestPrice=" + lowestPrice
+				+ ", hardCostPrice=" + hardCostPrice + ", isPlanProduct=" + isPlanProduct + "]";
+	}
+
 }
