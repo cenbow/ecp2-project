@@ -433,21 +433,25 @@ public class ItemServiceImpl extends AbstractBaseService<Item, Long> implements 
 				sku.setWeight(item.getWeight());
 				rows = skuService.updateByExampleSelective(sku, example);
 				if(rows>0){
-					example = new Example(SkuPrice.class);
-					example.createCriteria().andEqualTo("skuId", skuIds.get(j));
-					SkuPrice skuPrice = new SkuPrice();
-					skuPrice.setCostPrice(item.getMarketPrice2());
-					skuPrice.setMarketPrice(item.getGuidePrice());
-					skuPrice.setSellPrice(item.getMarketPrice());
-					skuPrice.setHighestPrice(item.getHighestPrice());
-					skuPrice.setLowestPrice(item.getLowestPrice());
-					skuPrice.setHardCostPrice(item.getHardCostPrice());
-					rows = skuPriceService.updateByExampleSelective(skuPrice, example);
-					if(rows<=0){
-						log.error("更新sku价格等异常");
-						TransactionAspectSupport.currentTransactionStatus().setRollbackOnly();
-						break;
+					//如果预算价格、商城价格和销售成本价格都为空，则不更新sku价格信息
+					if(item.getGuidePrice()!=null && item.getMarketPrice()!=null && item.getMarketPrice2()!=null){
+						example = new Example(SkuPrice.class);
+						example.createCriteria().andEqualTo("skuId", skuIds.get(j));
+						SkuPrice skuPrice = new SkuPrice();
+						skuPrice.setCostPrice(item.getMarketPrice2());
+						skuPrice.setMarketPrice(item.getGuidePrice());
+						skuPrice.setSellPrice(item.getMarketPrice());
+						skuPrice.setHighestPrice(item.getHighestPrice());
+						skuPrice.setLowestPrice(item.getLowestPrice());
+						skuPrice.setHardCostPrice(item.getHardCostPrice());
+						rows = skuPriceService.updateByExampleSelective(skuPrice, example);
+						if(rows<=0){
+							log.error("更新sku价格等异常");
+							TransactionAspectSupport.currentTransactionStatus().setRollbackOnly();
+							break;
+						}
 					}
+					
 				}else{
 					log.error("更新sku重量等异常");
 					TransactionAspectSupport.currentTransactionStatus().setRollbackOnly();
