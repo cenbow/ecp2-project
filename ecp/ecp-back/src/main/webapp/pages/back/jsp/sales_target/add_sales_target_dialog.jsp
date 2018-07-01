@@ -168,17 +168,22 @@ $("#save-sales-target-btn").on("click", function(){
 		var checkCycleId = $(this).val();
 		var targetRate = $("#load-sales-target-table .target-rate").eq(index).val();
 		var targetAmount = $("#load-sales-target-table .target-amount").eq(index).val();
-		console.log("第"+(index+1)+"条数据："+"checkCycleId："+checkCycleId+"; targetRate："+targetRate+"; targetAmount："+targetAmount);
+		var profitAmount = $("#load-sales-target-table .profit-amount").eq(index).val();
+		console.log("第"+(index+1)+"条数据："+"checkCycleId："+checkCycleId+"; targetRate："+targetRate+"; targetAmount："+targetAmount+"; profitAmount："+profitAmount);
 		if(targetRate==null || targetRate==""){
 			targetRate = 0;
 		}
 		if(targetAmount==null || targetAmount==""){
 			targetAmount = 0.00;
 		}
+		if(profitAmount==null || profitAmount==""){
+			profitAmount = 0.00;
+		}
 		var obj = new Object();
 		obj.checkCycleId = checkCycleId;
 		obj.targetRate = targetRate;
 		obj.targetAmount = targetAmount;
+		obj.profitAmount = profitAmount;
 		targetArr.push(obj);
 	});
 	

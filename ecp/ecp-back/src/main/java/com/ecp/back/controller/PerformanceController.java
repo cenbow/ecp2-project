@@ -615,14 +615,29 @@ public class PerformanceController {
 			itemTypeList.add(AccountItemType.PERFORMANCE_FEE);//业绩
 			
 			List<Map<String, Object>> performanceList = accountPersonalService.getItemsByDateAndUserOrRole(startDateYear, startDateMonth, endDateYear, endDateMonth, tempUserId, tempRoleId, itemTypeList);
-			BigDecimal totalAmount = new BigDecimal("0.00");
+			BigDecimal performanceTotalAmount = new BigDecimal("0.00");
 			for(Map<String, Object> temp : performanceList){
 				String amount = temp.get("amount").toString();
 				if(StringUtils.isNotBlank(amount)){
-					totalAmount = totalAmount.add(new BigDecimal(amount));
+					performanceTotalAmount = performanceTotalAmount.add(new BigDecimal(amount));
 				}
 			}
-			map.put("total_amount", totalAmount);
+			map.put("performance_total_amount", performanceTotalAmount);
+			
+			//费用类型
+			itemTypeList=new ArrayList<>();
+			itemTypeList.add(AccountItemType.PRICE_DIFFERENCE_FEE);//最低限价差价
+			
+			List<Map<String, Object>> priceDifferenceList = accountPersonalService.getItemsByDateAndUserOrRole(startDateYear, startDateMonth, endDateYear, endDateMonth, tempUserId, tempRoleId, itemTypeList);
+			BigDecimal profitTotalAmount = new BigDecimal("0.00");
+			for(Map<String, Object> temp : priceDifferenceList){
+				String amount = temp.get("amount").toString();
+				if(StringUtils.isNotBlank(amount)){
+					profitTotalAmount = profitTotalAmount.add(new BigDecimal(amount));
+				}
+			}
+			map.put("profit_total_amount", profitTotalAmount);
+			
 			/*Map<String, Object> tempParams = new HashMap<>();
 			//tempParams.put("order_no", orderId);
 			tempParams.put("start_time", tempStartTime);
@@ -656,7 +671,7 @@ public class PerformanceController {
 	 * @return
 	 */
 	@RequestMapping(value = "/get-pushmoney")
-	public String getPushmoney(Model model, HttpServletRequest request, String fullYear, Long userId, Long roleId, String startTime, String endTime, BigDecimal completionRate, String provinceName, String cityName, String countyName) {
+	public String getPushmoney(Model model, HttpServletRequest request, String fullYear, Long userId, Long roleId, String startTime, String endTime, BigDecimal completionRate, String provinceName, String cityName, String countyName, BigDecimal profitAmount, BigDecimal profitTotalAmount) {
 
 		Subject subject = SecurityUtils.getSubject();
 		UserBean user = (UserBean)subject.getPrincipal();
@@ -711,6 +726,8 @@ public class PerformanceController {
 		BigDecimal fourFeeTotalAmount = this.getFourFeeTotalAmount(startDateYear, startDateMonth, endDateYear, endDateMonth, userId);
 		//获取市场费用总和
 		BigDecimal marketFeeTotalAmount = this.getMarketFeeTotalAmount(startDateYear, startDateMonth, endDateYear, endDateMonth, userId, roleId);
+		//获取最低限价差价（利润）总金额
+		//BigDecimal profitPriceTotalAmount = this.getProfitTotalAmount(startDateYear, startDateMonth, endDateYear, endDateMonth, userId, roleId);
 		
 		SystemConfig systemConfig = systemConfigService.getByConfigName(SystemConfigConstants.VAT_RATES);
 		Double vatRates = Double.valueOf(systemConfig.getConfigValue());
@@ -718,8 +735,14 @@ public class PerformanceController {
 		
 		BigDecimal tax = BigDecimal.valueOf(vatRates);//增值税后
 		tax = tax.setScale(2,BigDecimal.ROUND_HALF_UP);//增值税率保留两位小数
-		//获取提成金额
-		BigDecimal pushmoneyTotalAmount = this.getPushmoneyPrice(userId, roleId, startTime, endTime, marketFeeTotalAmount, fourFeeTotalAmount, pushmoneyRate, tax);
+		BigDecimal pushmoneyTotalAmount = new BigDecimal("0.00");
+		
+		//如果利润完成总金额大于等于利润金额，则计算提成，否则不计算提成
+		if(profitTotalAmount.compareTo(profitAmount)==0 || profitTotalAmount.compareTo(profitAmount)==1){
+			System.out.println("计算提成");
+			//获取提成金额
+			pushmoneyTotalAmount = this.getPushmoneyPrice(userId, roleId, startTime, endTime, marketFeeTotalAmount, fourFeeTotalAmount, pushmoneyRate, tax);
+		}
 		
 		//薪金
 		BigDecimal salaryTotalAmount = this.getSalaryAmount(startDateYear, startDateMonth, endDateYear, endDateMonth, userId, roleId);
@@ -882,6 +905,49 @@ public class PerformanceController {
 		} catch (Exception e) {
 			e.printStackTrace();
 			System.out.println("计算市场费用总和异常");
+		}
+		return new BigDecimal("0.00");
+	}
+	
+	/**
+	 * 获取最低限价差价（利润）总金额
+	 * @param startDateYear
+	 * @param startDateMonth
+	 * @param endDateYear
+	 * @param endDateMonth
+	 * @param userId
+	 * @param roleId
+	 * @return
+	 */
+	private BigDecimal getProfitTotalAmount(String startDateYear, String startDateMonth, String endDateYear, String endDateMonth, Long userId, Long roleId){
+		BigDecimal profitTotalAmount = new BigDecimal("0.00");//最低限价差价总和
+		BigDecimal profitAmount = new BigDecimal("0.00");//最低限价差价
+		try {
+			//费用类型
+			List<Integer> itemTypeList=new ArrayList<>();
+			itemTypeList.add(AccountItemType.PRICE_DIFFERENCE_FEE);//最低限价差价
+			
+			List<Map<String, Object>> accountPersonalList = accountPersonalService.getItemsByDateAndUserOrRole(startDateYear, startDateMonth, endDateYear, endDateMonth, userId, roleId, itemTypeList);
+			
+			for(Map<String, Object> temp : accountPersonalList){
+				int type = Integer.parseInt(temp.get("type").toString());
+				BigDecimal amount = new BigDecimal(temp.get("amount").toString());
+				switch (type) {
+				case AccountItemType.PRICE_DIFFERENCE_FEE://最低限价差价
+					profitAmount = profitAmount.add(amount);
+					break;
+
+				default:
+					
+					break;
+				}
+			}
+			profitTotalAmount = profitTotalAmount.add(profitAmount);
+			return profitTotalAmount;
+			
+		} catch (Exception e) {
+			e.printStackTrace();
+			System.out.println("计算最低限价差价总和异常");
 		}
 		return new BigDecimal("0.00");
 	}

@@ -21,6 +21,7 @@
 							<th>周期名称</th>
 							<th>指标比例</th>
 							<th>指标金额</th>
+							<th>利润金额</th>
 						</tr>
 					</thead>
 					<tbody>
@@ -47,6 +48,15 @@
 									<c:if test="${target.cycleName!='全年'}">
 										<input type="text" class="target-amount not-all-year not-all-year-amount" id="not-all-year-amount-${status.index}" data-index="${status.index}" value="${target.targetAmount}" />
 									</c:if>
+								</td>
+								<td>￥
+									<%-- <c:if test="${target.cycleName=='全年'}">
+										<input type="text" class="profit-amount all-year all-year-profit-amount" id="all-year-profit-amount-${status.index}" data-index="${status.index}" value="${target.profitAmount}" />
+									</c:if>
+									<c:if test="${target.cycleName!='全年'}">
+										<input type="text" class="profit-amount not-all-year not-all-year-profit-amount" id="not-all-year-profit-amount-${status.index}" data-index="${status.index}" value="${target.profitAmount}" />
+									</c:if> --%>
+									<input type="text" class="profit-amount" id="profit-amount-${status.index}" data-index="${status.index}" value="${target.profitAmount}" />
 								</td>
 							</tr>
 						</c:forEach>

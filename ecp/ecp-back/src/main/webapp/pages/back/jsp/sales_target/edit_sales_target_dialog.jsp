@@ -65,6 +65,13 @@
 								class="form-control" placeholder="指标金额" />
 						</div>
 					</div>
+					<div class="form-group">
+						<label class="col-sm-2 control-label">利润金额（元）</label>
+						<div class="col-sm-10">
+							<input type="text" id="sales-target-profit-amount" name="profitAmount"
+								class="form-control" placeholder="利润金额" />
+						</div>
+					</div>
 				</form>
 			</div>
 			<div class="modal-footer">

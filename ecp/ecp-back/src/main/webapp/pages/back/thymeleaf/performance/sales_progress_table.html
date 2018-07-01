@@ -51,9 +51,12 @@
 								<th>用户昵称</th>
 								<th>用户角色</th>
 								<th>周期名称</th>								
-								<th>额度</th>
+								<th>指标金额</th>
 								<th>已完成</th>
-								<th style="width:20%;">进度</th>
+								<th style="width:15%;">指标完成进度</th>
+								<th>利润金额</th>
+								<th>已完成</th>
+								<th style="width:15%;">利润完成进度</th>
 								<th>操作</th>
 							</thead>
 							<tbody>
@@ -62,14 +65,19 @@
 									<td th:text="${progress.nickname}">用户昵称</td>
 									<td th:text="${progress.role_name}">用户角色</td>
 									<td th:text="${progress.year_name}+' - '+${progress.cycle_name}">周期名称</td>
-									<td th:text="'￥'+${progress.target_amount}">额度</td>
-									<td th:text="'￥'+${progress.total_amount}">已完成</td>
+									<td th:text="'￥'+${progress.target_amount}">指标金额</td>
+									<td th:text="'￥'+${progress.performance_total_amount}">已完成</td>
 									<td>
-										<div class="progressbar" th:attr="data-target-amount=${progress.target_amount}, data-total-price=${progress.total_amount}"><div class="progress-label">加载...</div></div>
+										<div class="target-progress progressbar" th:attr="data-target-amount=${progress.target_amount}, data-completed-total-amount=${progress.performance_total_amount}"><div class="progress-label">加载...</div></div>
+									</td>
+									<td th:text="'￥'+${progress.profit_amount}">利润金额</td>
+									<td th:text="'￥'+${progress.profit_total_amount}">已完成</td>
+									<td>
+										<div class="profit-progress progressbar" th:attr="data-profit-amount=${progress.profit_amount}, data-completed-total-amount=${progress.profit_total_amount}"><div class="progress-label">加载...</div></div>
 									</td>
 									<td>
 										<button type="button" class="btn btn-default btn-primary performance-btn" th:attr="data-user-id=${progress.user_id}, data-role-id=${progress.role_id}, data-start-time=${progress.start_date}, data-end-time=${progress.end_date}">业绩列表</button>
-										<button type="button" class="btn btn-default btn-primary pushmoney-btn" id="" th:attr="data-user-id=${progress.user_id}, data-role-id=${progress.role_id}, data-start-time=${progress.start_date}, data-end-time=${progress.end_date}, data-completion-rate=(${progress.total_amount/progress.target_amount})*100">提成</button>
+										<button type="button" class="btn btn-default btn-primary pushmoney-btn" id="" th:attr="data-user-id=${progress.user_id}, data-role-id=${progress.role_id}, data-start-time=${progress.start_date}, data-end-time=${progress.end_date}, data-completion-rate=(${progress.performance_total_amount/progress.target_amount})*100, data-profit-amount=${progress.profit_amount}, data-profit-total-amount=${progress.profit_total_amount}">提成</button>
 									</td>
 								</tr>								
 								</hr>					
@@ -102,11 +110,11 @@
 	
 		$(function() {
 			/**
-			 * 进度条初始化
+			 * 已完成指标金额进度条初始化
 			 */
-			$(".table .progressbar").each(function(index) {
+			$(".table .target-progress").each(function(index) {
 				var target_amount = $(this).attr("data-target-amount");
-				var total_amount = $(this).attr("data-total-price");
+				var total_amount = $(this).attr("data-completed-total-amount");
 				if (target_amount != null && target_amount != '' && total_amount != null && total_amount != '') {
 					var progress = Number(total_amount) / Number(target_amount) * 100;
 					progress = progress.toFixed(2);
@@ -130,7 +138,7 @@
 							progressLabel.text(progress + "%");
 						}
 					});
-					console.log("progress:"+progress);
+					//console.log("target progress:"+progress);
 					//var val = progressbar.progressbar("value") || 0;
 					var tempProgress = 0;
 					if (progress >= 100) {
@@ -138,13 +146,51 @@
 					}else{
 						tempProgress = progress;
 					}
-					progressbar.progressbar("value", tempProgress);
+					//console.log("target progress value:"+tempProgress);
+					progressbar.progressbar("value", Number(tempProgress));
 
 					/* var progressbarValue = progressbar.find(".ui-progressbar-value");
 					progressbarValue.css({
 						"background" : "#009900"
 					}); */
 					
+					$(this).attr("title", progress+"%");
+				}
+			});
+			/**
+			 * 已完成利润金额进度条初始化
+			 */
+			$(".table .profit-progress").each(function(index) {
+				var profit_amount = $(this).attr("data-profit-amount");
+				var total_amount = $(this).attr("data-completed-total-amount");
+				if (profit_amount != null && profit_amount != '' && total_amount != null && total_amount != '') {
+					var progress = Number(total_amount) / Number(profit_amount) * 100;
+					progress = progress.toFixed(2);
+					
+					var progressbar = $(this), 
+					progressLabel = $(this).find(".progress-label");
+					
+					progressbar.progressbar({
+						value : false,
+						change : function() {
+							//progressLabel.text(progressbar.progressbar("value") + "%");
+							progressLabel.text(progress + "%");
+						},
+						complete : function() {
+							//progressLabel.text("完成！");
+							progressLabel.text(progress + "%");
+						}
+					});
+					//console.log("profit progress:"+progress);
+					//var val = progressbar.progressbar("value") || 0;
+					var tempProgress = 0;
+					if (progress >= 100) {
+						tempProgress = 100;
+					}else{
+						tempProgress = progress;
+					}
+					progressbar.progressbar("value", Number(tempProgress));
+
 					$(this).attr("title", progress+"%");
 				}
 			});
@@ -159,9 +205,11 @@
 			var startTime = $(this).attr("data-start-time");
 			var endTime = $(this).attr("data-end-time");
 			var completionRate = $(this).attr("data-completion-rate");
+			var profitAmount = $(this).attr("data-profit-amount");//利润金额
+			var profitTotalAmount = $(this).attr("data-profit-total-amount");//已完成利润金额
 			var url = BASE_CONTEXT_PATH + "/back/performance/get-pushmoney"; // 需要提交的 url
 			//var fullYear = getFullYear();
-			var params = {"userId":userId, "roleId":roleId, "startTime":startTime, "endTime":endTime, "completionRate":completionRate};
+			var params = {"userId":userId, "roleId":roleId, "startTime":startTime, "endTime":endTime, "completionRate":completionRate, "profitAmount":profitAmount, "profitTotalAmount":profitTotalAmount};
 			$("#edit-body-pushmoney").load(url, params, function(){
 				$("#edit-tab-pushmoney").removeClass("hide");
 				$('#tabs-item a[href="#panel-tab-pushmoney"]').tab('show');
