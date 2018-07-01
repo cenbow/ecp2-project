@@ -16,6 +16,7 @@
 			<th>周期名称</th>
 			<th>指标比例</th>
 			<th>指标金额</th>
+			<th>利润金额</th>
 			<th>操作</th>
 		</tr>
 	</thead>
@@ -31,6 +32,7 @@
 				<td>${target.cycle_name}</td>
 				<td>${target.target_rate}%</td>
 				<td>￥${target.target_amount}</td>
+				<td>￥${target.profit_amount}</td>
 				<td class="center ">
 					<div style="text-align: center;; height: auto;"
 						class="datagrid-cell datagrid-cell-c1-action">

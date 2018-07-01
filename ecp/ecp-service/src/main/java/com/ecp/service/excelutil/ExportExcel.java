@@ -26,9 +26,9 @@ public class ExportExcel {
 	 */
 	public static HSSFWorkbook exportExcel(List<Map<String, Object>> mapList) {
 		// excel标题
-		String[] titles = { "考核年度", "人员", "角色", "周期名称", "指标比例（%）", "指标金额（元）" };
+		String[] titles = { "考核年度", "人员", "角色", "周期名称", "指标比例（%）", "指标金额（元）", "利润金额（元）"};
 		// excel列名
-		String[] columnNames = { "year_name", "username", "role_name", "cycle_name", "target_rate", "target_amount" };
+		String[] columnNames = { "year_name", "username", "role_name", "cycle_name", "target_rate", "target_amount", "profit_amount"};
 
 		// sheet名
 		String sheetName = "考核指标信息";

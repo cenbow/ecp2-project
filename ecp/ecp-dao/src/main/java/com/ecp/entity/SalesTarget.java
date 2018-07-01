@@ -62,6 +62,12 @@ public class SalesTarget {
     private Byte calType;
 
     /**
+     * 利润金额
+     */
+    @Column(name = "profit_amount")
+    private BigDecimal profitAmount;
+    
+    /**
      * 开始时间
      */
     @Column(name = "start_date")
@@ -103,7 +109,7 @@ public class SalesTarget {
      * @param sort
      */
     public SalesTarget(Long id, Long userId, Long roleId, String targetRate, BigDecimal targetAmount, Long checkCycleId,
-			String cycleName, String yearName, Byte calType, Date startDate, Date endDate, Long pid, Integer sort) {
+			String cycleName, String yearName, Byte calType, BigDecimal profitAmount, Date startDate, Date endDate, Long pid, Integer sort) {
 		super();
 		this.id = id;
 		this.userId = userId;
@@ -114,13 +120,14 @@ public class SalesTarget {
 		this.cycleName = cycleName;
 		this.yearName = yearName;
 		this.calType = calType;
+		this.profitAmount = profitAmount;
 		this.startDate = startDate;
 		this.endDate = endDate;
 		this.pid = pid;
 		this.sort = sort;
 	}
     
-    public SalesTarget(Long userId, Long roleId, String targetRate, BigDecimal targetAmount, Long checkCycleId, String cycleName, String yearName, Byte calType, Date startDate, Date endDate, Long pid, Integer sort) {
+    public SalesTarget(Long userId, Long roleId, String targetRate, BigDecimal targetAmount, Long checkCycleId, String cycleName, String yearName, Byte calType, BigDecimal profitAmount, Date startDate, Date endDate, Long pid, Integer sort) {
 		super();
 		this.userId = userId;
 		this.roleId = roleId;
@@ -130,6 +137,7 @@ public class SalesTarget {
 		this.cycleName = cycleName;
 		this.yearName = yearName;
 		this.calType = calType;
+		this.profitAmount = profitAmount;
 		this.startDate = startDate;
 		this.endDate = endDate;
 		this.pid = pid;
@@ -299,6 +307,24 @@ public class SalesTarget {
     }
 
     /**
+     * 获取利润金额
+     * 
+     * @return
+     */
+    public BigDecimal getProfitAmount() {
+		return profitAmount;
+	}
+
+	/**
+	 * 设置利润金额
+	 * 
+	 * @param profitAmount
+	 */
+	public void setProfitAmount(BigDecimal profitAmount) {
+		this.profitAmount = profitAmount;
+	}
+
+	/**
      * 获取开始时间
      *
      * @return start_date - 开始时间

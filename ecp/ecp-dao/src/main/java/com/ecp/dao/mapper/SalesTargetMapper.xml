@@ -15,6 +15,7 @@
     <result column="year_name" jdbcType="VARCHAR" property="yearName" />
     <result column="cal_type" jdbcType="TINYINT" property="calType" />
     <result column="start_date" jdbcType="TIMESTAMP" property="startDate" />
+    <result column="profit_amount" jdbcType="DECIMAL" property="profitAmount" />
     <result column="end_date" jdbcType="TIMESTAMP" property="endDate" />
     <result column="pid" jdbcType="BIGINT" property="pid" />
     <result column="sort" jdbcType="INTEGER" property="sort" />
@@ -24,7 +25,7 @@
       WARNING - @mbggenerated
     -->
     id, user_id, role_id, target_rate, target_amount, check_cycle_id, cycle_name, year_name, 
-    cal_type, start_date, end_date, pid, sort
+    cal_type, profit_amount, start_date, end_date, pid, sort
   </sql>
   <!-- 根据Map中的条件查询销售指标 -->
 	<select id="getListMap" parameterType="map" resultType="map">

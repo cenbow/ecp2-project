@@ -330,11 +330,13 @@ public class SalesTargetController {
 					String tempCheckCycleId = map.get("checkCycleId").toString();
 					String tempTargetRate = map.get("targetRate").toString();
 					String tempTargetAmount = map.get("targetAmount").toString();
+					String tempProfitAmount = map.get("profitAmount").toString();
 					if (StringUtils.isNotBlank(tempCheckCycleId) && StringUtils.isNotBlank(tempTargetRate)
-							&& StringUtils.isNotBlank(tempTargetAmount)) {
+							&& StringUtils.isNotBlank(tempTargetAmount) && StringUtils.isNotBlank(tempProfitAmount)) {
 						if (temp.getCheckCycleId().equals(Long.parseLong(tempCheckCycleId))) {
 							temp.setTargetRate(tempTargetRate);
 							temp.setTargetAmount(new BigDecimal(tempTargetAmount));
+							temp.setProfitAmount(new BigDecimal(tempProfitAmount));
 							break;
 						}
 					} else {
@@ -582,14 +584,14 @@ public class SalesTargetController {
 
 		CheckCycle cycle = checkCycleService.selectByPrimaryKey(checkCycleId);
 		SalesTarget temp = this.createSalesTargetEntity(userId, roleId, this.getTargetRate(cycle.getCycleName()),
-				new BigDecimal("0"), checkCycleId, cycle.getCycleName(), cycle.getYearName(), cycle.getCalType(),
+				new BigDecimal("0"), checkCycleId, cycle.getCycleName(), cycle.getYearName(), cycle.getCalType(), new BigDecimal("0"), 
 				cycle.getStartDate(), cycle.getEndDate(), cycle.getPid(), cycle.getSort());
 		salesTargetList.add(temp);
 		List<CheckCycle> cycleList = checkCycleService.getListByPid(cycle.getId());
 		for (CheckCycle cycleTemp : cycleList) {
 			temp = this.createSalesTargetEntity(userId, roleId, this.getTargetRate(cycleTemp.getCycleName()),
 					new BigDecimal("0"), cycleTemp.getId(), cycleTemp.getCycleName(), cycleTemp.getYearName(),
-					cycleTemp.getCalType(), cycleTemp.getStartDate(), cycleTemp.getEndDate(), cycleTemp.getPid(),
+					cycleTemp.getCalType(), new BigDecimal("0"), cycleTemp.getStartDate(), cycleTemp.getEndDate(), cycleTemp.getPid(),
 					cycleTemp.getSort());
 			salesTargetList.add(temp);
 		}
@@ -645,10 +647,10 @@ public class SalesTargetController {
 	 * @return
 	 */
 	private SalesTarget createSalesTargetEntity(Long userId, Long roleId, String targetRate, BigDecimal targetAmount,
-			Long checkCycleId, String cycleName, String yearName, Byte calType, Date startDate, Date endDate, Long pid,
+			Long checkCycleId, String cycleName, String yearName, Byte calType, BigDecimal profitAmount, Date startDate, Date endDate, Long pid,
 			Integer sort) {
 		SalesTarget target = new SalesTarget(userId, roleId, targetRate, targetAmount, checkCycleId, cycleName,
-				yearName, calType, startDate, endDate, pid, sort);
+				yearName, calType, profitAmount, startDate, endDate, pid, sort);
 		return target;
 	}
 	

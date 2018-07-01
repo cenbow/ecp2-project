@@ -104,6 +104,7 @@ function selectDetails(id){
 					$("#sales-target-rate").prop("readonly", false);
 				}
 				$("#sales-target-amount").val(target.target_amount);//指标金额
+				$("#sales-target-profit-amount").val(target.profit_amount);//利润金额
 				
 				$('#edit-sales-target-modal').modal({
 					backdrop : 'static',
