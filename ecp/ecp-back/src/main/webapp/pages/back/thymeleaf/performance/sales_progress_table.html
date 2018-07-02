@@ -118,6 +118,12 @@
 				if (target_amount != null && target_amount != '' && total_amount != null && total_amount != '') {
 					var progress = Number(total_amount) / Number(target_amount) * 100;
 					progress = progress.toFixed(2);
+					
+					if(progress=="Infinity" || progress=="NaN"){
+						progress=0.00;
+						progress.toFixed(2);
+					}
+					
 					$(".pushmoney-btn").each(function(index1){
 						if(index==index1){
 							$(this).attr("data-completion-rate", progress);
@@ -167,6 +173,12 @@
 					var progress = Number(total_amount) / Number(profit_amount) * 100;
 					progress = progress.toFixed(2);
 					
+					if(progress=="Infinity" || progress=="NaN"){
+						console.log("profit progress:"+progress);
+						progress=0.00;
+						progress.toFixed(2);
+					}
+					
 					var progressbar = $(this), 
 					progressLabel = $(this).find(".progress-label");
 					
@@ -181,7 +193,7 @@
 							progressLabel.text(progress + "%");
 						}
 					});
-					//console.log("profit progress:"+progress);
+					console.log("profit progress:"+progress);
 					//var val = progressbar.progressbar("value") || 0;
 					var tempProgress = 0;
 					if (progress >= 100) {
